@@ -34,7 +34,8 @@ cleannova/
 │   ├── booking.html            # Trang đặt lịch dọn dẹp & ước tính chi phí trực tiếp
 │   ├── my-bookings.html        # Trang quản lý lịch sử đơn đặt của khách hàng
 │   ├── profile.html            # Trang cá nhân (cập nhật thông tin & đổi mật khẩu)
-│   ├── admin.html              # Bảng điều khiển Quản trị viên (Dashboard, Đơn đặt, Dịch vụ)
+│   ├── staff.html              # Không gian làm việc riêng cho Nhân viên (Staff Portal)
+│   ├── admin.html              # Bảng điều khiển Quản trị viên (Dashboard, Tài khoản, Nhân viên, Đơn đặt)
 │   ├── main.css                # CSS giao diện trang chủ & hệ thống Design System
 │   ├── app.css                 # CSS bổ trợ cho các trang tính năng mới
 │   ├── main.js                 # Hiệu ứng, cuộn mượt, câu hỏi FAQ & Mobile menu
@@ -75,12 +76,15 @@ cleannova/
 
 ## 👥 3. Tài Khoản Thử Nghiệm (Demo Accounts)
 
-Hệ thống đã chuẩn bị sẵn hai tài khoản kiểm thử cho hai vai trò:
+Hệ thống đã chuẩn bị sẵn tài khoản kiểm thử cho cả 3 vai trò (tự động chuyển đúng trang sau khi đăng nhập):
 
-| Vai trò | Email đăng nhập | Mật khẩu | Quyền hạn |
-| :--- | :--- | :--- | :--- |
-| **Quản trị viên (Admin)** | `admin@cleanova.vn` | `Admin@Cleanova2026!` | Toàn quyền xem Dashboard, đổi trạng thái đơn, thêm/sửa/xóa dịch vụ |
-| **Khách hàng (Customer)** | `demo@nova.app` | `NovaDemo2026!` | Đặt lịch, xem lịch sử đơn, hủy đơn, đổi thông tin cá nhân & mật khẩu |
+| Vai trò | Email đăng nhập | Mật khẩu | Trang tự động chuyển đến | Quyền hạn & Tác vụ |
+| :--- | :--- | :--- | :--- | :--- |
+| **Nhân viên (Staff 1)** | `staff@cleanova.vn` | `Staff@Cleanova2026!` | [`staff.html`](http://localhost:5000/staff.html) | Xem việc được giao, timeline lịch trình, cập nhật tiến độ, báo cáo ca trực & đổi mật khẩu |
+| **Nhân viên (Staff 2)** | `staff2@cleanova.vn` | `Staff@Cleanova2026!` | [`staff.html`](http://localhost:5000/staff.html) | Tài khoản nhân viên thứ hai để kiểm tra bảo mật phân quyền công việc riêng biệt |
+| **Quản trị viên (Admin)** | `admin@cleanova.vn` | `Admin@Cleanova2026!` | [`admin.html`](http://localhost:5000/admin.html) | Toàn quyền xem Dashboard, quản lý tài khoản, phân công việc cho nhân viên, quản lý dịch vụ |
+| **Khách hàng (Customer)** | `demo@nova.app` | `NovaDemo2026!` | [`trangchu.html`](http://localhost:5000/trangchu.html) | Xem bảng giá, đặt lịch, quản lý đơn của mình, hủy đơn và quản lý hồ sơ cá nhân |
+| **Tài khoản bị khóa (Test)** | `locked@cleanova.vn` | `NovaDemo2026!` | — | Tài khoản bị vô hiệu hóa bởi Admin (bị chặn đăng nhập 403 `ACCOUNT_DEACTIVATED`) |
 
 > 💡 *Bạn cũng có thể tự tạo thêm tài khoản mới bất kỳ lúc nào tại trang [Đăng ký](http://localhost:5000/register.html).*
 
