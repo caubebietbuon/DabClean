@@ -7,13 +7,19 @@ USE cleanova_db;
 -- ------------------------------------------------------------
 -- 1. DỮ LIỆU TÀI KHOẢN MẪU (users)
 -- Mật khẩu đã được mã hóa bằng bcrypt (saltRounds = 10):
--- - demo@nova.app / NovaDemo2026!
--- - admin@cleanova.vn / Admin@Cleanova2026!
+-- - admin@cleanova.vn / Admin@Cleanova2026! (Admin)
+-- - staff@cleanova.vn / Staff@Cleanova2026! (Nhân viên)
+-- - staff2@cleanova.vn / Staff@Cleanova2026! (Nhân viên)
+-- - demo@nova.app / NovaDemo2026! (Khách hàng)
+-- - locked@cleanova.vn / NovaDemo2026! (Khách hàng bị vô hiệu hóa)
 -- ------------------------------------------------------------
-INSERT INTO users (id, name, email, password, phone, address, role) VALUES
-(1, 'Quản Trị Viên Cleanova', 'admin@cleanova.vn', '$2a$10$ZZn8Td.6jh83f7FySaJ/1OnHyXgbyE2yC9rmaOaiHv6sq4Hiraoja', '0912345678', 'Tòa nhà Cleanova, Cầu Giấy, Hà Nội', 'admin'),
-(2, 'Nguyễn Tiến Đức', 'demo@nova.app', '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', '0987654321', 'Số 25 Phố Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội', 'user'),
-(3, 'Trần Thu Hà', 'ha.tran@example.com', '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', '0901122334', 'Chung cư Vinhomes Smart City, Nam Từ Liêm, Hà Nội', 'user');
+INSERT INTO users (id, name, email, password, phone, address, role, status) VALUES
+(1, 'Quản Trị Viên Cleanova', 'admin@cleanova.vn', '$2a$10$ZZn8Td.6jh83f7FySaJ/1OnHyXgbyE2yC9rmaOaiHv6sq4Hiraoja', '0912345678', 'Tòa nhà Cleanova, Cầu Giấy, Hà Nội', 'admin', 'active'),
+(2, 'Nguyễn Tiến Đức', 'demo@nova.app', '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', '0987654321', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', 'customer', 'active'),
+(3, 'Trần Văn Bảo', 'staff@cleanova.vn', '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', '0933445566', 'Số 12 Chùa Láng, Đống Đa, Hà Nội', 'staff', 'active'),
+(4, 'Lê Thị Mai', 'staff2@cleanova.vn', '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', '0944556677', 'Khu đô thị Ngoại Giao Đoàn, Bắc Từ Liêm, Hà Nội', 'staff', 'active'),
+(5, 'Trần Thu Hà', 'ha.tran@example.com', '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', '0901122334', 'Vinhomes Smart City, Nam Từ Liêm, Hà Nội', 'customer', 'active'),
+(6, 'Tài Khoản Bị Khóa', 'locked@cleanova.vn', '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', '0999888777', 'Hà Nội', 'customer', 'inactive');
 
 -- ------------------------------------------------------------
 -- 2. DỮ LIỆU DỊCH VỤ VỆ SINH CHỦ ĐẠO (services)
@@ -78,10 +84,11 @@ INSERT INTO services (id, name, slug, description, short_description, base_price
 -- ------------------------------------------------------------
 -- 3. DỮ LIỆU ĐƠN ĐẶT LỊCH MẪU (bookings)
 -- ------------------------------------------------------------
-INSERT INTO bookings (id, booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, payment_status, status) VALUES
-(1, 'CNV-2026-0001', 2, 1, '2026-10-18', '08:30:00', 'medium', 'weekly', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Nhà có mèo cưng, vui lòng dùng dung dịch sinh học an toàn', 425000.00, 'CLEANOVA20', 'cash', 'unpaid', 'confirmed'),
-(2, 'CNV-2026-0002', 2, 4, '2026-10-22', '14:00:00', 'small', 'once', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Giặt 1 bộ sofa góc L nỉ nhung', 320000.00, 'CLEANOVA20', 'bank_transfer', 'paid', 'completed'),
-(3, 'CNV-2026-0003', 3, 2, '2026-10-25', '09:00:00', 'large', 'once', 'Tòa S2.05 Vinhomes Smart City, Hà Nội', '0901122334', 'Cần tổng vệ sinh trước khi đón bố mẹ lên chơi', 2000000.00, NULL, 'momo', 'paid', 'pending');
+INSERT INTO bookings (id, booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, payment_status, status, staff_id, assigned_at, staff_notes) VALUES
+(1, 'CNV-2026-0001', 2, 1, '2026-10-18', '08:30:00', 'medium', 'weekly', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Nhà có mèo cưng, vui lòng dùng dung dịch sinh học an toàn', 425000.00, 'CLEANOVA20', 'cash', 'unpaid', 'confirmed', 3, '2026-10-14 10:00:00', 'Đã liên hệ khách, chuẩn bị bộ lau đa năng và dung dịch hữu cơ.'),
+(2, 'CNV-2026-0002', 2, 4, '2026-10-22', '14:00:00', 'small', 'once', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Giặt 1 bộ sofa góc L nỉ nhung', 320000.00, 'CLEANOVA20', 'bank_transfer', 'paid', 'completed', 3, '2026-10-14 11:00:00', 'Đã giặt xong, khách nghiệm thu hài lòng 100%.'),
+(3, 'CNV-2026-0003', 5, 2, '2026-10-25', '09:00:00', 'large', 'once', 'Tòa S2.05 Vinhomes Smart City, Hà Nội', '0901122334', 'Cần tổng vệ sinh trước khi đón bố mẹ lên chơi', 2000000.00, NULL, 'momo', 'paid', 'in_progress', 4, '2026-10-14 14:00:00', 'Đang xử lý tẩy cặn canxi và lau kính tầng 2.'),
+(4, 'CNV-2026-0004', 2, 3, '2026-10-28', '08:00:00', 'medium', 'monthly', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Vệ sinh văn phòng định kỳ đầu tháng', 650000.00, NULL, 'cash', 'unpaid', 'pending', NULL, NULL, NULL);
 
 -- ------------------------------------------------------------
 -- 4. DỮ LIỆU ĐÁNH GIÁ (reviews)

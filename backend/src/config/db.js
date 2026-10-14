@@ -36,6 +36,7 @@ const inMemoryData = {
       phone: '0912345678',
       address: 'Tòa nhà Cleanova, Cầu Giấy, Hà Nội',
       role: 'admin',
+      status: 'active',
       created_at: new Date('2026-01-01T08:00:00Z')
     },
     {
@@ -45,8 +46,53 @@ const inMemoryData = {
       password: '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', // NovaDemo2026!
       phone: '0987654321',
       address: 'Số 25 Phố Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội',
-      role: 'user',
+      role: 'customer',
+      status: 'active',
       created_at: new Date('2026-02-15T09:30:00Z')
+    },
+    {
+      id: 3,
+      name: 'Trần Văn Bảo',
+      email: 'staff@cleanova.vn',
+      password: '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', // Staff@Cleanova2026!
+      phone: '0933445566',
+      address: 'Số 12 Chùa Láng, Đống Đa, Hà Nội',
+      role: 'staff',
+      status: 'active',
+      created_at: new Date('2026-02-01T08:00:00Z')
+    },
+    {
+      id: 4,
+      name: 'Lê Thị Mai',
+      email: 'staff2@cleanova.vn',
+      password: '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', // Staff@Cleanova2026!
+      phone: '0944556677',
+      address: 'Khu đô thị Ngoại Giao Đoàn, Bắc Từ Liêm, Hà Nội',
+      role: 'staff',
+      status: 'active',
+      created_at: new Date('2026-02-10T08:00:00Z')
+    },
+    {
+      id: 5,
+      name: 'Trần Thu Hà',
+      email: 'ha.tran@example.com',
+      password: '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS',
+      phone: '0901122334',
+      address: 'Vinhomes Smart City, Nam Từ Liêm, Hà Nội',
+      role: 'customer',
+      status: 'active',
+      created_at: new Date('2026-03-01T08:00:00Z')
+    },
+    {
+      id: 6,
+      name: 'Tài Khoản Bị Khóa',
+      email: 'locked@cleanova.vn',
+      password: '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS',
+      phone: '0999888777',
+      address: 'Hà Nội',
+      role: 'customer',
+      status: 'inactive',
+      created_at: new Date('2026-03-05T08:00:00Z')
     }
   ],
   services: [
@@ -131,6 +177,10 @@ const inMemoryData = {
       payment_method: 'cash',
       payment_status: 'unpaid',
       status: 'confirmed',
+      staff_id: 3,
+      staff_name: 'Trần Văn Bảo',
+      staff_notes: 'Đã liên hệ khách, chuẩn bị bộ lau đa năng và dung dịch hữu cơ.',
+      assigned_at: new Date('2026-10-14T10:00:00Z'),
       created_at: new Date('2026-10-14T10:00:00Z')
     },
     {
@@ -152,9 +202,64 @@ const inMemoryData = {
       payment_method: 'bank_transfer',
       payment_status: 'paid',
       status: 'completed',
+      staff_id: 3,
+      staff_name: 'Trần Văn Bảo',
+      staff_notes: 'Đã giặt xong, khách nghiệm thu hài lòng 100%.',
+      assigned_at: new Date('2026-10-12T15:30:00Z'),
       created_at: new Date('2026-10-12T15:20:00Z')
+    },
+    {
+      id: 3,
+      booking_code: 'CNV-2026-0003',
+      user_id: 5,
+      service_id: 2,
+      service_name: 'Tổng vệ sinh Deep Cleaning',
+      service_icon: '✨',
+      booking_date: '2026-10-25',
+      booking_time: '09:00:00',
+      area_size: 'large',
+      frequency: 'once',
+      address: 'Tòa S2.05 Vinhomes Smart City, Hà Nội',
+      phone: '0901122334',
+      notes: 'Cần tổng vệ sinh trước khi đón bố mẹ lên chơi',
+      total_price: 2000000,
+      discount_code: null,
+      payment_method: 'momo',
+      payment_status: 'paid',
+      status: 'in_progress',
+      staff_id: 4,
+      staff_name: 'Lê Thị Mai',
+      staff_notes: 'Đang xử lý tẩy cặn canxi và lau kính tầng 2.',
+      assigned_at: new Date('2026-10-14T14:00:00Z'),
+      created_at: new Date('2026-10-14T14:00:00Z')
+    },
+    {
+      id: 4,
+      booking_code: 'CNV-2026-0004',
+      user_id: 2,
+      service_id: 3,
+      service_name: 'Vệ sinh văn phòng & Workspace',
+      service_icon: '🏢',
+      booking_date: '2026-10-28',
+      booking_time: '08:00:00',
+      area_size: 'medium',
+      frequency: 'monthly',
+      address: 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội',
+      phone: '0987654321',
+      notes: 'Vệ sinh văn phòng định kỳ đầu tháng',
+      total_price: 650000,
+      discount_code: null,
+      payment_method: 'cash',
+      payment_status: 'unpaid',
+      status: 'pending',
+      staff_id: null,
+      staff_name: null,
+      staff_notes: null,
+      assigned_at: null,
+      created_at: new Date('2026-10-15T01:00:00Z')
     }
-  ]
+  ],
+  audit_logs: []
 };
 
 // Khởi tạo và kiểm tra kết nối MySQL
@@ -193,20 +298,41 @@ async function query(sql, params = []) {
 function queryInMemory(sql, params = []) {
   const normalizedSql = sql.trim().toLowerCase();
 
-  // 0. Thống kê Admin (COUNT)
+  // 0. Thống kê & Đếm (COUNT)
   if (normalizedSql.includes('count(')) {
-    const totalUsers = inMemoryData.users.filter(u => u.role === 'user').length;
+    // Đếm số admin đang hoạt động (để ngăn xóa admin cuối cùng)
+    if (normalizedSql.includes("role = 'admin'") && normalizedSql.includes("status = 'active'")) {
+      const activeAdminCount = inMemoryData.users.filter(u => u.role === 'admin' && u.status === 'active').length;
+      return [{ count: activeAdminCount, total: activeAdminCount }];
+    }
+
+    // Đếm số đơn đặt của một người dùng (kiểm tra trước khi xóa tài khoản)
+    if (normalizedSql.includes('from bookings') && (normalizedSql.includes('user_id =') || normalizedSql.includes('b.user_id ='))) {
+      const userId = parseInt(params[0], 10);
+      const bookingCount = inMemoryData.bookings.filter(b => b.user_id === userId).length;
+      return [{ count: bookingCount, total: bookingCount }];
+    }
+
+    // Thống kê Dashboard tổng quan
+    const totalUsers = inMemoryData.users.filter(u => u.role === 'customer' || u.role === 'user').length;
+    const totalStaff = inMemoryData.users.filter(u => u.role === 'staff').length;
+    const activeStaff = inMemoryData.users.filter(u => u.role === 'staff' && u.status === 'active').length;
     const totalServices = inMemoryData.services.length;
     const totalBookings = inMemoryData.bookings.length;
     const pendingBookings = inMemoryData.bookings.filter(b => b.status === 'pending').length;
     const totalRevenue = inMemoryData.bookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + (b.total_price || 0), 0);
+
     return [{
       total_users: totalUsers,
+      total_staff: totalStaff,
+      active_staff: activeStaff,
       total_services: totalServices,
       total_bookings: totalBookings,
       pending_bookings: pendingBookings,
       total_revenue: totalRevenue,
       totalUsers: totalUsers,
+      totalStaff: totalStaff,
+      activeStaff: activeStaff,
       activeServices: totalServices,
       totalBookings: totalBookings,
       totalRevenue: totalRevenue
@@ -217,14 +343,30 @@ function queryInMemory(sql, params = []) {
   if (normalizedSql.includes('from users') && normalizedSql.includes('where email =')) {
     const email = params[0];
     const user = inMemoryData.users.find(u => u.email.toLowerCase() === (email || '').toLowerCase());
-    return user ? [user] : [];
+    return user ? [{ ...user }] : [];
   }
 
   // 2. SELECT users BY id
   if (normalizedSql.includes('from users') && normalizedSql.includes('where id =')) {
     const id = parseInt(params[0], 10);
     const user = inMemoryData.users.find(u => u.id === id);
-    return user ? [user] : [];
+    return user ? [{ ...user }] : [];
+  }
+
+  // 2a. SELECT staff list
+  if (normalizedSql.includes('from users') && normalizedSql.includes("where role = 'staff'")) {
+    return inMemoryData.users
+      .filter(u => u.role === 'staff')
+      .map(u => ({
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        phone: u.phone,
+        address: u.address,
+        role: u.role,
+        status: u.status || 'active',
+        created_at: u.created_at
+      }));
   }
 
   // 2b. SELECT all users (Admin)
@@ -236,40 +378,60 @@ function queryInMemory(sql, params = []) {
       phone: u.phone,
       address: u.address,
       role: u.role,
+      status: u.status || 'active',
       created_at: u.created_at
     }));
   }
 
   // 3. INSERT INTO users
   if (normalizedSql.startsWith('insert into users')) {
-    const [name, email, password, phone, address, role] = params;
+    const [name, email, password, phone, address, role, status] = params;
     const newId = inMemoryData.users.length > 0 ? Math.max(...inMemoryData.users.map(u => u.id)) + 1 : 1;
     const newUser = {
       id: newId,
-      name,
-      email,
+      name: name ? name.trim() : '',
+      email: email ? email.trim().toLowerCase() : '',
       password,
       phone: phone || '',
       address: address || '',
-      role: role || 'user',
+      role: role || 'customer',
+      status: status || 'active',
       created_at: new Date()
     };
     inMemoryData.users.push(newUser);
     return { insertId: newId, affectedRows: 1 };
   }
 
-  // 4. UPDATE users
+  // 4. UPDATE users (Status / Role / Info / Password)
   if (normalizedSql.startsWith('update users')) {
     const id = parseInt(params[params.length - 1], 10);
     const user = inMemoryData.users.find(u => u.id === id);
     if (user) {
-      if (params.length === 4) { // name, phone, address, id
+      if (normalizedSql.includes('status = ?')) {
+        user.status = params[0];
+      }
+      if (normalizedSql.includes('role = ?')) {
+        user.role = params[0];
+      }
+      if (normalizedSql.includes('password = ?')) {
+        user.password = params[0];
+      }
+      if (normalizedSql.includes('name = ?') && normalizedSql.includes('phone = ?')) {
         user.name = params[0];
         user.phone = params[1];
         user.address = params[2];
-      } else if (params.length === 2 && normalizedSql.includes('password =')) { // password, id
-        user.password = params[0];
       }
+      return { affectedRows: 1 };
+    }
+    return { affectedRows: 0 };
+  }
+
+  // 5. DELETE users (Hard delete sau khi qua các tầng kiểm tra an toàn)
+  if (normalizedSql.startsWith('delete from users')) {
+    const id = parseInt(params[0], 10);
+    const idx = inMemoryData.users.findIndex(u => u.id === id);
+    if (idx !== -1) {
+      inMemoryData.users.splice(idx, 1);
       return { affectedRows: 1 };
     }
     return { affectedRows: 0 };
@@ -340,24 +502,62 @@ function queryInMemory(sql, params = []) {
 
   // 7. SELECT bookings
   if (normalizedSql.includes('from bookings')) {
+    // 7a. Lọc đơn theo nhân viên được phân công (Staff Portal)
+    if (normalizedSql.includes('where b.staff_id =') || normalizedSql.includes('where staff_id =')) {
+      const staffId = parseInt(params[0], 10);
+      return inMemoryData.bookings
+        .filter(b => b.staff_id === staffId)
+        .map(b => {
+          const user = inMemoryData.users.find(u => u.id === b.user_id);
+          return {
+            ...b,
+            customer_name: user ? user.name : 'Khách hàng',
+            customer_phone: user ? user.phone : b.phone,
+            customer_email: user ? user.email : ''
+          };
+        })
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    }
+
+    // 7b. Lọc đơn theo khách hàng đặt
     if (normalizedSql.includes('where b.user_id =') || normalizedSql.includes('where user_id =')) {
       const userId = parseInt(params[0], 10);
       return inMemoryData.bookings
         .filter(b => b.user_id === userId)
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
+
+    // 7c. Chi tiết một đơn
     if (normalizedSql.includes('where b.id =') || normalizedSql.includes('where id =')) {
       const id = parseInt(params[0], 10);
       const b = inMemoryData.bookings.find(item => item.id === id);
-      return b ? [b] : [];
+      if (!b) return [];
+      const user = inMemoryData.users.find(u => u.id === b.user_id);
+      const staff = inMemoryData.users.find(u => u.id === b.staff_id);
+      return [{
+        ...b,
+        user_name: user ? user.name : 'Khách hàng',
+        user_email: user ? user.email : '',
+        customer_name: user ? user.name : 'Khách hàng',
+        customer_phone: user ? user.phone : b.phone,
+        customer_email: user ? user.email : '',
+        staff_name: staff ? staff.name : (b.staff_name || 'Chưa phân công'),
+        staff_phone: staff ? staff.phone : ''
+      }];
     }
-    // All bookings for Admin
+
+    // 7d. Toàn bộ đơn cho Admin
     return inMemoryData.bookings.map(b => {
       const user = inMemoryData.users.find(u => u.id === b.user_id);
+      const staff = inMemoryData.users.find(u => u.id === b.staff_id);
       return {
         ...b,
         user_name: user ? user.name : 'Khách hàng',
-        user_email: user ? user.email : ''
+        user_email: user ? user.email : '',
+        customer_name: user ? user.name : 'Khách hàng',
+        customer_phone: user ? user.phone : b.phone,
+        staff_name: staff ? staff.name : (b.staff_name || 'Chưa phân công'),
+        staff_phone: staff ? staff.phone : ''
       };
     }).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
@@ -386,23 +586,69 @@ function queryInMemory(sql, params = []) {
       payment_method: payment_method || 'cash',
       payment_status: 'unpaid',
       status: 'pending',
+      staff_id: null,
+      staff_name: null,
+      staff_notes: null,
+      assigned_at: null,
       created_at: new Date()
     };
     inMemoryData.bookings.unshift(newBooking);
     return { insertId: newId, affectedRows: 1 };
   }
 
-  // 9. UPDATE bookings (status, etc.)
+  // 9. UPDATE bookings (Trạng thái / Phân công nhân viên / Ghi chú công việc)
   if (normalizedSql.startsWith('update bookings')) {
+    if (normalizedSql.includes('where id = ? and staff_id = ?')) {
+      const status = params[0];
+      const staff_notes = params[1];
+      const id = parseInt(params[2], 10);
+      const staffId = parseInt(params[3], 10);
+      const booking = inMemoryData.bookings.find(b => b.id === id && b.staff_id === staffId);
+      if (booking) {
+        booking.status = status;
+        if (staff_notes !== undefined) booking.staff_notes = staff_notes;
+        return { affectedRows: 1 };
+      }
+      return { affectedRows: 0 };
+    }
+
     const id = parseInt(params[params.length - 1], 10);
     const booking = inMemoryData.bookings.find(b => b.id === id);
     if (booking) {
+      if (normalizedSql.includes('staff_id = ?')) {
+        booking.staff_id = params[0] ? parseInt(params[0], 10) : null;
+        booking.assigned_at = new Date();
+        const staff = inMemoryData.users.find(u => u.id === booking.staff_id);
+        booking.staff_name = staff ? staff.name : null;
+        if (booking.status === 'pending' && booking.staff_id) {
+          booking.status = 'confirmed';
+        }
+      }
       if (normalizedSql.includes('status = ?')) {
         booking.status = params[0];
+      }
+      if (normalizedSql.includes('staff_notes = ?')) {
+        booking.staff_notes = params[1] || booking.staff_notes;
       }
       return { affectedRows: 1 };
     }
     return { affectedRows: 0 };
+  }
+
+  // 10. INSERT INTO audit_logs (Lưu nhật ký hành động)
+  if (normalizedSql.startsWith('insert into audit_logs')) {
+    const [admin_id, action, target_id, target_type, details] = params;
+    const newId = inMemoryData.audit_logs.length + 1;
+    inMemoryData.audit_logs.push({
+      id: newId,
+      admin_id,
+      action,
+      target_id,
+      target_type: target_type || 'user',
+      details: details || '',
+      created_at: new Date()
+    });
+    return { insertId: newId, affectedRows: 1 };
   }
 
   return [];

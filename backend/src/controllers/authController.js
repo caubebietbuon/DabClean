@@ -102,6 +102,15 @@ const authController = {
         return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không chính xác.' });
       }
 
+      // Kiểm tra trạng thái hoạt động của tài khoản
+      if (user.status === 'inactive' || user.status === 'deactivated') {
+        return res.status(403).json({
+          success: false,
+          code: 'ACCOUNT_DEACTIVATED',
+          message: 'Tài khoản của bạn đã bị vô hiệu hóa bởi Quản trị viên. Vui lòng liên hệ ban quản trị Cleanova.'
+        });
+      }
+
       const token = generateToken(user);
 
       res.json({
@@ -115,7 +124,8 @@ const authController = {
             email: user.email,
             phone: user.phone,
             address: user.address,
-            role: user.role
+            role: user.role,
+            status: user.status || 'active'
           }
         }
       });

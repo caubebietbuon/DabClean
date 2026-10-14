@@ -284,11 +284,7 @@ loginForm.addEventListener("submit", async (event) => {
 
       window.setTimeout(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const user = window.CleanovaAPI.auth.getUser();
-        let defaultRedirect = "trangchu.html";
-        if (user && user.role === "admin") {
-          defaultRedirect = "admin.html";
-        }
+        const defaultRedirect = window.CleanovaAPI.auth.getRedirectUrlByRole();
         const redirectTo = urlParams.get("redirect") || defaultRedirect;
         window.location.href = redirectTo;
       }, 750);

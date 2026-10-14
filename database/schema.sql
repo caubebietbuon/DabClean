@@ -26,15 +26,17 @@ CREATE TABLE users (
   password VARCHAR(255) NOT NULL COMMENT 'Mật khẩu đã mã hóa bằng bcrypt',
   phone VARCHAR(20) DEFAULT NULL COMMENT 'Số điện thoại liên hệ',
   address VARCHAR(255) DEFAULT NULL COMMENT 'Địa chỉ mặc định',
-  role ENUM('user', 'admin') DEFAULT 'user' COMMENT 'Vai trò: user (khách hàng) hoặc admin (quản trị viên)',
+  role ENUM('customer', 'user', 'staff', 'admin') DEFAULT 'customer' COMMENT 'Vai trò: customer (khách hàng), staff (nhân viên), admin (quản trị viên)',
+  status ENUM('active', 'inactive') DEFAULT 'active' COMMENT 'Trạng thái tài khoản: active (hoạt động), inactive (bị vô hiệu hóa)',
   avatar_url VARCHAR(255) DEFAULT NULL COMMENT 'Đường dẫn ảnh đại diện',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm đăng ký',
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Index cho tìm kiếm nhanh theo email và role
+-- Index cho tìm kiếm nhanh theo email, role và status
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_status ON users(status);
 
 -- ------------------------------------------------------------
 -- BẢNG 2: services (Danh mục các gói dịch vụ vệ sinh)
@@ -78,13 +80,18 @@ CREATE TABLE bookings (
   payment_method ENUM('cash', 'bank_transfer', 'momo', 'vnpay') DEFAULT 'cash' COMMENT 'Phương thức thanh toán',
   payment_status ENUM('unpaid', 'paid', 'refunded') DEFAULT 'unpaid' COMMENT 'Trạng thái thanh toán',
   status ENUM('pending', 'confirmed', 'in_progress', 'completed', 'cancelled') DEFAULT 'pending' COMMENT 'Trạng thái đơn: pending (chờ duyệt), confirmed (đã nhận), in_progress (đang làm), completed (hoàn thành), cancelled (đã hủy)',
+  staff_id INT DEFAULT NULL COMMENT 'Khóa ngoại liên kết tới nhân viên được phân công làm việc',
+  assigned_at TIMESTAMP NULL DEFAULT NULL COMMENT 'Thời điểm phân công nhân viên',
+  staff_notes TEXT DEFAULT NULL COMMENT 'Ghi chú công việc của nhân viên thực hiện',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_bookings_staff FOREIGN KEY (staff_id) REFERENCES users(id) ON DELETE SET NULL,
   CONSTRAINT fk_bookings_service FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE INDEX idx_bookings_user ON bookings(user_id);
+CREATE INDEX idx_bookings_staff ON bookings(staff_id);
 CREATE INDEX idx_bookings_service ON bookings(service_id);
 CREATE INDEX idx_bookings_status ON bookings(status);
 CREATE INDEX idx_bookings_code ON bookings(booking_code);
@@ -103,4 +110,18 @@ CREATE TABLE reviews (
   CONSTRAINT fk_reviews_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
   CONSTRAINT fk_reviews_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
   CONSTRAINT fk_reviews_service FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 5: audit_logs (Nhật ký thao tác quản trị quan trọng)
+-- ------------------------------------------------------------
+CREATE TABLE audit_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  admin_id INT NOT NULL COMMENT 'ID của Quản trị viên thực hiện thao tác',
+  action VARCHAR(100) NOT NULL COMMENT 'Loại hành động: DEACTIVATE_USER, ACTIVATE_USER, DELETE_USER, ASSIGN_STAFF, UPDATE_ROLE...',
+  target_id INT DEFAULT NULL COMMENT 'ID đối tượng chịu tác động',
+  target_type VARCHAR(50) DEFAULT 'user' COMMENT 'Loại đối tượng (user, booking, service)',
+  details TEXT DEFAULT NULL COMMENT 'Mô tả chi tiết hành động (không lưu mật khẩu/token)',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_audit_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

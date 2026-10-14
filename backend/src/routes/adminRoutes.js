@@ -4,27 +4,38 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
+const serviceController = require('../controllers/serviceController');
 const { verifyToken, adminRequired } = require('../middleware/authMiddleware');
 
 // Tất cả các route admin đều yêu cầu đăng nhập và có quyền role = 'admin'
 router.use(verifyToken, adminRequired);
 
-// Thống kê Dashboard
+// 1. Thống kê Dashboard
 router.get('/stats', adminController.getStats);
 
-// Quản lý đơn đặt lịch
+// 2. Quản lý đơn đặt lịch & phân công nhân viên
 router.get('/bookings', adminController.getAllBookings);
 router.put('/bookings/:id/status', adminController.updateBookingStatus);
+router.put('/bookings/:id/assign', adminController.assignBookingStaff);
 
-const serviceController = require('../controllers/serviceController');
-
-// Quản lý dịch vụ
+// 3. Quản lý dịch vụ vệ sinh
 router.get('/services', serviceController.getAllServices);
 router.post('/services', adminController.createService);
 router.put('/services/:id', adminController.updateService);
 router.delete('/services/:id', adminController.deleteService);
 
-// Quản lý người dùng
+// 4. Quản lý tài khoản người dùng (RBAC)
 router.get('/users', adminController.getAllUsers);
+router.get('/users/:id', adminController.getUserDetail);
+router.patch('/users/:id', adminController.updateUser);
+router.put('/users/:id', adminController.updateUser);
+router.patch('/users/:id/status', adminController.toggleUserStatus);
+router.delete('/users/:id', adminController.deleteUser);
+
+// 5. Quản lý nhân viên (Staff Management)
+router.get('/staff', adminController.getAllStaff);
+router.post('/staff', adminController.createStaff);
+router.patch('/staff/:id/status', adminController.toggleUserStatus);
+router.get('/staff/:id/tasks', adminController.getStaffTasks);
 
 module.exports = router;

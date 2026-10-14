@@ -24,7 +24,16 @@ const authMiddleware = {
       if (!user) {
         return res.status(401).json({
           success: false,
-          message: 'Tài khoản không tồn tại hoặc đã bị khóa.'
+          message: 'Tài khoản không tồn tại hoặc đã bị xóa.'
+        });
+      }
+
+      // Kiểm tra trạng thái tài khoản: Nếu đã bị vô hiệu hóa bởi Admin, thu hồi quyền ngay lập tức
+      if (user.status === 'inactive' || user.status === 'deactivated') {
+        return res.status(403).json({
+          success: false,
+          code: 'ACCOUNT_DEACTIVATED',
+          message: 'Tài khoản của bạn đã bị vô hiệu hóa bởi Quản trị viên. Phiên làm việc đã bị thu hồi.'
         });
       }
 
@@ -51,6 +60,17 @@ const authMiddleware = {
       return res.status(403).json({
         success: false,
         message: 'Truy cập bị từ chối: Bạn không có quyền quản trị viên (Admin only).'
+      });
+    }
+    next();
+  },
+
+  // Kiểm tra quyền Nhân viên (Staff hoặc Admin)
+  staffRequired(req, res, next) {
+    if (!req.user || (req.user.role !== 'staff' && req.user.role !== 'admin')) {
+      return res.status(403).json({
+        success: false,
+        message: 'Truy cập bị từ chối: Khu vực này chỉ dành riêng cho Nhân viên Cleanova.'
       });
     }
     next();

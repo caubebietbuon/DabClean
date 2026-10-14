@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cổng Thông Tin Nhân Viên · Cleanova Staff Portal</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="api.js"></script>
+  <style>
+    /* Staff Workspace Layout */
+    .staff-navbar {
+      background: var(--color-white);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: var(--shadow-xs);
+    }
+    .staff-navbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+    }
+    .staff-badge {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border: 1px solid #BFDBFE;
+      margin-left: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Stats Grid */
+    .staff-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-lg);
+      margin-bottom: var(--space-2xl);
+    }
+    @media (max-width: 992px) {
+      .staff-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 576px) {
+      .staff-stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .staff-stat-card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .staff-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .staff-stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: #3B82F6;
+    }
+    .staff-stat-card.total::before { background: #3B82F6; }
+    .staff-stat-card.pending::before { background: #F59E0B; }
+    .staff-stat-card.doing::before { background: #8B5CF6; }
+    .staff-stat-card.done::before { background: #10B981; }
+
+    .stat-label {
+      font-size: var(--font-size-xs);
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--space-xs);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stat-number {
+      font-size: var(--font-size-3xl);
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1.1;
+    }
+    .stat-subtext {
+      font-size: 12px;
+      color: var(--color-text-tertiary);
+      margin-top: 6px;
+    }
+
+    /* Staff Navigation Tabs */
+    .staff-tabs {
+      display: flex;
+      gap: var(--space-xs);
+      border-bottom: 2px solid var(--color-border);
+      margin-bottom: var(--space-xl);
+      overflow-x: auto;
+    }
+    .staff-tab-btn {
+      padding: 12px 22px;
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      color: var(--color-text-secondary);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition-fast);
+      margin-bottom: -2px;
+      white-space: nowrap;
+    }
+    .staff-tab-btn:hover {
+      color: #2563EB;
+    }
+    .staff-tab-btn.active {
+      color: #1D4ED8;
+      border-bottom-color: #2563EB;
+      background: #EFF6FF;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    /* Task Card Design */
+    .task-cards-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+    .task-card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-base);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      position: relative;
+    }
+    .task-card:hover {
+      border-color: #93C5FD;
+      box-shadow: var(--shadow-md);
+    }
+    .task-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      border-bottom: 1px dashed var(--color-border);
+      padding-bottom: var(--space-md);
+    }
+    .task-code {
+      font-family: monospace;
+      font-weight: 800;
+      color: #1E40AF;
+      font-size: var(--font-size-md);
+      background: #EFF6FF;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      display: inline-block;
+    }
+    .task-service-title {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .task-info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+    }
+    @media (max-width: 768px) {
+      .task-info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .task-info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .task-info-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      letter-spacing: 0.5px;
+    }
+    .task-info-val {
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    .task-customer-box {
+      background: #F8FAFC;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    .customer-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .customer-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      background: #E2E8F0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .task-notes-box {
+      background: #FEF3C7;
+      border-left: 3px solid #F59E0B;
+      padding: 10px 14px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 13px;
+      color: #92400E;
+    }
+    .task-staff-notes {
+      background: #EFF6FF;
+      border-left: 3px solid #3B82F6;
+      padding: 10px 14px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 13px;
+      color: #1E40AF;
+    }
+    .task-actions-bar {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--color-border);
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      animation: fadeIn 0.2s ease-out;
+    }
+    .modal-box {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--color-border);
+    }
+    .modal-header {
+      padding: var(--space-lg) var(--space-xl);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title {
+      font-size: var(--font-size-xl);
+      font-weight: 800;
+      color: var(--color-text);
+      margin: 0;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--color-text-tertiary);
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      border-radius: var(--radius-sm);
+      transition: color var(--transition-fast);
+    }
+    .modal-close:hover {
+      color: var(--color-text);
+    }
+
+    /* Timeline component */
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+      border-left: 2px solid #E2E8F0;
+      margin: var(--space-md) 0;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+    .timeline-dot {
+      position: absolute;
+      left: -31px;
+      top: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #3B82F6;
+      border: 2px solid var(--color-white);
+      box-shadow: 0 0 0 2px #93C5FD;
+    }
+
+    /* Status workflow badge */
+    .status-confirmed { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .status-in_progress { background: #EDE9FE; color: #6D28D9; border: 1px solid #C4B5FD; }
+    .status-completed { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+    .status-cancelled { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       THANH ĐIỀU HƯỚNG NHÂN VIÊN (STAFF NAVBAR)
+       ============================================================ -->
+  <header class="staff-navbar">
+    <div class="container">
+      <div class="staff-navbar-inner">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <a href="staff.html" class="logo" style="text-decoration: none;">
+            <svg viewBox="0 0 36 36" fill="none" style="width:32px; height:32px;" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563EB" opacity="0.15"/>
+              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563EB" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#2563EB"/>
+            </svg>
+            <span class="logo-text" style="color:#1D4ED8;">Cleanova</span>
+          </a>
+          <span class="staff-badge">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Nhân viên
+          </span>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: var(--space-md);">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #EFF6FF; border: 1.5px solid #BFDBFE; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #1D4ED8;" id="staff-avatar-initials">
+              NV
+            </div>
+            <div style="line-height: 1.2;">
+              <div style="font-size: 13px; font-weight: 700; color: var(--color-text);" id="staff-name-display">Đang tải...</div>
+              <div style="font-size: 11px; color: var(--color-text-tertiary);" id="staff-email-display">staff@cleanova.vn</div>
+            </div>
+          </div>
+
+          <a href="trangchu.html" class="btn btn-ghost btn-sm" style="display: inline-flex; align-items: center; gap: 4px;">
+            🏠 Xem Trang Chủ
+          </a>
+          <button type="button" class="btn btn-outline btn-sm" id="btn-staff-logout" style="border-color: #FECACA; color: #DC2626;">
+            🚪 Đăng xuất
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       NỘI DUNG CHÍNH (MAIN WRAPPER)
+       ============================================================ -->
+  <main class="page-wrapper" style="padding-top: var(--space-xl); background: #F8FAFC;">
+    <div class="container">
+
+      <!-- Thông báo hệ thống Toast/Alert -->
+      <div id="staff-alert" class="alert" style="display: none; margin-bottom: var(--space-lg);"></div>
+
+      <!-- Tiêu đề trang & Lời chào nhân viên -->
+      <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-xl);">
+        <div>
+          <h1 class="page-title" style="font-size: 26px;">Khu Vực Làm Việc Nhân Viên</h1>
+          <p class="page-subtitle">Quản lý các công việc vệ sinh được phân công, cập nhật tiến độ và thông tin khách hàng.</p>
+        </div>
+        <div style="display: flex; gap: var(--space-sm);">
+          <button type="button" class="btn btn-outline btn-sm" id="btn-refresh-tasks" style="background: var(--color-white);">
+            🔄 Làm mới danh sách
+          </button>
+        </div>
+      </div>
+
+      <!-- Thống kê nhanh công việc (Staff Stats) -->
+      <div class="staff-stats-grid">
+        <div class="staff-stat-card total">
+          <div class="stat-label">
+            <span>Tổng việc được giao</span>
+            <span>💼</span>
+          </div>
+          <div class="stat-number" id="stat-total">0</div>
+          <div class="stat-subtext">Toàn bộ công việc phụ trách</div>
+        </div>
+        <div class="staff-stat-card pending">
+          <div class="stat-label">
+            <span>Chờ tiếp nhận</span>
+            <span>⏳</span>
+          </div>
+          <div class="stat-number" id="stat-assigned" style="color: #D97706;">0</div>
+          <div class="stat-subtext">Đã phân công, chờ làm việc</div>
+        </div>
+        <div class="staff-stat-card doing">
+          <div class="stat-label">
+            <span>Đang thực hiện</span>
+            <span>🧹</span>
+          </div>
+          <div class="stat-number" id="stat-doing" style="color: #7C3AED;">0</div>
+          <div class="stat-subtext">Đang có mặt tại nhà khách</div>
+        </div>
+        <div class="staff-stat-card done">
+          <div class="stat-label">
+            <span>Đã hoàn thành</span>
+            <span>✅</span>
+          </div>
+          <div class="stat-number" id="stat-completed" style="color: #059669;">0</div>
+          <div class="stat-subtext">Hoàn tất kiểm tra và bàn giao</div>
+        </div>
+      </div>
+
+      <!-- Tabs điều hướng -->
+      <div class="staff-tabs">
+        <button type="button" class="staff-tab-btn active" data-tab="tab-tasks">
+          📋 Công Việc Của Tôi (<span id="tab-tasks-count">0</span>)
+        </button>
+        <button type="button" class="staff-tab-btn" data-tab="tab-schedule">
+          📅 Lịch Trình Sắp Tới
+        </button>
+        <button type="button" class="staff-tab-btn" data-tab="tab-profile">
+          👤 Hồ Sơ & Bảo Mật
+        </button>
+      </div>
+
+      <!-- ============================================================
+           TAB 1: DANH SÁCH CÔNG VIỆC CỦA TÔI
+           ============================================================ -->
+      <div class="tab-pane" id="tab-tasks" style="display: block;">
+        <!-- Bộ lọc & Tìm kiếm -->
+        <div class="card" style="margin-bottom: var(--space-lg); padding: var(--space-md) var(--space-xl);">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--color-text-secondary);">Lọc theo trạng thái:</span>
+              <button type="button" class="btn btn-sm btn-filter-status active" data-status="all" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Tất cả</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="confirmed" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Chờ làm</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="in_progress" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Đang làm</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="completed" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Đã xong</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="cancelled" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Sự cố/Hủy</button>
+            </div>
+
+            <div style="min-width: 260px;">
+              <input type="text" id="staff-search-input" class="form-control" placeholder="🔍 Tìm mã đơn, khách hàng, địa chỉ..." style="padding: 8px 14px; font-size: 13px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh sách thẻ công việc -->
+        <div id="tasks-container" class="task-cards-list">
+          <div class="card" style="text-align: center; padding: var(--space-3xl);">
+            <div style="font-size: 40px; margin-bottom: var(--space-sm);">⏳</div>
+            <div style="font-weight: 700; color: var(--color-text);">Đang tải danh sách công việc...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           TAB 2: LỊCH TRÌNH LÀM VIỆC SẮP TỚI
+           ============================================================ -->
+      <div class="tab-pane" id="tab-schedule" style="display: none;">
+        <div class="card" style="margin-bottom: var(--space-lg);">
+          <h2 style="font-size: 18px; font-weight: 800; margin-bottom: var(--space-xs); color: var(--color-text);">📅 Lịch Trình Công Tác Sắp Tới</h2>
+          <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: var(--space-lg);">Các công việc được sắp xếp theo trình tự ngày và giờ phục vụ để bạn chủ động lộ trình di chuyển.</p>
+          
+          <div id="schedule-timeline" class="timeline">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Quy tắc an toàn & Checklist dịch vụ -->
+        <div class="card" style="background: #F8FAFC; border: 1px dashed var(--color-border);">
+          <h3 style="font-size: 15px; font-weight: 700; color: #1E40AF; margin-bottom: 8px;">🛡️ Quy Chuẩn Nghiệp Vụ Vệ Sinh Cleanova 5 Sao</h3>
+          <ul style="font-size: 13px; color: var(--color-text-secondary); line-height: 1.8; margin-left: 20px; list-style-type: disc;">
+            <li>Đến trước điểm hẹn từ 10 - 15 phút, trang phục Cleanova gọn gàng và mang thẻ đối tác.</li>
+            <li>Kiểm tra tình trạng tài sản và thông báo trước với gia chủ trước khi bắt đầu lau dọn các thiết bị giá trị.</li>
+            <li>Sử dụng dung dịch tẩy rửa sinh học an toàn do Cleanova cấp phát, phân loại khăn lau theo màu chuẩn phòng khách/bếp/toilet.</li>
+            <li>Sau khi hoàn thành, mời khách hàng nghiệm thu trực tiếp và nhấn nút <strong>Hoàn thành</strong> trên ứng dụng.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           TAB 3: HỒ SƠ NHÂN VIÊN & ĐỔI MẬT KHẨU
+           ============================================================ -->
+      <div class="tab-pane" id="tab-profile" style="display: none;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-xl);">
+          
+          <!-- Thông tin cá nhân -->
+          <div class="card">
+            <h2 style="font-size: 18px; font-weight: 800; margin-bottom: var(--space-xs); color: var(--color-text);">👤 Thông Tin Cá Nhân</h2>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: var(--space-lg);">Cập nhật số điện thoại và địa chỉ thường trú để điều phối viên dễ dàng liên hệ.</p>
+
+            <form id="form-staff-profile">
+              <div class="form-group" style="margin-bottom: var(--space-md);">
+                <label class="form-label">Họ và tên</label>
+                <input type="text" id="prof-name" class="form-control" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom: var(--space-md);">
+                <label class="form-label">Email đăng nhập (Cố định)</label>
+                <input type="email" id="prof-email" class="form-control" disabled style="background: #F1F5F9; color: #64748B;">
+              </div>
+
+              <div class="form-group" style="margin-bottom: var(--space-md);">
+                <label class="form-label">Số điện thoại liên lạc</label>
+                <input type="tel" id="prof-phone" class="form-control" placeholder="VD: 0912345678">
+              </div>
+
+              <div class="form-group" style="margin-bottom: var(--space-md);">
+                <label class="form-label">Địa chỉ làm việc / thường trú</label>
+                <input type="text" id="prof-address" class="form-control" placeholder="VD: Cầu Giấy, Hà Nội">
+              </div>
+
+              <div style="display: flex; gap: var(--space-md); margin-bottom: var(--space-md);">
+                <div style="flex: 1;">
+                  <label class="form-label">Vai trò</label>
+                  <div style="padding: 10px 14px; background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-md); font-weight: 700; color: #1D4ED8; font-size: 13px;">
+                    Nhân viên dịch vụ (Staff)
+                  </div>
+                </div>
+                <div style="flex: 1;">
+                  <label class="form-label">Trạng thái tài khoản</label>
+                  <div style="padding: 10px 14px; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: var(--radius-md); font-weight: 700; color: #065F46; font-size: 13px;" id="prof-status-display">
+                    Hoạt động
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="btn-save-profile" style="width: 100%;">
+                💾 Lưu Thông Tin Cá Nhân
+              </button>
+            </form>
+          </div>
+
+          <!-- Đổi mật khẩu an toàn -->
+          <div class="card">
+            <h2 style="font-size: 18px; font-weight: 800; margin-bottom: var(--space-xs); color: var(--color-text);">🔒 Đổi Mật Khẩu An Toàn</h2>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: var(--space-lg);">Bảo vệ tài khoản nhân viên của bạn bằng mật khẩu mạnh (tối thiểu 8 ký tự).</p>
+
+            <form id="form-staff-password">
+              <div class="form-group" style="margin-bottom: var(--space-md);">
+                <label class="form-label">Mật khẩu hiện tại</label>
+                <input type="password" id="pwd-current" class="form-control" required placeholder="Nhập mật khẩu hiện tại">
+              </div>
+
+              <div class="form-group" style="margin-bottom: var(--space-md);">
+                <label class="form-label">Mật khẩu mới</label>
+                <input type="password" id="pwd-new" class="form-control" minlength="8" required placeholder="Tối thiểu 8 ký tự">
+              </div>
+
+              <div class="form-group" style="margin-bottom: var(--space-lg);">
+                <label class="form-label">Xác nhận mật khẩu mới</label>
+                <input type="password" id="pwd-confirm" class="form-control" minlength="8" required placeholder="Nhập lại mật khẩu mới">
+              </div>
+
+              <button type="submit" class="btn btn-outline" id="btn-save-password" style="width: 100%; border-color: #3B82F6; color: #1D4ED8;">
+                🔑 Cập Nhật Mật Khẩu
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       MODAL: CHI TIẾT & CẬP NHẬT TIẾN ĐỘ CÔNG VIỆC
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-task-detail" style="display: none;">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-task-title">Chi tiết công việc</h3>
+        <button class="modal-close" data-close="modal-task-detail">&times;</button>
+      </div>
+
+      <div style="padding: var(--space-xl);">
+        <!-- Chi tiết tóm tắt đơn -->
+        <div id="modal-task-content" style="margin-bottom: var(--space-xl);">
+          <!-- Dynamic rendering -->
+        </div>
+
+        <!-- Form cập nhật tiến độ công việc -->
+        <form id="form-update-task-status" style="border-top: 1px dashed var(--color-border); padding-top: var(--space-lg);">
+          <input type="hidden" id="task-modal-id">
+          
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label" style="font-weight: 700;">Cập nhật trạng thái công việc:</label>
+            <select id="task-modal-status-select" class="form-control" style="font-weight: 600;">
+              <option value="confirmed">⏳ Chờ làm việc (Đã tiếp nhận đơn)</option>
+              <option value="in_progress">🧹 Đang thực hiện vệ sinh</option>
+              <option value="completed">✅ Đã hoàn thành công việc</option>
+              <option value="cancelled">⚠️ Báo sự cố / Không thể thực hiện</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-lg);">
+            <label class="form-label" style="font-weight: 700;">Ghi chú / Báo cáo của nhân viên:</label>
+            <textarea id="task-modal-staff-notes" class="form-control" rows="3" placeholder="Nhập tình trạng công việc, ghi chú bàn giao hoặc lý do nếu có sự cố..."></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+            <button type="button" class="btn btn-ghost" data-close="modal-task-detail">Đóng</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-task-status">
+              💾 Cập Nhật Tiến Độ
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       JAVASCRIPT LOGIC DÀNH RIÊNG CHO STAFF PORTAL
+       ============================================================ -->
+  <script>
+    'use strict';
+
+    document.addEventListener('DOMContentLoaded', async function () {
+      // 1. Kiểm tra xác thực & Phân quyền bảo mật nghiêm ngặt
+      if (!window.CleanovaAPI || !CleanovaAPI.auth.isLoggedIn()) {
+        alert('Vui lòng đăng nhập với tài khoản Nhân viên để truy cập không gian làm việc.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const currentUser = CleanovaAPI.auth.getUser();
+      if (!currentUser || (currentUser.role !== 'staff' && currentUser.role !== 'admin')) {
+        alert('Truy cập bị từ chối: Khu vực này chỉ dành riêng cho Nhân viên Cleanova.');
+        window.location.href = CleanovaAPI.auth.getRedirectUrlByRole();
+        return;
+      }
+
+      // Hiển thị thông tin nhân viên trên Header
+      document.getElementById('staff-name-display').textContent = currentUser.name || currentUser.email;
+      document.getElementById('staff-email-display').textContent = currentUser.email;
+      const initials = (currentUser.name || 'Staff')
+        .split(' ')
+        .filter(Boolean)
+        .map(w => w[0].toUpperCase())
+        .slice(-2)
+        .join('');
+      document.getElementById('staff-avatar-initials').textContent = initials || 'NV';
+
+      // Xử lý Đăng xuất
+      document.getElementById('btn-staff-logout').addEventListener('click', () => {
+        if (confirm('Bạn có chắc chắn muốn đăng xuất khỏi cổng nhân viên không?')) {
+          CleanovaAPI.auth.logout();
+        }
+      });
+
+      // Utility Alert
+      const alertBox = document.getElementById('staff-alert');
+      function showAlert(type, message) {
+        alertBox.className = `alert alert-${type}`;
+        alertBox.textContent = message;
+        alertBox.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => { alertBox.style.display = 'none'; }, 6000);
+      }
+
+      // Xử lý Tabs
+      const tabBtns = document.querySelectorAll('.staff-tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabPanes.forEach(p => p.style.display = 'none');
+          this.classList.add('active');
+          const target = document.getElementById(this.dataset.tab);
+          if (target) target.style.display = 'block';
+        });
+      });
+
+      // Close Modals
+      document.querySelectorAll('[data-close]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const m = document.getElementById(this.dataset.close);
+          if (m) m.style.display = 'none';
+        });
+      });
+
+      // Trạng thái cục bộ
+      let myTasksList = [];
+      let currentFilterStatus = 'all';
+
+      // ------------------------------------------------------------
+      // 2. TẢI DANH SÁCH CÔNG VIỆC CỦA NHÂN VIÊN
+      // ------------------------------------------------------------
+      async function loadStaffTasks() {
+        try {
+          const res = await CleanovaAPI.staff.getMyTasks(currentFilterStatus);
+          myTasksList = res.data || [];
+
+          // Cập nhật thống kê
+          const stats = res.stats || {
+            total: myTasksList.length,
+            assigned: 0,
+            in_progress: 0,
+            completed: 0
+          };
+          document.getElementById('stat-total').textContent = stats.total || 0;
+          document.getElementById('stat-assigned').textContent = stats.assigned || 0;
+          document.getElementById('stat-doing').textContent = stats.in_progress || 0;
+          document.getElementById('stat-completed').textContent = stats.completed || 0;
+          document.getElementById('tab-tasks-count').textContent = stats.total || 0;
+
+          renderTasksList(myTasksList);
+          renderScheduleTimeline(myTasksList);
+        } catch (err) {
+          if (err.message && err.message.includes('ACCOUNT_DEACTIVATED')) {
+            alert('Tài khoản của bạn đã bị vô hiệu hóa bởi Quản trị viên. Đang đăng xuất...');
+            CleanovaAPI.auth.logout();
+            return;
+          }
+          showAlert('danger', 'Lỗi tải danh sách công việc: ' + err.message);
+        }
+      }
+
+      function getStatusBadge(status) {
+        switch (status) {
+          case 'confirmed':
+            return '<span class="status-badge status-confirmed">⏳ Chờ làm việc</span>';
+          case 'in_progress':
+            return '<span class="status-badge status-in_progress">🧹 Đang thực hiện</span>';
+          case 'completed':
+            return '<span class="status-badge status-completed">✅ Hoàn thành</span>';
+          case 'cancelled':
+            return '<span class="status-badge status-cancelled">⚠️ Đã hủy/Sự cố</span>';
+          default:
+            return `<span class="status-badge">${status}</span>`;
+        }
+      }
+
+      function formatPriceVND(val) {
+        return Math.round(Number(val) || 0).toLocaleString('vi-VN') + ' đ';
+      }
+
+      // Render các Task Cards
+      function renderTasksList(tasks) {
+        const container = document.getElementById('tasks-container');
+        if (!tasks || tasks.length === 0) {
+          container.innerHTML = `
+            <div class="card" style="text-align: center; padding: var(--space-4xl); background: var(--color-white);">
+              <div style="font-size: 48px; margin-bottom: var(--space-sm);">🎉</div>
+              <div style="font-size: 18px; font-weight: 700; color: var(--color-text); margin-bottom: 6px;">
+                Không có công việc nào trong danh mục này!
+              </div>
+              <p style="font-size: 14px; color: var(--color-text-secondary); max-width: 480px; margin: 0 auto;">
+                Bạn đã hoàn thành hết các công việc được giao hoặc hiện tại chưa có ca dọn vệ sinh nào mới. Hãy kiểm tra lại sau!
+              </p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = tasks.map(task => {
+          const serviceName = task.service_name || 'Dịch vụ dọn vệ sinh';
+          const serviceIcon = task.service_icon || '🧹';
+          const customerName = task.customer_name || 'Khách hàng';
+          const customerPhone = task.phone || task.customer_phone || 'Chưa cung cấp';
+          const customerEmail = task.customer_email || '';
+          const address = task.address || 'Tại nhà khách';
+          const bookingDate = task.booking_date ? new Date(task.booking_date).toLocaleDateString('vi-VN') : 'Linh hoạt';
+          const bookingTime = task.booking_time ? task.booking_time.slice(0, 5) : '08:00';
+          const price = formatPriceVND(task.total_price);
+          const hasCustomerNotes = Boolean(task.notes && task.notes.trim());
+          const hasStaffNotes = Boolean(task.staff_notes && task.staff_notes.trim());
+
+          // Action buttons theo luồng quy trình
+          let quickActionsHtml = '';
+          if (task.status === 'confirmed') {
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="in_progress" style="background: #7C3AED; border-color: #7C3AED;">
+                ▶️ Bắt đầu làm việc
+              </button>
+            `;
+          } else if (task.status === 'in_progress') {
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="completed" style="background: #059669; border-color: #059669;">
+                ✅ Nghiệm thu & Hoàn thành
+              </button>
+            `;
+          }
+
+          return `
+            <div class="task-card" id="task-card-${task.id}">
+              <div class="task-card-header">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="task-code">#${task.booking_code}</span>
+                    <span style="font-size: 12px; color: var(--color-text-tertiary);">Tạo lúc: ${new Date(task.created_at).toLocaleDateString('vi-VN')}</span>
+                  </div>
+                  <div class="task-service-title">
+                    <span>${serviceIcon}</span>
+                    <span>${serviceName}</span>
+                  </div>
+                </div>
+                <div>
+                  ${getStatusBadge(task.status)}
+                </div>
+              </div>
+
+              <!-- Lưới thông tin công việc -->
+              <div class="task-info-grid">
+                <div class="task-info-item">
+                  <span class="task-info-label">📅 Thời gian hẹn</span>
+                  <span class="task-info-val" style="color: #1E40AF;">${bookingTime} · ${bookingDate}</span>
+                </div>
+                <div class="task-info-item">
+                  <span class="task-info-label">📍 Địa chỉ thi công</span>
+                  <span class="task-info-val" title="${address}">
+                    ${address}
+                    <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank" rel="noopener" style="font-size: 12px; color: #2563EB; margin-left: 4px; text-decoration: none;">🗺️ Bản đồ</a>
+                  </span>
+                </div>
+                <div class="task-info-item">
+                  <span class="task-info-label">💵 Giá trị đơn</span>
+                  <span class="task-info-val" style="color: #059669;">${price} (${task.payment_status === 'paid' ? 'Đã thanh toán' : 'Thu tiền mặt'})</span>
+                </div>
+              </div>
+
+              <!-- Hộp thông tin khách hàng -->
+              <div class="task-customer-box">
+                <div class="customer-meta">
+                  <div class="customer-avatar">👤</div>
+                  <div>
+                    <div style="font-weight: 700; font-size: 14px; color: var(--color-text);">${customerName}</div>
+                    <div style="font-size: 12px; color: var(--color-text-tertiary);">${customerEmail}</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: var(--space-xs);">
+                  <a href="tel:${customerPhone.replace(/\s+/g, '')}" class="btn btn-outline btn-sm" style="color: #059669; border-color: #A7F3D0; font-weight: 700; background: #ECFDF5; text-decoration: none;">
+                    📞 Gọi: ${customerPhone}
+                  </a>
+                </div>
+              </div>
+
+              <!-- Ghi chú của khách hàng (nếu có) -->
+              ${hasCustomerNotes ? `
+                <div class="task-notes-box">
+                  <strong>💬 Dặn dò của khách hàng:</strong> "${task.notes}"
+                </div>
+              ` : ''}
+
+              <!-- Báo cáo / Ghi chú của nhân viên đã lưu -->
+              ${hasStaffNotes ? `
+                <div class="task-staff-notes">
+                  <strong>📝 Ghi chú ca trực của bạn:</strong> "${task.staff_notes}"
+                </div>
+              ` : ''}
+
+              <!-- Thanh hành động -->
+              <div class="task-actions-bar">
+                <button type="button" class="btn btn-outline btn-sm btn-open-task-detail" data-id="${task.id}" style="background: var(--color-white);">
+                  📄 Chi tiết & Báo cáo
+                </button>
+                ${quickActionsHtml}
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Gắn sự kiện nút Chi tiết
+        container.querySelectorAll('.btn-open-task-detail').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const taskId = parseInt(this.dataset.id, 10);
+            openTaskDetailModal(taskId);
+          });
+        });
+
+        // Gắn sự kiện nút Thao tác nhanh (Bắt đầu làm / Hoàn thành)
+        container.querySelectorAll('.btn-quick-action').forEach(btn => {
+          btn.addEventListener('click', async function () {
+            const taskId = parseInt(this.dataset.id, 10);
+            const targetStatus = this.dataset.action;
+            const actionText = targetStatus === 'in_progress' ? 'Bắt đầu làm việc' : 'Xác nhận hoàn thành';
+
+            if (confirm(`Bạn có chắc chắn muốn chuyển trạng thái công việc này thành "${actionText}"?`)) {
+              try {
+                await CleanovaAPI.staff.updateTaskStatus(taskId, targetStatus);
+                showAlert('success', `Đã cập nhật trạng thái công việc thành công!`);
+                await loadStaffTasks();
+              } catch (err) {
+                showAlert('danger', 'Lỗi: ' + err.message);
+              }
+            }
+          });
+        });
+      }
+
+      // Render Lịch trình Timeline
+      function renderScheduleTimeline(tasks) {
+        const timeline = document.getElementById('schedule-timeline');
+        // Chỉ lấy công việc chưa hủy, sắp xếp theo ngày
+        const activeTasks = tasks.filter(t => t.status !== 'cancelled');
+        if (activeTasks.length === 0) {
+          timeline.innerHTML = `<div style="color: var(--color-text-secondary); font-size: 13px;">Chưa có lịch trình làm việc sắp tới.</div>`;
+          return;
+        }
+
+        timeline.innerHTML = activeTasks.map(t => {
+          const dateStr = t.booking_date ? new Date(t.booking_date).toLocaleDateString('vi-VN') : 'Linh hoạt';
+          const timeStr = t.booking_time ? t.booking_time.slice(0, 5) : '08:00';
+          return `
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div style="font-weight: 700; color: #1E40AF; font-size: 13px;">${timeStr} - ${dateStr}</div>
+              <div style="font-weight: 600; color: var(--color-text); font-size: 14px;">${t.service_name || 'Vệ sinh'} (#${t.booking_code})</div>
+              <div style="font-size: 12px; color: var(--color-text-secondary);">📍 ${t.address} · Khách hàng: ${t.customer_name || 'Khách hàng'}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // ------------------------------------------------------------
+      // 3. XỬ LÝ MODAL CHI TIẾT CÔNG VIỆC & CẬP NHẬT
+      // ------------------------------------------------------------
+      async function openTaskDetailModal(taskId) {
+        try {
+          const res = await CleanovaAPI.staff.getTaskDetail(taskId);
+          const task = res.data;
+          if (!task) return;
+
+          document.getElementById('task-modal-id').value = task.id;
+          document.getElementById('modal-task-title').textContent = `Công Việc #${task.booking_code}`;
+          document.getElementById('task-modal-status-select').value = task.status;
+          document.getElementById('task-modal-staff-notes').value = task.staff_notes || '';
+
+          const content = document.getElementById('modal-task-content');
+          content.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md);">
+              <div style="font-size: 16px; font-weight: 800; color: var(--color-text);">
+                ${task.service_icon || '🧹'} ${task.service_name || 'Dịch vụ'}
+              </div>
+              <div>${getStatusBadge(task.status)}</div>
+            </div>
+
+            <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-md); margin-bottom: var(--space-md);">
+              <div style="font-size: 12px; font-weight: 700; color: var(--color-text-tertiary); margin-bottom: 6px; text-transform: uppercase;">Thông tin khách hàng & Địa điểm:</div>
+              <div style="font-size: 14px; font-weight: 700; color: var(--color-text);">${task.customer_name || 'Khách hàng'}</div>
+              <div style="font-size: 13px; color: #059669; font-weight: 600; margin-top: 2px;">📞 ${task.phone || task.customer_phone || 'Chưa có SĐT'}</div>
+              <div style="font-size: 13px; color: var(--color-text); margin-top: 2px;">📍 ${task.address}</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); font-size: 13px; margin-bottom: var(--space-md);">
+              <div><strong>Ngày làm:</strong> ${task.booking_date ? new Date(task.booking_date).toLocaleDateString('vi-VN') : 'Hôm nay'}</div>
+              <div><strong>Giờ làm:</strong> ${task.booking_time ? task.booking_time.slice(0, 5) : '08:00'}</div>
+              <div><strong>Quy mô:</strong> ${task.area_size || 'Tiêu chuẩn'}</div>
+              <div><strong>Tần suất:</strong> ${task.frequency || 'Một lần'}</div>
+              <div><strong>Tổng tiền:</strong> <span style="color:#059669; font-weight:700;">${formatPriceVND(task.total_price)}</span></div>
+              <div><strong>Thanh toán:</strong> ${task.payment_status === 'paid' ? 'Đã thu tiền' : 'Thu tiền mặt'}</div>
+            </div>
+
+            ${task.notes ? `
+              <div style="background: #FEF3C7; color: #92400E; padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px;">
+                <strong>Ghi chú của khách:</strong> ${task.notes}
+              </div>
+            ` : ''}
+          `;
+
+          document.getElementById('modal-task-detail').style.display = 'flex';
+        } catch (err) {
+          showAlert('danger', 'Lỗi tải chi tiết: ' + err.message);
+        }
+      }
+
+      // Submit Form cập nhật trạng thái trong Modal
+      document.getElementById('form-update-task-status').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const taskId = parseInt(document.getElementById('task-modal-id').value, 10);
+        const newStatus = document.getElementById('task-modal-status-select').value;
+        const staffNotes = document.getElementById('task-modal-staff-notes').value.trim();
+
+        const submitBtn = document.getElementById('btn-submit-task-status');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang lưu...';
+
+        try {
+          await CleanovaAPI.staff.updateTaskStatus(taskId, newStatus, staffNotes);
+          showAlert('success', 'Đã cập nhật tiến độ công việc thành công!');
+          document.getElementById('modal-task-detail').style.display = 'none';
+          await loadStaffTasks();
+        } catch (err) {
+          alert('Lỗi cập nhật: ' + err.message);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '💾 Cập Nhật Tiến Độ';
+        }
+      });
+
+      // ------------------------------------------------------------
+      // 4. BỘ LỌC TRẠNG THÁI & TÌM KIẾM
+      // ------------------------------------------------------------
+      const filterBtns = document.querySelectorAll('.btn-filter-status');
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', async function () {
+          filterBtns.forEach(b => {
+            b.classList.remove('active', 'btn-primary');
+            b.classList.add('btn-ghost');
+          });
+          this.classList.remove('btn-ghost');
+          this.classList.add('active', 'btn-primary');
+
+          currentFilterStatus = this.dataset.status;
+          await loadStaffTasks();
+        });
+      });
+
+      // Tìm kiếm thời gian thực
+      document.getElementById('staff-search-input').addEventListener('input', function () {
+        const query = this.value.toLowerCase().trim();
+        if (!query) {
+          renderTasksList(myTasksList);
+          return;
+        }
+
+        const filtered = myTasksList.filter(t => {
+          const code = (t.booking_code || '').toLowerCase();
+          const cust = (t.customer_name || '').toLowerCase();
+          const addr = (t.address || '').toLowerCase();
+          const phone = (t.phone || '').toLowerCase();
+          const serv = (t.service_name || '').toLowerCase();
+          return code.includes(query) || cust.includes(query) || addr.includes(query) || phone.includes(query) || serv.includes(query);
+        });
+        renderTasksList(filtered);
+      });
+
+      // Nút làm mới danh sách
+      document.getElementById('btn-refresh-tasks').addEventListener('click', async function () {
+        this.textContent = '🔄 Đang làm mới...';
+        await loadStaffTasks();
+        this.textContent = '🔄 Làm mới danh sách';
+        showAlert('success', 'Đã đồng bộ dữ liệu mới nhất từ máy chủ!');
+      });
+
+      // ------------------------------------------------------------
+      // 5. TẢI VÀ CẬP NHẬT HỒ SƠ NHÂN VIÊN
+      // ------------------------------------------------------------
+      async function loadStaffProfile() {
+        try {
+          const res = await CleanovaAPI.staff.getProfile();
+          const prof = res.data;
+          if (!prof) return;
+
+          document.getElementById('prof-name').value = prof.name || '';
+          document.getElementById('prof-email').value = prof.email || '';
+          document.getElementById('prof-phone').value = prof.phone || '';
+          document.getElementById('prof-address').value = prof.address || '';
+          document.getElementById('prof-status-display').textContent = prof.status === 'active' ? 'Hoạt động' : 'Vô hiệu hóa';
+        } catch (err) {
+          console.error('Lỗi tải hồ sơ:', err);
+        }
+      }
+
+      // Submit Form Hồ sơ
+      document.getElementById('form-staff-profile').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const profileData = {
+          name: document.getElementById('prof-name').value.trim(),
+          phone: document.getElementById('prof-phone').value.trim(),
+          address: document.getElementById('prof-address').value.trim()
+        };
+
+        const saveBtn = document.getElementById('btn-save-profile');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Đang lưu...';
+
+        try {
+          const res = await CleanovaAPI.staff.updateProfile(profileData);
+          showAlert('success', res.message || 'Cập nhật thông tin cá nhân thành công!');
+          // Cập nhật hiển thị tên
+          document.getElementById('staff-name-display').textContent = profileData.name;
+          const user = CleanovaAPI.auth.getUser();
+          if (user) {
+            user.name = profileData.name;
+            user.phone = profileData.phone;
+            user.address = profileData.address;
+            localStorage.setItem('cleanova_user', JSON.stringify(user));
+          }
+        } catch (err) {
+          alert('Lỗi cập nhật: ' + err.message);
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 Lưu Thông Tin Cá Nhân';
+        }
+      });
+
+      // Submit Form Đổi Mật Khẩu
+      document.getElementById('form-staff-password').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const currentPassword = document.getElementById('pwd-current').value;
+        const newPassword = document.getElementById('pwd-new').value;
+        const confirmPassword = document.getElementById('pwd-confirm').value;
+
+        if (newPassword !== confirmPassword) {
+          alert('Mật khẩu mới và xác nhận mật khẩu không trùng khớp!');
+          return;
+        }
+
+        if (newPassword.length < 8) {
+          alert('Mật khẩu mới phải có tối thiểu 8 ký tự!');
+          return;
+        }
+
+        const pwdBtn = document.getElementById('btn-save-password');
+        pwdBtn.disabled = true;
+        pwdBtn.textContent = 'Đang xử lý...';
+
+        try {
+          const res = await CleanovaAPI.staff.changePassword({ currentPassword, newPassword });
+          showAlert('success', res.message || 'Đổi mật khẩu thành công!');
+          document.getElementById('form-staff-password').reset();
+        } catch (err) {
+          alert('Lỗi: ' + err.message);
+        } finally {
+          pwdBtn.disabled = false;
+          pwdBtn.textContent = '🔑 Cập Nhật Mật Khẩu';
+        }
+      });
+
+      // Khởi chạy nạp dữ liệu ban đầu
+      await loadStaffTasks();
+      await loadStaffProfile();
+    });
+  </script>
+</body>
+</html>

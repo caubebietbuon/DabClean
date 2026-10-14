@@ -520,6 +520,7 @@ function initAuthStatus() {
 
   const displayName = user ? (user.name || user.email) : (sessionStorage.getItem('cleanova_user_email') || 'demo@nova.app');
   const isAdmin = (api && api.auth) ? api.auth.isAdmin() : (user && user.role === 'admin');
+  const isStaff = (api && api.auth) ? (user && user.role === 'staff') : (user && user.role === 'staff');
 
   const userProfileHeader = document.getElementById('user-profile-header');
   const userEmailHeader = document.getElementById('user-email-header');
@@ -527,6 +528,8 @@ function initAuthStatus() {
   const btnLoginHeader = document.getElementById('btn-login-header');
   const navLinkAdmin = document.getElementById('nav-link-admin');
   const mobileLinkAdmin = document.getElementById('mobile-link-admin');
+  const navLinkStaff = document.getElementById('nav-link-staff');
+  const mobileLinkStaff = document.getElementById('mobile-link-staff');
 
   const userProfileMobile = document.getElementById('user-profile-mobile');
   const userEmailMobile = document.getElementById('user-email-mobile');
@@ -551,6 +554,12 @@ function initAuthStatus() {
       if (navLinkAdmin) navLinkAdmin.style.display = 'inline-block';
       if (mobileLinkAdmin) mobileLinkAdmin.style.display = 'block';
     }
+
+    // Phân quyền: Hiển thị tab Nhân viên nếu là staff
+    if (isStaff) {
+      if (navLinkStaff) navLinkStaff.style.display = 'inline-block';
+      if (mobileLinkStaff) mobileLinkStaff.style.display = 'block';
+    }
   } else {
     // Nếu chưa đăng nhập (hoặc preview)
     if (userProfileHeader) userProfileHeader.style.display = 'none';
@@ -563,6 +572,8 @@ function initAuthStatus() {
 
     if (navLinkAdmin) navLinkAdmin.style.display = 'none';
     if (mobileLinkAdmin) mobileLinkAdmin.style.display = 'none';
+    if (navLinkStaff) navLinkStaff.style.display = 'none';
+    if (mobileLinkStaff) mobileLinkStaff.style.display = 'none';
   }
 
   // Xử lý sự kiện Đăng xuất

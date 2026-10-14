@@ -71,7 +71,7 @@
     .stat-card.revenue::before { background: #10B981; }
     .stat-card.bookings::before { background: #3B82F6; }
     .stat-card.users::before { background: #8B5CF6; }
-    .stat-card.services::before { background: #F59E0B; }
+    .stat-card.staff::before { background: #F59E0B; }
     .stat-title {
       font-size: var(--font-size-xs);
       font-weight: 700;
@@ -97,6 +97,7 @@
       gap: var(--space-xs);
       border-bottom: 2px solid var(--color-border);
       margin-bottom: var(--space-xl);
+      overflow-x: auto;
     }
     .admin-tab-btn {
       padding: 12px 20px;
@@ -112,6 +113,7 @@
       gap: 8px;
       transition: all var(--transition-fast);
       margin-bottom: -2px;
+      white-space: nowrap;
     }
     .admin-tab-btn:hover {
       color: var(--color-primary);
@@ -123,7 +125,33 @@
       border-radius: var(--radius-md) var(--radius-md) 0 0;
     }
 
-    .status-select {
+    .table-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
+    }
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 6px 14px;
+      min-width: 280px;
+    }
+    .search-input-wrap input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: var(--font-size-sm);
+      font-family: inherit;
+    }
+
+    .status-select, .staff-select {
       padding: 6px 10px;
       font-size: 12px;
       font-weight: 600;
@@ -133,359 +161,553 @@
       cursor: pointer;
       outline: none;
     }
-    .status-select:focus {
+    .status-select:focus, .staff-select:focus {
       border-color: var(--color-primary);
+    }
+
+    /* Badges */
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .role-admin { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .role-staff { background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD; }
+    .role-customer { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+
+    .user-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .status-active { background: #ECFDF5; color: #065F46; }
+    .status-inactive { background: #FEE2E2; color: #991B1B; }
+
+    /* Staff cards grid */
+    .staff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: var(--space-lg);
+    }
+    .staff-card {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--transition-fast);
+    }
+    .staff-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    /* Pagination */
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--color-border);
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
     }
   </style>
 </head>
-<body style="background: var(--color-bg-alt);">
+<body>
 
-  <!-- Admin Navbar -->
-  <header class="admin-navbar">
+  <!-- Top Navbar Quản trị viên -->
+  <header class="admin-navbar" role="banner">
     <div class="container">
       <div class="admin-navbar-inner">
         <div style="display: flex; align-items: center; gap: var(--space-md);">
-          <a href="trangchu.html" class="logo">
-            <svg viewBox="0 0 36 36" fill="none" style="width: 28px; height: 28px;"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/></svg>
+          <a href="trangchu.html" class="logo" style="text-decoration: none;">
+            <svg viewBox="0 0 36 36" fill="none" style="width: 28px; height: 28px;">
+              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/>
+              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/>
+              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
+            </svg>
             <span class="logo-text">Cleanova</span>
           </a>
-          <span class="admin-badge">Admin Panel</span>
+          <span class="admin-badge">Admin Portal</span>
         </div>
+
         <div style="display: flex; align-items: center; gap: var(--space-md);">
-          <a href="trangchu.html" class="btn btn-ghost btn-sm" target="_blank">
-            <span>🌐 Xem Website</span>
-          </a>
-          <div class="user-profile-badge" id="admin-user-badge">
-            <span>🛡️</span> <span id="admin-email">admin@cleanova.vn</span>
-          </div>
-          <button id="btn-admin-logout" class="btn btn-outline btn-sm">Đăng xuất</button>
+          <span style="font-size: var(--font-size-sm); color: var(--color-text-secondary);">
+            Xin chào, <strong id="admin-user-name" style="color: var(--color-text);">Quản trị viên</strong>
+          </span>
+          <a href="trangchu.html" class="btn btn-ghost btn-sm">Xem Website</a>
+          <a href="staff.html" class="btn btn-ghost btn-sm" title="Xem giao diện dành cho nhân viên">Giao diện Staff</a>
+          <button id="btn-admin-logout" class="btn btn-secondary btn-sm">Đăng xuất</button>
         </div>
       </div>
     </div>
   </header>
 
-  <main style="padding: var(--space-2xl) 0 var(--space-4xl);">
+  <main class="page-wrapper">
     <div class="container">
 
-      <!-- Alert Box -->
-      <div id="alert-box" style="display: none; margin-bottom: var(--space-lg);"></div>
+      <!-- Thông báo alert -->
+      <div id="admin-alert" class="alert" style="display: none; margin-bottom: var(--space-xl);" role="alert"></div>
 
-      <!-- Unauthorized View (Hiển thị nếu không phải admin) -->
-      <div id="unauthorized-view" style="display: none;" class="card">
-        <div style="text-align: center; padding: var(--space-3xl) var(--space-lg);">
-          <div style="font-size: 64px; margin-bottom: var(--space-md);">🚫</div>
-          <h2 style="font-size: var(--font-size-2xl); font-weight: 800; margin-bottom: var(--space-xs);">Truy cập bị từ chối</h2>
-          <p style="color: var(--color-text-secondary); max-width: 500px; margin: 0 auto var(--space-xl);">
-            Khu vực này chỉ dành cho tài khoản có quyền Quản trị viên (Admin). Vui lòng đăng nhập bằng tài khoản Quản trị để tiếp tục.
-          </p>
-          <a href="login.html" class="btn btn-primary">Đăng nhập tài khoản Admin</a>
+      <!-- Thống kê Dashboard -->
+      <section class="stats-grid" aria-label="Thống kê tổng quan">
+        <div class="stat-card revenue">
+          <div class="stat-title">Doanh thu hoàn tất</div>
+          <div class="stat-value" id="stat-revenue">0 đ</div>
+          <div class="stat-desc">Đơn hàng hoàn thành thực tế</div>
         </div>
-      </div>
+        <div class="stat-card bookings">
+          <div class="stat-title">Tổng đơn đặt lịch</div>
+          <div class="stat-value" id="stat-bookings">0</div>
+          <div class="stat-desc">Bao gồm mọi trạng thái</div>
+        </div>
+        <div class="stat-card users">
+          <div class="stat-title">Khách hàng</div>
+          <div class="stat-value" id="stat-users">0</div>
+          <div class="stat-desc">Tài khoản khách đăng ký</div>
+        </div>
+        <div class="stat-card staff">
+          <div class="stat-title">Đội ngũ nhân viên</div>
+          <div class="stat-value" id="stat-staff">0</div>
+          <div class="stat-desc">Chuyên viên đang hoạt động</div>
+        </div>
+      </section>
 
-      <!-- Authorized View -->
-      <div id="authorized-view" style="display: none;">
+      <!-- Tabs điều hướng quản trị -->
+      <nav class="admin-tabs" role="tablist">
+        <button class="admin-tab-btn active" data-tab="tab-bookings" role="tab">
+          <span>📋</span> Đơn đặt lịch & Phân công (<span id="tab-count-bookings">0</span>)
+        </button>
+        <button class="admin-tab-btn" data-tab="tab-users" role="tab">
+          <span>👥</span> Quản lý Tài khoản & Phân quyền (<span id="tab-count-users">0</span>)
+        </button>
+        <button class="admin-tab-btn" data-tab="tab-staff" role="tab">
+          <span>👷</span> Đội ngũ Nhân viên (<span id="tab-count-staff">0</span>)
+        </button>
+        <button class="admin-tab-btn" data-tab="tab-services" role="tab">
+          <span>🧹</span> Danh mục Dịch vụ (<span id="tab-count-services">0</span>)
+        </button>
+      </nav>
 
-        <div style="margin-bottom: var(--space-xl);">
-          <h1 class="page-title">Tổng quan Hệ thống Quản trị</h1>
-          <p class="page-subtitle">Theo dõi thống kê vận hành, điều phối lịch hẹn dọn dẹp và quản lý danh mục dịch vụ.</p>
+      <!-- TAB 1: QUẢN LÝ ĐƠN ĐẶT LỊCH & PHÂN CÔNG NHÂN VIÊN -->
+      <section id="tab-bookings" class="tab-pane active" role="tabpanel">
+        <div class="table-controls">
+          <div style="display: flex; gap: var(--space-md); align-items: center; flex-wrap: wrap;">
+            <label style="font-weight: 700; font-size: 13px;">Lọc trạng thái:</label>
+            <select id="filter-booking-status" class="form-control" style="width: auto; padding: 6px 12px;">
+              <option value="all">Tất cả đơn hàng</option>
+              <option value="pending">Chờ xác nhận</option>
+              <option value="confirmed">Đã xác nhận</option>
+              <option value="in_progress">Đang thực hiện</option>
+              <option value="completed">Đã hoàn thành</option>
+              <option value="cancelled">Đã hủy bỏ</option>
+            </select>
+          </div>
+          <button id="btn-refresh-bookings" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách</button>
         </div>
 
-        <!-- Thống kê Card -->
-        <div class="stats-grid">
-          <div class="stat-card revenue">
-            <div class="stat-title">Doanh thu ghi nhận</div>
-            <div class="stat-value" id="stat-revenue">0 đ</div>
-            <div class="stat-desc">Dựa trên các đơn đặt lịch hoàn tất</div>
-          </div>
-          <div class="stat-card bookings">
-            <div class="stat-title">Tổng số Đơn đặt</div>
-            <div class="stat-value" id="stat-bookings">0</div>
-            <div class="stat-desc">Bao gồm tất cả các trạng thái</div>
-          </div>
-          <div class="stat-card services">
-            <div class="stat-title">Dịch vụ Hoạt động</div>
-            <div class="stat-value" id="stat-services">0</div>
-            <div class="stat-desc">Gói dịch vụ đang mở phục vụ</div>
-          </div>
-          <div class="stat-card users">
-            <div class="stat-title">Tài khoản Người dùng</div>
-            <div class="stat-value" id="stat-users">0</div>
-            <div class="stat-desc">Khách hàng & quản trị viên</div>
-          </div>
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+          <table class="table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Dịch vụ</th>
+                <th>Thời gian</th>
+                <th>Địa chỉ</th>
+                <th>Tổng tiền</th>
+                <th>Phân công nhân viên</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="bookings-table-body">
+              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải danh sách đơn đặt lịch...</td></tr>
+            </tbody>
+          </table>
         </div>
+      </section>
 
-        <!-- Admin Navigation Tabs -->
-        <div class="admin-tabs">
-          <button class="admin-tab-btn active" data-tab="tab-bookings">
-            <span>📋</span> Quản lý Đơn đặt (<span id="tab-count-bookings">0</span>)
-          </button>
-          <button class="admin-tab-btn" data-tab="tab-services">
-            <span>✨</span> Quản lý Dịch vụ (<span id="tab-count-services">0</span>)
-          </button>
-          <button class="admin-tab-btn" data-tab="tab-users">
-            <span>👥</span> Người dùng (<span id="tab-count-users">0</span>)
-          </button>
-        </div>
-
-        <!-- ========================================== -->
-        <!-- TAB 1: QUẢN LÝ ĐƠN ĐẶT DỊCH VỤ -->
-        <!-- ========================================== -->
-        <div class="admin-tab-content active" id="tab-bookings">
-          <div class="card" style="padding: 0; overflow: hidden;">
-            <div style="padding: var(--space-lg); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
-              <h3 style="margin: 0; font-size: var(--font-size-lg); font-weight: 700;">Danh sách Đơn đặt lịch</h3>
-              <div style="display: flex; gap: var(--space-sm); align-items: center;">
-                <label for="filter-booking-status" class="form-label" style="margin: 0; font-size: 13px;">Lọc trạng thái:</label>
-                <select id="filter-booking-status" class="form-control" style="width: auto; padding: 6px 12px; font-size: 13px;">
-                  <option value="all">Tất cả trạng thái</option>
-                  <option value="pending">Chờ xác nhận (pending)</option>
-                  <option value="confirmed">Đã xác nhận (confirmed)</option>
-                  <option value="in_progress">Đang thực hiện (in_progress)</option>
-                  <option value="completed">Hoàn thành (completed)</option>
-                  <option value="cancelled">Đã hủy (cancelled)</option>
-                </select>
-                <button class="btn btn-outline btn-sm" id="btn-refresh-bookings">Làm mới</button>
-              </div>
+      <!-- TAB 2: QUẢN LÝ TÀI KHOẢN (RBAC & ACCOUNT MANAGEMENT) -->
+      <section id="tab-users" class="tab-pane" style="display: none;" role="tabpanel">
+        <div class="table-controls">
+          <div style="display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap;">
+            <div class="search-input-wrap">
+              <span>🔍</span>
+              <input type="text" id="search-users-input" placeholder="Tìm kiếm theo tên, email, SĐT...">
             </div>
 
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Mã đơn</th>
-                    <th>Khách hàng</th>
-                    <th>Dịch vụ</th>
-                    <th>Ngày & Giờ dọn</th>
-                    <th>Địa chỉ</th>
-                    <th>Tổng tiền</th>
-                    <th>Thanh toán</th>
-                    <th>Trạng thái hiện tại</th>
-                    <th>Thao tác cập nhật</th>
-                  </tr>
-                </thead>
-                <tbody id="bookings-table-body">
-                  <tr>
-                    <td colspan="9" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">
-                      Đang tải dữ liệu đơn đặt...
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <select id="filter-user-role" class="form-control" style="width: auto; padding: 6px 12px;">
+              <option value="all">Tất cả vai trò</option>
+              <option value="customer">Khách hàng</option>
+              <option value="staff">Nhân viên (Staff)</option>
+              <option value="admin">Quản trị viên (Admin)</option>
+            </select>
+
+            <select id="filter-user-status" class="form-control" style="width: auto; padding: 6px 12px;">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="active">Đang hoạt động</option>
+              <option value="inactive">Đã vô hiệu hóa</option>
+            </select>
           </div>
+
+          <button id="btn-refresh-users" class="btn btn-ghost btn-sm">🔄 Làm mới</button>
         </div>
 
-        <!-- ========================================== -->
-        <!-- TAB 2: QUẢN LÝ DỊCH VỤ -->
-        <!-- ========================================== -->
-        <div class="admin-tab-content" id="tab-services" style="display: none;">
-          <div class="card" style="padding: 0; overflow: hidden;">
-            <div style="padding: var(--space-lg); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
-              <div>
-                <h3 style="margin: 0; font-size: var(--font-size-lg); font-weight: 700;">Danh mục Dịch vụ Vệ sinh</h3>
-                <p style="margin: 2px 0 0; color: var(--color-text-secondary); font-size: 13px;">Thêm mới, sửa giá cước, thời lượng hoặc ẩn dịch vụ khỏi bảng giá.</p>
-              </div>
-              <button class="btn btn-primary" id="btn-add-service">
-                <span>➕ Thêm Dịch Vụ Mới</span>
-              </button>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Icon</th>
-                    <th>Tên dịch vụ</th>
-                    <th>Giá niêm yết</th>
-                    <th>Đơn vị tính</th>
-                    <th>Thời lượng ước tính</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                  </tr>
-                </thead>
-                <tbody id="services-table-body">
-                  <tr>
-                    <td colspan="8" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">
-                      Đang tải danh mục dịch vụ...
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+          <table class="table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Họ và tên</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Vai trò</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th style="text-align: right;">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body">
+              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải dữ liệu tài khoản...</td></tr>
+            </tbody>
+          </table>
         </div>
 
-        <!-- ========================================== -->
-        <!-- TAB 3: QUẢN LÝ NGƯỜI DÙNG -->
-        <!-- ========================================== -->
-        <div class="admin-tab-content" id="tab-users" style="display: none;">
-          <div class="card" style="padding: 0; overflow: hidden;">
-            <div style="padding: var(--space-lg); border-bottom: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center;">
-              <h3 style="margin: 0; font-size: var(--font-size-lg); font-weight: 700;">Danh sách Tài khoản Hệ thống</h3>
-              <button class="btn btn-outline btn-sm" id="btn-refresh-users">Làm mới</button>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>ID</th>
-                    <th>Họ và tên</th>
-                    <th>Email</th>
-                    <th>Số điện thoại</th>
-                    <th>Địa chỉ</th>
-                    <th>Vai trò (Role)</th>
-                    <th>Ngày tạo</th>
-                  </tr>
-                </thead>
-                <tbody id="users-table-body">
-                  <tr>
-                    <td colspan="7" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">
-                      Đang tải danh sách người dùng...
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+        <div class="pagination-bar">
+          <div id="users-pagination-info">Hiển thị 0 trên 0 tài khoản</div>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-prev-users" class="btn btn-ghost btn-sm" disabled>← Trang trước</button>
+            <button id="btn-next-users" class="btn btn-ghost btn-sm" disabled>Trang sau →</button>
           </div>
         </div>
+      </section>
 
-      </div>
+      <!-- TAB 3: QUẢN LÝ ĐỘI NGŨ NHÂN VIÊN (STAFF MANAGEMENT) -->
+      <section id="tab-staff" class="tab-pane" style="display: none;" role="tabpanel">
+        <div class="table-controls">
+          <div>
+            <h3 style="margin: 0 0 4px; font-size: var(--font-size-lg);">Danh Sách Chuyên Viên Vệ Sinh Cleanova</h3>
+            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Quản lý đội ngũ kỹ thuật viên, theo dõi công việc được phân công và tạo tài khoản an toàn.</p>
+          </div>
+          <button id="btn-open-create-staff" class="btn btn-primary btn-sm">➕ Thêm nhân viên mới</button>
+        </div>
+
+        <div id="staff-grid-container" class="staff-grid" style="margin-top: var(--space-lg);">
+          <!-- Cards nhân viên render động -->
+        </div>
+      </section>
+
+      <!-- TAB 4: QUẢN LÝ DANH MỤC DỊCH VỤ -->
+      <section id="tab-services" class="tab-pane" style="display: none;" role="tabpanel">
+        <div class="table-controls">
+          <div>
+            <h3 style="margin: 0 0 4px; font-size: var(--font-size-lg);">Gói Dịch Vụ Vệ Sinh</h3>
+            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Cấu hình giá tiền, đơn vị tính và hiển thị trên toàn hệ thống.</p>
+          </div>
+          <button id="btn-open-create-service" class="btn btn-primary btn-sm">➕ Thêm dịch vụ mới</button>
+        </div>
+
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+          <table class="table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>Icon</th>
+                <th>Tên dịch vụ</th>
+                <th>Slug</th>
+                <th>Giá cơ sở</th>
+                <th>Đơn vị tính</th>
+                <th>Thời gian</th>
+                <th>Trạng thái</th>
+                <th style="text-align: right;">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="services-table-body">
+              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải dịch vụ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
     </div>
   </main>
 
-  <!-- Modal Thêm/Sửa Dịch vụ -->
-  <div class="modal-overlay" id="service-modal">
-    <div class="modal">
+  <!-- ============================================================
+       MODAL 1: THÊM / SỬA DỊCH VỤ
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-service" style="display: none;">
+    <div class="modal-box" style="max-width: 560px;">
       <div class="modal-header">
-        <h3 id="service-modal-title" style="margin: 0; font-size: var(--font-size-xl);">Thêm Dịch Vụ Mới</h3>
-        <button class="modal-close" id="service-modal-close">&times;</button>
+        <h3 id="modal-service-title" class="modal-title">Thêm dịch vụ mới</h3>
+        <button class="modal-close" data-close="modal-service">&times;</button>
       </div>
-      <form id="service-form">
-        <input type="hidden" id="service-id">
-        <div style="display: grid; gap: var(--space-md);">
-          <div style="display: grid; grid-template-columns: 80px 1fr; gap: var(--space-md);">
-            <div class="form-group">
-              <label class="form-label" for="service-icon">Icon</label>
-              <input type="text" id="service-icon" class="form-control" style="text-align: center; font-size: 20px;" placeholder="🧹" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="service-name">Tên Dịch vụ</label>
-              <input type="text" id="service-name" class="form-control" placeholder="Ví dụ: Giặt thảm văn phòng" required>
-            </div>
-          </div>
-
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
-            <div class="form-group">
-              <label class="form-label" for="service-price">Giá tiền (VNĐ)</label>
-              <input type="number" id="service-price" class="form-control" placeholder="150000" min="0" step="5000" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="service-unit">Đơn vị tính</label>
-              <input type="text" id="service-unit" class="form-control" placeholder="Ví dụ: giờ, căn, m2" required>
-            </div>
-          </div>
-
+      <form id="form-service" style="padding: var(--space-xl);">
+        <input type="hidden" id="service-edit-id">
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <label class="form-label">Tên dịch vụ <span style="color: red;">*</span></label>
+          <input type="text" id="service-name" class="form-control" required placeholder="VD: Dọn dẹp nhà theo giờ">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
           <div class="form-group">
-            <label class="form-label" for="service-duration">Thời lượng ước tính (phút)</label>
-            <input type="number" id="service-duration" class="form-control" placeholder="120" min="15" step="15" required>
+            <label class="form-label">Giá cơ sở (VNĐ) <span style="color: red;">*</span></label>
+            <input type="number" id="service-price" class="form-control" required min="1000" step="1000" placeholder="150000">
           </div>
-
           <div class="form-group">
-            <label class="form-label" for="service-desc">Mô tả ngắn</label>
-            <input type="text" id="service-desc" class="form-control" placeholder="Tóm tắt công việc cho khách hàng xem..." required>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="service-detail">Mô tả chi tiết / Các bước thực hiện</label>
-            <textarea id="service-detail" class="form-control" rows="3" placeholder="Các đầu việc cụ thể sẽ thực hiện..."></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label" for="service-status">Trạng thái mở bán</label>
-            <select id="service-status" class="form-control">
-              <option value="active">Đang mở bán (active)</option>
-              <option value="inactive">Tạm ngưng (inactive)</option>
-            </select>
+            <label class="form-label">Đơn vị tính</label>
+            <input type="text" id="service-unit" class="form-control" required placeholder="giờ, lần, m²...">
           </div>
         </div>
-
-        <div style="margin-top: var(--space-xl); display: flex; justify-content: flex-end; gap: var(--space-sm);">
-          <button type="button" class="btn btn-outline" id="service-modal-cancel">Hủy</button>
-          <button type="submit" class="btn btn-primary" id="btn-save-service">Lưu dịch vụ</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label">Thời gian ước tính</label>
+            <input type="text" id="service-duration" class="form-control" placeholder="2 - 4 giờ">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Icon / Emoji</label>
+            <input type="text" id="service-icon" class="form-control" placeholder="🧹, ✨, 🏢...">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <label class="form-label">Mô tả ngắn</label>
+          <input type="text" id="service-short-desc" class="form-control" placeholder="Hiển thị trên thẻ tóm tắt...">
+        </div>
+        <div class="form-group" style="margin-bottom: var(--space-xl);">
+          <label class="form-label">Mô tả đầy đủ</label>
+          <textarea id="service-desc" class="form-control" rows="3" placeholder="Chi tiết các hạng mục công việc thực hiện..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
+          <button type="button" class="btn btn-ghost" data-close="modal-service">Hủy bỏ</button>
+          <button type="submit" id="btn-save-service" class="btn btn-primary">Lưu dịch vụ</button>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- ============================================================
+       MODAL 2: TẠO MỚI TÀI KHOẢN NHÂN VIÊN (STAFF)
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-create-staff" style="display: none;">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Tạo Tài Khoản Nhân Viên Cleanova</h3>
+        <button class="modal-close" data-close="modal-create-staff">&times;</button>
+      </div>
+      <form id="form-create-staff" style="padding: var(--space-xl);">
+        <p style="font-size: 13px; color: var(--color-text-secondary); margin-top: 0;">
+          Tạo tài khoản chuyên viên dọn dẹp để nhân viên có thể đăng nhập vào Giao diện làm việc (Staff Portal).
+        </p>
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <label class="form-label">Họ và tên nhân viên <span style="color: red;">*</span></label>
+          <input type="text" id="staff-name" class="form-control" required placeholder="VD: Lê Thị Mai">
+        </div>
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <label class="form-label">Email đăng nhập <span style="color: red;">*</span></label>
+          <input type="email" id="staff-email" class="form-control" required placeholder="nhanvien@cleanova.vn">
+        </div>
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <label class="form-label">Mật khẩu khởi tạo <span style="color: red;">*</span> (Tối thiểu 8 ký tự, gồm chữ và số)</label>
+          <input type="password" id="staff-password" class="form-control" required minlength="8" placeholder="Nhập mật khẩu an toàn">
+          <small style="font-size: 11px; color: var(--color-text-tertiary);">Tuyệt đối không dùng mật khẩu mặc định 123456 dễ đoán.</small>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-xl);">
+          <div class="form-group">
+            <label class="form-label">Số điện thoại</label>
+            <input type="tel" id="staff-phone" class="form-control" placeholder="09xx xxx xxx">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Địa chỉ</label>
+            <input type="text" id="staff-address" class="form-control" placeholder="Quận/Huyện">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
+          <button type="button" class="btn btn-ghost" data-close="modal-create-staff">Hủy bỏ</button>
+          <button type="submit" id="btn-submit-staff" class="btn btn-primary">Tạo tài khoản nhân viên</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: XEM CHI TIẾT & SỬA TÀI KHOẢN (RBAC)
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-user-detail" style="display: none;">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Thông Tin & Phân Quyền Tài Khoản</h3>
+        <button class="modal-close" data-close="modal-user-detail">&times;</button>
+      </div>
+      <div style="padding: var(--space-xl);">
+        <form id="form-edit-user">
+          <input type="hidden" id="edit-user-id">
+          <div style="display: flex; gap: var(--space-lg); align-items: center; margin-bottom: var(--space-xl); padding-bottom: var(--space-md); border-bottom: 1px solid var(--color-border);">
+            <div id="modal-user-avatar" style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-primary-ultra-light); color: var(--color-primary-dark); display: grid; place-items: center; font-size: 24px; font-weight: 800;">U</div>
+            <div>
+              <h4 id="modal-user-name" style="margin: 0 0 4px; font-size: 18px;">Họ tên</h4>
+              <div id="modal-user-email" style="font-size: 13px; color: var(--color-text-secondary);">email@example.com</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+            <div class="form-group">
+              <label class="form-label">Họ và tên</label>
+              <input type="text" id="edit-user-name-input" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Số điện thoại</label>
+              <input type="tel" id="edit-user-phone-input" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label">Địa chỉ</label>
+            <input type="text" id="edit-user-address-input" class="form-control">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-xl);">
+            <div class="form-group">
+              <label class="form-label">Vai trò (Role) <span style="color: red;">*</span></label>
+              <select id="edit-user-role-select" class="form-control">
+                <option value="customer">Khách hàng (Customer)</option>
+                <option value="staff">Nhân viên Cleanova (Staff)</option>
+                <option value="admin">Quản trị viên (Admin)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trạng thái tài khoản <span style="color: red;">*</span></label>
+              <select id="edit-user-status-select" class="form-control">
+                <option value="active">Đang hoạt động (Active)</option>
+                <option value="inactive">Đã vô hiệu hóa (Inactive)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="modal-user-orders-summary" style="background: var(--color-bg-alt); padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: var(--space-xl); font-size: 13px;">
+            Số đơn đặt dịch vụ liên kết: <strong id="modal-user-order-count">0</strong> đơn.
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <button type="button" id="btn-delete-user-trigger" class="btn btn-outline" style="color: #ef4444; border-color: #fca5a5;">🗑️ Xóa vĩnh viễn</button>
+            <div style="display: flex; gap: var(--space-sm);">
+              <button type="button" class="btn btn-ghost" data-close="modal-user-detail">Đóng</button>
+              <button type="submit" id="btn-save-user" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 4: XEM VIỆC LÀM CỦA NHÂN VIÊN
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-staff-tasks" style="display: none;">
+    <div class="modal-box" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 id="modal-staff-tasks-title" class="modal-title">Công việc được giao cho nhân viên</h3>
+        <button class="modal-close" data-close="modal-staff-tasks">&times;</button>
+      </div>
+      <div style="padding: var(--space-xl);">
+        <div id="staff-tasks-container">Đang tải...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript xử lý Bảng điều khiển Admin -->
   <script>
+    'use strict';
+
     document.addEventListener('DOMContentLoaded', async function () {
-      function showAlert(type, message) {
-        const box = document.getElementById('alert-box');
-        box.className = `alert alert-${type}`;
-        box.textContent = message;
-        box.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(() => { box.style.display = 'none'; }, 5000);
-      }
-
-      // 1. Kiểm tra xác thực và quyền Admin
-      const token = CleanovaAPI.auth.getToken();
-      const user = CleanovaAPI.auth.getUser();
-
-      if (!token || !user || user.role !== 'admin') {
-        document.getElementById('unauthorized-view').style.display = 'block';
+      // 1. Kiểm tra xác thực & quyền Quản trị viên
+      if (!window.CleanovaAPI || !CleanovaAPI.auth.isLoggedIn()) {
+        alert('Vui lòng đăng nhập với tài khoản Quản trị viên để truy cập trang này.');
+        window.location.href = 'login.html';
         return;
       }
 
-      document.getElementById('authorized-view').style.display = 'block';
-      document.getElementById('admin-email').textContent = user.name || user.email;
+      const currentUser = CleanovaAPI.auth.getUser();
+      if (!currentUser || currentUser.role !== 'admin') {
+        alert('Truy cập bị từ chối: Tài khoản của bạn không có quyền Quản trị viên (Admin).');
+        window.location.href = CleanovaAPI.auth.getRedirectUrlByRole();
+        return;
+      }
 
-      // Xử lý nút Đăng xuất
-      document.getElementById('btn-admin-logout').addEventListener('click', function () {
+      document.getElementById('admin-user-name').textContent = currentUser.name || currentUser.email;
+
+      // Nút Đăng xuất
+      document.getElementById('btn-admin-logout').addEventListener('click', () => {
         CleanovaAPI.auth.logout();
       });
 
-      // 2. Chuyển đổi các Tab
-      const tabBtns = document.querySelectorAll('.admin-tab-btn');
-      const tabContents = {
-        'tab-bookings': document.getElementById('tab-bookings'),
-        'tab-services': document.getElementById('tab-services'),
-        'tab-users': document.getElementById('tab-users')
-      };
+      // Utility hiển thị thông báo
+      const alertBox = document.getElementById('admin-alert');
+      function showAlert(type, message) {
+        alertBox.className = `alert alert-${type}`;
+        alertBox.textContent = message;
+        alertBox.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
+      }
 
+      // Quản lý Tabs
+      const tabBtns = document.querySelectorAll('.admin-tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
       tabBtns.forEach(btn => {
         btn.addEventListener('click', function () {
           tabBtns.forEach(b => b.classList.remove('active'));
-          Object.values(tabContents).forEach(c => c.style.display = 'none');
-
+          tabPanes.forEach(p => p.style.display = 'none');
           this.classList.add('active');
-          const target = tabContents[this.dataset.tab];
+          const target = document.getElementById(this.dataset.tab);
           if (target) target.style.display = 'block';
+        });
+      });
+
+      // Close modals
+      document.querySelectorAll('[data-close]').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const m = document.getElementById(this.dataset.close);
+          if (m) m.style.display = 'none';
         });
       });
 
       // State lưu trữ dữ liệu
       let allBookings = [];
-      let allServices = [];
       let allUsers = [];
+      let allStaff = [];
+      let allServices = [];
+      let currentUsersPage = 1;
 
-      // 3. Tải Thống kê (Dashboard Stats)
+      // ------------------------------------------------------------
+      // 1. TẢI THỐNG KÊ DASHBOARD
+      // ------------------------------------------------------------
       async function loadStats() {
         try {
           const res = await CleanovaAPI.admin.getStats();
-          const stats = res.data;
-          document.getElementById('stat-revenue').textContent = Number(stats.totalRevenue || 0).toLocaleString('vi-VN') + ' đ';
-          document.getElementById('stat-bookings').textContent = stats.totalBookings || 0;
-          document.getElementById('stat-services').textContent = stats.activeServices || 0;
-          document.getElementById('stat-users').textContent = stats.totalUsers || 0;
+          const s = res.data;
+          document.getElementById('stat-revenue').textContent = Number(s.totalRevenue || s.total_revenue || 0).toLocaleString('vi-VN') + ' đ';
+          document.getElementById('stat-bookings').textContent = s.totalBookings || s.total_bookings || 0;
+          document.getElementById('stat-users').textContent = s.totalUsers || s.total_users || 0;
+          document.getElementById('stat-staff').textContent = s.activeStaff || s.total_staff || 0;
         } catch (err) {
-          console.warn('Không thể tải thống kê:', err);
+          console.warn('Lỗi tải thống kê:', err);
         }
       }
 
-      // 4. Quản lý Đơn đặt dịch vụ (Bookings)
+      // ------------------------------------------------------------
+      // 2. TAB 1: QUẢN LÝ ĐƠN ĐẶT LỊCH & PHÂN CÔNG NHÂN VIÊN
+      // ------------------------------------------------------------
       async function loadBookings() {
         try {
           const res = await CleanovaAPI.admin.getAllBookings();
@@ -493,7 +715,7 @@
           document.getElementById('tab-count-bookings').textContent = allBookings.length;
           renderBookingsTable();
         } catch (err) {
-          showAlert('danger', 'Lỗi tải danh sách đơn: ' + err.message);
+          showAlert('danger', 'Lỗi tải đơn đặt: ' + err.message);
         }
       }
 
@@ -506,45 +728,40 @@
           : allBookings.filter(b => b.status === filterVal);
 
         if (filtered.length === 0) {
-          tbody.innerHTML = `
-            <tr>
-              <td colspan="9" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">
-                Không có đơn đặt lịch nào phù hợp.
-              </td>
-            </tr>
-          `;
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">Không có đơn đặt lịch nào phù hợp.</td></tr>`;
           return;
         }
 
         tbody.innerHTML = filtered.map(b => {
-          const dateStr = b.booking_date
-            ? new Date(b.booking_date).toLocaleDateString('vi-VN')
-            : '---';
-          const priceStr = Number(b.final_price || b.total_price || 0).toLocaleString('vi-VN') + ' đ';
+          const dateStr = b.booking_date ? new Date(b.booking_date).toLocaleDateString('vi-VN') : '---';
+          const priceStr = Number(b.total_price || 0).toLocaleString('vi-VN') + ' đ';
+
+          // Options nhân viên để phân công
+          const staffOptions = allStaff.map(st => `
+            <option value="${st.id}" ${b.staff_id === st.id ? 'selected' : ''}>
+              ${st.name} ${st.status === 'inactive' ? '(Đã khóa)' : ''}
+            </option>
+          `).join('');
 
           return `
             <tr>
               <td><strong>#${b.booking_code || ('CLN-' + b.id)}</strong></td>
               <td>
-                <div style="font-weight: 700;">${b.customer_name || 'Khách vãng lai'}</div>
-                <div style="font-size: 12px; color: var(--color-text-secondary);">${b.customer_phone || b.customer_email || 'Chưa có SĐT'}</div>
+                <div style="font-weight: 700;">${b.customer_name || 'Khách hàng'}</div>
+                <div style="font-size: 12px; color: var(--color-text-secondary);">${b.customer_phone || b.phone || 'Chưa có SĐT'}</div>
               </td>
               <td>
                 <span>${b.service_icon || '✨'}</span>
                 <strong>${b.service_name || 'Dịch vụ'}</strong>
               </td>
               <td>${dateStr} (${b.booking_time || '08:00'})</td>
-              <td style="max-width: 220px; white-space: normal; font-size: 13px;">${b.address || 'Tại nhà khách'}</td>
+              <td style="max-width: 200px; font-size: 13px;">${b.address || '---'}</td>
               <td style="font-weight: 700; color: var(--color-primary-dark);">${priceStr}</td>
               <td>
-                <span class="status-badge ${b.payment_status === 'paid' ? 'status-completed' : 'status-pending'}" style="font-size: 11px;">
-                  ${b.payment_status === 'paid' ? 'Đã thu tiền' : 'Chưa thanh toán'}
-                </span>
-              </td>
-              <td>
-                <span class="status-badge status-${b.status}" style="font-size: 11px;">
-                  ● ${b.status}
-                </span>
+                <select class="staff-select" data-id="${b.id}" style="max-width: 170px;">
+                  <option value="">-- Chưa phân công --</option>
+                  ${staffOptions}
+                </select>
               </td>
               <td>
                 <select class="status-select" data-id="${b.id}">
@@ -559,18 +776,34 @@
           `;
         }).join('');
 
-        // Gắn sự kiện thay đổi trạng thái
-        tbody.querySelectorAll('.status-select').forEach(select => {
-          select.addEventListener('change', async function () {
+        // Gắn sự kiện đổi trạng thái đơn
+        tbody.querySelectorAll('.status-select').forEach(sel => {
+          sel.addEventListener('change', async function () {
             const id = parseInt(this.dataset.id, 10);
-            const newStatus = this.value;
             try {
-              await CleanovaAPI.admin.updateBookingStatus(id, newStatus);
-              showAlert('success', `Đã cập nhật trạng thái đơn #${id} thành '${newStatus}'!`);
+              await CleanovaAPI.admin.updateBookingStatus(id, this.value);
+              showAlert('success', `Cập nhật trạng thái đơn #${id} thành '${this.value}'!`);
               await loadStats();
               await loadBookings();
             } catch (err) {
-              showAlert('danger', 'Lỗi cập nhật: ' + err.message);
+              showAlert('danger', err.message);
+            }
+          });
+        });
+
+        // Gắn sự kiện phân công nhân viên
+        tbody.querySelectorAll('.staff-select').forEach(sel => {
+          sel.addEventListener('change', async function () {
+            const id = parseInt(this.dataset.id, 10);
+            const staffId = this.value ? parseInt(this.value, 10) : null;
+            try {
+              const res = await CleanovaAPI.admin.assignStaff(id, staffId);
+              showAlert('success', res.message || 'Phân công nhân viên thành công!');
+              await loadBookings();
+              await loadStaff();
+            } catch (err) {
+              showAlert('danger', err.message);
+              this.value = '';
             }
           });
         });
@@ -579,7 +812,346 @@
       document.getElementById('filter-booking-status').addEventListener('change', renderBookingsTable);
       document.getElementById('btn-refresh-bookings').addEventListener('click', loadBookings);
 
-      // 5. Quản lý Danh mục Dịch vụ
+      // ------------------------------------------------------------
+      // 3. TAB 2: QUẢN LÝ TÀI KHOẢN & PHÂN QUYỀN (RBAC)
+      // ------------------------------------------------------------
+      async function loadUsers() {
+        const search = document.getElementById('search-users-input').value.trim();
+        const role = document.getElementById('filter-user-role').value;
+        const status = document.getElementById('filter-user-status').value;
+
+        try {
+          const res = await CleanovaAPI.admin.getUsers({
+            search,
+            role,
+            status,
+            page: currentUsersPage,
+            limit: 8
+          });
+
+          allUsers = res.data || [];
+          const pag = res.pagination || { total: allUsers.length, page: 1, totalPages: 1 };
+
+          document.getElementById('tab-count-users').textContent = pag.total;
+          document.getElementById('users-pagination-info').textContent = `Hiển thị ${allUsers.length} trên tổng số ${pag.total} tài khoản (Trang ${pag.page}/${pag.totalPages})`;
+          document.getElementById('btn-prev-users').disabled = pag.page <= 1;
+          document.getElementById('btn-next-users').disabled = pag.page >= pag.totalPages;
+
+          renderUsersTable();
+        } catch (err) {
+          showAlert('danger', 'Lỗi tải danh sách tài khoản: ' + err.message);
+        }
+      }
+
+      function renderUsersTable() {
+        const tbody = document.getElementById('users-table-body');
+        if (allUsers.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">Không tìm thấy tài khoản nào phù hợp.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = allUsers.map(u => {
+          const roleClass = u.role === 'admin' ? 'role-admin' : (u.role === 'staff' ? 'role-staff' : 'role-customer');
+          const roleName = u.role === 'admin' ? 'Quản trị viên' : (u.role === 'staff' ? 'Nhân viên' : 'Khách hàng');
+          const isAct = (u.status || 'active') === 'active';
+          const dateStr = u.created_at ? new Date(u.created_at).toLocaleDateString('vi-VN') : '---';
+
+          return `
+            <tr>
+              <td><strong>#${u.id}</strong></td>
+              <td>
+                <div style="font-weight: 700;">${u.name || '---'}</div>
+                <div style="font-size: 11px; color: var(--color-text-tertiary);">${u.address || 'Chưa cập nhật địa chỉ'}</div>
+              </td>
+              <td>${u.email}</td>
+              <td>${u.phone || 'Chưa có SĐT'}</td>
+              <td><span class="role-badge ${roleClass}">${roleName}</span></td>
+              <td>
+                <span class="user-status-badge ${isAct ? 'status-active' : 'status-inactive'}">
+                  ${isAct ? '● Hoạt động' : '● Đã khóa'}
+                </span>
+              </td>
+              <td>${dateStr}</td>
+              <td style="text-align: right; white-space: nowrap;">
+                <button class="btn btn-ghost btn-xs btn-view-user" data-id="${u.id}" title="Xem & Chỉnh sửa phân quyền">✏️ Sửa</button>
+                <button class="btn btn-ghost btn-xs btn-toggle-user" data-id="${u.id}" data-status="${isAct ? 'inactive' : 'active'}" title="${isAct ? 'Vô hiệu hóa tài khoản' : 'Kích hoạt lại'}">
+                  ${isAct ? '🔒 Khóa' : '🔓 Mở'}
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Nút mở modal chi tiết & sửa
+        tbody.querySelectorAll('.btn-view-user').forEach(b => {
+          b.addEventListener('click', async function () {
+            openUserEditModal(parseInt(this.dataset.id, 10));
+          });
+        });
+
+        // Nút nhanh Khóa/Mở tài khoản
+        tbody.querySelectorAll('.btn-toggle-user').forEach(b => {
+          b.addEventListener('click', async function () {
+            const id = parseInt(this.dataset.id, 10);
+            const targetStatus = this.dataset.status;
+            const actionText = targetStatus === 'inactive' ? 'vô hiệu hóa' : 'kích hoạt lại';
+            if (confirm(`Bạn có chắc chắn muốn ${actionText} tài khoản #${id} không?`)) {
+              try {
+                const res = await CleanovaAPI.admin.toggleUserStatus(id, targetStatus);
+                showAlert('success', res.message);
+                await loadUsers();
+                await loadStats();
+              } catch (err) {
+                showAlert('danger', err.message);
+              }
+            }
+          });
+        });
+      }
+
+      // Xử lý tìm kiếm và phân trang tài khoản
+      document.getElementById('search-users-input').addEventListener('input', () => { currentUsersPage = 1; loadUsers(); });
+      document.getElementById('filter-user-role').addEventListener('change', () => { currentUsersPage = 1; loadUsers(); });
+      document.getElementById('filter-user-status').addEventListener('change', () => { currentUsersPage = 1; loadUsers(); });
+      document.getElementById('btn-refresh-users').addEventListener('click', loadUsers);
+
+      document.getElementById('btn-prev-users').addEventListener('click', () => {
+        if (currentUsersPage > 1) { currentUsersPage--; loadUsers(); }
+      });
+      document.getElementById('btn-next-users').addEventListener('click', () => {
+        currentUsersPage++; loadUsers();
+      });
+
+      // Mở modal sửa thông tin / phân quyền tài khoản
+      async function openUserEditModal(id) {
+        try {
+          const res = await CleanovaAPI.admin.getUserDetail(id);
+          const u = res.data.user;
+          document.getElementById('edit-user-id').value = u.id;
+          document.getElementById('modal-user-name').textContent = u.name || u.email;
+          document.getElementById('modal-user-email').textContent = u.email;
+          document.getElementById('modal-user-avatar').textContent = (u.name || u.email).charAt(0).toUpperCase();
+
+          document.getElementById('edit-user-name-input').value = u.name || '';
+          document.getElementById('edit-user-phone-input').value = u.phone || '';
+          document.getElementById('edit-user-address-input').value = u.address || '';
+          document.getElementById('edit-user-role-select').value = u.role;
+          document.getElementById('edit-user-status-select').value = u.status || 'active';
+          document.getElementById('modal-user-order-count').textContent = res.data.total_bookings || 0;
+
+          document.getElementById('modal-user-detail').style.display = 'flex';
+        } catch (err) {
+          showAlert('danger', 'Không thể lấy thông tin tài khoản: ' + err.message);
+        }
+      }
+
+      // Submit lưu sửa tài khoản
+      document.getElementById('form-edit-user').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('edit-user-id').value, 10);
+        const name = document.getElementById('edit-user-name-input').value.trim();
+        const phone = document.getElementById('edit-user-phone-input').value.trim();
+        const address = document.getElementById('edit-user-address-input').value.trim();
+        const role = document.getElementById('edit-user-role-select').value;
+        const status = document.getElementById('edit-user-status-select').value;
+
+        try {
+          const res = await CleanovaAPI.admin.updateUser(id, { name, phone, address, role, status });
+          showAlert('success', res.message || 'Cập nhật tài khoản thành công!');
+          document.getElementById('modal-user-detail').style.display = 'none';
+          await loadUsers();
+          await loadStats();
+          await loadStaff();
+        } catch (err) {
+          alert('Lỗi: ' + err.message);
+        }
+      });
+
+      // Xóa tài khoản có kiểm tra an toàn
+      document.getElementById('btn-delete-user-trigger').addEventListener('click', async function () {
+        const id = parseInt(document.getElementById('edit-user-id').value, 10);
+        if (confirm('CẢNH BÁO: Thao tác này sẽ xóa tài khoản khỏi hệ thống. Bạn có chắc chắn muốn tiếp tục không?')) {
+          try {
+            const res = await CleanovaAPI.admin.deleteUser(id);
+            showAlert('success', res.message);
+            document.getElementById('modal-user-detail').style.display = 'none';
+            await loadUsers();
+            await loadStats();
+          } catch (err) {
+            alert(err.message);
+          }
+        }
+      });
+
+      // ------------------------------------------------------------
+      // 4. TAB 3: QUẢN LÝ ĐỘI NGŨ NHÂN VIÊN (STAFF)
+      // ------------------------------------------------------------
+      async function loadStaff() {
+        try {
+          const res = await CleanovaAPI.admin.getStaff();
+          allStaff = res.data || [];
+          document.getElementById('tab-count-staff').textContent = allStaff.length;
+          renderStaffGrid();
+        } catch (err) {
+          console.warn('Lỗi tải nhân viên:', err);
+        }
+      }
+
+      function renderStaffGrid() {
+        const container = document.getElementById('staff-grid-container');
+        if (allStaff.length === 0) {
+          container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary); background: white; border-radius: var(--radius-xl);">Chưa có nhân viên nào trong hệ thống. Hãy bấm 'Thêm nhân viên mới' ở trên.</div>`;
+          return;
+        }
+
+        container.innerHTML = allStaff.map(st => {
+          const isAct = st.status === 'active';
+          return `
+            <div class="staff-card">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-md);">
+                  <div style="display: flex; gap: var(--space-sm); align-items: center;">
+                    <div style="width: 44px; height: 44px; border-radius: 50%; background: #DBEAFE; color: #1E40AF; display: grid; place-items: center; font-weight: 800; font-size: 18px;">
+                      ${st.name ? st.name.charAt(0).toUpperCase() : 'S'}
+                    </div>
+                    <div>
+                      <div style="font-weight: 800; font-size: 15px;">${st.name}</div>
+                      <div style="font-size: 12px; color: var(--color-text-secondary);">${st.email}</div>
+                    </div>
+                  </div>
+                  <span class="user-status-badge ${isAct ? 'status-active' : 'status-inactive'}">
+                    ${isAct ? '● Hoạt động' : '● Đã khóa'}
+                  </span>
+                </div>
+
+                <div style="background: var(--color-bg-alt); padding: 10px 14px; border-radius: var(--radius-md); margin-bottom: var(--space-md); font-size: 12px;">
+                  <div>📞 SĐT: <strong>${st.phone || 'Chưa cập nhật'}</strong></div>
+                  <div style="margin-top: 4px;">📍 Đ/C: <strong>${st.address || 'Hà Nội'}</strong></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center; margin-bottom: var(--space-md);">
+                  <div style="border: 1px dashed var(--color-border); padding: 8px; border-radius: var(--radius-md);">
+                    <div style="font-size: 18px; font-weight: 800; color: var(--color-primary);">${st.active_tasks || 0}</div>
+                    <div style="font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase;">Việc đang làm</div>
+                  </div>
+                  <div style="border: 1px dashed var(--color-border); padding: 8px; border-radius: var(--radius-md);">
+                    <div style="font-size: 18px; font-weight: 800; color: #3B82F6;">${st.completed_tasks || 0}</div>
+                    <div style="font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase;">Đã hoàn tất</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; gap: 8px; border-top: 1px solid var(--color-border); padding-top: var(--space-md); margin-top: auto;">
+                <button class="btn btn-ghost btn-xs btn-view-staff-tasks" data-id="${st.id}" data-name="${st.name}" style="flex: 1;">📋 Xem công việc</button>
+                <button class="btn btn-ghost btn-xs btn-toggle-staff" data-id="${st.id}" data-status="${isAct ? 'inactive' : 'active'}" style="color: ${isAct ? '#dc2626' : '#16a34a'};">
+                  ${isAct ? 'Khóa' : 'Kích hoạt'}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Nút xem task của nhân viên
+        container.querySelectorAll('.btn-view-staff-tasks').forEach(b => {
+          b.addEventListener('click', async function () {
+            openStaffTasksModal(parseInt(this.dataset.id, 10), this.dataset.name);
+          });
+        });
+
+        // Nút khóa/mở nhân viên
+        container.querySelectorAll('.btn-toggle-staff').forEach(b => {
+          b.addEventListener('click', async function () {
+            const id = parseInt(this.dataset.id, 10);
+            const targetStatus = this.dataset.status;
+            try {
+              const res = await CleanovaAPI.admin.toggleUserStatus(id, targetStatus);
+              showAlert('success', res.message);
+              await loadStaff();
+              await loadUsers();
+            } catch (err) {
+              showAlert('danger', err.message);
+            }
+          });
+        });
+      }
+
+      // Modal Thêm nhân viên
+      document.getElementById('btn-open-create-staff').addEventListener('click', () => {
+        document.getElementById('form-create-staff').reset();
+        document.getElementById('modal-create-staff').style.display = 'flex';
+      });
+
+      document.getElementById('form-create-staff').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const name = document.getElementById('staff-name').value.trim();
+        const email = document.getElementById('staff-email').value.trim();
+        const password = document.getElementById('staff-password').value;
+        const phone = document.getElementById('staff-phone').value.trim();
+        const address = document.getElementById('staff-address').value.trim();
+
+        try {
+          const res = await CleanovaAPI.admin.createStaff({ name, email, password, phone, address });
+          showAlert('success', res.message || 'Thêm nhân viên thành công!');
+          document.getElementById('modal-create-staff').style.display = 'none';
+          await loadStaff();
+          await loadUsers();
+          await loadStats();
+        } catch (err) {
+          alert('Lỗi: ' + err.message);
+        }
+      });
+
+      // Modal Xem việc nhân viên
+      async function openStaffTasksModal(staffId, staffName) {
+        document.getElementById('modal-staff-tasks-title').textContent = `Lịch Công Việc Của Nhân Viên: ${staffName}`;
+        const container = document.getElementById('staff-tasks-container');
+        container.innerHTML = 'Đang tải công việc...';
+        document.getElementById('modal-staff-tasks').style.display = 'flex';
+
+        try {
+          const res = await CleanovaAPI.admin.getStaffTasks(staffId);
+          const tasks = res.data || [];
+          if (tasks.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 20px;">Nhân viên này hiện chưa được phân công công việc nào.</p>';
+            return;
+          }
+
+          container.innerHTML = `
+            <div class="table-responsive">
+              <table class="table" style="font-size: 13px;">
+                <thead>
+                  <tr>
+                    <th>Mã đơn</th>
+                    <th>Dịch vụ</th>
+                    <th>Ngày & Giờ</th>
+                    <th>Khách hàng</th>
+                    <th>Địa chỉ</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${tasks.map(t => `
+                    <tr>
+                      <td><strong>#${t.booking_code}</strong></td>
+                      <td>${t.service_name}</td>
+                      <td>${new Date(t.booking_date).toLocaleDateString('vi-VN')} (${t.booking_time})</td>
+                      <td>${t.customer_name} (${t.customer_phone})</td>
+                      <td>${t.address}</td>
+                      <td><span class="status-badge status-${t.status}">● ${t.status}</span></td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `;
+        } catch (err) {
+          container.innerHTML = `<p style="color: red;">Lỗi tải việc: ${err.message}</p>`;
+        }
+      }
+
+      // ------------------------------------------------------------
+      // 5. TAB 4: QUẢN LÝ DỊCH VỤ VỆ SINH
+      // ------------------------------------------------------------
       async function loadServices() {
         try {
           const res = await CleanovaAPI.services.getAll();
@@ -587,7 +1159,7 @@
           document.getElementById('tab-count-services').textContent = allServices.length;
           renderServicesTable();
         } catch (err) {
-          showAlert('danger', 'Lỗi tải dịch vụ: ' + err.message);
+          console.warn('Lỗi tải dịch vụ:', err);
         }
       }
 
@@ -600,170 +1172,103 @@
 
         tbody.innerHTML = allServices.map(s => `
           <tr>
-            <td><strong>#${s.id}</strong></td>
-            <td style="font-size: 24px;">${s.icon || '✨'}</td>
+            <td style="font-size: 24px;">${s.icon || '🧹'}</td>
             <td>
-              <div style="font-weight: 700;">${s.name}</div>
-              <div style="font-size: 12px; color: var(--color-text-secondary);">${s.description || ''}</div>
+              <strong style="color: var(--color-primary-dark);">${s.name}</strong>
+              <div style="font-size: 12px; color: var(--color-text-secondary);">${s.short_description || ''}</div>
             </td>
-            <td style="font-weight: 700; color: var(--color-primary-dark);">${Number(s.price || 0).toLocaleString('vi-VN')} đ</td>
-            <td>/${s.unit || 'lần'}</td>
-            <td>${s.duration_minutes || 60} phút</td>
-            <td>
-              <span class="status-badge ${s.status === 'active' ? 'status-completed' : 'status-cancelled'}" style="font-size: 11px;">
-                ${s.status === 'active' ? 'Đang mở' : 'Tạm ẩn'}
-              </span>
-            </td>
-            <td>
-              <div style="display: flex; gap: 6px;">
-                <button class="btn btn-outline btn-sm btn-edit-svc" data-id="${s.id}">Sửa</button>
-                <button class="btn btn-ghost btn-sm btn-del-svc" data-id="${s.id}" style="color: #DC2626;">Xóa</button>
-              </div>
+            <td><code>${s.slug}</code></td>
+            <td style="font-weight: 700;">${Number(s.base_price).toLocaleString('vi-VN')} đ</td>
+            <td>${s.price_unit}</td>
+            <td>${s.duration_estimate || '2-4 giờ'}</td>
+            <td><span class="status-badge status-confirmed">Hiển thị</span></td>
+            <td style="text-align: right; white-space: nowrap;">
+              <button class="btn btn-ghost btn-xs btn-edit-service" data-id="${s.id}">Sửa</button>
+              <button class="btn btn-ghost btn-xs btn-delete-service" data-id="${s.id}" style="color: #ef4444;">Xóa</button>
             </td>
           </tr>
         `).join('');
 
-        // Edit Service
-        tbody.querySelectorAll('.btn-edit-svc').forEach(btn => {
-          btn.addEventListener('click', function () {
+        tbody.querySelectorAll('.btn-edit-service').forEach(b => {
+          b.addEventListener('click', function () {
             const id = parseInt(this.dataset.id, 10);
             const s = allServices.find(item => item.id === id);
-            if (!s) return;
-
-            document.getElementById('service-modal-title').textContent = 'Chỉnh sửa Dịch vụ #' + s.id;
-            document.getElementById('service-id').value = s.id;
-            document.getElementById('service-icon').value = s.icon || '✨';
-            document.getElementById('service-name').value = s.name;
-            document.getElementById('service-price').value = s.price;
-            document.getElementById('service-unit').value = s.unit || 'lần';
-            document.getElementById('service-duration').value = s.duration_minutes || 60;
-            document.getElementById('service-desc').value = s.description || '';
-            document.getElementById('service-detail').value = s.detail_description || '';
-            document.getElementById('service-status').value = s.status || 'active';
-
-            serviceModal.classList.add('active');
+            if (s) {
+              document.getElementById('modal-service-title').textContent = 'Chỉnh sửa dịch vụ';
+              document.getElementById('service-edit-id').value = s.id;
+              document.getElementById('service-name').value = s.name;
+              document.getElementById('service-price').value = s.base_price;
+              document.getElementById('service-unit').value = s.price_unit;
+              document.getElementById('service-duration').value = s.duration_estimate || '';
+              document.getElementById('service-icon').value = s.icon || '';
+              document.getElementById('service-short-desc').value = s.short_description || '';
+              document.getElementById('service-desc').value = s.description || '';
+              document.getElementById('modal-service').style.display = 'flex';
+            }
           });
         });
 
-        // Delete Service
-        tbody.querySelectorAll('.btn-del-svc').forEach(btn => {
-          btn.addEventListener('click', async function () {
+        tbody.querySelectorAll('.btn-delete-service').forEach(b => {
+          b.addEventListener('click', async function () {
             const id = parseInt(this.dataset.id, 10);
-            if (!confirm(`Bạn có chắc chắn muốn xóa dịch vụ #${id}? Thao tác này sẽ ẩn dịch vụ khỏi bảng giá.`)) return;
-            try {
-              await CleanovaAPI.admin.deleteService(id);
-              showAlert('success', `Đã xóa dịch vụ #${id} thành công!`);
-              await loadServices();
-              await loadStats();
-            } catch (err) {
-              showAlert('danger', 'Lỗi khi xóa dịch vụ: ' + err.message);
+            if (confirm(`Bạn có chắc chắn muốn xóa dịch vụ này không?`)) {
+              try {
+                await CleanovaAPI.admin.deleteService(id);
+                showAlert('success', 'Xóa dịch vụ thành công!');
+                await loadServices();
+                await loadStats();
+              } catch (err) {
+                showAlert('danger', err.message);
+              }
             }
           });
         });
       }
 
-      // Modal Dịch vụ
-      const serviceModal = document.getElementById('service-modal');
-      const btnAddService = document.getElementById('btn-add-service');
-      const btnCloseModal = document.getElementById('service-modal-close');
-      const btnCancelModal = document.getElementById('service-modal-cancel');
-
-      btnAddService.addEventListener('click', function () {
-        document.getElementById('service-modal-title').textContent = 'Thêm Dịch Vụ Mới';
-        document.getElementById('service-form').reset();
-        document.getElementById('service-id').value = '';
-        document.getElementById('service-icon').value = '✨';
-        document.getElementById('service-status').value = 'active';
-        serviceModal.classList.add('active');
+      document.getElementById('btn-open-create-service').addEventListener('click', () => {
+        document.getElementById('modal-service-title').textContent = 'Thêm dịch vụ mới';
+        document.getElementById('form-service').reset();
+        document.getElementById('service-edit-id').value = '';
+        document.getElementById('modal-service').style.display = 'flex';
       });
 
-      function closeServiceModal() {
-        serviceModal.classList.remove('active');
-      }
-      btnCloseModal.addEventListener('click', closeServiceModal);
-      btnCancelModal.addEventListener('click', closeServiceModal);
-      serviceModal.addEventListener('click', e => { if (e.target === serviceModal) closeServiceModal(); });
-
-      document.getElementById('service-form').addEventListener('submit', async function (e) {
+      document.getElementById('form-service').addEventListener('submit', async function (e) {
         e.preventDefault();
-        const id = document.getElementById('service-id').value;
-        const payload = {
+        const id = document.getElementById('service-edit-id').value;
+        const serviceData = {
           name: document.getElementById('service-name').value.trim(),
-          description: document.getElementById('service-desc').value.trim(),
-          detail_description: document.getElementById('service-detail').value.trim(),
-          price: parseFloat(document.getElementById('service-price').value),
-          unit: document.getElementById('service-unit').value.trim(),
-          duration_minutes: parseInt(document.getElementById('service-duration').value, 10),
-          icon: document.getElementById('service-icon').value.trim() || '✨',
-          status: document.getElementById('service-status').value
+          base_price: parseFloat(document.getElementById('service-price').value),
+          price_unit: document.getElementById('service-unit').value.trim(),
+          duration_estimate: document.getElementById('service-duration').value.trim(),
+          icon: document.getElementById('service-icon').value.trim() || '🧹',
+          short_description: document.getElementById('service-short-desc').value.trim(),
+          description: document.getElementById('service-desc').value.trim()
         };
-
-        const saveBtn = document.getElementById('btn-save-service');
-        saveBtn.disabled = true;
-        saveBtn.textContent = 'Đang lưu...';
 
         try {
           if (id) {
-            await CleanovaAPI.admin.updateService(id, payload);
-            showAlert('success', 'Đã cập nhật dịch vụ thành công!');
+            await CleanovaAPI.admin.updateService(parseInt(id, 10), serviceData);
+            showAlert('success', 'Cập nhật dịch vụ thành công!');
           } else {
-            await CleanovaAPI.admin.createService(payload);
-            showAlert('success', 'Đã tạo mới dịch vụ thành công!');
+            await CleanovaAPI.admin.createService(serviceData);
+            showAlert('success', 'Thêm dịch vụ mới thành công!');
           }
-          closeServiceModal();
+          document.getElementById('modal-service').style.display = 'none';
           await loadServices();
           await loadStats();
         } catch (err) {
-          showAlert('danger', err.message || 'Lỗi lưu dịch vụ.');
-        } finally {
-          saveBtn.disabled = false;
-          saveBtn.textContent = 'Lưu dịch vụ';
+          alert('Lỗi: ' + err.message);
         }
       });
 
-      // 6. Quản lý Người dùng
-      async function loadUsers() {
-        try {
-          const res = await CleanovaAPI.admin.getAllUsers();
-          allUsers = res.data || [];
-          document.getElementById('tab-count-users').textContent = allUsers.length;
-          renderUsersTable();
-        } catch (err) {
-          console.warn('Lỗi tải người dùng:', err);
-        }
-      }
-
-      function renderUsersTable() {
-        const tbody = document.getElementById('users-table-body');
-        if (allUsers.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: var(--space-2xl);">Không có dữ liệu người dùng.</td></tr>`;
-          return;
-        }
-
-        tbody.innerHTML = allUsers.map(u => {
-          const createdStr = u.created_at ? new Date(u.created_at).toLocaleDateString('vi-VN') : '---';
-          return `
-            <tr>
-              <td><strong>#${u.id}</strong></td>
-              <td><strong>${u.name || '---'}</strong></td>
-              <td>${u.email}</td>
-              <td>${u.phone || 'Chưa cập nhật'}</td>
-              <td style="max-width: 200px; white-space: normal; font-size: 13px;">${u.address || 'Chưa có'}</td>
-              <td>
-                <span class="status-badge ${u.role === 'admin' ? 'status-pending' : 'status-confirmed'}" style="font-size: 11px;">
-                  ${u.role === 'admin' ? '🛡️ Quản trị viên' : '👤 Khách hàng'}
-                </span>
-              </td>
-              <td>${createdStr}</td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      document.getElementById('btn-refresh-users').addEventListener('click', loadUsers);
-
-      // Khởi động tải dữ liệu đồng thời
-      await Promise.all([loadStats(), loadBookings(), loadServices(), loadUsers()]);
+      // ------------------------------------------------------------
+      // KHỞI CHẠY TẢI TOÀN BỘ DỮ LIỆU
+      // ------------------------------------------------------------
+      await loadStats();
+      await loadStaff();
+      await loadBookings();
+      await loadUsers();
+      await loadServices();
     });
   </script>
 </body>
