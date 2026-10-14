@@ -479,7 +479,7 @@ input:focus-visible {
   letter-spacing: -1.05px;
 }
 
-.auth-heading > p:last-child,
+.auth-heading>p:last-child,
 .dashboard-description {
   margin: 8px 0 0;
   color: var(--muted);
@@ -487,7 +487,7 @@ input:focus-visible {
   line-height: 1.6;
 }
 
-.field + .field {
+.field+.field {
   margin-top: 17px;
 }
 
@@ -631,12 +631,12 @@ input:focus-visible {
   transition: border-color .18s ease, background-color .18s ease;
 }
 
-.remember-option input:checked + .custom-checkbox {
+.remember-option input:checked+.custom-checkbox {
   border-color: var(--blue);
   background: var(--blue);
 }
 
-.remember-option input:checked + .custom-checkbox::after {
+.remember-option input:checked+.custom-checkbox::after {
   width: 7px;
   height: 4px;
   content: "";
@@ -645,7 +645,7 @@ input:focus-visible {
   transform: rotate(-45deg) translateY(-1px);
 }
 
-.remember-option input:focus-visible + .custom-checkbox {
+.remember-option input:focus-visible+.custom-checkbox {
   outline: 3px solid rgba(91, 155, 120, .35);
   outline-offset: 2px;
 }
@@ -888,22 +888,45 @@ input:focus-visible {
 }
 
 @keyframes panel-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes content-enter {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes status-enter {
-  from { opacity: 0; transform: translateY(-3px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 900px) {
@@ -1025,6 +1048,7 @@ input:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
