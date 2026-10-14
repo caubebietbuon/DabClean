@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hồ sơ cá nhân & Cài đặt · Cleanova</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="app.css">
+  <script src="api.js"></script>
+  <style>
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: var(--space-2xl);
+    }
+    @media (max-width: 900px) {
+      .profile-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .profile-sidebar {
+      background: var(--color-white);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xl);
+      padding: var(--space-xl);
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .profile-avatar-circle {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+      color: white;
+      font-size: 36px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-md);
+      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
+    }
+    .profile-name {
+      font-size: var(--font-size-xl);
+      font-weight: 800;
+      color: var(--color-text);
+      margin-bottom: var(--space-xs);
+    }
+    .profile-email {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-md);
+    }
+    .profile-menu {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      margin-top: var(--space-xl);
+      text-align: left;
+    }
+    .profile-menu-item {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      color: var(--color-text);
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all var(--transition-fast);
+      border: 1px solid transparent;
+      background: none;
+      width: 100%;
+    }
+    .profile-menu-item:hover {
+      background: var(--color-bg-alt);
+      color: var(--color-primary);
+    }
+    .profile-menu-item.active {
+      background: var(--color-primary-ultra-light);
+      color: var(--color-primary-dark);
+      border-color: var(--color-primary-light);
+      font-weight: 700;
+    }
+    .profile-stat-box {
+      background: var(--color-bg-alt);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      margin-top: var(--space-lg);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-md);
+      text-align: center;
+    }
+    .profile-stat-num {
+      font-size: var(--font-size-xl);
+      font-weight: 800;
+      color: var(--color-primary-dark);
+    }
+    .profile-stat-label {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header scrolled" role="banner">
+    <div class="container">
+      <a href="trangchu.html" class="logo">
+        <svg viewBox="0 0 36 36" fill="none"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/></svg>
+        <span class="logo-text">Cleanova</span>
+      </a>
+      <nav class="nav">
+        <a href="trangchu.html" class="nav-link">Trang chủ</a>
+        <a href="services.html" class="nav-link">Dịch vụ</a>
+        <a href="booking.html" class="nav-link">Đặt lịch</a>
+        <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
+      </nav>
+      <div class="header-actions">
+        <button id="btn-logout" class="btn btn-ghost btn-sm">Đăng xuất</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-wrapper">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">Hồ sơ cá nhân</h1>
+        <p class="page-subtitle">Quản lý thông tin tài khoản, địa chỉ liên hệ và bảo mật mật khẩu.</p>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="alert-box" style="display: none; margin-bottom: var(--space-lg);"></div>
+
+      <div class="profile-layout">
+        <!-- Sidebar hồ sơ -->
+        <aside class="profile-sidebar">
+          <div class="profile-avatar-circle" id="profile-avatar">C</div>
+          <h2 class="profile-name" id="sidebar-name">Đang tải...</h2>
+          <div class="profile-email" id="sidebar-email">...</div>
+          <div>
+            <span class="status-badge status-confirmed" id="sidebar-role">Khách hàng</span>
+          </div>
+
+          <div class="profile-stat-box">
+            <div>
+              <div class="profile-stat-num" id="stat-total-orders">0</div>
+              <div class="profile-stat-label">Tổng đơn đặt</div>
+            </div>
+            <div>
+              <div class="profile-stat-num" id="stat-completed-orders">0</div>
+              <div class="profile-stat-label">Hoàn thành</div>
+            </div>
+          </div>
+
+          <div class="profile-menu">
+            <button class="profile-menu-item active" data-tab="tab-info">
+              <span>👤</span> Thông tin cá nhân
+            </button>
+            <button class="profile-menu-item" data-tab="tab-security">
+              <span>🔒</span> Đổi mật khẩu
+            </button>
+            <a href="my-bookings.html" class="profile-menu-item">
+              <span>📅</span> Lịch sử đặt lịch
+            </a>
+            <div id="admin-portal-link" style="display: none; margin-top: var(--space-sm);">
+              <a href="admin.html" class="profile-menu-item" style="color: #B45309; background: #FEF3C7; border-color: #FCD34D;">
+                <span>⚙️</span> Trang Quản trị Admin
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Nội dung chính -->
+        <section>
+          <!-- Tab 1: Cập nhật thông tin -->
+          <div class="card tab-content active" id="tab-info">
+            <h2 style="font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--space-xs);">Thông tin tài khoản</h2>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-xl);">
+              Cập nhật thông tin liên hệ giúp chúng tôi hỗ trợ và phục vụ bạn chu đáo hơn.
+            </p>
+
+            <form id="form-update-profile">
+              <div style="display: grid; gap: var(--space-lg);">
+                <div class="form-group">
+                  <label class="form-label" for="profile-name">Họ và tên</label>
+                  <input type="text" id="profile-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn An" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="profile-email-input">Địa chỉ Email</label>
+                  <input type="email" id="profile-email-input" class="form-control" disabled style="background: var(--color-bg-alt); cursor: not-allowed;">
+                  <small style="color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; display: block;">Email được dùng làm tài khoản đăng nhập và không thể thay đổi.</small>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="profile-phone">Số điện thoại liên lạc</label>
+                  <input type="tel" id="profile-phone" class="form-control" placeholder="Ví dụ: 0912 345 678" pattern="[0-9]{9,11}">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="profile-address">Địa chỉ nhà / Căn hộ mặc định</label>
+                  <textarea id="profile-address" class="form-control" rows="3" placeholder="Số nhà, đường, phường/xã, quận/huyện..."></textarea>
+                  <small style="color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; display: block;">Địa chỉ này sẽ được tự động điền khi bạn đặt lịch dọn vệ sinh.</small>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end;">
+                  <button type="submit" class="btn btn-primary" id="btn-save-profile">
+                    Lưu thông tin cá nhân
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- Tab 2: Đổi mật khẩu -->
+          <div class="card tab-content" id="tab-security">
+            <h2 style="font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--space-xs);">Bảo mật & Đổi mật khẩu</h2>
+            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-xl);">
+              Khuyến nghị sử dụng mật khẩu có độ dài tối thiểu 6 ký tự để bảo vệ tài khoản.
+            </p>
+
+            <form id="form-change-password">
+              <div style="display: grid; gap: var(--space-lg); max-width: 500px;">
+                <div class="form-group">
+                  <label class="form-label" for="current-password">Mật khẩu hiện tại</label>
+                  <input type="password" id="current-password" class="form-control" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="new-password">Mật khẩu mới</label>
+                  <input type="password" id="new-password" class="form-control" placeholder="Tối thiểu 6 ký tự" minlength="6" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="confirm-new-password">Xác nhận mật khẩu mới</label>
+                  <input type="password" id="confirm-new-password" class="form-control" placeholder="Nhập lại mật khẩu mới" minlength="6" required>
+                </div>
+
+                <div>
+                  <button type="submit" class="btn btn-primary" id="btn-change-password">
+                    Cập nhật mật khẩu mới
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function () {
+      // 1. Kiểm tra đăng nhập
+      if (!CleanovaAPI.auth.isLoggedIn()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      function showAlert(type, message) {
+        const box = document.getElementById('alert-box');
+        box.className = `alert alert-${type}`;
+        box.textContent = message;
+        box.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => { box.style.display = 'none'; }, 5000);
+      }
+
+      // Xử lý tabs
+      const menuItems = document.querySelectorAll('.profile-menu-item[data-tab]');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      menuItems.forEach(item => {
+        item.addEventListener('click', function () {
+          menuItems.forEach(i => i.classList.remove('active'));
+          tabContents.forEach(t => t.classList.remove('active'));
+
+          this.classList.add('active');
+          const targetTab = document.getElementById(this.dataset.tab);
+          if (targetTab) targetTab.classList.add('active');
+        });
+      });
+
+      // Đăng xuất
+      document.getElementById('btn-logout').addEventListener('click', function () {
+        CleanovaAPI.auth.logout();
+      });
+
+      // 2. Load thông tin người dùng từ Backend
+      let currentUser = null;
+      try {
+        const res = await CleanovaAPI.auth.getMe();
+        currentUser = (res.data && res.data.user) ? res.data.user : (res.data || {});
+
+        // Populate sidebar
+        const displayName = currentUser.name || currentUser.email.split('@')[0];
+        document.getElementById('sidebar-name').textContent = displayName;
+        document.getElementById('sidebar-email').textContent = currentUser.email;
+        document.getElementById('profile-avatar').textContent = displayName.charAt(0).toUpperCase();
+
+        const roleBadge = document.getElementById('sidebar-role');
+        if (currentUser.role === 'admin') {
+          roleBadge.textContent = 'Quản trị viên (Admin)';
+          roleBadge.className = 'status-badge status-pending';
+          document.getElementById('admin-portal-link').style.display = 'block';
+        } else {
+          roleBadge.textContent = 'Khách hàng';
+          roleBadge.className = 'status-badge status-confirmed';
+        }
+
+        // Điền form cập nhật thông tin
+        document.getElementById('profile-name').value = currentUser.name || '';
+        document.getElementById('profile-email-input').value = currentUser.email || '';
+        document.getElementById('profile-phone').value = currentUser.phone || '';
+        document.getElementById('profile-address').value = currentUser.address || '';
+
+      } catch (err) {
+        showAlert('danger', 'Không thể tải thông tin hồ sơ: ' + (err.message || 'Lỗi server'));
+      }
+
+      // 3. Tải thống kê số đơn đặt
+      try {
+        const bookingsRes = await CleanovaAPI.bookings.getMyBookings();
+        const bookings = bookingsRes.data || [];
+        document.getElementById('stat-total-orders').textContent = bookings.length;
+        const completed = bookings.filter(b => b.status === 'completed').length;
+        document.getElementById('stat-completed-orders').textContent = completed;
+      } catch (err) {
+        console.warn('Không thể tải thống kê đơn:', err);
+      }
+
+      // 4. Submit cập nhật hồ sơ
+      const formProfile = document.getElementById('form-update-profile');
+      formProfile.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-profile');
+        btn.disabled = true;
+        btn.textContent = 'Đang lưu...';
+
+        try {
+          const name = document.getElementById('profile-name').value.trim();
+          const phone = document.getElementById('profile-phone').value.trim();
+          const address = document.getElementById('profile-address').value.trim();
+
+          const updateRes = await CleanovaAPI.auth.updateProfile({ name, phone, address });
+          showAlert('success', 'Cập nhật thông tin hồ sơ thành công!');
+
+          // Cập nhật lại giao diện
+          if (updateRes.data && updateRes.data.user) {
+            const updated = updateRes.data.user;
+            document.getElementById('sidebar-name').textContent = updated.name;
+            document.getElementById('profile-avatar').textContent = (updated.name || 'C').charAt(0).toUpperCase();
+          }
+        } catch (err) {
+          showAlert('danger', err.message || 'Lỗi khi cập nhật hồ sơ.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Lưu thông tin cá nhân';
+        }
+      });
+
+      // 5. Submit đổi mật khẩu
+      const formPassword = document.getElementById('form-change-password');
+      formPassword.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-new-password').value;
+
+        if (newPassword !== confirmPassword) {
+          showAlert('danger', 'Mật khẩu mới và xác nhận mật khẩu không khớp!');
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          showAlert('danger', 'Mật khẩu mới phải có ít nhất 6 ký tự!');
+          return;
+        }
+
+        const btn = document.getElementById('btn-change-password');
+        btn.disabled = true;
+        btn.textContent = 'Đang cập nhật...';
+
+        try {
+          await CleanovaAPI.auth.changePassword({ currentPassword, newPassword });
+          showAlert('success', 'Đổi mật khẩu thành công! Hãy ghi nhớ mật khẩu mới cho lần đăng nhập tới.');
+          formPassword.reset();
+        } catch (err) {
+          showAlert('danger', err.message || 'Mật khẩu hiện tại không chính xác.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Cập nhật mật khẩu mới';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

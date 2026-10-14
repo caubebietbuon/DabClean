@@ -1,0 +1,90 @@
+-- ============================================================
+-- CLEANOVA DATABASE SEED DATA (Dữ liệu mẫu khởi tạo)
+-- ============================================================
+
+USE cleanova_db;
+
+-- ------------------------------------------------------------
+-- 1. DỮ LIỆU TÀI KHOẢN MẪU (users)
+-- Mật khẩu đã được mã hóa bằng bcrypt (saltRounds = 10):
+-- - demo@nova.app / NovaDemo2026!
+-- - admin@cleanova.vn / Admin@Cleanova2026!
+-- ------------------------------------------------------------
+INSERT INTO users (id, name, email, password, phone, address, role) VALUES
+(1, 'Quản Trị Viên Cleanova', 'admin@cleanova.vn', '$2a$10$ZZn8Td.6jh83f7FySaJ/1OnHyXgbyE2yC9rmaOaiHv6sq4Hiraoja', '0912345678', 'Tòa nhà Cleanova, Cầu Giấy, Hà Nội', 'admin'),
+(2, 'Nguyễn Tiến Đức', 'demo@nova.app', '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', '0987654321', 'Số 25 Phố Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội', 'user'),
+(3, 'Trần Thu Hà', 'ha.tran@example.com', '$2a$10$getSjtuIQ9QP075adQ/jIe9o3SnWH/F3DzYo7m3ujMxu98fIq1DVS', '0901122334', 'Chung cư Vinhomes Smart City, Nam Từ Liêm, Hà Nội', 'user');
+
+-- ------------------------------------------------------------
+-- 2. DỮ LIỆU DỊCH VỤ VỆ SINH CHỦ ĐẠO (services)
+-- Khớp hoàn toàn với các gói dịch vụ trên Landing Page
+-- ------------------------------------------------------------
+INSERT INTO services (id, name, slug, description, short_description, base_price, price_unit, duration_estimate, icon, is_active) VALUES
+(1, 
+ 'Dọn dẹp nhà cửa theo giờ', 
+ 'don-dep-theo-gio', 
+ 'Dịch vụ dọn dẹp linh hoạt theo nhu cầu thực tế: lau dọn phòng khách, hút bụi thảm, cọ rửa nhà vệ sinh, lau sàn và sắp xếp đồ dùng gọn gàng. Nhân viên mang đầy đủ dụng cụ vệ sinh chuyên dụng.', 
+ 'Lau chùi, dọn phòng khách, phòng ngủ, nhà bếp, toilet. Linh hoạt theo nhu cầu.', 
+ 150000.00, 
+ 'giờ', 
+ '2 - 4 giờ', 
+ '⏱️', 
+ 1),
+
+(2, 
+ 'Tổng vệ sinh Deep Cleaning', 
+ 'tong-ve-sinh-deep-cleaning', 
+ 'Gói vệ sinh toàn diện và chuyên sâu mọi ngóc ngách: vệ sinh trần, tường, khe cửa, lau kính hai mặt, tẩy cặn canxi nhà tắm, khử dầu mỡ bếp ăn công nghiệp. Phù hợp cho nhà ở định kỳ tháng/quý.', 
+ 'Vệ sinh toàn bộ diện tích nhà, làm sạch sâu mọi ngóc ngách. Chuẩn định kỳ.', 
+ 500000.00, 
+ 'lần', 
+ '4 - 6 giờ', 
+ '✨', 
+ 1),
+
+(3, 
+ 'Vệ sinh văn phòng & Workspace', 
+ 've-sinh-van-phong', 
+ 'Giải pháp vệ sinh định kỳ cho doanh nghiệp, công ty khởi nghiệp và không gian làm việc chung: lau bàn làm việc, hút bụi sàn thảm, đổ rác, vệ sinh pantry và phòng họp. Đảm bảo môi trường làm việc chuẩn 5 sao.', 
+ 'Định kỳ cho doanh nghiệp, đảm bảo môi trường làm việc sạch đẹp, chuyên nghiệp.', 
+ 300000.00, 
+ 'lần', 
+ '2 - 3 giờ', 
+ '🏢', 
+ 1),
+
+(4, 
+ 'Giặt Sofa, Nệm & Rèm cửa', 
+ 'giat-sofa-nem-rem', 
+ 'Quy trình giặt hút bụi chuyên sâu kết hợp phun hơi nước nóng 140°C để diệt khuẩn, tiêu diệt 99.9% rệp mạt bụi và vi nấm ký sinh trên bề mặt vải nỉ, da hoặc cao su tự nhiên.', 
+ 'Hút bụi chuyên sâu, khử khuẩn bằng hơi nước nóng. Trả lại vẻ mới cho nội thất.', 
+ 400000.00, 
+ 'món', 
+ '1 - 2 giờ', 
+ '🛋️', 
+ 1),
+
+(5, 
+ 'Vệ sinh sau xây dựng', 
+ 've-sinh-sau-xay-dung', 
+ 'Thu gom rác thô sau thi công, tẩy sạch sơn bám trên sàn đá/gỗ, hút sạch bụi mịn công nghiệp bằng máy công suất lớn và khử mùi xi măng, sơn tường trước khi gia chủ dọn vào ở.', 
+ 'Dọn dẹp thô, xử lý vết sơn, bụi mịn sau thi công. Sẵn sàng cho ngày dọn về.', 
+ 8000.00, 
+ 'm²', 
+ '1 - 2 ngày', 
+ '🏗️', 
+ 1);
+
+-- ------------------------------------------------------------
+-- 3. DỮ LIỆU ĐƠN ĐẶT LỊCH MẪU (bookings)
+-- ------------------------------------------------------------
+INSERT INTO bookings (id, booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, payment_status, status) VALUES
+(1, 'CNV-2026-0001', 2, 1, '2026-10-18', '08:30:00', 'medium', 'weekly', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Nhà có mèo cưng, vui lòng dùng dung dịch sinh học an toàn', 425000.00, 'CLEANOVA20', 'cash', 'unpaid', 'confirmed'),
+(2, 'CNV-2026-0002', 2, 4, '2026-10-22', '14:00:00', 'small', 'once', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Giặt 1 bộ sofa góc L nỉ nhung', 320000.00, 'CLEANOVA20', 'bank_transfer', 'paid', 'completed'),
+(3, 'CNV-2026-0003', 3, 2, '2026-10-25', '09:00:00', 'large', 'once', 'Tòa S2.05 Vinhomes Smart City, Hà Nội', '0901122334', 'Cần tổng vệ sinh trước khi đón bố mẹ lên chơi', 2000000.00, NULL, 'momo', 'paid', 'pending');
+
+-- ------------------------------------------------------------
+-- 4. DỮ LIỆU ĐÁNH GIÁ (reviews)
+-- ------------------------------------------------------------
+INSERT INTO reviews (id, booking_id, user_id, service_id, rating, comment) VALUES
+(1, 2, 2, 4, 5, 'Chuyên viên làm việc rất cẩn thận và đúng giờ. Bộ sofa màu ghi sáng nhà mình bị ố cafe mà sau khi giặt xong sạch bong như mới!');
