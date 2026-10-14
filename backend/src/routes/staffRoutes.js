@@ -13,10 +13,12 @@ router.use(verifyToken, staffRequired);
 router.get('/tasks', staffController.getMyTasks);
 router.get('/tasks/:id', staffController.getTaskDetail);
 router.patch('/tasks/:id/status', staffController.updateTaskStatus);
+router.put('/tasks/:id/status', staffController.updateTaskStatus);
 
 // 2. Hồ sơ cá nhân nhân viên
 router.get('/profile', staffController.getProfile);
 router.patch('/profile', staffController.updateProfile);
+router.put('/profile', staffController.updateProfile);
 router.put('/change-password', staffController.changePassword);
 
 module.exports = router;

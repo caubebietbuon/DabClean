@@ -11,8 +11,8 @@ const app = express();
 // Middleware cơ bản
 app.use(cors({
   origin: '*', // Trong môi trường dev, cho phép gọi từ bất kỳ origin nào (Live Server 5500, 8080, v.v.)
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 app.use(express.json());
