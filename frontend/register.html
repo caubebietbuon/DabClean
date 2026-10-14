@@ -9,35 +9,238 @@
     <link rel="stylesheet" href="login.css">
     <script src="api.js"></script>
     <style>
-      .register-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
+      /* Bổ sung phong cách cao cấp cho trang Đăng ký Cleanova */
+      .app-shell {
+        min-height: 780px;
+        max-width: 1180px;
       }
-      @media (max-width: 600px) {
-        .register-grid {
-          grid-template-columns: 1fr;
-        }
+
+      .content-panel {
+        padding: 38px 48px 30px;
+        overflow-y: auto;
       }
-      .back-to-home {
+
+      .auth-card.register-card {
+        width: min(100%, 460px);
+        margin: auto;
+      }
+
+      .panel-topbar {
+        position: relative;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 24px;
+      }
+
+      .back-nav-link {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        color: #059669;
+        gap: 8px;
+        color: #447b60;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: #edf6f1;
+        transition: all 0.2s ease;
+      }
+
+      .back-nav-link:hover {
+        background: #dff0e6;
+        color: #2f5f48;
+        transform: translateX(-3px);
+      }
+
+      .back-nav-link svg {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.2s ease;
+      }
+
+      .back-nav-link:hover svg {
+        transform: translateX(-2px);
+      }
+
+      .form-grid-2col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      @media (max-width: 540px) {
+        .form-grid-2col {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+        .content-panel {
+          padding: 24px 20px;
+        }
+      }
+
+      /* Card quyền lợi thành viên ở Panel bên trái */
+      .perks-list {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin: 28px 0 20px;
+      }
+
+      .perk-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 15px rgba(35, 48, 82, 0.04);
+        transition: transform 0.2s ease, background-color 0.2s ease;
+      }
+
+      .perk-item:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.85);
+      }
+
+      .perk-icon-wrap {
+        width: 32px;
+        height: 32px;
+        flex-shrink: 0;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: #e2f4ea;
+        color: #10B981;
+        font-size: 16px;
+      }
+
+      .perk-text h4 {
+        margin: 0 0 2px;
+        font-size: 13px;
+        font-weight: 700;
+        color: #1d2433;
+      }
+
+      .perk-text p {
+        margin: 0;
+        font-size: 11.5px;
+        color: #636d7e;
+        line-height: 1.4;
+      }
+
+      /* Thước đo độ mạnh mật khẩu (Password Strength Meter) */
+      .password-meter-wrap {
+        margin-top: 6px;
+      }
+
+      .password-meter-bars {
+        display: flex;
+        gap: 4px;
+        height: 4px;
+        margin-bottom: 5px;
+      }
+
+      .meter-segment {
+        flex: 1;
+        height: 100%;
+        border-radius: 2px;
+        background: #e5e9f1;
+        transition: background-color 0.3s ease;
+      }
+
+      .meter-label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 11px;
+      }
+
+      .meter-hint {
+        color: #8c95a7;
+      }
+
+      .meter-strength-text {
+        font-weight: 700;
+      }
+
+      /* Màu sắc trạng thái mật khẩu */
+      .meter-strength-1 .meter-segment:nth-child(1) { background: #ef4444; }
+      .meter-strength-2 .meter-segment:nth-child(-n+2) { background: #f59e0b; }
+      .meter-strength-3 .meter-segment:nth-child(-n+3) { background: #10b981; }
+      .meter-strength-4 .meter-segment:nth-child(-n+4) { background: #059669; }
+
+      .text-strength-1 { color: #ef4444; }
+      .text-strength-2 { color: #f59e0b; }
+      .text-strength-3 { color: #10b981; }
+      .text-strength-4 { color: #059669; }
+
+      /* Khung điều khoản */
+      .terms-wrap {
+        margin: 16px 0 18px;
+        font-size: 12px;
+        line-height: 1.5;
+        color: #636d7e;
+      }
+
+      .terms-wrap a {
+        color: #447b60;
         font-weight: 600;
-        font-size: 0.875rem;
-        margin-bottom: 20px;
         text-decoration: none;
       }
-      .back-to-home:hover {
+
+      .terms-wrap a:hover {
         text-decoration: underline;
+      }
+
+      /* Hộp thông báo trạng thái form */
+      .form-alert {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 12.5px;
+        font-weight: 600;
+        margin-top: 16px;
+        animation: alert-slide 0.3s ease both;
+      }
+
+      .form-alert.show {
+        display: flex;
+      }
+
+      .form-alert.success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+      }
+
+      .form-alert.error {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+      }
+
+      @keyframes alert-slide {
+        from { opacity: 0; transform: translateY(-6px); }
+        to { opacity: 1; transform: translateY(0); }
       }
     </style>
   </head>
   <body>
     <main class="app-shell">
+      <!-- Cột trái: Giới thiệu thương hiệu & Đặc quyền thành viên -->
       <section class="brand-panel" aria-labelledby="brand-title">
-        <a class="brand" href="trangchu.html" aria-label="Cleanova - Trang chủ">
+        <a class="brand" href="trangchu.html" aria-label="Cleanova - Trang chủ" data-i18n-aria-label="brandHome">
           <span class="brand-mark" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
               <path d="m4.5 14.4 11.5-9 11.5 9V27H4.5V14.4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -49,159 +252,531 @@
         </a>
 
         <div class="brand-copy">
-          <p class="eyebrow">KHÔNG GIAN SỐNG XANH & SẠCH</p>
-          <h1 id="brand-title">Khởi đầu thảnh thơi cùng Cleanova.</h1>
-          <p class="brand-description">Tạo tài khoản chỉ trong 30 giây để trải nghiệm dịch vụ dọn dẹp nhà cửa chuẩn 5 sao và nhận ưu đãi 20% cho lần đặt đầu tiên.</p>
+          <p class="eyebrow" data-i18n="brandEyebrow">ĐẶC QUYỀN THÀNH VIÊN CLEANOVA</p>
+          <h1 id="brand-title" data-i18n="brandTitle">Không gian sạch hơn, cuộc sống tốt hơn.</h1>
+          <p class="brand-description" data-i18n="brandDescription">Đăng ký chỉ mất 30 giây để bắt đầu trải nghiệm dịch vụ vệ sinh chuẩn 5 sao cùng hàng ngàn ưu đãi hấp dẫn.</p>
         </div>
 
-        <div class="illustration" aria-hidden="true">
+        <!-- Danh sách đặc quyền thành viên cao cấp -->
+        <div class="perks-list">
+          <div class="perk-item">
+            <div class="perk-icon-wrap">🎁</div>
+            <div class="perk-text">
+              <h4 data-i18n="perk1Title">Giảm ngay 20% đơn đầu</h4>
+              <p data-i18n="perk1Desc">Áp dụng mã CLEANOVA20 ngay sau khi đăng ký tài khoản thành công.</p>
+            </div>
+          </div>
+
+          <div class="perk-item">
+            <div class="perk-icon-wrap">🛡️</div>
+            <div class="perk-text">
+              <h4 data-i18n="perk2Title">Bảo hiểm an tâm 100%</h4>
+              <p data-i18n="perk2Desc">Cam kết bồi hoàn và bảo vệ tài sản nhà cửa tuyệt đối trong mọi phiên làm việc.</p>
+            </div>
+          </div>
+
+          <div class="perk-item">
+            <div class="perk-icon-wrap">⭐</div>
+            <div class="perk-text">
+              <h4 data-i18n="perk3Title">Chuyên viên 5 sao kiểm định</h4>
+              <p data-i18n="perk3Desc">Nhân viên được tuyển chọn kỹ lưỡng, đào tạo bài bản và lý lịch minh bạch.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hình minh họa động Cleanova -->
+        <div class="illustration" aria-hidden="true" style="margin-top: auto;">
           <div class="orbit orbit--outer"></div>
           <div class="orbit orbit--inner"></div>
           <div class="planet planet--large"></div>
           <div class="planet planet--small"></div>
           <div class="spark spark--one"></div>
           <div class="spark spark--two"></div>
-          <div class="workspace-card">
-            <div class="workspace-card__top">
-              <span class="mini-logo"></span>
-              <span class="mini-lines"><i></i><i></i></span>
-              <span class="mini-avatar"></span>
-            </div>
-            <div class="workspace-card__heading"></div>
-            <div class="workspace-card__subheading"></div>
-            <div class="workspace-card__calendar">
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-            </div>
-          </div>
-          <div class="floating-note">
+          <div class="floating-note" style="bottom: 15px; right: 20px;">
             <span class="note-check">✓</span>
             <span class="note-lines"><i></i><i></i></span>
           </div>
         </div>
 
-        <div class="brand-footer">
-          <span>Chăm nhà thảnh thơi, mỗi ngày.</span>
-          <span class="dot-separator">•</span>
-          <span>Dịch vụ tận tâm 24/7</span>
-        </div>
+        <p class="brand-footer" data-i18n="brandFooter">Chăm nhà thảnh thơi, mỗi ngày • Dịch vụ tận tâm 24/7</p>
       </section>
 
-      <section class="auth-panel" aria-labelledby="form-title">
-        <header class="auth-panel__header">
-          <a href="trangchu.html" class="back-to-home">← Về Trang chủ</a>
-          <div class="language-switch" role="group" aria-label="Chọn ngôn ngữ">
-            <button class="language-button active" type="button" data-language="vi">VI</button>
-            <button class="language-button" type="button" data-language="en">EN</button>
-          </div>
-        </header>
+      <!-- Cột phải: Form Đăng ký người dùng -->
+      <section class="content-panel" aria-label="Đăng ký tài khoản" data-i18n-aria-label="registerAria">
+        <!-- Thanh điều hướng trên cùng -->
+        <div class="panel-topbar">
+          <a href="trangchu.html" class="back-nav-link" aria-label="Quay lại Trang chủ">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span data-i18n="backHome">Về Trang chủ</span>
+          </a>
 
-        <div class="auth-card" id="register-view">
-          <p class="eyebrow">THÀNH VIÊN MỚI</p>
-          <h2 id="form-title">Đăng ký tài khoản</h2>
-          <p class="form-description">Điền thông tin để bắt đầu đặt lịch dịch vụ dễ dàng.</p>
+          <!-- Chuyển đổi ngôn ngữ VI / EN -->
+          <div class="language-switch" role="group" aria-label="Chọn ngôn ngữ" data-i18n-aria-label="languageLabel">
+            <button class="language-button" type="button" data-language="vi" aria-pressed="true" aria-label="Tiếng Việt">VI</button>
+            <button class="language-button" type="button" data-language="en" aria-pressed="false" aria-label="English">EN</button>
+          </div>
+        </div>
+
+        <div class="auth-card register-card">
+          <div class="auth-heading">
+            <p class="eyebrow" data-i18n="formEyebrow">THÀNH VIÊN MỚI</p>
+            <h2 data-i18n="formTitle">Tạo tài khoản mới</h2>
+            <p data-i18n="formDescription">Nhập thông tin bên dưới để đặt lịch và quản lý dịch vụ dễ dàng.</p>
+          </div>
 
           <form id="register-form" novalidate>
-            <div class="field-group">
-              <label for="name">Họ và tên <span style="color:#ef4444">*</span></label>
-              <input id="name" name="name" type="text" autocomplete="name" placeholder="Nguyễn Văn A" required>
-              <p class="field-error" id="name-error" aria-live="polite"></p>
+            <!-- Hàng 1: Họ tên + Số điện thoại -->
+            <div class="form-grid-2col">
+              <div class="field">
+                <label for="name" data-i18n="nameLabel">Họ và tên <span style="color:#ef4444">*</span></label>
+                <div class="input-wrap">
+                  <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                  <input id="name" name="name" type="text" autocomplete="name" placeholder="Nguyễn Văn A" data-i18n-placeholder="namePlaceholder" required>
+                </div>
+                <p class="field-error" id="name-error" aria-live="polite"></p>
+              </div>
+
+              <div class="field">
+                <label for="phone" data-i18n="phoneLabel">Số điện thoại</label>
+                <div class="input-wrap">
+                  <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                  <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="0987 654 321" data-i18n-placeholder="phonePlaceholder">
+                </div>
+                <p class="field-error" id="phone-error" aria-live="polite"></p>
+              </div>
             </div>
 
-            <div class="field-group">
-              <label for="email">Email đăng nhập <span style="color:#ef4444">*</span></label>
-              <input id="email" name="email" type="email" autocomplete="email" placeholder="ban@example.com" required>
+            <!-- Hàng 2: Email -->
+            <div class="field">
+              <label for="email" data-i18n="emailLabel">Email đăng nhập <span style="color:#ef4444">*</span></label>
+              <div class="input-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3.25" y="5.25" width="17.5" height="13.5" rx="3"/>
+                  <path d="m5 7 7 5.5L19 7"/>
+                </svg>
+                <input id="email" name="email" type="email" autocomplete="email" placeholder="ban@example.com" data-i18n-placeholder="emailPlaceholder" required>
+              </div>
               <p class="field-error" id="email-error" aria-live="polite"></p>
             </div>
 
-            <div class="field-group">
-              <label for="password">Mật khẩu (tối thiểu 6 ký tự) <span style="color:#ef4444">*</span></label>
-              <div class="password-field">
-                <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Nhập mật khẩu" required minlength="6">
-                <button class="password-toggle" id="password-toggle" type="button" aria-label="Hiện mật khẩu">👁️</button>
+            <!-- Hàng 3: Địa chỉ nhà (Tùy chọn) -->
+            <div class="field">
+              <label for="address" data-i18n="addressLabel">Địa chỉ nhà (Quận/Huyện)</label>
+              <div class="input-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                  <circle cx="12" cy="10" r="3"/>
+                </svg>
+                <input id="address" name="address" type="text" autocomplete="street-address" placeholder="VD: 25 Phố Duy Tân, Cầu Giấy" data-i18n-placeholder="addressPlaceholder">
               </div>
-              <p class="field-error" id="password-error" aria-live="polite"></p>
+              <p class="field-error" id="address-error" aria-live="polite"></p>
             </div>
 
-            <div class="register-grid">
-              <div class="field-group">
-                <label for="phone">Số điện thoại</label>
-                <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="0987654321">
+            <!-- Hàng 4: Mật khẩu + Nhập lại mật khẩu -->
+            <div class="form-grid-2col">
+              <div class="field">
+                <label for="password" data-i18n="passwordLabel">Mật khẩu <span style="color:#ef4444">*</span></label>
+                <div class="input-wrap">
+                  <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="4.25" y="10" width="15.5" height="10.25" rx="2.5"/>
+                    <path d="M8 10V7.25a4 4 0 0 1 8 0V10M12 14v2.5"/>
+                  </svg>
+                  <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Tối thiểu 6 ký tự" data-i18n-placeholder="passwordPlaceholder" required minlength="6">
+                  <button class="password-toggle" id="password-toggle" type="button" aria-label="Hiện mật khẩu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M2.75 12s3.2-5.25 9.25-5.25S21.25 12 21.25 12 18.05 17.25 12 17.25 2.75 12 2.75 12Z"/>
+                      <circle cx="12" cy="12" r="2.5"/>
+                    </svg>
+                  </button>
+                </div>
+                <!-- Thanh hiển thị độ mạnh mật khẩu -->
+                <div class="password-meter-wrap" id="password-meter-wrap" style="display: none;">
+                  <div class="password-meter-bars" id="password-meter-bars">
+                    <span class="meter-segment"></span>
+                    <span class="meter-segment"></span>
+                    <span class="meter-segment"></span>
+                    <span class="meter-segment"></span>
+                  </div>
+                  <div class="meter-label-row">
+                    <span class="meter-hint" data-i18n="passStrengthHint">Độ an toàn:</span>
+                    <span class="meter-strength-text" id="meter-strength-text">Yếu</span>
+                  </div>
+                </div>
+                <p class="field-error" id="password-error" aria-live="polite"></p>
               </div>
-              <div class="field-group">
-                <label for="address">Địa chỉ nhà</label>
-                <input id="address" name="address" type="text" autocomplete="street-address" placeholder="Quận/Huyện, Hà Nội">
+
+              <div class="field">
+                <label for="confirm-password" data-i18n="confirmPasswordLabel">Xác nhận mật khẩu <span style="color:#ef4444">*</span></label>
+                <div class="input-wrap">
+                  <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
+                  <input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" placeholder="Nhập lại mật khẩu" data-i18n-placeholder="confirmPasswordPlaceholder" required>
+                </div>
+                <p class="field-error" id="confirm-password-error" aria-live="polite"></p>
               </div>
             </div>
 
-            <button class="primary-button" id="register-button" type="submit" style="margin-top: 10px;">
-              <span class="button-label">Tạo tài khoản Cleanova</span>
+            <!-- Điều khoản dịch vụ -->
+            <div class="terms-wrap">
+              <label class="remember-option" style="align-items: flex-start; gap: 10px;">
+                <input id="agree-terms" name="agree-terms" type="checkbox" checked required>
+                <span class="custom-checkbox" aria-hidden="true" style="margin-top: 1px;"></span>
+                <span>
+                  <span data-i18n="agreePrefix">Tôi đồng ý với</span>
+                  <a href="trangchu.html#faq" target="_blank" data-i18n="termsLink">Điều khoản dịch vụ</a>
+                  <span data-i18n="andWord">và</span>
+                  <a href="trangchu.html#faq" target="_blank" data-i18n="privacyLink">Chính sách quyền riêng tư</a>
+                  <span data-i18n="agreeSuffix">của Cleanova.</span>
+                </span>
+              </label>
+            </div>
+
+            <!-- Nút gửi form -->
+            <button class="primary-button" id="register-button" type="submit">
+              <span class="button-label" data-i18n="submitRegister">Tạo tài khoản Cleanova</span>
+              <span class="button-spinner" aria-hidden="true"></span>
             </button>
-            <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+
+            <!-- Hộp thông báo kết quả (Success / Error) -->
+            <div class="form-alert" id="form-alert" role="status" aria-live="polite">
+              <span class="alert-icon"></span>
+              <span class="alert-text"></span>
+            </div>
           </form>
 
+          <!-- Hoặc đăng nhập nhanh -->
+          <div class="divider"><span data-i18n="or">HOẶC</span></div>
+
+          <button class="google-button" id="google-register-btn" type="button">
+            <svg class="google-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+            </svg>
+            <span data-i18n="googleButton">Đăng ký nhanh bằng Google</span>
+          </button>
+
+          <!-- Liên kết sang Đăng nhập -->
           <p class="signup-prompt" style="margin-top: 24px;">
-            <span>Đã có tài khoản?</span> 
-            <a class="text-link" href="login.html" style="font-weight:700;">Đăng nhập ngay</a>
+            <span data-i18n="hasAccountPrompt">Đã có tài khoản?</span> 
+            <a class="text-link" href="login.html" style="font-weight: 700; margin-left: 6px;" data-i18n="signInLink">Đăng nhập ngay →</a>
           </p>
         </div>
 
-        <div class="content-footer">© 2026 Cleanova. Nhà sạch, lòng an yên.</div>
+        <div class="content-footer" data-i18n="contentFooter">© 2026 Cleanova. Không gian sạch hơn, cuộc sống tốt hơn.</div>
       </section>
     </main>
 
     <script>
       'use strict';
-      const form = document.getElementById('register-form');
-      const nameInput = document.getElementById('name');
-      const emailInput = document.getElementById('email');
-      const passwordInput = document.getElementById('password');
-      const phoneInput = document.getElementById('phone');
-      const addressInput = document.getElementById('address');
-      const submitBtn = document.getElementById('register-button');
-      const formStatus = document.getElementById('form-status');
+
+      // ============================================================
+      // BỘ TỪ ĐIỂN SONG NGỮ (VI / EN)
+      // ============================================================
+      const registerTranslations = {
+        vi: {
+          pageTitle: "Đăng ký tài khoản · Cleanova",
+          pageDescription: "Đăng ký tài khoản Cleanova để đặt lịch và quản lý dịch vụ vệ sinh nhà cửa chuyên nghiệp.",
+          brandHome: "Cleanova - Trang chủ",
+          brandEyebrow: "ĐẶC QUYỀN THÀNH VIÊN CLEANOVA",
+          brandTitle: "Không gian sạch hơn, cuộc sống tốt hơn.",
+          brandDescription: "Đăng ký chỉ mất 30 giây để bắt đầu trải nghiệm dịch vụ vệ sinh chuẩn 5 sao cùng hàng ngàn ưu đãi hấp dẫn.",
+          brandFooter: "Chăm nhà thảnh thơi, mỗi ngày • Dịch vụ tận tâm 24/7",
+          perk1Title: "Giảm ngay 20% đơn đầu",
+          perk1Desc: "Áp dụng mã CLEANOVA20 ngay sau khi đăng ký tài khoản thành công.",
+          perk2Title: "Bảo hiểm an tâm 100%",
+          perk2Desc: "Cam kết bồi hoàn và bảo vệ tài sản nhà cửa tuyệt đối trong mọi phiên làm việc.",
+          perk3Title: "Chuyên viên 5 sao kiểm định",
+          perk3Desc: "Nhân viên được tuyển chọn kỹ lưỡng, đào tạo bài bản và lý lịch minh bạch.",
+          registerAria: "Đăng ký tài khoản",
+          backHome: "Về Trang chủ",
+          languageLabel: "Chọn ngôn ngữ",
+          formEyebrow: "THÀNH VIÊN MỚI",
+          formTitle: "Tạo tài khoản mới",
+          formDescription: "Nhập thông tin bên dưới để đặt lịch và quản lý dịch vụ dễ dàng.",
+          nameLabel: "Họ và tên *",
+          namePlaceholder: "Nguyễn Văn A",
+          phoneLabel: "Số điện thoại",
+          phonePlaceholder: "0987 654 321",
+          emailLabel: "Email đăng nhập *",
+          emailPlaceholder: "ban@example.com",
+          addressLabel: "Địa chỉ nhà (Quận/Huyện)",
+          addressPlaceholder: "VD: 25 Phố Duy Tân, Cầu Giấy",
+          passwordLabel: "Mật khẩu *",
+          passwordPlaceholder: "Tối thiểu 6 ký tự",
+          confirmPasswordLabel: "Xác nhận mật khẩu *",
+          confirmPasswordPlaceholder: "Nhập lại mật khẩu",
+          passStrengthHint: "Độ an toàn:",
+          agreePrefix: "Tôi đồng ý với",
+          termsLink: "Điều khoản dịch vụ",
+          andWord: "và",
+          privacyLink: "Chính sách quyền riêng tư",
+          agreeSuffix: "của Cleanova.",
+          submitRegister: "Tạo tài khoản Cleanova",
+          submitting: "Đang tạo tài khoản...",
+          or: "HOẶC",
+          googleButton: "Đăng ký nhanh bằng Google",
+          hasAccountPrompt: "Đã có tài khoản?",
+          signInLink: "Đăng nhập ngay →",
+          contentFooter: "© 2026 Cleanova. Không gian sạch hơn, cuộc sống tốt hơn.",
+          errNameRequired: "Vui lòng nhập họ và tên của bạn.",
+          errEmailRequired: "Vui lòng nhập địa chỉ email hợp lệ.",
+          errPassShort: "Mật khẩu phải có độ dài từ 6 ký tự trở lên.",
+          errPassMismatch: "Xác nhận mật khẩu không khớp với mật khẩu đã nhập.",
+          errTermsRequired: "Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục.",
+          googleDemoNotice: "Tính năng đăng ký qua tài khoản Google đang trong giai đoạn phát triển.",
+          successRedirect: "Đăng ký thành công! Đang chuyển hướng bạn đến trang chủ Cleanova..."
+        },
+        en: {
+          pageTitle: "Create Account · Cleanova",
+          pageDescription: "Register for Cleanova to book and manage professional home cleaning services.",
+          brandHome: "Cleanova Home",
+          brandEyebrow: "CLEANOVA MEMBER PRIVILEGES",
+          brandTitle: "A cleaner space, a better life.",
+          brandDescription: "Sign up in 30 seconds to enjoy 5-star home cleaning services and exclusive new member perks.",
+          brandFooter: "Enjoy feeling at home, every single day • 24/7 Dedicated Support",
+          perk1Title: "20% Off Your First Booking",
+          perk1Desc: "Use coupon code CLEANOVA20 immediately upon successful registration.",
+          perk2Title: "100% Peace of Mind Insurance",
+          perk2Desc: "Complete protection and guaranteed reimbursement for all household belongings.",
+          perk3Title: "5-Star Verified Professionals",
+          perk3Desc: "Thoroughly background-checked and professionally certified cleaning experts.",
+          registerAria: "Create Account",
+          backHome: "Back to Home",
+          languageLabel: "Select language",
+          formEyebrow: "NEW MEMBER",
+          formTitle: "Create an Account",
+          formDescription: "Fill in the details below to easily book and manage your cleaning services.",
+          nameLabel: "Full Name *",
+          namePlaceholder: "John Doe",
+          phoneLabel: "Phone Number",
+          phonePlaceholder: "0987 654 321",
+          emailLabel: "Email Address *",
+          emailPlaceholder: "you@example.com",
+          addressLabel: "Home Address (District/City)",
+          addressPlaceholder: "e.g. 25 Duy Tan, Cau Giay",
+          passwordLabel: "Password *",
+          passwordPlaceholder: "At least 6 characters",
+          confirmPasswordLabel: "Confirm Password *",
+          confirmPasswordPlaceholder: "Re-enter password",
+          passStrengthHint: "Strength:",
+          agreePrefix: "I agree to the",
+          termsLink: "Terms of Service",
+          andWord: "and",
+          privacyLink: "Privacy Policy",
+          agreeSuffix: "of Cleanova.",
+          submitRegister: "Create Cleanova Account",
+          submitting: "Creating your account...",
+          or: "OR",
+          googleButton: "Sign up with Google",
+          hasAccountPrompt: "Already have an account?",
+          signInLink: "Sign In Now →",
+          contentFooter: "© 2026 Cleanova. A Cleaner Space, A Better Life.",
+          errNameRequired: "Please enter your full name.",
+          errEmailRequired: "Please enter a valid email address.",
+          errPassShort: "Password must be at least 6 characters long.",
+          errPassMismatch: "Passwords do not match.",
+          errTermsRequired: "Please agree to the Terms of Service to proceed.",
+          googleDemoNotice: "Google sign-up integration is currently in demo mode.",
+          successRedirect: "Account created successfully! Redirecting you to Cleanova homepage..."
+        }
+      };
+
+      let currentLang = 'vi';
+
+      function applyLanguage(lang) {
+        currentLang = lang;
+        const dict = registerTranslations[lang] || registerTranslations.vi;
+        document.title = dict.pageTitle;
+
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (dict[key]) el.textContent = dict[key];
+        });
+
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if (dict[key]) el.placeholder = dict[key];
+        });
+
+        document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+          const key = el.getAttribute('data-i18n-aria-label');
+          if (dict[key]) el.setAttribute('aria-label', dict[key]);
+        });
+
+        document.querySelectorAll('.language-button').forEach(btn => {
+          const active = btn.getAttribute('data-language') === lang;
+          btn.setAttribute('aria-pressed', String(active));
+          btn.classList.toggle('active', active);
+        });
+
+        localStorage.setItem('cleanova_lang', lang);
+      }
+
+      // Xử lý nút bấm chuyển đổi ngôn ngữ
+      document.querySelectorAll('.language-button').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-language');
+          applyLanguage(lang);
+        });
+      });
+
+      // Khởi tạo ngôn ngữ ban đầu
+      const savedLang = localStorage.getItem('cleanova_lang') || 'vi';
+      applyLanguage(savedLang);
+
+      // ============================================================
+      // XỬ LÝ ĐỘ MẠNH MẬT KHẨU (PASSWORD STRENGTH METER)
+      // ============================================================
+      const passInput = document.getElementById('password');
+      const passMeterWrap = document.getElementById('password-meter-wrap');
+      const meterBars = document.getElementById('password-meter-bars');
+      const meterText = document.getElementById('meter-strength-text');
       const passToggle = document.getElementById('password-toggle');
 
       passToggle.addEventListener('click', () => {
-        const isPass = passwordInput.type === 'password';
-        passwordInput.type = isPass ? 'text' : 'password';
-        passToggle.textContent = isPass ? '🔒' : '👁️';
+        const isPass = passInput.type === 'password';
+        passInput.type = isPass ? 'text' : 'password';
+        passToggle.setAttribute('aria-label', isPass ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+        passToggle.innerHTML = isPass ? `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+            <line x1="1" y1="1" x2="23" y2="23"/>
+          </svg>
+        ` : `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+            <path d="M2.75 12s3.2-5.25 9.25-5.25S21.25 12 21.25 12 18.05 17.25 12 17.25 2.75 12 2.75 12Z"/>
+            <circle cx="12" cy="12" r="2.5"/>
+          </svg>
+        `;
       });
+
+      function calculateStrength(pwd) {
+        if (!pwd) return 0;
+        let score = 0;
+        if (pwd.length >= 6) score++;
+        if (pwd.length >= 9) score++;
+        if (/[0-9]/.test(pwd)) score++;
+        if (/[A-Z]/.test(pwd) || /[^A-Za-z0-9]/.test(pwd)) score++;
+        return score;
+      }
+
+      passInput.addEventListener('input', () => {
+        const val = passInput.value;
+        if (!val) {
+          passMeterWrap.style.display = 'none';
+          return;
+        }
+        passMeterWrap.style.display = 'block';
+        const score = calculateStrength(val);
+
+        meterBars.className = 'password-meter-bars meter-strength-' + score;
+        meterText.className = 'meter-strength-text text-strength-' + score;
+
+        const labelsVi = ['', 'Yếu', 'Trung bình', 'Mạnh', 'Rất an toàn'];
+        const labelsEn = ['', 'Weak', 'Fair', 'Strong', 'Very Secure'];
+        const labels = currentLang === 'en' ? labelsEn : labelsVi;
+        meterText.textContent = labels[score] || labels[1];
+      });
+
+      // ============================================================
+      // XỬ LÝ SUBMIT VÀ XÁC THỰC FORM ĐĂNG KÝ
+      // ============================================================
+      const form = document.getElementById('register-form');
+      const nameInput = document.getElementById('name');
+      const emailInput = document.getElementById('email');
+      const phoneInput = document.getElementById('phone');
+      const addressInput = document.getElementById('address');
+      const confirmPassInput = document.getElementById('confirm-password');
+      const agreeTerms = document.getElementById('agree-terms');
+      const submitBtn = document.getElementById('register-button');
+      const alertBox = document.getElementById('form-alert');
+
+      function showAlert(type, text) {
+        alertBox.className = 'form-alert show ' + type;
+        alertBox.querySelector('.alert-icon').textContent = type === 'success' ? '✅' : '⚠️';
+        alertBox.querySelector('.alert-text').textContent = text;
+      }
+
+      function hideAlert() {
+        alertBox.className = 'form-alert';
+      }
+
+      function setFieldError(fieldId, errorText) {
+        const errEl = document.getElementById(fieldId + '-error');
+        const inputEl = document.getElementById(fieldId);
+        if (errEl) errEl.textContent = errorText;
+        if (inputEl) {
+          if (errorText) {
+            inputEl.setAttribute('aria-invalid', 'true');
+          } else {
+            inputEl.removeAttribute('aria-invalid');
+          }
+        }
+      }
+
+      function clearAllErrors() {
+        ['name', 'email', 'phone', 'address', 'password', 'confirm-password'].forEach(f => setFieldError(f, ''));
+        hideAlert();
+      }
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        formStatus.textContent = '';
-        formStatus.removeAttribute('data-state');
+        clearAllErrors();
 
+        const dict = registerTranslations[currentLang];
         const name = nameInput.value.trim();
         const email = emailInput.value.trim();
-        const password = passwordInput.value;
         const phone = phoneInput.value.trim();
         const address = addressInput.value.trim();
+        const password = passInput.value;
+        const confirmPassword = confirmPassInput.value;
+
+        // Validation
+        let hasError = false;
 
         if (!name) {
-          formStatus.textContent = 'Vui lòng nhập họ và tên.';
-          formStatus.dataset.state = 'error';
-          nameInput.focus();
-          return;
+          setFieldError('name', dict.errNameRequired);
+          hasError = true;
         }
 
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          formStatus.textContent = 'Vui lòng nhập địa chỉ email hợp lệ.';
-          formStatus.dataset.state = 'error';
-          emailInput.focus();
-          return;
+          setFieldError('email', dict.errEmailRequired);
+          hasError = true;
         }
 
         if (!password || password.length < 6) {
-          formStatus.textContent = 'Mật khẩu phải có ít nhất 6 ký tự.';
-          formStatus.dataset.state = 'error';
-          passwordInput.focus();
+          setFieldError('password', dict.errPassShort);
+          hasError = true;
+        }
+
+        if (password !== confirmPassword) {
+          setFieldError('confirm-password', dict.errPassMismatch);
+          hasError = true;
+        }
+
+        if (!agreeTerms.checked) {
+          showAlert('error', dict.errTermsRequired);
           return;
         }
 
+        if (hasError) return;
+
+        // Đang gửi request
         submitBtn.disabled = true;
-        submitBtn.querySelector('.button-label').textContent = 'Đang xử lý đăng ký...';
+        submitBtn.classList.add('loading');
+        submitBtn.querySelector('.button-label').textContent = dict.submitting;
 
         try {
           const res = await window.CleanovaAPI.auth.register({
@@ -212,18 +787,25 @@
             address
           });
 
-          formStatus.textContent = res.message || 'Đăng ký thành công! Đang chuyển đến trang chủ...';
-          formStatus.dataset.state = 'success';
+          showAlert('success', res.message || dict.successRedirect);
 
+          // Tự động chuyển hướng đến trang chủ sau 800ms
           setTimeout(() => {
             window.location.href = 'trangchu.html';
           }, 800);
+
         } catch (err) {
-          formStatus.textContent = err.message || 'Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.';
-          formStatus.dataset.state = 'error';
+          showAlert('error', err.message || 'Đăng ký không thành công. Vui lòng thử lại.');
           submitBtn.disabled = false;
-          submitBtn.querySelector('.button-label').textContent = 'Tạo tài khoản Cleanova';
+          submitBtn.classList.remove('loading');
+          submitBtn.querySelector('.button-label').textContent = dict.submitRegister;
         }
+      });
+
+      // Google signup demo button
+      document.getElementById('google-register-btn').addEventListener('click', () => {
+        const dict = registerTranslations[currentLang];
+        showAlert('error', dict.googleDemoNotice);
       });
     </script>
   </body>
