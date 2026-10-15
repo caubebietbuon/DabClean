@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,12 +17,14 @@
       z-index: 1000;
       box-shadow: var(--shadow-xs);
     }
+
     .admin-navbar-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 14px 0;
     }
+
     .admin-badge {
       background: #FEF3C7;
       color: #92400E;
@@ -34,27 +37,26 @@
       border: 1px solid #FCD34D;
       margin-left: 8px;
     }
+
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: var(--space-lg);
       margin-bottom: var(--space-2xl);
     }
-    @media (max-width: 1200px) {
-      .stats-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-    @media (max-width: 768px) {
+
+    @media (max-width: 992px) {
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
-    @media (max-width: 480px) {
+
+    @media (max-width: 576px) {
       .stats-grid {
         grid-template-columns: 1fr;
       }
     }
+
     .stat-card {
       background: var(--color-white);
       border: 1px solid var(--color-border);
@@ -64,6 +66,7 @@
       position: relative;
       overflow: hidden;
     }
+
     .stat-card::before {
       content: '';
       position: absolute;
@@ -73,11 +76,23 @@
       height: 100%;
       background: var(--color-primary);
     }
-    .stat-card.revenue::before { background: #10B981; }
-    .stat-card.bookings::before { background: #3B82F6; }
-    .stat-card.users::before { background: #8B5CF6; }
-    .stat-card.staff::before { background: #F59E0B; }
-    .stat-card.partners::before { background: #06B6D4; }
+
+    .stat-card.revenue::before {
+      background: #10B981;
+    }
+
+    .stat-card.bookings::before {
+      background: #3B82F6;
+    }
+
+    .stat-card.users::before {
+      background: #8B5CF6;
+    }
+
+    .stat-card.staff::before {
+      background: #F59E0B;
+    }
+
     .stat-title {
       font-size: var(--font-size-xs);
       font-weight: 700;
@@ -86,12 +101,14 @@
       letter-spacing: 0.5px;
       margin-bottom: var(--space-xs);
     }
+
     .stat-value {
       font-size: var(--font-size-3xl);
       font-weight: 800;
       color: var(--color-text);
       line-height: 1.1;
     }
+
     .stat-desc {
       font-size: 12px;
       color: var(--color-text-tertiary);
@@ -105,6 +122,7 @@
       margin-bottom: var(--space-xl);
       overflow-x: auto;
     }
+
     .admin-tab-btn {
       padding: 12px 20px;
       font-size: var(--font-size-sm);
@@ -121,9 +139,11 @@
       margin-bottom: -2px;
       white-space: nowrap;
     }
+
     .admin-tab-btn:hover {
       color: var(--color-primary);
     }
+
     .admin-tab-btn.active {
       color: var(--color-primary-dark);
       border-bottom-color: var(--color-primary);
@@ -139,6 +159,7 @@
       margin-bottom: var(--space-lg);
       flex-wrap: wrap;
     }
+
     .search-input-wrap {
       display: flex;
       align-items: center;
@@ -149,6 +170,7 @@
       padding: 6px 14px;
       min-width: 280px;
     }
+
     .search-input-wrap input {
       border: none;
       outline: none;
@@ -157,7 +179,8 @@
       font-family: inherit;
     }
 
-    .status-select, .staff-select {
+    .status-select,
+    .staff-select {
       padding: 6px 10px;
       font-size: 12px;
       font-weight: 600;
@@ -167,7 +190,9 @@
       cursor: pointer;
       outline: none;
     }
-    .status-select:focus, .staff-select:focus {
+
+    .status-select:focus,
+    .staff-select:focus {
       border-color: var(--color-primary);
     }
 
@@ -182,9 +207,24 @@
       font-weight: 700;
       text-transform: uppercase;
     }
-    .role-admin { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
-    .role-staff { background: #DBEAFE; color: #1E40AF; border: 1px solid #93C5FD; }
-    .role-customer { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+
+    .role-admin {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FCD34D;
+    }
+
+    .role-staff {
+      background: #DBEAFE;
+      color: #1E40AF;
+      border: 1px solid #93C5FD;
+    }
+
+    .role-customer {
+      background: #D1FAE5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+    }
 
     .user-status-badge {
       display: inline-flex;
@@ -195,11 +235,16 @@
       font-size: 11px;
       font-weight: 700;
     }
-    .status-active { background: #ECFDF5; color: #065F46; }
-    .status-inactive { background: #FEE2E2; color: #991B1B; }
-    .status-partner-pending { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
-    .status-partner-approved { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
-    .status-partner-rejected { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+    .status-active {
+      background: #ECFDF5;
+      color: #065F46;
+    }
+
+    .status-inactive {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
 
     /* Staff cards grid */
     .staff-grid {
@@ -207,6 +252,7 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: var(--space-lg);
     }
+
     .staff-card {
       background: var(--color-white);
       border: 1px solid var(--color-border);
@@ -218,6 +264,7 @@
       justify-content: space-between;
       transition: all var(--transition-fast);
     }
+
     .staff-card:hover {
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
@@ -236,6 +283,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Top Navbar Quản trị viên -->
@@ -245,9 +293,9 @@
         <div style="display: flex; align-items: center; gap: var(--space-md);">
           <a href="trangchu.html" class="logo" style="text-decoration: none;">
             <svg viewBox="0 0 36 36" fill="none" style="width: 28px; height: 28px;">
-              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/>
-              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/>
-              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
+              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3" />
+              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" />
+              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981" />
             </svg>
             <span class="logo-text">Cleanova</span>
           </a>
@@ -337,7 +385,8 @@
           <button id="btn-refresh-bookings" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách</button>
         </div>
 
-        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+        <div class="table-responsive"
+          style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
           <table class="table" style="margin: 0;">
             <thead>
               <tr>
@@ -352,7 +401,10 @@
               </tr>
             </thead>
             <tbody id="bookings-table-body">
-              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải danh sách đơn đặt lịch...</td></tr>
+              <tr>
+                <td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải danh sách đơn đặt
+                  lịch...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -384,7 +436,8 @@
           <button id="btn-refresh-users" class="btn btn-ghost btn-sm">🔄 Làm mới</button>
         </div>
 
-        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+        <div class="table-responsive"
+          style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
           <table class="table" style="margin: 0;">
             <thead>
               <tr>
@@ -399,7 +452,10 @@
               </tr>
             </thead>
             <tbody id="users-table-body">
-              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải dữ liệu tài khoản...</td></tr>
+              <tr>
+                <td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải dữ liệu tài khoản...
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -418,7 +474,8 @@
         <div class="table-controls">
           <div>
             <h3 style="margin: 0 0 4px; font-size: var(--font-size-lg);">Danh Sách Chuyên Viên Vệ Sinh Cleanova</h3>
-            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Quản lý đội ngũ kỹ thuật viên, theo dõi công việc được phân công và tạo tài khoản an toàn.</p>
+            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Quản lý đội ngũ kỹ thuật viên,
+              theo dõi công việc được phân công và tạo tài khoản an toàn.</p>
           </div>
           <button id="btn-open-create-staff" class="btn btn-primary btn-sm">➕ Thêm nhân viên mới</button>
         </div>
@@ -433,12 +490,14 @@
         <div class="table-controls">
           <div>
             <h3 style="margin: 0 0 4px; font-size: var(--font-size-lg);">Gói Dịch Vụ Vệ Sinh</h3>
-            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Cấu hình giá tiền, đơn vị tính và hiển thị trên toàn hệ thống.</p>
+            <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Cấu hình giá tiền, đơn vị tính và
+              hiển thị trên toàn hệ thống.</p>
           </div>
           <button id="btn-open-create-service" class="btn btn-primary btn-sm">➕ Thêm dịch vụ mới</button>
         </div>
 
-        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+        <div class="table-responsive"
+          style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
           <table class="table" style="margin: 0;">
             <thead>
               <tr>
@@ -453,7 +512,9 @@
               </tr>
             </thead>
             <tbody id="services-table-body">
-              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải dịch vụ...</td></tr>
+              <tr>
+                <td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải dịch vụ...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -479,7 +540,8 @@
           <button id="btn-refresh-partners" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách</button>
         </div>
 
-        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+        <div class="table-responsive"
+          style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
           <table class="table" style="margin: 0;">
             <thead>
               <tr>
@@ -494,7 +556,10 @@
               </tr>
             </thead>
             <tbody id="partners-table-body">
-              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải danh sách hồ sơ đối tác...</td></tr>
+              <tr>
+                <td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải danh sách hồ sơ đối
+                  tác...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -518,17 +583,20 @@
           <label class="form-label">Tên dịch vụ <span style="color: red;">*</span></label>
           <input type="text" id="service-name" class="form-control" required placeholder="VD: Dọn dẹp nhà theo giờ">
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+        <div
+          style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
           <div class="form-group">
             <label class="form-label">Giá cơ sở (VNĐ) <span style="color: red;">*</span></label>
-            <input type="number" id="service-price" class="form-control" required min="1000" step="1000" placeholder="150000">
+            <input type="number" id="service-price" class="form-control" required min="1000" step="1000"
+              placeholder="150000">
           </div>
           <div class="form-group">
             <label class="form-label">Đơn vị tính</label>
             <input type="text" id="service-unit" class="form-control" required placeholder="giờ, lần, m²...">
           </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+        <div
+          style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
           <div class="form-group">
             <label class="form-label">Thời gian ước tính</label>
             <input type="text" id="service-duration" class="form-control" placeholder="2 - 4 giờ">
@@ -544,7 +612,8 @@
         </div>
         <div class="form-group" style="margin-bottom: var(--space-xl);">
           <label class="form-label">Mô tả đầy đủ</label>
-          <textarea id="service-desc" class="form-control" rows="3" placeholder="Chi tiết các hạng mục công việc thực hiện..."></textarea>
+          <textarea id="service-desc" class="form-control" rows="3"
+            placeholder="Chi tiết các hạng mục công việc thực hiện..."></textarea>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
           <button type="button" class="btn btn-ghost" data-close="modal-service">Hủy bỏ</button>
@@ -576,11 +645,15 @@
           <input type="email" id="staff-email" class="form-control" required placeholder="nhanvien@cleanova.vn">
         </div>
         <div class="form-group" style="margin-bottom: var(--space-md);">
-          <label class="form-label">Mật khẩu khởi tạo <span style="color: red;">*</span> (Tối thiểu 8 ký tự, gồm chữ và số)</label>
-          <input type="password" id="staff-password" class="form-control" required minlength="8" placeholder="Nhập mật khẩu an toàn">
-          <small style="font-size: 11px; color: var(--color-text-tertiary);">Tuyệt đối không dùng mật khẩu mặc định 123456 dễ đoán.</small>
+          <label class="form-label">Mật khẩu khởi tạo <span style="color: red;">*</span> (Tối thiểu 8 ký tự, gồm chữ và
+            số)</label>
+          <input type="password" id="staff-password" class="form-control" required minlength="8"
+            placeholder="Nhập mật khẩu an toàn">
+          <small style="font-size: 11px; color: var(--color-text-tertiary);">Tuyệt đối không dùng mật khẩu mặc định
+            123456 dễ đoán.</small>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-xl);">
+        <div
+          style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-xl);">
           <div class="form-group">
             <label class="form-label">Số điện thoại</label>
             <input type="tel" id="staff-phone" class="form-control" placeholder="09xx xxx xxx">
@@ -610,15 +683,20 @@
       <div style="padding: var(--space-xl);">
         <form id="form-edit-user">
           <input type="hidden" id="edit-user-id">
-          <div style="display: flex; gap: var(--space-lg); align-items: center; margin-bottom: var(--space-xl); padding-bottom: var(--space-md); border-bottom: 1px solid var(--color-border);">
-            <div id="modal-user-avatar" style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-primary-ultra-light); color: var(--color-primary-dark); display: grid; place-items: center; font-size: 24px; font-weight: 800;">U</div>
+          <div
+            style="display: flex; gap: var(--space-lg); align-items: center; margin-bottom: var(--space-xl); padding-bottom: var(--space-md); border-bottom: 1px solid var(--color-border);">
+            <div id="modal-user-avatar"
+              style="width: 56px; height: 56px; border-radius: 50%; background: var(--color-primary-ultra-light); color: var(--color-primary-dark); display: grid; place-items: center; font-size: 24px; font-weight: 800;">
+              U</div>
             <div>
               <h4 id="modal-user-name" style="margin: 0 0 4px; font-size: 18px;">Họ tên</h4>
-              <div id="modal-user-email" style="font-size: 13px; color: var(--color-text-secondary);">email@example.com</div>
+              <div id="modal-user-email" style="font-size: 13px; color: var(--color-text-secondary);">email@example.com
+              </div>
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
             <div class="form-group">
               <label class="form-label">Họ và tên</label>
               <input type="text" id="edit-user-name-input" class="form-control" required>
@@ -634,7 +712,8 @@
             <input type="text" id="edit-user-address-input" class="form-control">
           </div>
 
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-xl);">
+          <div
+            style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-xl);">
             <div class="form-group">
               <label class="form-label">Vai trò (Role) <span style="color: red;">*</span></label>
               <select id="edit-user-role-select" class="form-control">
@@ -652,12 +731,14 @@
             </div>
           </div>
 
-          <div id="modal-user-orders-summary" style="background: var(--color-bg-alt); padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: var(--space-xl); font-size: 13px;">
+          <div id="modal-user-orders-summary"
+            style="background: var(--color-bg-alt); padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: var(--space-xl); font-size: 13px;">
             Số đơn đặt dịch vụ liên kết: <strong id="modal-user-order-count">0</strong> đơn.
           </div>
 
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <button type="button" id="btn-delete-user-trigger" class="btn btn-outline" style="color: #ef4444; border-color: #fca5a5;">🗑️ Xóa vĩnh viễn</button>
+            <button type="button" id="btn-delete-user-trigger" class="btn btn-outline"
+              style="color: #ef4444; border-color: #fca5a5;">🗑️ Xóa vĩnh viễn</button>
             <div style="display: flex; gap: var(--space-sm);">
               <button type="button" class="btn btn-ghost" data-close="modal-user-detail">Đóng</button>
               <button type="submit" id="btn-save-user" class="btn btn-primary">Lưu thay đổi</button>
@@ -697,11 +778,14 @@
           <!-- Render thông tin chi tiết ứng viên -->
         </div>
 
-        <div id="partner-review-actions" style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div id="partner-review-actions"
+          style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
           <button type="button" class="btn btn-ghost" data-close="modal-partner-detail">Đóng</button>
           <div style="display: flex; gap: 8px;" id="partner-action-buttons">
-            <button type="button" id="btn-reject-partner" class="btn btn-outline" style="color: #ef4444; border-color: #fca5a5;">❌ Từ chối hồ sơ</button>
-            <button type="button" id="btn-approve-partner" class="btn btn-primary" style="background: #10B981; border-color: #10B981;">✅ Phê duyệt thành Nhân viên</button>
+            <button type="button" id="btn-reject-partner" class="btn btn-outline"
+              style="color: #ef4444; border-color: #fca5a5;">❌ Từ chối hồ sơ</button>
+            <button type="button" id="btn-approve-partner" class="btn btn-primary"
+              style="background: #10B981; border-color: #10B981;">✅ Phê duyệt thành Nhân viên</button>
           </div>
         </div>
       </div>
@@ -1578,4 +1662,5 @@
     });
   </script>
 </body>
+
 </html>
