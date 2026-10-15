@@ -160,10 +160,3 @@ p {
 .grid { display: grid; }
 .w-full { width: 100%; }
 .hidden { display: none !important; }
-
-/* Scroll reveal helper animation */
-.reveal {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}

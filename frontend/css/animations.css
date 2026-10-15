@@ -1,0 +1,304 @@
+/* ============================================================
+   CLEANOVA - SCROLL REVEAL & UI ANIMATION SYSTEM (animations.css)
+   Modern, Ultra-Smooth, Accessible Micro-interactions
+   ============================================================ */
+
+:root {
+  --reveal-distance: 28px;
+  --reveal-duration: 620ms;
+  --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --stagger-step: 85ms;
+}
+
+/* ------------------------------------------------------------
+   1. PROGRESSIVE ENHANCEMENT / FAILSAFE
+   Mặc định: Tất cả phần tử hiển thị 100% nếu JavaScript chưa chạy
+   hoặc gặp sự cố. CHỈ ẩn khi HTML có class "js-reveal-ready".
+   ------------------------------------------------------------ */
+.reveal,
+.reveal-up,
+.reveal-left,
+.reveal-right,
+.reveal-fade,
+.reveal-scale {
+  opacity: 1;
+  transform: none;
+}
+
+/* Khi JavaScript đã sẵn sàng: Thiết lập trạng thái ban đầu */
+.js-reveal-ready .reveal,
+.js-reveal-ready .reveal-up {
+  opacity: 0;
+  transform: translate3d(0, var(--reveal-distance), 0);
+  transition: opacity var(--reveal-duration) var(--reveal-ease),
+              transform var(--reveal-duration) var(--reveal-ease);
+  will-change: opacity, transform;
+}
+
+.js-reveal-ready .reveal-fade {
+  opacity: 0;
+  transition: opacity var(--reveal-duration) var(--reveal-ease);
+  will-change: opacity;
+}
+
+.js-reveal-ready .reveal-left {
+  opacity: 0;
+  transform: translate3d(calc(-1 * var(--reveal-distance) - 10px), 0, 0);
+  transition: opacity var(--reveal-duration) var(--reveal-ease),
+              transform var(--reveal-duration) var(--reveal-ease);
+  will-change: opacity, transform;
+}
+
+.js-reveal-ready .reveal-right {
+  opacity: 0;
+  transform: translate3d(calc(var(--reveal-distance) + 10px), 0, 0);
+  transition: opacity var(--reveal-duration) var(--reveal-ease),
+              transform var(--reveal-duration) var(--reveal-ease);
+  will-change: opacity, transform;
+}
+
+.js-reveal-ready .reveal-scale {
+  opacity: 0;
+  transform: scale3d(0.95, 0.95, 1);
+  transition: opacity var(--reveal-duration) var(--reveal-ease),
+              transform var(--reveal-duration) var(--reveal-ease);
+  will-change: opacity, transform;
+}
+
+/* ------------------------------------------------------------
+   2. TRẠNG THÁI KÍCH HOẠT (VISIBLE / IS-VISIBLE)
+   ------------------------------------------------------------ */
+.js-reveal-ready .reveal.is-visible,
+.js-reveal-ready .reveal.visible,
+.js-reveal-ready .reveal-up.is-visible,
+.js-reveal-ready .reveal-up.visible,
+.js-reveal-ready .reveal-left.is-visible,
+.js-reveal-ready .reveal-left.visible,
+.js-reveal-ready .reveal-right.is-visible,
+.js-reveal-ready .reveal-right.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.js-reveal-ready .reveal-fade.is-visible,
+.js-reveal-ready .reveal-fade.visible {
+  opacity: 1;
+}
+
+.js-reveal-ready .reveal-scale.is-visible,
+.js-reveal-ready .reveal-scale.visible {
+  opacity: 1;
+  transform: scale3d(1, 1, 1);
+}
+
+/* ------------------------------------------------------------
+   3. STAGGER DELAYS (Độ trễ xuất hiện nối tiếp cho card/item)
+   ------------------------------------------------------------ */
+.js-reveal-ready .stagger-1 { transition-delay: calc(var(--stagger-step) * 1); }
+.js-reveal-ready .stagger-2 { transition-delay: calc(var(--stagger-step) * 2); }
+.js-reveal-ready .stagger-3 { transition-delay: calc(var(--stagger-step) * 3); }
+.js-reveal-ready .stagger-4 { transition-delay: calc(var(--stagger-step) * 4); }
+.js-reveal-ready .stagger-5 { transition-delay: calc(var(--stagger-step) * 5); }
+.js-reveal-ready .stagger-6 { transition-delay: calc(var(--stagger-step) * 6); }
+.js-reveal-ready .stagger-7 { transition-delay: calc(var(--stagger-step) * 7); }
+.js-reveal-ready .stagger-8 { transition-delay: calc(var(--stagger-step) * 8); }
+
+/* Tự động tính stagger cho các container có class .reveal-stagger-group */
+.js-reveal-ready .reveal-stagger-group > :nth-child(1) { transition-delay: calc(var(--stagger-step) * 1); }
+.js-reveal-ready .reveal-stagger-group > :nth-child(2) { transition-delay: calc(var(--stagger-step) * 2); }
+.js-reveal-ready .reveal-stagger-group > :nth-child(3) { transition-delay: calc(var(--stagger-step) * 3); }
+.js-reveal-ready .reveal-stagger-group > :nth-child(4) { transition-delay: calc(var(--stagger-step) * 4); }
+.js-reveal-ready .reveal-stagger-group > :nth-child(5) { transition-delay: calc(var(--stagger-step) * 5); }
+.js-reveal-ready .reveal-stagger-group > :nth-child(6) { transition-delay: calc(var(--stagger-step) * 6); }
+.js-reveal-ready .reveal-stagger-group > :nth-child(7) { transition-delay: calc(var(--stagger-step) * 7); }
+
+/* ------------------------------------------------------------
+   4. HERO SECTION AUTO-REVEAL SEQUENCE (Tự động chạy mượt mà khi vào trang)
+   ------------------------------------------------------------ */
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes heroSlideRight {
+  0% {
+    opacity: 0;
+    transform: translate3d(36px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes heroPopCard {
+  0% {
+    opacity: 0;
+    transform: scale(0.85) translate3d(0, 16px, 0);
+  }
+  70% {
+    transform: scale(1.03) translate3d(0, -4px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+.hero-animate-badge {
+  animation: heroFadeUp 600ms var(--reveal-ease) 100ms both;
+}
+
+.hero-animate-title {
+  animation: heroFadeUp 700ms var(--reveal-ease) 200ms both;
+}
+
+.hero-animate-subtitle {
+  animation: heroFadeUp 650ms var(--reveal-ease) 320ms both;
+}
+
+.hero-animate-cta {
+  animation: heroFadeUp 650ms var(--reveal-ease) 420ms both;
+}
+
+.hero-animate-trust {
+  animation: heroFadeUp 650ms var(--reveal-ease) 520ms both;
+}
+
+.hero-animate-visual {
+  animation: heroSlideRight 800ms var(--reveal-ease) 260ms both;
+}
+
+.hero-animate-card-1 {
+  animation: heroPopCard 650ms var(--reveal-ease) 650ms both;
+}
+
+.hero-animate-card-2 {
+  animation: heroPopCard 650ms var(--reveal-ease) 800ms both;
+}
+
+/* ------------------------------------------------------------
+   5. TIMELINE SPECIFIC ANIMATIONS
+   ------------------------------------------------------------ */
+.js-reveal-ready .timeline-phase-item {
+  opacity: 0;
+  transition: opacity 650ms var(--reveal-ease), transform 650ms var(--reveal-ease);
+}
+
+.js-reveal-ready .timeline-phase-item:nth-child(odd) {
+  transform: translate3d(-30px, 0, 0);
+}
+
+.js-reveal-ready .timeline-phase-item:nth-child(even) {
+  transform: translate3d(30px, 0, 0);
+}
+
+.js-reveal-ready .timeline-phase-item.is-visible,
+.js-reveal-ready .timeline-phase-item.visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Hiệu ứng pulse node số giai đoạn khi timeline hiện */
+.js-reveal-ready .timeline-phase-item.is-visible .timeline-phase-node,
+.js-reveal-ready .timeline-phase-item.visible .timeline-phase-node {
+  animation: nodePop 500ms var(--reveal-ease) 200ms both;
+}
+
+@keyframes nodePop {
+  0% { transform: scale(0.6); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+  60% { transform: scale(1.15); box-shadow: 0 0 0 10px rgba(13, 148, 136, 0); }
+  100% { transform: scale(1); }
+}
+
+/* ------------------------------------------------------------
+   6. HOVER ENHANCEMENTS (Mượt mà, không giật sau khi reveal)
+   ------------------------------------------------------------ */
+.service-card,
+.why-benefit-card,
+.guide-step-card,
+.timeline-phase-card,
+.testimonial-card,
+.faq-item {
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 300ms ease;
+}
+
+.guide-step-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.guide-step-card:hover .guide-step-icon {
+  transform: scale(1.12);
+  transition: transform 250ms ease;
+}
+
+.why-benefit-card:hover .why-benefit-icon {
+  transform: scale(1.14) rotate(4deg);
+  transition: transform 250ms ease;
+}
+
+/* ------------------------------------------------------------
+   7. RESPONSIVE OPTIMIZATIONS (Di động & Màn hình nhỏ)
+   ------------------------------------------------------------ */
+@media (max-width: 768px) {
+  :root {
+    --reveal-distance: 20px;
+    --reveal-duration: 520ms;
+    --stagger-step: 60ms;
+  }
+
+  /* Trên mobile: Chuyển dịch chuyển ngang thành dọc nhẹ để không bao giờ tràn ngang */
+  .js-reveal-ready .reveal-left {
+    transform: translate3d(0, 18px, 0);
+  }
+
+  .js-reveal-ready .reveal-right {
+    transform: translate3d(0, 18px, 0);
+  }
+
+  .js-reveal-ready .timeline-phase-item:nth-child(odd),
+  .js-reveal-ready .timeline-phase-item:nth-child(even) {
+    transform: translate3d(0, 20px, 0);
+  }
+}
+
+/* ------------------------------------------------------------
+   8. ACCESSIBILITY: PREFERS-REDUCED-MOTION
+   Tôn trọng tùy chọn người dùng: Tắt hiệu ứng, hiển thị ngay lập tức
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal-ready .reveal,
+  .js-reveal-ready .reveal-up,
+  .js-reveal-ready .reveal-left,
+  .js-reveal-ready .reveal-right,
+  .js-reveal-ready .reveal-fade,
+  .js-reveal-ready .reveal-scale,
+  .js-reveal-ready .timeline-phase-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .hero-animate-badge,
+  .hero-animate-title,
+  .hero-animate-subtitle,
+  .hero-animate-cta,
+  .hero-animate-trust,
+  .hero-animate-visual,
+  .hero-animate-card-1,
+  .hero-animate-card-2 {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
