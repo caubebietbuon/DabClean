@@ -30,3 +30,4 @@ ehthumbs.db
 # Build output
 dist/
 build/
+ai-module/
