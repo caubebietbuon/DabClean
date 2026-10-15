@@ -96,16 +96,16 @@
                 Tải ảnh hoặc chụp ảnh không gian cần vệ sinh để AI hỗ trợ đánh giá tình trạng và gợi ý dịch vụ phù hợp.
               </p>
 
-              <!-- Upload / Dropzone -->
+              <!-- Upload / Dropzone hỗ trợ Nhiều ảnh -->
               <div class="ai-dropzone" id="ai-dropzone">
                 <div class="ai-dropzone-icon">📸</div>
                 <div class="ai-dropzone-text">
-                  <strong>Kéo thả ảnh phòng vào đây hoặc nhấp để chọn file</strong>
-                  <span>Hỗ trợ định dạng JPG, PNG, WEBP (Dung lượng ≤ 10MB)</span>
+                  <strong>Kéo thả một hoặc NHIỀU ảnh không gian vào đây (tối đa 10 ảnh)</strong>
+                  <span>Hỗ trợ tải nhiều ảnh cùng lúc: JPG, PNG, WEBP, BMP (≤ 10MB mỗi ảnh)</span>
                 </div>
                 <div class="ai-upload-actions">
                   <button type="button" class="btn-ai-select" id="btn-ai-choose-file">
-                    📁 Chọn ảnh từ thiết bị
+                    📁 Chọn nhiều ảnh từ thiết bị
                   </button>
                   <button type="button" class="btn-ai-camera" id="btn-ai-camera">
                     📷 Chụp ảnh phòng
@@ -113,56 +113,99 @@
                 </div>
               </div>
 
-              <!-- Inputs ẩn cho file upload & camera -->
-              <input type="file" id="ai-file-input" accept="image/jpeg,image/png,image/webp,image/bmp" style="display: none;">
-              <input type="file" id="ai-camera-input" accept="image/*" capture="environment" style="display: none;">
+              <!-- Inputs ẩn cho file upload & camera (hỗ trợ multiple) -->
+              <input type="file" id="ai-file-input" multiple accept="image/*" style="display: none;">
+              <input type="file" id="ai-upload" multiple accept="image/*" style="display: none;">
+              <input type="file" id="ai-camera-input" multiple accept="image/*" capture="environment" style="display: none;">
 
-              <!-- Image Preview Card -->
-              <div class="ai-preview-card" id="ai-preview-card">
-                <img id="ai-preview-img" src="" alt="Ảnh phòng xem trước" class="ai-preview-thumb">
-                <div class="ai-preview-meta">
-                  <div class="ai-preview-name" id="ai-preview-name">phong-khach.jpg</div>
-                  <div class="ai-preview-size" id="ai-preview-size">1.2 MB</div>
-                  <div class="ai-preview-buttons">
-                    <button type="button" class="btn btn-primary btn-sm" id="btn-ai-run-analyze">
-                      ⚡ Phân tích bằng AI
+              <!-- Multi-Image Preview Card & Grid -->
+              <div class="ai-multi-preview-card" id="ai-preview-card">
+                <div class="ai-multi-preview-header">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <strong style="font-size: 13.5px; color: var(--color-text-main);">📸 Danh sách ảnh phòng đã chọn</strong>
+                    <span class="ai-preview-count-badge" id="ai-files-count">0 ảnh</span>
+                  </div>
+                  <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-ai-add-more">
+                      + Thêm ảnh khác
                     </button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="btn-ai-change-img">
-                      Đổi ảnh khác
-                    </button>
-                    <button type="button" class="btn btn-ghost btn-sm" id="btn-ai-remove-img" style="color: #be123c;">
-                      Xóa ảnh
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-ai-clear-all" style="color: #be123c;">
+                      Xóa tất cả
                     </button>
                   </div>
                 </div>
+
+                <!-- Lưới hiển thị các ảnh thumbnail -->
+                <div class="ai-multi-preview-grid" id="ai-preview-grid">
+                  <!-- Rendered dynamically via JS -->
+                </div>
+
+                <div class="ai-batch-actions">
+                  <span style="font-size: 11.5px; color: var(--color-text-muted);">
+                    💡 Bạn có thể chụp thêm phòng khách, phòng bếp, nhà vệ sinh để AI đánh giá toàn diện nhất.
+                  </span>
+                  <button type="button" class="btn btn-primary" id="btn-ai-run-analyze">
+                    ⚡ Phân tích tất cả ảnh bằng AI
+                  </button>
+                </div>
               </div>
 
-              <!-- Loading State -->
+              <!-- Futuristic AI Loading State & Radar Scanner -->
               <div class="ai-loading-box" id="ai-loading-box">
-                <div class="ai-loading-spinner"></div>
-                <strong style="display: block; font-size: 13.5px; color: #0f766e;">Đang quét ảnh & phân tích tình trạng vệ sinh...</strong>
-                <span style="font-size: 11.5px; color: var(--color-text-muted);">AI đang nhận diện mật độ vết ố, bụi bẩn và độ bừa bộn của không gian</span>
+                <div class="ai-radar-scanner">
+                  <div class="ai-radar-ring"></div>
+                  <div class="ai-radar-pulse"></div>
+                  <div class="ai-radar-icon">🤖</div>
+                </div>
+                <strong id="ai-loading-status" style="display: block; font-size: 14px; color: #0f766e; margin-bottom: 4px;">
+                  Đang quét ảnh & phân tích tình trạng vệ sinh...
+                </strong>
+                <span id="ai-loading-substatus" style="font-size: 12px; color: var(--color-text-muted);">
+                  AI Vision đang phân tích độ bẩn, vết ố và sắp xếp từng không gian
+                </span>
+                <div class="ai-progress-track">
+                  <div class="ai-progress-bar" id="ai-progress-bar"></div>
+                </div>
               </div>
 
               <!-- Error Alert -->
-              <div id="ai-error-box" class="alert alert-error" style="display: none; margin-top: 14px;"></div>
+              <div id="ai-error-box" class="alert alert-error" style="display: none; margin-top: 14px; line-height: 1.5;"></div>
 
-              <!-- AI Result Panel -->
+              <!-- AI Result Panel (Đánh giá tổng hợp nhiều ảnh) -->
               <div class="ai-result-panel" id="ai-result-panel">
                 <div class="ai-result-top">
                   <div>
-                    <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--color-text-muted); display: block;">KẾT QUẢ ĐÁNH GIÁ THỰC TẾ TỪ AI</span>
-                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-                      <div class="ai-dirt-badge moderate" id="ai-dirt-badge">Bẩn vừa</div>
-                      <span class="ai-score-pill" id="ai-score-text">Độ bẩn: 52/100</span>
+                    <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--color-text-muted); display: block; letter-spacing: 0.5px;">
+                      KẾT QUẢ ĐÁNH GIÁ TỔNG HỢP TỪ AI VISION
+                    </span>
+                    <div class="ai-rating-container" style="margin-top: 6px;">
+                      <!-- 1 đến 5 sao -->
+                      <div class="ai-stars-row" id="ai-stars-row" title="Mức độ bẩn theo thang điểm 1-5">
+                        <span>★</span><span>★</span><span>★</span><span>☆</span><span>☆</span>
+                      </div>
+                      <div class="ai-dirt-badge moderate" id="ai-dirt-badge">Bẩn vừa (3/5)</div>
+                      <span class="ai-score-pill" id="ai-score-text">Điểm bẩn: 52/100</span>
                     </div>
                   </div>
                   <button type="button" class="btn btn-ghost btn-sm" id="btn-ai-reanalyze">
-                    🔄 Quét lại
+                    🔄 Quét lại ảnh khác
                   </button>
                 </div>
 
-                <!-- 5 Signals Breakdown Meter -->
+                <!-- Đánh giá chi tiết từng không gian / phòng -->
+                <div id="ai-spaces-section">
+                  <div class="ai-spaces-section-title">
+                    <span>🏠</span> ĐÁNH GIÁ CHI TIẾT TỪNG KHÔNG GIAN ĐÃ CHỤP:
+                  </div>
+                  <div class="ai-spaces-grid" id="ai-spaces-grid">
+                    <!-- Rendered dynamically via JS -->
+                  </div>
+                </div>
+
+                <!-- 5 Chỉ số phân tích trực quan tổng hợp -->
+                <div style="font-size: 12px; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                  📊 TỔNG HỢP 5 CHỈ SỐ THỊ GIÁC:
+                </div>
                 <div class="ai-signals-list" id="ai-signals-list">
                   <!-- Rendered dynamically via JS -->
                 </div>
@@ -170,14 +213,19 @@
                 <!-- AI Recommendation Box -->
                 <div class="ai-rec-box">
                   <h4 id="ai-rec-title">
-                    <span>💡 Gợi ý gói dịch vụ:</span> <strong id="ai-rec-service-name">Tổng vệ sinh Deep Cleaning</strong>
+                    <span>💡 Gợi ý dịch vụ phù hợp nhất:</span> <strong id="ai-rec-service-name">Tổng vệ sinh Deep Cleaning</strong>
                   </h4>
                   <p id="ai-rec-desc">
                     AI phát hiện mức độ bụi và vết ố cần thiết bị chuyên sâu. Gói Deep Cleaning sẽ giúp xử lý triệt để các góc khuất.
                   </p>
-                  <div style="font-size: 12px; margin-bottom: 10px;">
-                    <strong>Giá ước tính từ AI:</strong> <span id="ai-rec-price" style="color: #0d9488; font-weight: 800; font-size: 14px;">--</span>
-                    <span id="ai-rec-multiplier" style="color: var(--color-text-muted); font-size: 11px; margin-left: 6px;"></span>
+                  <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; margin-bottom: 12px;">
+                    <div>
+                      <strong>Thời gian dự kiến:</strong> <span id="ai-rec-hours" style="color: #0d9488; font-weight: 800;">~3 - 4 giờ</span>
+                    </div>
+                    <div>
+                      <strong>Ước tính từ AI:</strong> <span id="ai-rec-price" style="color: #0d9488; font-weight: 800;">--</span>
+                      <span id="ai-rec-multiplier" style="color: var(--color-text-muted); font-size: 11px; margin-left: 4px;"></span>
+                    </div>
                   </div>
                   <div class="ai-rec-actions">
                     <button type="button" class="btn-ai-apply" id="btn-ai-apply-package">
@@ -187,7 +235,7 @@
                 </div>
 
                 <div class="ai-disclaimer">
-                  📌 <strong>Lưu ý:</strong> Kết quả AI mang tính chất tham khảo thực tế dựa trên đặc trưng ảnh chụp. Bạn hoàn toàn có thể chọn hoặc thay đổi bất kỳ gói dịch vụ nào theo nhu cầu cá nhân.
+                  📌 <strong>Lưu ý:</strong> Kết quả AI mang tính chất tham khảo thực tế dựa trên đặc trưng các ảnh bạn đã gửi. Bạn hoàn toàn có thể tự chọn hoặc điều chỉnh bất kỳ gói dịch vụ nào theo nhu cầu.
                 </div>
               </div>
 
@@ -692,31 +740,52 @@
       const frequencyDiscounts = { once: 0, weekly: 0.15, monthly: 0.10 };
 
       // ============================================================
-      // A. CHỨC NĂNG AI QUÉT ĐỘ BẨN PHÒNG THỰC TẾ
+      // A. CHỨC NĂNG AI VISION QUÉT ĐA ẢNH PHÒNG THỰC TẾ
       // ============================================================
       const aiDropzone = document.getElementById('ai-dropzone');
       const aiFileInput = document.getElementById('ai-file-input');
+      const aiUploadInput = document.getElementById('ai-upload');
       const aiCameraInput = document.getElementById('ai-camera-input');
       const btnAiChooseFile = document.getElementById('btn-ai-choose-file');
       const btnAiCamera = document.getElementById('btn-ai-camera');
+      const btnAiAddMore = document.getElementById('btn-ai-add-more');
+      const btnAiClearAll = document.getElementById('btn-ai-clear-all');
       const aiPreviewCard = document.getElementById('ai-preview-card');
-      const aiPreviewImg = document.getElementById('ai-preview-img');
-      const aiPreviewName = document.getElementById('ai-preview-name');
-      const aiPreviewSize = document.getElementById('ai-preview-size');
+      const aiPreviewGrid = document.getElementById('ai-preview-grid');
+      const aiFilesCount = document.getElementById('ai-files-count');
       const btnAiRunAnalyze = document.getElementById('btn-ai-run-analyze');
-      const btnAiChangeImg = document.getElementById('btn-ai-change-img');
-      const btnAiRemoveImg = document.getElementById('btn-ai-remove-img');
       const aiLoadingBox = document.getElementById('ai-loading-box');
+      const aiLoadingStatus = document.getElementById('ai-loading-status');
+      const aiLoadingSubstatus = document.getElementById('ai-loading-substatus');
+      const aiProgressBar = document.getElementById('ai-progress-bar');
       const aiErrorBox = document.getElementById('ai-error-box');
       const aiResultPanel = document.getElementById('ai-result-panel');
       const btnAiReanalyze = document.getElementById('btn-ai-reanalyze');
       const btnAiApplyPackage = document.getElementById('btn-ai-apply-package');
 
-      // Mở hộp thoại chọn file
+      // Mảng lưu trữ danh sách ảnh người dùng chọn (hỗ trợ nhiều ảnh)
+      let selectedFiles = [];
+
+      // Mở hộp thoại chọn nhiều file
       if (btnAiChooseFile) {
         btnAiChooseFile.addEventListener('click', (e) => {
           e.stopPropagation();
           aiFileInput.click();
+        });
+      }
+
+      if (btnAiAddMore) {
+        btnAiAddMore.addEventListener('click', (e) => {
+          e.stopPropagation();
+          aiFileInput.click();
+        });
+      }
+
+      // Xóa tất cả ảnh đã chọn
+      if (btnAiClearAll) {
+        btnAiClearAll.addEventListener('click', (e) => {
+          e.stopPropagation();
+          resetAiScanner();
         });
       }
 
@@ -755,98 +824,163 @@
           const dt = e.dataTransfer;
           const files = dt.files;
           if (files && files.length > 0) {
-            handleSelectedFile(files[0]);
+            handleSelectedFiles(files);
           }
         });
       }
 
+      // Lắng nghe sự kiện chọn file từ input
       if (aiFileInput) {
         aiFileInput.addEventListener('change', function () {
-          if (this.files && this.files[0]) {
-            handleSelectedFile(this.files[0]);
+          if (this.files && this.files.length > 0) {
+            handleSelectedFiles(this.files);
+          }
+        });
+      }
+
+      if (aiUploadInput) {
+        aiUploadInput.addEventListener('change', function () {
+          if (this.files && this.files.length > 0) {
+            handleSelectedFiles(this.files);
           }
         });
       }
 
       if (aiCameraInput) {
         aiCameraInput.addEventListener('change', function () {
-          if (this.files && this.files[0]) {
-            handleSelectedFile(this.files[0]);
+          if (this.files && this.files.length > 0) {
+            handleSelectedFiles(this.files);
           }
         });
       }
 
-      // Xử lý tệp được chọn (kiểm tra định dạng & dung lượng <= 10MB)
-      function handleSelectedFile(file) {
+      // Xử lý nạp và cộng dồn nhiều tệp ảnh vào mảng selectedFiles
+      function handleSelectedFiles(filesList) {
         hideAiError();
         const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'];
-        if (!validTypes.includes(file.type)) {
-          showAiError('Định dạng ảnh không được hỗ trợ. Vui lòng tải file JPG, PNG, WEBP hoặc BMP.');
-          return;
-        }
-
         const maxSizeBytes = 10 * 1024 * 1024; // 10MB
-        if (file.size > maxSizeBytes) {
-          showAiError('Dung lượng ảnh vượt quá giới hạn 10MB. Vui lòng chọn ảnh nhỏ hơn.');
+        let addedCount = 0;
+
+        for (let i = 0; i < filesList.length; i++) {
+          const file = filesList[i];
+
+          // Giới hạn tối đa 10 ảnh
+          if (selectedFiles.length >= 10) {
+            showAiError('Hệ thống hỗ trợ tối đa 10 ảnh không gian cùng lúc. Đã bỏ qua các ảnh vượt quá giới hạn.');
+            break;
+          }
+
+          if (!validTypes.includes(file.type)) {
+            showAiError(`File "${file.name}" không đúng định dạng ảnh (chỉ chấp nhận JPG, PNG, WEBP, BMP).`);
+            continue;
+          }
+
+          if (file.size > maxSizeBytes) {
+            showAiError(`File "${file.name}" vượt quá 10MB (${(file.size / (1024*1024)).toFixed(1)}MB). Vui lòng chọn ảnh nhỏ hơn.`);
+            continue;
+          }
+
+          // Kiểm tra trùng lặp tệp
+          const isDuplicate = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+          if (!isDuplicate) {
+            selectedFiles.push(file);
+            addedCount++;
+          }
+        }
+
+        if (selectedFiles.length > 0) {
+          renderThumbnailsGrid();
+        }
+      }
+
+      // Hiển thị lưới Thumbnail cho nhiều ảnh kèm nút Xóa riêng từng ảnh
+      function renderThumbnailsGrid() {
+        if (!aiPreviewGrid || !aiPreviewCard) return;
+
+        if (selectedFiles.length === 0) {
+          resetAiScanner();
           return;
         }
 
-        selectedAiFile = file;
+        aiPreviewCard.classList.add('active');
+        if (aiDropzone) aiDropzone.style.display = 'none';
 
-        // Đọc preview ảnh
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          aiPreviewImg.src = e.target.result;
-          aiPreviewName.textContent = file.name;
-          aiPreviewSize.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
-          aiPreviewCard.classList.add('active');
-          if (aiDropzone) aiDropzone.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
-      }
+        let totalBytes = selectedFiles.reduce((acc, f) => acc + f.size, 0);
+        let totalMB = (totalBytes / (1024 * 1024)).toFixed(1);
+        if (aiFilesCount) {
+          aiFilesCount.textContent = `${selectedFiles.length} ảnh (${totalMB} MB)`;
+        }
 
-      // Nút Xóa ảnh
-      if (btnAiRemoveImg) {
-        btnAiRemoveImg.addEventListener('click', resetAiScanner);
-      }
+        aiPreviewGrid.innerHTML = '';
 
-      // Nút Đổi ảnh khác
-      if (btnAiChangeImg) {
-        btnAiChangeImg.addEventListener('click', () => {
-          aiFileInput.click();
+        selectedFiles.forEach((file, index) => {
+          const thumbCard = document.createElement('div');
+          thumbCard.className = 'ai-thumb-card';
+
+          const objectUrl = URL.createObjectURL(file);
+          thumbCard.innerHTML = `
+            <span class="thumb-badge-index">#${index + 1}</span>
+            <button type="button" class="btn-thumb-remove" data-index="${index}" title="Xóa ảnh này">✕</button>
+            <img src="${objectUrl}" class="ai-thumb-img" alt="${file.name}">
+            <div class="thumb-meta">${file.name}</div>
+          `;
+
+          // Gắn sự kiện Xóa riêng từng ảnh
+          const removeBtn = thumbCard.querySelector('.btn-thumb-remove');
+          removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            removeFileAtIndex(index);
+          });
+
+          aiPreviewGrid.appendChild(thumbCard);
         });
+
+        if (btnAiRunAnalyze) {
+          btnAiRunAnalyze.textContent = `⚡ Phân tích tất cả (${selectedFiles.length} ảnh) bằng AI`;
+        }
       }
 
+      // Xóa 1 ảnh tại vị trí index
+      function removeFileAtIndex(idx) {
+        if (idx >= 0 && idx < selectedFiles.length) {
+          selectedFiles.splice(idx, 1);
+          renderThumbnailsGrid();
+        }
+      }
+
+      // Đặt lại toàn bộ scanner về trạng thái ban đầu
       function resetAiScanner() {
-        selectedAiFile = null;
+        selectedFiles = [];
         currentAiData = null;
         if (aiFileInput) aiFileInput.value = '';
+        if (aiUploadInput) aiUploadInput.value = '';
         if (aiCameraInput) aiCameraInput.value = '';
-        aiPreviewCard.classList.remove('active');
+        if (aiPreviewCard) aiPreviewCard.classList.remove('active');
         if (aiDropzone) aiDropzone.style.display = 'block';
-        aiResultPanel.classList.remove('active');
-        aiLoadingBox.classList.remove('active');
+        if (aiResultPanel) aiResultPanel.classList.remove('active');
+        if (aiLoadingBox) aiLoadingBox.classList.remove('active');
         hideAiError();
       }
 
       function showAiError(msg) {
         if (aiErrorBox) {
-          aiErrorBox.textContent = msg;
+          aiErrorBox.innerHTML = `<strong>⚠️ Thông báo từ AI Vision:</strong><br>${msg}`;
           aiErrorBox.style.display = 'block';
+          aiErrorBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
       }
 
       function hideAiError() {
         if (aiErrorBox) {
-          aiErrorBox.textContent = '';
+          aiErrorBox.innerHTML = '';
           aiErrorBox.style.display = 'none';
         }
       }
 
-      // Thực thi phân tích ảnh bằng AI
+      // Thực thi phân tích đa ảnh bằng AI với quản lý tiến trình mượt mà
       async function runAiAnalysis() {
-        if (!selectedAiFile) {
-          showAiError('Vui lòng chọn hoặc chụp ảnh phòng trước khi phân tích.');
+        if (!selectedFiles || selectedFiles.length === 0) {
+          showAiError('Vui lòng chọn hoặc chụp ít nhất 1 ảnh không gian phòng trước khi bấm phân tích.');
           return;
         }
 
@@ -856,8 +990,34 @@
         btnAiRunAnalyze.disabled = true;
         if (btnAiReanalyze) btnAiReanalyze.disabled = true;
 
+        // Tiến trình mô phỏng các giai đoạn AI Vision
+        let progressVal = 15;
+        if (aiProgressBar) aiProgressBar.style.width = '15%';
+        if (aiLoadingStatus) aiLoadingStatus.textContent = `Đang tải ${selectedFiles.length} ảnh lên AI Vision...`;
+        if (aiLoadingSubstatus) aiLoadingSubstatus.textContent = 'Mã hóa hình ảnh và kiểm tra độ phân giải các phòng';
+
+        const progressTimer = setInterval(() => {
+          if (progressVal < 88) {
+            progressVal += 12;
+            if (aiProgressBar) aiProgressBar.style.width = `${progressVal}%`;
+            if (progressVal > 40 && aiLoadingStatus) {
+              aiLoadingStatus.textContent = `Đang phân tích 5 chỉ số độ bẩn cho ${selectedFiles.length} không gian...`;
+              aiLoadingSubstatus.textContent = 'Nhận diện vết ố, độ bừa bộn, lớp bụi bặm và cặn bẩn sàn nhà';
+            }
+            if (progressVal > 70 && aiLoadingStatus) {
+              aiLoadingStatus.textContent = 'Đang tổng hợp đánh giá 1-5 sao và tính toán gói dịch vụ tối ưu...';
+              aiLoadingSubstatus.textContent = 'Chuyên gia AI đang thiết lập khuyến nghị thời gian thực hiện';
+            }
+          }
+        }, 450);
+
+        // Chuẩn bị FormData đa ảnh
+        // TUYỆT ĐỐI KHÔNG set Content-Type: application/json thủ công!
         const formData = new FormData();
-        formData.append('image', selectedAiFile);
+        selectedFiles.forEach(file => {
+          formData.append('images', file);
+          formData.append('image', file); // Hỗ trợ tương thích ngược
+        });
         formData.append('areaSize', areaM2Map[selectedArea] || 75);
 
         // Đính kèm các dịch vụ bổ sung nếu có
@@ -869,60 +1029,114 @@
 
         try {
           const res = await window.CleanovaAPI.ai.estimate(formData);
+          clearInterval(progressTimer);
+          if (aiProgressBar) aiProgressBar.style.width = '100%';
+
           if (!res || !res.success || !res.data) {
             throw new Error(res?.message || 'Không nhận được kết quả phân tích hợp lệ từ AI.');
           }
 
-          renderAiResult(res.data);
-          showToast('success', 'AI đã hoàn tất quét và đánh giá độ bẩn của phòng!');
+          renderAiResult(res.data, res.isOfflineFallback);
+          showToast('success', `AI đã hoàn tất đánh giá tổng hợp ${selectedFiles.length} không gian!`);
         } catch (err) {
+          clearInterval(progressTimer);
           console.error('[Cleanova AI Error]:', err);
-          showAiError(err.message || 'Hệ thống AI hiện chưa phản hồi. Bạn vẫn có thể tự chọn gói dịch vụ ở mục bên dưới.');
+
+          let errorMsg = err.message || 'Không thể kết nối đến máy chủ AI.';
+          if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError') || err.name === 'TypeError') {
+            errorMsg = 'Không thể kết nối đến máy chủ AI (Lỗi mạng hoặc server chưa khởi động). Vui lòng đảm bảo backend đang chạy tại cổng 5000 hoặc 5100. Bạn vẫn có thể tự chọn gói dịch vụ ở mục bên dưới.';
+          }
+          showAiError(errorMsg);
         } finally {
-          aiLoadingBox.classList.remove('active');
-          btnAiRunAnalyze.disabled = false;
-          if (btnAiReanalyze) btnAiReanalyze.disabled = false;
+          setTimeout(() => {
+            aiLoadingBox.classList.remove('active');
+            btnAiRunAnalyze.disabled = false;
+            if (btnAiReanalyze) btnAiReanalyze.disabled = false;
+          }, 300);
         }
       }
 
       if (btnAiRunAnalyze) btnAiRunAnalyze.addEventListener('click', runAiAnalysis);
-      if (btnAiReanalyze) btnAiReanalyze.addEventListener('click', runAiAnalysis);
+      if (btnAiReanalyze) {
+        btnAiReanalyze.addEventListener('click', () => {
+          resetAiScanner();
+          aiFileInput.click();
+        });
+      }
 
-      // Hiển thị kết quả AI thực tế
-      function renderAiResult(data) {
+      // Hiển thị kết quả AI thực tế tổng hợp nhiều bức ảnh
+      function renderAiResult(data, isOfflineFallback = false) {
         const analysis = data.analysis || {};
-        const score = Math.round(analysis.overallScore != null ? analysis.overallScore : (data.dirtScore || 0));
+        const score = Math.round(data.overallScore != null ? data.overallScore : (analysis.overallScore || 0));
         const dirtLvl = data.dirtLevel || {};
         const quote = data.quote || {};
         const signals = analysis.signals || {};
         const recs = data.recommendations || [];
         const recService = quote.recommendedService || {};
+        const spaces = data.spaces || [];
+        const rating = Math.max(1, Math.min(5, Math.round(data.rating1to5 || 3)));
 
         currentAiData = {
+          rating1to5: rating,
           score,
           level: dirtLvl.level || 'moderate',
           label: dirtLvl.label || 'Bẩn vừa',
           recService,
           signals,
+          spaces,
           quotePrice: quote.finalPrice,
           dirtFactor: quote.dirtFactor,
-          filename: selectedAiFile ? selectedAiFile.name : 'image.jpg'
+          totalImages: selectedFiles.length,
+          estimatedHours: data.estimatedHours || quote.estimatedHours || '~3 - 4 giờ'
         };
 
-        // 1. Cập nhật Badge độ bẩn
+        // 1. Cập nhật Thang điểm 1 đến 5 sao
+        const starsRow = document.getElementById('ai-stars-row');
+        if (starsRow) {
+          starsRow.innerHTML = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+          starsRow.title = `Mức độ bẩn: ${rating}/5`;
+        }
+
+        // 2. Cập nhật Badge độ bẩn & Điểm số 0-100
         const dirtBadge = document.getElementById('ai-dirt-badge');
         if (dirtBadge) {
           dirtBadge.className = `ai-dirt-badge ${dirtLvl.level || 'moderate'}`;
-          dirtBadge.textContent = dirtLvl.label || 'Tình trạng thực tế';
+          dirtBadge.textContent = data.ratingLabel || `${dirtLvl.label || 'Bẩn vừa'} (${rating}/5)`;
         }
 
-        // 2. Cập nhật Điểm số
         const scoreText = document.getElementById('ai-score-text');
         if (scoreText) {
           scoreText.textContent = `Chỉ số độ bẩn: ${score}/100`;
         }
 
-        // 3. Hiển thị 5 chỉ số phân tích trực quan
+        // 3. Hiển thị Đánh giá chi tiết từng không gian / từng bức ảnh
+        const spacesGrid = document.getElementById('ai-spaces-grid');
+        const spacesSection = document.getElementById('ai-spaces-section');
+        if (spacesGrid && spacesSection) {
+          if (spaces.length > 0) {
+            spacesSection.style.display = 'block';
+            spacesGrid.innerHTML = spaces.map(space => {
+              const severityLabel = space.severity === 'high' ? 'Bẩn nhiều' : (space.severity === 'medium' ? 'Bẩn vừa' : 'Sạch sẽ');
+              const severityClass = space.severity || 'medium';
+              return `
+                <div class="ai-space-card">
+                  <div class="ai-space-header">
+                    <span class="ai-space-title">🏠 ${space.roomType || ('Ảnh #' + space.index)}</span>
+                    <span class="ai-space-badge ${severityClass}">${space.score}/100 · ${severityLabel}</span>
+                  </div>
+                  <div class="ai-space-issues">${space.issues}</div>
+                  <div class="ai-space-score-bar">
+                    <div class="ai-space-score-fill" style="width: ${Math.min(100, Math.max(10, space.score))}%;"></div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          } else {
+            spacesSection.style.display = 'none';
+          }
+        }
+
+        // 4. Hiển thị 5 chỉ số phân tích trực quan tổng hợp
         const signalsList = document.getElementById('ai-signals-list');
         if (signalsList) {
           const signalConfig = [
@@ -949,10 +1163,15 @@
           }).join('');
         }
 
-        // 4. Khuyến nghị và gói dịch vụ gợi ý
+        // 5. Khuyến nghị và gói dịch vụ gợi ý
         const recServiceName = document.getElementById('ai-rec-service-name');
         if (recServiceName) {
           recServiceName.textContent = recService.name || 'Gói vệ sinh tiêu chuẩn';
+        }
+
+        const recHours = document.getElementById('ai-rec-hours');
+        if (recHours) {
+          recHours.textContent = data.estimatedHours || quote.estimatedHours || '~3 - 4 giờ';
         }
 
         const recDesc = document.getElementById('ai-rec-desc');
@@ -1006,7 +1225,7 @@
 
           if (targetService) {
             selectServiceById(targetService.id);
-            showToast('success', `Đã chọn gói "${targetService.name}" theo gợi ý từ AI.`);
+            showToast('success', `Đã áp dụng gói "${targetService.name}" theo gợi ý từ AI.`);
             
             // Cuộn xuống mục dịch vụ
             const serviceSection = document.getElementById('section-service-scale');
@@ -1286,7 +1505,9 @@
         // Tạo ghi chú bao gồm thông tin AI nếu khách hàng đã quét
         let finalNotes = document.getElementById('booking-notes').value.trim();
         if (currentAiData) {
-          finalNotes += `${finalNotes ? '\n' : ''}[Đánh giá AI: Độ bẩn ${currentAiData.score}/100 (${currentAiData.label}). Gói đề xuất: ${currentAiData.recService?.name || 'N/A'}]`;
+          const totalImgs = currentAiData.totalImages || 1;
+          const starsText = currentAiData.rating1to5 ? ` [Mức độ: ${currentAiData.rating1to5}/5]` : '';
+          finalNotes += `${finalNotes ? '\n' : ''}[Đánh giá AI Vision (${totalImgs} ảnh): Độ bẩn ${currentAiData.score}/100${starsText} - ${currentAiData.label}. Gói đề xuất: ${currentAiData.recService?.name || 'N/A'}]`;
         }
         if (activeAddonNames.length > 0) {
           finalNotes += `${finalNotes ? '\n' : ''}[Dịch vụ bổ sung: ${activeAddonNames.join(', ')}]`;
@@ -1305,9 +1526,12 @@
           payment_method: document.getElementById('booking-payment').value,
           ai_analysis: currentAiData ? {
             score: currentAiData.score,
+            rating_1to5: currentAiData.rating1to5 || Math.min(5, Math.max(1, Math.ceil(currentAiData.score / 20))),
             dirt_level: currentAiData.level,
             label: currentAiData.label,
-            recommended_service: currentAiData.recService?.name
+            total_images: currentAiData.totalImages || 1,
+            recommended_service: currentAiData.recService?.name,
+            spaces: currentAiData.spaces || []
           } : null
         };
 

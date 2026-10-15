@@ -25,7 +25,11 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const partnerRoutes = require('./routes/partnerRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
+
+// Đảm bảo xử lý CORS preflight OPTIONS cho mọi routes
+app.options('*', cors());
 
 // Khai báo API Endpoints
 app.use('/api/auth', authRoutes);
@@ -34,36 +38,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/partner', partnerRoutes);
-
-// Proxy thông minh cho AI Module (Port 5100)
-const http = require('http');
-app.use('/api/ai', (req, res) => {
-  const options = {
-    hostname: '127.0.0.1',
-    port: process.env.AI_PORT || 5100,
-    path: `/api/ai${req.url}`,
-    method: req.method,
-    headers: {
-      ...req.headers,
-      host: `127.0.0.1:${process.env.AI_PORT || 5100}`
-    }
-  };
-
-  const proxyReq = http.request(options, (proxyRes) => {
-    res.writeHead(proxyRes.statusCode, proxyRes.headers);
-    proxyRes.pipe(res, { end: true });
-  });
-
-  proxyReq.on('error', (err) => {
-    res.status(503).json({
-      success: false,
-      message: 'Dịch vụ Cleanova AI hiện chưa phản hồi. Vui lòng đảm bảo server AI đang chạy trên cổng 5100.',
-      error: err.message
-    });
-  });
-
-  req.pipe(proxyReq, { end: true });
-});
+app.use('/api/ai', aiRoutes);
 
 // Endpoint kiểm tra sức khỏe hệ thống (Health Check)
 app.get('/api/health', (req, res) => {
