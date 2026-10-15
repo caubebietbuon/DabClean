@@ -839,8 +839,8 @@ function removeToast(toast) {
 function initScrollReveal() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // 1. Selector hỗ trợ tất cả các dạng reveal
-  const selector = '.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-fade, .reveal-scale, .timeline-phase-item, [data-reveal]';
+  // 1. Selector hỗ trợ tất cả các dạng reveal class và data attribute
+  const selector = '.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-fade, .reveal-scale, .timeline-phase-item, [data-reveal], [data-animate]';
   const revealElements = document.querySelectorAll(selector);
 
   // Nếu không có phần tử nào cần reveal, thoát an toàn
@@ -857,26 +857,35 @@ function initScrollReveal() {
   // 3. Đánh dấu HTML đã sẵn sàng hiệu ứng (Progressive Enhancement)
   document.documentElement.classList.add('js-reveal-ready');
 
-  // 4. Khởi tạo IntersectionObserver đơn nhất
+  // 4. Khởi tạo IntersectionObserver hỗ trợ cuộn 2 chiều (Re-triggering on scroll up & down)
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
+      const target = entry.target;
       if (entry.isIntersecting) {
-        const target = entry.target;
+        // Phần tử đi vào vùng nhìn: Kích hoạt animation xuất hiện
         target.classList.add('visible', 'is-visible');
 
-        // Đọc data-reveal-delay nếu có
-        const customDelay = target.getAttribute('data-reveal-delay');
+        // Hỗ trợ data-reveal-delay hoặc data-delay tùy biến
+        const customDelay = target.getAttribute('data-reveal-delay') || target.getAttribute('data-delay');
         if (customDelay) {
           target.style.transitionDelay = `${customDelay}ms`;
         }
-
-        // Ngừng quan sát sau khi đã hiển thị 1 lần duy nhất
-        observer.unobserve(target);
+      } else {
+        // Khi phần tử hoàn toàn rời khỏi vùng nhìn:
+        // Đưa về trạng thái chờ để khi khách cuộn lại sẽ tiếp tục xuất hiện mượt mà
+        // Loại trừ các phần tử trong hero hoặc có class .reveal-once
+        if (!target.closest('.hero') && !target.classList.contains('reveal-once')) {
+          target.classList.remove('visible', 'is-visible');
+          // Xóa inline transitionDelay nếu có để reset tức thời
+          if (target.hasAttribute('data-reveal-delay') || target.hasAttribute('data-delay')) {
+            target.style.transitionDelay = '';
+          }
+        }
       }
     });
   }, {
-    threshold: 0.12,
-    rootMargin: '0px 0px -40px 0px'
+    threshold: 0.10,
+    rootMargin: '0px 0px -30px 0px'
   });
 
   revealElements.forEach(el => observer.observe(el));
@@ -898,14 +907,16 @@ function initScrollReveal() {
     if (el) el.classList.add(item.animClass);
   });
 
-  // 6. Cơ chế an toàn (Safety fallback): Sau 4 giây nếu còn phần tử chưa hiện thì tự động mở
+  // 6. Cơ chế an toàn (Safety fallback): Sau 5 giây nếu phần tử đang trong viewport mà chưa hiện thì kích hoạt
   setTimeout(() => {
     revealElements.forEach(el => {
-      if (!el.classList.contains('visible') && !el.classList.contains('is-visible')) {
+      const rect = el.getBoundingClientRect();
+      const inViewport = (rect.top < window.innerHeight && rect.bottom > 0);
+      if (inViewport && !el.classList.contains('visible') && !el.classList.contains('is-visible')) {
         el.classList.add('visible', 'is-visible');
       }
     });
-  }, 4000);
+  }, 5000);
 }
 
 /* ---------------------------------------------------------------

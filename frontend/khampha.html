@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khám phá CleanNova · Chuẩn mực Dịch vụ Vệ sinh & Công nghệ AI Quét Phòng</title>
+  <meta name="description" content="Tìm hiểu sứ mệnh, quy trình dịch vụ 6 bước chuẩn mực, công nghệ AI hỗ trợ đánh giá độ bẩn phòng và cam kết chất lượng độc quyền từ nền tảng vệ sinh CleanNova.">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/pages/explore.css">
+  
+  <!-- API Client -->
+  <script src="api.js"></script>
+</head>
+<body class="explore-page">
+
+  <!-- ============================================================
+       HEADER (Thanh điều hướng đồng bộ)
+       ============================================================ -->
+  <header class="header scrolled" role="banner">
+    <div class="container">
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.2"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0D9488"/>
+          <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">Cleanova</span>
+      </a>
+
+      <!-- Menu Điều hướng Desktop -->
+      <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
+        <a href="trangchu.html" class="nav-link">Trang chủ</a>
+        <a href="services.html" class="nav-link">Dịch vụ</a>
+        <a href="khampha.html" class="nav-link active">Khám phá</a>
+        <a href="booking.html" class="nav-link">Đặt lịch</a>
+        <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
+      </nav>
+
+      <!-- Hành động bên phải -->
+      <div class="header-actions">
+        <a href="partner-register.html" class="btn-partner-header">
+          <span aria-hidden="true">🤝</span>
+          <span>Trở thành đối tác</span>
+        </a>
+
+        <!-- Slot người dùng hoặc nút đăng nhập -->
+        <div id="auth-header-slot" style="display: flex; align-items: center; gap: 8px;">
+          <a href="login.html" class="btn btn-ghost btn-sm" id="btn-login-header">Đăng nhập</a>
+          <a href="register.html" class="btn btn-primary btn-sm" id="btn-register-header">Đăng ký</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ============================================================
+         1. HERO SECTION: KHÁM PHÁ CLEANNOVA
+         ============================================================ -->
+    <section class="explore-hero" aria-label="Giới thiệu CleanNova">
+      <div class="container">
+        <div class="explore-hero-inner">
+          
+          <!-- Cột trái: Tiêu đề & Thông điệp -->
+          <div class="reveal reveal-up">
+            <div class="explore-badge">
+              <span>✨</span>
+              <span>Chuẩn mực & Công nghệ Vệ sinh 2026</span>
+            </div>
+            <h1 class="explore-title">
+              Khám phá CleanNova — Dịch vụ Vệ sinh <span>Thông minh & Chuẩn 5 Sao</span>
+            </h1>
+            <p class="explore-desc">
+              CleanNova được xây dựng để mang đến giải pháp làm sạch toàn diện cho mọi ngôi nhà và văn phòng. Chúng tôi kết hợp giữa quy trình dọn dẹp khoa học, đội ngũ chuyên viên tận tâm và công nghệ AI quét độ bẩn thực tế giúp bạn luôn an tâm về chất lượng và chi phí.
+            </p>
+            <div class="explore-hero-actions">
+              <a href="booking.html" class="btn btn-primary btn-lg">
+                Đặt lịch dịch vụ ngay →
+              </a>
+              <a href="booking.html#section-ai-scan" class="btn btn-secondary btn-lg">
+                ⚡ Trải nghiệm AI quét phòng
+              </a>
+            </div>
+          </div>
+
+          <!-- Cột phải: Card trực quan hóa cam kết -->
+          <div class="explore-hero-card reveal reveal-scale stagger-2">
+            <span class="hero-stat-badge">Cleanova Care 100%</span>
+            <div style="font-size: 13px; font-weight: 800; color: #0d9488; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px;">
+              🛡️ TIÊU CHUẨN PHỤC VỤ VƯỢT TRỘI
+            </div>
+
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon">💎</div>
+              <div>
+                <strong style="font-size: 14px; display: block; color: var(--color-text-main);">Minh bạch 100% chi phí</strong>
+                <span style="font-size: 12px; color: var(--color-text-secondary);">Báo giá thời gian thực theo diện tích và nhu cầu, không phát sinh phụ phí ẩn.</span>
+              </div>
+            </div>
+
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon">🌿</div>
+              <div>
+                <strong style="font-size: 14px; display: block; color: var(--color-text-main);">Hóa chất sinh học an toàn</strong>
+                <span style="font-size: 12px; color: var(--color-text-secondary);">Sử dụng dung dịch tẩy rửa đạt chuẩn thân thiện, không độc hại cho trẻ nhỏ và thú cưng.</span>
+              </div>
+            </div>
+
+            <div class="hero-feature-item">
+              <div class="hero-feature-icon">🔄</div>
+              <div>
+                <strong style="font-size: 14px; display: block; color: var(--color-text-main);">Bảo hành làm lại miễn phí</strong>
+                <span style="font-size: 12px; color: var(--color-text-secondary);">Nếu khách hàng chưa thực sự hài lòng với chất lượng ca dọn, chuyên viên sẽ làm lại miễn phí.</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         2. SỨ MỆNH & GIÁ TRỊ CỐT LÕI
+         ============================================================ -->
+    <section class="section" id="mission-values" aria-label="Sứ mệnh & Giá trị cốt lõi">
+      <div class="container">
+        <div class="section-header reveal reveal-up" style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <div class="section-badge">🌱 Sứ mệnh phát triển</div>
+          <h2 class="section-title">Không gian sạch hơn — Cuộc sống tốt hơn</h2>
+          <p class="section-subtitle">
+            Chúng tôi tin rằng một không gian sống sạch sẽ và ngăn nắp là nền tảng cho sức khỏe tinh thần và thể chất của mọi gia đình.
+          </p>
+        </div>
+
+        <div class="values-grid">
+          <!-- Card 1 -->
+          <div class="value-card reveal reveal-up stagger-1">
+            <div class="value-icon">🎯</div>
+            <h3 class="value-title">Minh bạch & Tin cậy</h3>
+            <p class="value-desc">Mọi thông tin về giá thành, diện tích, thời lượng và thông tin chuyên viên đều hiển thị rõ ràng trên hệ thống trước khi bạn ấn xác nhận.</p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="value-card reveal reveal-up stagger-2">
+            <div class="value-icon">🧑‍🔬</div>
+            <h3 class="value-title">Chuyên viên tuyển chọn</h3>
+            <p class="value-desc">100% nhân sự đều được xác minh danh tính lý lịch, trải qua 40+ giờ đào tạo kỹ năng dọn dẹp chuẩn 5S và kiểm tra tác phong định kỳ.</p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="value-card reveal reveal-up stagger-3">
+            <div class="value-icon">🤖</div>
+            <h3 class="value-title">Công nghệ hỗ trợ thực tế</h3>
+            <p class="value-desc">Tích hợp mô hình AI thị giác máy tính nhận diện vết ố và bụi bẩn, giúp khách hàng chọn đúng gói dịch vụ cần thiết mà không lãng phí chi phí.</p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="value-card reveal reveal-up stagger-4">
+            <div class="value-icon">🤝</div>
+            <h3 class="value-title">Đồng hành lâu dài</h3>
+            <p class="value-desc">Lắng nghe mọi phản hồi, hỗ trợ đổi lịch linh hoạt trước 24h và áp dụng chính sách giảm giá ưu đãi tới 15% cho khách hàng định kỳ.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. QUY TRÌNH DỊCH VỤ 6 BƯỚC CHUẨN MỰC
+         ============================================================ -->
+    <section class="section" id="workflow" style="background: #f8fafc; border-top: 1px solid var(--color-border-light); border-bottom: 1px solid var(--color-border-light);" aria-label="Quy trình dịch vụ">
+      <div class="container">
+        <div class="section-header reveal reveal-up" style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <div class="section-badge">📋 Quy trình chuẩn hóa</div>
+          <h2 class="section-title">6 Bước dọn dẹp chuyên nghiệp từ CleanNova</h2>
+          <p class="section-subtitle">
+            Mọi ca dịch vụ đều tuân thủ chặt chẽ trình tự khoa học, đảm bảo không bỏ sót bất kỳ ngóc ngách nào trong căn nhà bạn.
+          </p>
+        </div>
+
+        <div class="workflow-steps">
+          
+          <!-- Bước 1 -->
+          <div class="step-box reveal reveal-up stagger-1">
+            <div class="step-num-bubble">1</div>
+            <div class="step-icon-wrap">📸</div>
+            <h3 class="step-title">1. Tiếp nhận & AI Đánh giá</h3>
+            <p class="step-desc">Khách hàng chọn gói dịch vụ hoặc tải ảnh phòng để AI quét độ bẩn, đưa ra khuyến nghị khách quan và phù hợp với thực trạng không gian.</p>
+          </div>
+
+          <!-- Bước 2 -->
+          <div class="step-box reveal reveal-up stagger-2">
+            <div class="step-num-bubble">2</div>
+            <div class="step-icon-wrap">⚙️</div>
+            <h3 class="step-title">2. Tùy chỉnh dịch vụ</h3>
+            <p class="step-desc">Lựa chọn quy mô diện tích (nhỏ, vừa, lớn), các dịch vụ bổ sung như khử khuẩn Nano Bạc hay giặt sofa và chọn khung giờ thuận tiện nhất.</p>
+          </div>
+
+          <!-- Bước 3 -->
+          <div class="step-box reveal reveal-up stagger-3">
+            <div class="step-num-bubble">3</div>
+            <div class="step-icon-wrap">👤</div>
+            <h3 class="step-title">3. Điều phối chuyên viên</h3>
+            <p class="step-desc">Hệ thống phân công nhân viên có đánh giá tốt, chuẩn bị đầy đủ trang bị chuyên dụng (máy hút bụi công suất lớn, khăn lau microfiber, dung dịch sinh học).</p>
+          </div>
+
+          <!-- Bước 4 -->
+          <div class="step-box reveal reveal-up stagger-4">
+            <div class="step-num-bubble">4</div>
+            <div class="step-icon-wrap">🧹</div>
+            <h3 class="step-title">4. Thi công theo chuẩn 5S</h3>
+            <p class="step-desc">Thực hiện làm sạch theo nguyên tắc từ trên xuống dưới, từ trong ra ngoài. Tập trung xử lý kỹ các khu vực dầu mỡ bếp ăn và cặn canxi phòng tắm.</p>
+          </div>
+
+          <!-- Bước 5 -->
+          <div class="step-box reveal reveal-up stagger-5">
+            <div class="step-num-bubble">5</div>
+            <div class="step-icon-wrap">🔍</div>
+            <h3 class="step-title">5. Nghiệm thu cùng gia chủ</h3>
+            <p class="step-desc">Chuyên viên mời bạn kiểm tra từng hạng mục hoàn tất theo checklist cam kết trước khi tiến hành bàn giao không gian sạch tinh tươm.</p>
+          </div>
+
+          <!-- Bước 6 -->
+          <div class="step-box reveal reveal-up stagger-6">
+            <div class="step-num-bubble">6</div>
+            <div class="step-icon-wrap">⭐</div>
+            <h3 class="step-title">6. Thanh toán & Đánh giá</h3>
+            <p class="step-desc">Khách hàng thanh toán sau khi hoàn tất (tiền mặt, chuyển khoản QR hoặc ví điện tử) và chấm điểm chất lượng trực tiếp trên website.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. SPOTLIGHT CÔNG NGHỆ: AI QUÉT ĐỘ BẨN PHÒNG
+         ============================================================ -->
+    <section class="section" id="ai-technology" aria-label="Công nghệ AI quét độ bẩn">
+      <div class="container">
+        <div class="ai-spotlight-card reveal reveal-up">
+          
+          <!-- Nội dung giới thiệu AI -->
+          <div>
+            <div class="ai-pill-tag">
+              <span>⚡</span>
+              <span>Công nghệ độc quyền Cleanova AI</span>
+            </div>
+            <h2 class="ai-spotlight-title">
+              Đánh giá tình trạng phòng bằng Thị giác máy tính
+            </h2>
+            <p class="ai-spotlight-desc">
+              Không còn phải ước lượng mơ hồ về mức độ sạch bẩn của căn nhà. Mô hình AI của CleanNova được thiết kế để phân tích hình ảnh thực tế, đo lường 5 chỉ số bẩn cốt lõi và gợi ý gói dịch vụ tối ưu ngân sách nhất cho bạn.
+            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 13.5px;">
+                <span style="color: #0d9488; font-weight: 800;">✓</span>
+                <span><strong>5 Chỉ số bẩn:</strong> Đo lường vết ố bề mặt, bụi bặm, rác cặn, độ bừa bộn và ánh sáng.</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 13.5px;">
+                <span style="color: #0d9488; font-weight: 800;">✓</span>
+                <span><strong>Thang điểm 0 - 100:</strong> Xác định rõ mức độ Sạch, Nhẹ, Vừa, Sâu hoặc Nặng.</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px; font-size: 13.5px;">
+                <span style="color: #0d9488; font-weight: 800;">✓</span>
+                <span><strong>Quyền tự do tuyệt đối:</strong> Kết quả mang tính tham khảo minh bạch, bạn hoàn toàn làm chủ gói đặt theo ý muốn.</span>
+              </div>
+            </div>
+
+            <a href="booking.html#section-ai-scan" class="btn btn-primary">
+              Thử nghiệm AI ngay tại Trang Đặt Lịch →
+            </a>
+          </div>
+
+          <!-- Mockup giao diện AI Scanner trực quan -->
+          <div class="ai-interactive-mockup">
+            <div class="mockup-header">
+              <div>
+                <span class="mockup-dot red"></span>
+                <span class="mockup-dot yellow"></span>
+                <span class="mockup-dot green"></span>
+              </div>
+              <span style="font-size: 11px; font-weight: 700; color: #0d9488;">Cleanova AI Analyzer v2.4</span>
+            </div>
+
+            <!-- Preview panel -->
+            <div style="background: #f8fafc; border-radius: var(--radius-lg); padding: 14px; border: 1px solid #e2e8f0; margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase;">MÔ PHỎNG PHÂN TÍCH</span>
+                <span style="background: #fffbeb; color: #b45309; border: 1px solid #fde68a; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 999px;">Bẩn vừa (52/100)</span>
+              </div>
+
+              <!-- Thanh đo các chỉ số -->
+              <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; margin-bottom: 3px;">
+                    <span>🧽 Vết ố bề mặt</span>
+                    <strong style="color: #0f766e;">48%</strong>
+                  </div>
+                  <div style="height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+                    <div style="height: 100%; width: 48%; background: #0d9488; border-radius: 999px;"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; margin-bottom: 3px;">
+                    <span>💨 Bụi bặm bề mặt</span>
+                    <strong style="color: #0f766e;">64%</strong>
+                  </div>
+                  <div style="height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+                    <div style="height: 100%; width: 64%; background: #0d9488; border-radius: 999px;"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; margin-bottom: 3px;">
+                    <span>📦 Mức độ bừa bộn</span>
+                    <strong style="color: #0f766e;">35%</strong>
+                  </div>
+                  <div style="height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+                    <div style="height: 100%; width: 35%; background: #0d9488; border-radius: 999px;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gói đề xuất -->
+            <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: var(--radius-md); padding: 12px; font-size: 12px;">
+              <strong style="color: #047857; display: block; margin-bottom: 4px;">💡 Gợi ý gói tối ưu: Tổng vệ sinh Deep Cleaning</strong>
+              <span style="color: var(--color-text-secondary);">Thích hợp xử lý sâu các ngóc ngách, loại bỏ bụi mịn và khử khuẩn hoàn toàn.</span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. BẢNG SO SÁNH TIÊU CHUẨN DỊCH VỤ
+         ============================================================ -->
+    <section class="section" id="standards" aria-label="So sánh tiêu chuẩn">
+      <div class="container">
+        <div class="section-header reveal reveal-up" style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <div class="section-badge">⚖️ So sánh tiêu chuẩn</div>
+          <h2 class="section-title">Khác biệt tại CleanNova</h2>
+          <p class="section-subtitle">
+            Vì sao ngày càng nhiều gia đình chuyển sang sử dụng giải pháp vệ sinh chuyên nghiệp CleanNova thay cho dọn dẹp tự do truyền thống?
+          </p>
+        </div>
+
+        <div class="comparison-container reveal reveal-up">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th style="width: 28%;">Tiêu chí đánh giá</th>
+                <th style="width: 36%;">Dọn dẹp tự do truyền thống</th>
+                <th class="col-cleanova" style="width: 36%;">Tiêu chuẩn CleanNova</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Xác minh lý lịch</strong></td>
+                <td>Thường qua giới thiệu miệng, khó kiểm chứng thông tin cá nhân.</td>
+                <td class="col-cleanova">✓ 100% định danh CCCD gắn chip, xác minh nhân thân và không có tiền án tiền sự.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Đào tạo chuyên môn</strong></td>
+                <td>Dọn theo thói quen cá nhân, không có quy chuẩn phân vùng rõ ràng.</td>
+                <td class="col-cleanova">✓ Đào tạo 40h theo Checklist 5S, phân loại khăn riêng cho bếp, kính, toilet.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Dụng cụ & Hóa chất</strong></td>
+                <td>Thường yêu cầu chủ nhà tự chuẩn bị xô chậu, nước lau sàn phổ thông.</td>
+                <td class="col-cleanova">✓ Mang đầy đủ máy móc chuyên dụng và dung dịch sinh học an toàn đạt chuẩn.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Báo giá & Chi phí</strong></td>
+                <td>Giá thỏa thuận tùy hứng, dễ phát sinh tiền thêm giờ hoặc phụ phí.</td>
+                <td class="col-cleanova">✓ Giá chuẩn hiển thị thời gian thực theo m², tuyệt đối không có phụ phí ẩn.</td>
+              </tr>
+              <tr>
+                <td><strong>5. Bảo hành & Trách nhiệm</strong></td>
+                <td>Rất khó phản ánh khi đồ đạc bị hư hỏng hoặc làm chưa sạch.</td>
+                <td class="col-cleanova">✓ Bảo hiểm Cleanova Care: Làm lại miễn phí hoặc hỗ trợ bồi hoàn nếu có sự cố.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. CÂU HỎI THƯỜNG GẶP (FAQ ACCORDION)
+         ============================================================ -->
+    <section class="section" id="faq" style="background: #f8fafc; border-top: 1px solid var(--color-border-light);" aria-label="Câu hỏi thường gặp">
+      <div class="container">
+        <div class="section-header reveal reveal-up" style="text-align: center; max-width: 680px; margin: 0 auto;">
+          <div class="section-badge">❓ Câu hỏi thường gặp</div>
+          <h2 class="section-title">Giải đáp thắc mắc về CleanNova</h2>
+          <p class="section-subtitle">
+            Những thông tin cần thiết giúp bạn hiểu rõ và an tâm trước khi sử dụng dịch vụ.
+          </p>
+        </div>
+
+        <div class="explore-faq-list">
+          
+          <div class="explore-faq-item reveal reveal-up stagger-1 active">
+            <button class="explore-faq-question" type="button">
+              <span>Chức năng AI Quét độ bẩn có bắt buộc khi đặt lịch không?</span>
+              <span class="explore-faq-icon">▼</span>
+            </button>
+            <div class="explore-faq-answer">
+              Không bắt buộc. AI Quét độ bẩn là tính năng hỗ trợ thông minh giúp khách hàng chưa ước tính được tình trạng phòng có cái nhìn khách quan về mức độ bụi bẩn và nhận gợi ý phù hợp. Bạn hoàn toàn có thể bỏ qua bước này và tự tay chọn gói dịch vụ theo mong muốn cá nhân.
+            </div>
+          </div>
+
+          <div class="explore-faq-item reveal reveal-up stagger-2">
+            <button class="explore-faq-question" type="button">
+              <span>Tôi có cần chuẩn bị dụng cụ hoặc hóa chất dọn dẹp trước không?</span>
+              <span class="explore-faq-icon">▼</span>
+            </button>
+            <div class="explore-faq-answer">
+              Không cần. Chuyên viên của CleanNova khi đến làm việc sẽ mang theo đầy đủ bộ dụng cụ chuyên nghiệp (máy hút bụi công suất lớn, cây lau nhà vắt tự động, khăn lau microfiber màu phân vùng) và các dung dịch tẩy rửa sinh học cao cấp an toàn cho gia đình.
+            </div>
+          </div>
+
+          <div class="explore-faq-item reveal reveal-up stagger-3">
+            <button class="explore-faq-question" type="button">
+              <span>Tôi có thể hủy lịch hoặc dời sang ngày khác được không?</span>
+              <span class="explore-faq-icon">▼</span>
+            </button>
+            <div class="explore-faq-answer">
+              Có. Bạn được quyền đổi lịch hoặc hủy ca hẹn hoàn toàn miễn phí trước 24 giờ so với giờ hẹn thực tế thông qua trang Quản lý đơn hàng hoặc liên hệ bộ phận hỗ trợ khách hàng.
+            </div>
+          </div>
+
+          <div class="explore-faq-item reveal reveal-up stagger-4">
+            <button class="explore-faq-question" type="button">
+              <span>Chính sách bảo đảm chất lượng Cleanova Care hoạt động như thế nào?</span>
+              <span class="explore-faq-icon">▼</span>
+            </button>
+            <div class="explore-faq-answer">
+              Nếu sau khi nghiệm thu bạn nhận thấy khu vực nào chưa đạt yêu cầu cam kết, bạn chỉ cần báo lại cho chuyên viên hoặc gửi đánh giá qua hệ thống trong vòng 24h. CleanNova sẽ cử chuyên viên đến xử lý lại khu vực đó hoàn toàn miễn phí.
+            </div>
+          </div>
+
+          <div class="explore-faq-item reveal reveal-up stagger-5">
+            <button class="explore-faq-question" type="button">
+              <span>Tôi muốn đặt định kỳ hàng tuần thì có ưu đãi gì không?</span>
+              <span class="explore-faq-icon">▼</span>
+            </button>
+            <div class="explore-faq-answer">
+              Khi chọn tần suất "Hàng tuần", hệ thống sẽ tự động giảm ngay 15% tổng giá trị đơn dịch vụ trên mỗi ca. Tương tự, tần suất "Hàng tháng" sẽ được giảm 10%. Ngoài ra, bạn còn được ưu tiên giữ lịch cố định với chuyên viên mà gia đình ưng ý nhất.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. CALL TO ACTION BANNER
+         ============================================================ -->
+    <section class="container">
+      <div class="explore-cta-banner reveal reveal-scale">
+        <h2 class="explore-cta-title">Sẵn sàng trải nghiệm không gian sống sạch tinh tươm?</h2>
+        <p class="explore-cta-desc">
+          Đặt lịch ngay hôm nay để nhận ưu đãi giảm 20% với mã <strong>CLEANOVA20</strong> và trải nghiệm dịch vụ vệ sinh thông minh hàng đầu.
+        </p>
+        <div class="explore-cta-buttons">
+          <a href="booking.html" class="btn btn-primary btn-lg" style="background: #ffffff; color: #0d9488; font-weight: 800;">
+            Đặt lịch chỉ trong 60 giây →
+          </a>
+          <a href="services.html" class="btn btn-secondary btn-lg" style="border-color: rgba(255,255,255,0.4); color: white; background: rgba(255,255,255,0.1);">
+            Xem bảng danh mục dịch vụ
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       8. FOOTER HIỆN ĐẠI ĐỒNG BỘ 4 CỘT
+       ============================================================ -->
+  <footer class="footer" id="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Cột 1: CleanNova -->
+        <div class="footer-brand reveal reveal-up stagger-1">
+          <a href="trangchu.html" class="logo" aria-label="Cleanova">
+            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/>
+              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
+              <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="logo-text">Cleanova</span>
+          </a>
+          <p>Nền tảng đặt dịch vụ dọn vệ sinh thông minh, tiện lợi và tin cậy hàng đầu cho gia đình & văn phòng hiện đại.</p>
+          <div class="footer-contact">
+            <a href="tel:19008888" aria-label="Hotline">📞 <span>1900-8888 (8:00 - 20:00)</span></a>
+            <a href="mailto:contact@cleanova.vn" aria-label="Email hỗ trợ">📧 <span>contact@cleanova.vn</span></a>
+            <span style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">📍 123 Đường Cầu Giấy, Hà Nội</span>
+          </div>
+        </div>
+
+        <!-- Cột 2: Dịch vụ -->
+        <div class="footer-column reveal reveal-up stagger-2">
+          <h4>Dịch vụ</h4>
+          <div class="footer-links">
+            <a href="services.html?category=gio">Dọn dẹp theo giờ</a>
+            <a href="services.html?category=tong-ve-sinh">Tổng vệ sinh Deep Cleaning</a>
+            <a href="services.html?category=van-phong">Vệ sinh văn phòng</a>
+            <a href="services.html?category=sofa">Giặt sofa & Nệm hơi nóng</a>
+            <a href="services.html?category=xay-dung">Vệ sinh sau xây dựng</a>
+            <a href="trangchu.html#calculator">Bảng tính giá nhanh</a>
+          </div>
+        </div>
+
+        <!-- Cột 3: Khám phá -->
+        <div class="footer-column reveal reveal-up stagger-3">
+          <h4>Khám phá</h4>
+          <div class="footer-links">
+            <a href="khampha.html">Giới thiệu CleanNova</a>
+            <a href="khampha.html#workflow">Quy trình dọn dẹp 6 bước</a>
+            <a href="khampha.html#ai-technology">Công nghệ AI Quét độ bẩn</a>
+            <a href="trangchu.html#why-cleanova">Vì sao chọn CleanNova?</a>
+            <a href="partner-register.html">Trở thành đối tác CleanNova</a>
+            <a href="khampha.html#faq">Câu hỏi thường gặp (FAQ)</a>
+          </div>
+        </div>
+
+        <!-- Cột 4: Hỗ trợ & Khách hàng -->
+        <div class="footer-column reveal reveal-up stagger-4">
+          <h4>Hỗ trợ & Khách hàng</h4>
+          <div class="footer-links">
+            <a href="booking.html">Đặt lịch trực tuyến</a>
+            <a href="my-bookings.html">Theo dõi đơn đặt của tôi</a>
+            <a href="profile.html">Thông tin & Sổ địa chỉ</a>
+            <a href="login.html">Đăng nhập tài khoản</a>
+            <a href="register.html">Đăng ký thành viên mới</a>
+            <a href="khampha.html#standards">Cam kết Cleanova Care</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p>© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
+        <div class="footer-bottom-links">
+          <a href="khampha.html#standards">Chính sách bảo mật</a>
+          <a href="khampha.html#standards">Điều khoản dịch vụ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script FAQ Accordion & Bi-directional Scroll Animation -->
+  <script src="main.js"></script>
+  <script>
+    'use strict';
+    document.addEventListener('DOMContentLoaded', function () {
+      // FAQ Accordion logic
+      const faqItems = document.querySelectorAll('.explore-faq-item');
+      faqItems.forEach(item => {
+        const btn = item.querySelector('.explore-faq-question');
+        btn.addEventListener('click', () => {
+          const isActive = item.classList.contains('active');
+          faqItems.forEach(i => i.classList.remove('active'));
+          if (!isActive) {
+            item.classList.add('active');
+          }
+        });
+      });
+
+      // Kiểm tra trạng thái đăng nhập trên Header
+      if (window.CleanovaAPI && window.CleanovaAPI.auth) {
+        const isLogged = window.CleanovaAPI.auth.isLoggedIn();
+        const user = window.CleanovaAPI.auth.getUser();
+        const slot = document.getElementById('auth-header-slot');
+        if (slot && isLogged && user) {
+          slot.innerHTML = `
+            <a href="profile.html" class="user-profile-badge" style="text-decoration: none;" title="Xem hồ sơ cá nhân">
+              <span class="user-avatar-mini" aria-hidden="true">👤</span>
+              <span class="user-email-text">${user.name || user.email || 'Tài khoản'}</span>
+            </a>
+            <button class="btn btn-ghost btn-sm" id="btn-logout" title="Đăng xuất">Đăng xuất</button>
+          `;
+          const btnLogout = document.getElementById('btn-logout');
+          if (btnLogout) {
+            btnLogout.addEventListener('click', () => {
+              window.CleanovaAPI.auth.logout();
+              window.location.reload();
+            });
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

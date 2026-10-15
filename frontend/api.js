@@ -496,6 +496,77 @@
           body: JSON.stringify(applicationData)
         });
       }
+    },
+
+    // Module AI Quét ảnh phòng & Báo giá tự động
+    ai: {
+      async estimate(formData) {
+        const endpoints = [
+          '/ai/estimate',                          // Qua Backend Express proxy (Port 5000)
+          'http://localhost:5100/api/ai/estimate'  // Gọi trực tiếp AI microservice (Port 5100)
+        ];
+
+        let lastError = null;
+        for (const ep of endpoints) {
+          try {
+            const url = ep.startsWith('http') ? ep : `${API_BASE_URL}${ep}`;
+            const res = await fetch(url, {
+              method: 'POST',
+              body: formData
+            });
+
+            const data = await res.json().catch(() => null);
+            if (res.ok && data && data.success) {
+              return data;
+            }
+            if (data && data.message) {
+              throw new Error(data.message);
+            }
+          } catch (err) {
+            lastError = err;
+          }
+        }
+        throw lastError || new Error('Không thể kết nối đến máy chủ AI Cleanova.');
+      },
+
+      async analyze(formData) {
+        const endpoints = [
+          '/ai/analyze',
+          'http://localhost:5100/api/ai/analyze'
+        ];
+
+        let lastError = null;
+        for (const ep of endpoints) {
+          try {
+            const url = ep.startsWith('http') ? ep : `${API_BASE_URL}${ep}`;
+            const res = await fetch(url, {
+              method: 'POST',
+              body: formData
+            });
+
+            const data = await res.json().catch(() => null);
+            if (res.ok && data && data.success) {
+              return data;
+            }
+            if (data && data.message) {
+              throw new Error(data.message);
+            }
+          } catch (err) {
+            lastError = err;
+          }
+        }
+        throw lastError || new Error('Không thể kết nối đến máy chủ AI Cleanova.');
+      },
+
+      async getServices() {
+        try {
+          return await request('/ai/services');
+        } catch {
+          const res = await fetch('http://localhost:5100/api/ai/services').catch(() => null);
+          if (res && res.ok) return await res.json();
+          return null;
+        }
+      }
     }
   };
 })();

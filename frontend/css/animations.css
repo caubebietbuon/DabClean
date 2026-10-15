@@ -20,14 +20,16 @@
 .reveal-left,
 .reveal-right,
 .reveal-fade,
-.reveal-scale {
+.reveal-scale,
+[data-animate] {
   opacity: 1;
   transform: none;
 }
 
 /* Khi JavaScript đã sẵn sàng: Thiết lập trạng thái ban đầu */
 .js-reveal-ready .reveal,
-.js-reveal-ready .reveal-up {
+.js-reveal-ready .reveal-up,
+.js-reveal-ready [data-animate="fade-up"] {
   opacity: 0;
   transform: translate3d(0, var(--reveal-distance), 0);
   transition: opacity var(--reveal-duration) var(--reveal-ease),
@@ -35,13 +37,15 @@
   will-change: opacity, transform;
 }
 
-.js-reveal-ready .reveal-fade {
+.js-reveal-ready .reveal-fade,
+.js-reveal-ready [data-animate="fade-in"] {
   opacity: 0;
   transition: opacity var(--reveal-duration) var(--reveal-ease);
   will-change: opacity;
 }
 
-.js-reveal-ready .reveal-left {
+.js-reveal-ready .reveal-left,
+.js-reveal-ready [data-animate="slide-left"] {
   opacity: 0;
   transform: translate3d(calc(-1 * var(--reveal-distance) - 10px), 0, 0);
   transition: opacity var(--reveal-duration) var(--reveal-ease),
@@ -49,7 +53,8 @@
   will-change: opacity, transform;
 }
 
-.js-reveal-ready .reveal-right {
+.js-reveal-ready .reveal-right,
+.js-reveal-ready [data-animate="slide-right"] {
   opacity: 0;
   transform: translate3d(calc(var(--reveal-distance) + 10px), 0, 0);
   transition: opacity var(--reveal-duration) var(--reveal-ease),
@@ -57,7 +62,9 @@
   will-change: opacity, transform;
 }
 
-.js-reveal-ready .reveal-scale {
+.js-reveal-ready .reveal-scale,
+.js-reveal-ready [data-animate="zoom-in"],
+.js-reveal-ready [data-animate="scale"] {
   opacity: 0;
   transform: scale3d(0.95, 0.95, 1);
   transition: opacity var(--reveal-duration) var(--reveal-ease),
@@ -75,20 +82,44 @@
 .js-reveal-ready .reveal-left.is-visible,
 .js-reveal-ready .reveal-left.visible,
 .js-reveal-ready .reveal-right.is-visible,
-.js-reveal-ready .reveal-right.visible {
+.js-reveal-ready .reveal-right.visible,
+.js-reveal-ready [data-animate="fade-up"].is-visible,
+.js-reveal-ready [data-animate="fade-up"].visible,
+.js-reveal-ready [data-animate="slide-left"].is-visible,
+.js-reveal-ready [data-animate="slide-left"].visible,
+.js-reveal-ready [data-animate="slide-right"].is-visible,
+.js-reveal-ready [data-animate="slide-right"].visible {
   opacity: 1;
   transform: translate3d(0, 0, 0);
 }
 
 .js-reveal-ready .reveal-fade.is-visible,
-.js-reveal-ready .reveal-fade.visible {
+.js-reveal-ready .reveal-fade.visible,
+.js-reveal-ready [data-animate="fade-in"].is-visible,
+.js-reveal-ready [data-animate="fade-in"].visible {
   opacity: 1;
 }
 
 .js-reveal-ready .reveal-scale.is-visible,
-.js-reveal-ready .reveal-scale.visible {
+.js-reveal-ready .reveal-scale.visible,
+.js-reveal-ready [data-animate="zoom-in"].is-visible,
+.js-reveal-ready [data-animate="zoom-in"].visible,
+.js-reveal-ready [data-animate="scale"].is-visible,
+.js-reveal-ready [data-animate="scale"].visible {
   opacity: 1;
   transform: scale3d(1, 1, 1);
+}
+
+/* Khi phần tử rời khỏi màn hình: Hủy delay để reset ngay lập tức, sẵn sàng cho lần cuộn tới */
+.js-reveal-ready .reveal:not(.is-visible):not(.visible),
+.js-reveal-ready .reveal-up:not(.is-visible):not(.visible),
+.js-reveal-ready .reveal-left:not(.is-visible):not(.visible),
+.js-reveal-ready .reveal-right:not(.is-visible):not(.visible),
+.js-reveal-ready .reveal-fade:not(.is-visible):not(.visible),
+.js-reveal-ready .reveal-scale:not(.is-visible):not(.visible),
+.js-reveal-ready [data-animate]:not(.is-visible):not(.visible),
+.js-reveal-ready .timeline-phase-item:not(.is-visible):not(.visible) {
+  transition-delay: 0s !important;
 }
 
 /* ------------------------------------------------------------

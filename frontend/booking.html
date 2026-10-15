@@ -80,44 +80,211 @@
         <div class="booking-step-section">
           <form id="booking-form" novalidate>
 
-            <!-- PHẦN 1: GÓI DỊCH VỤ & QUY MÔ -->
+            <!-- ============================================================
+                 KHU VỰC 0: ĐÁNH GIÁ TÌNH TRẠNG VỆ SINH BẰNG AI
+                 ============================================================ -->
+            <div class="booking-section-card ai-scanner-card" id="section-ai-scan">
+              <div class="booking-section-header" style="border-bottom: none; margin-bottom: 4px; padding-bottom: 0;">
+                <div style="flex: 1;">
+                  <span class="ai-header-badge">✨ Cleanova AI Vision · Độc quyền</span>
+                  <h3 class="booking-section-title" style="font-size: 1.25rem; color: #0f766e;">
+                    Đánh giá tình trạng vệ sinh bằng AI
+                  </h3>
+                </div>
+              </div>
+              <p class="ai-scanner-desc">
+                Tải ảnh hoặc chụp ảnh không gian cần vệ sinh để AI hỗ trợ đánh giá tình trạng và gợi ý dịch vụ phù hợp.
+              </p>
+
+              <!-- Upload / Dropzone -->
+              <div class="ai-dropzone" id="ai-dropzone">
+                <div class="ai-dropzone-icon">📸</div>
+                <div class="ai-dropzone-text">
+                  <strong>Kéo thả ảnh phòng vào đây hoặc nhấp để chọn file</strong>
+                  <span>Hỗ trợ định dạng JPG, PNG, WEBP (Dung lượng ≤ 10MB)</span>
+                </div>
+                <div class="ai-upload-actions">
+                  <button type="button" class="btn-ai-select" id="btn-ai-choose-file">
+                    📁 Chọn ảnh từ thiết bị
+                  </button>
+                  <button type="button" class="btn-ai-camera" id="btn-ai-camera">
+                    📷 Chụp ảnh phòng
+                  </button>
+                </div>
+              </div>
+
+              <!-- Inputs ẩn cho file upload & camera -->
+              <input type="file" id="ai-file-input" accept="image/jpeg,image/png,image/webp,image/bmp" style="display: none;">
+              <input type="file" id="ai-camera-input" accept="image/*" capture="environment" style="display: none;">
+
+              <!-- Image Preview Card -->
+              <div class="ai-preview-card" id="ai-preview-card">
+                <img id="ai-preview-img" src="" alt="Ảnh phòng xem trước" class="ai-preview-thumb">
+                <div class="ai-preview-meta">
+                  <div class="ai-preview-name" id="ai-preview-name">phong-khach.jpg</div>
+                  <div class="ai-preview-size" id="ai-preview-size">1.2 MB</div>
+                  <div class="ai-preview-buttons">
+                    <button type="button" class="btn btn-primary btn-sm" id="btn-ai-run-analyze">
+                      ⚡ Phân tích bằng AI
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-ai-change-img">
+                      Đổi ảnh khác
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="btn-ai-remove-img" style="color: #be123c;">
+                      Xóa ảnh
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Loading State -->
+              <div class="ai-loading-box" id="ai-loading-box">
+                <div class="ai-loading-spinner"></div>
+                <strong style="display: block; font-size: 13.5px; color: #0f766e;">Đang quét ảnh & phân tích tình trạng vệ sinh...</strong>
+                <span style="font-size: 11.5px; color: var(--color-text-muted);">AI đang nhận diện mật độ vết ố, bụi bẩn và độ bừa bộn của không gian</span>
+              </div>
+
+              <!-- Error Alert -->
+              <div id="ai-error-box" class="alert alert-error" style="display: none; margin-top: 14px;"></div>
+
+              <!-- AI Result Panel -->
+              <div class="ai-result-panel" id="ai-result-panel">
+                <div class="ai-result-top">
+                  <div>
+                    <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--color-text-muted); display: block;">KẾT QUẢ ĐÁNH GIÁ THỰC TẾ TỪ AI</span>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                      <div class="ai-dirt-badge moderate" id="ai-dirt-badge">Bẩn vừa</div>
+                      <span class="ai-score-pill" id="ai-score-text">Độ bẩn: 52/100</span>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm" id="btn-ai-reanalyze">
+                    🔄 Quét lại
+                  </button>
+                </div>
+
+                <!-- 5 Signals Breakdown Meter -->
+                <div class="ai-signals-list" id="ai-signals-list">
+                  <!-- Rendered dynamically via JS -->
+                </div>
+
+                <!-- AI Recommendation Box -->
+                <div class="ai-rec-box">
+                  <h4 id="ai-rec-title">
+                    <span>💡 Gợi ý gói dịch vụ:</span> <strong id="ai-rec-service-name">Tổng vệ sinh Deep Cleaning</strong>
+                  </h4>
+                  <p id="ai-rec-desc">
+                    AI phát hiện mức độ bụi và vết ố cần thiết bị chuyên sâu. Gói Deep Cleaning sẽ giúp xử lý triệt để các góc khuất.
+                  </p>
+                  <div style="font-size: 12px; margin-bottom: 10px;">
+                    <strong>Giá ước tính từ AI:</strong> <span id="ai-rec-price" style="color: #0d9488; font-weight: 800; font-size: 14px;">--</span>
+                    <span id="ai-rec-multiplier" style="color: var(--color-text-muted); font-size: 11px; margin-left: 6px;"></span>
+                  </div>
+                  <div class="ai-rec-actions">
+                    <button type="button" class="btn-ai-apply" id="btn-ai-apply-package">
+                      ✓ Áp dụng gói này vào đơn đặt lịch
+                    </button>
+                  </div>
+                </div>
+
+                <div class="ai-disclaimer">
+                  📌 <strong>Lưu ý:</strong> Kết quả AI mang tính chất tham khảo thực tế dựa trên đặc trưng ảnh chụp. Bạn hoàn toàn có thể chọn hoặc thay đổi bất kỳ gói dịch vụ nào theo nhu cầu cá nhân.
+                </div>
+              </div>
+
+            </div>
+
+            <!-- PHẦN 1: GÓI DỊCH VỤ & QUY MÔ (Thiết kế lại Light / Minimal) -->
             <div class="booking-section-card" id="section-service-scale">
               <div class="booking-section-header">
                 <span class="section-number-badge">1</span>
-                <h3 class="booking-section-title">Chọn gói dịch vụ & Quy mô căn nhà</h3>
+                <div>
+                  <h3 class="booking-section-title">Chọn gói dịch vụ vệ sinh</h3>
+                  <span style="font-size: 12px; color: var(--color-text-muted);">Lựa chọn dịch vụ phù hợp với nhu cầu chăm sóc không gian của bạn</span>
+                </div>
               </div>
 
-              <!-- Chọn Dịch vụ -->
-              <div class="form-group">
-                <label class="form-label" for="booking-service">Gói dịch vụ vệ sinh <span class="required">*</span></label>
-                <select id="booking-service" class="form-control" required>
-                  <option value="">-- Đang tải danh sách dịch vụ --</option>
-                </select>
-                <span class="form-hint">Mỗi gói dịch vụ đều bao gồm chuyên viên trang bị đầy đủ máy móc & dung dịch sinh học an toàn.</span>
+              <!-- Select ẩn để tương thích form submission -->
+              <select id="booking-service" class="form-control" style="display: none;" required>
+                <option value="">-- Đang tải danh sách dịch vụ --</option>
+              </select>
+
+              <!-- Service Radio Cards Grid -->
+              <div class="service-cards-grid" id="service-cards-grid">
+                <!-- Rendered dynamically via JS -->
               </div>
 
               <!-- Chọn Quy mô diện tích -->
-              <div class="form-group">
-                <label class="form-label">Quy mô diện tích không gian</label>
+              <div class="form-group" style="margin-top: var(--space-xl);">
+                <label class="form-label" style="font-weight: 700;">Quy mô diện tích không gian</label>
                 <div class="radio-card-group" id="area-group">
                   <div class="radio-card" data-val="small">
                     <div class="radio-card-title">Nhỏ (&lt; 50m²)</div>
-                    <div class="radio-card-subtitle">1 - 2 phòng</div>
+                    <div class="radio-card-subtitle">1 - 2 phòng ngủ</div>
                   </div>
                   <div class="radio-card active" data-val="medium">
                     <div class="radio-card-title">Vừa (50 - 100m²)</div>
-                    <div class="radio-card-subtitle">3 - 4 phòng</div>
+                    <div class="radio-card-subtitle">3 - 4 phòng / Chung cư</div>
                   </div>
                   <div class="radio-card" data-val="large">
                     <div class="radio-card-title">Lớn (&gt; 100m²)</div>
-                    <div class="radio-card-subtitle">5+ phòng / Biệt thự</div>
+                    <div class="radio-card-subtitle">5+ phòng / Nhà phố / Biệt thự</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dịch vụ bổ sung (Add-ons) -->
+              <div class="form-group" style="margin-top: var(--space-xl);">
+                <label class="form-label" style="font-weight: 700;">Dịch vụ bổ sung (Tùy chọn)</label>
+                <div class="addons-grid" id="addons-group">
+                  <div class="addon-card" data-addon="disinfect" data-price="100000">
+                    <div class="addon-card-left">
+                      <div class="addon-custom-checkbox">✓</div>
+                      <div>
+                        <div class="addon-name">Khử khuẩn Nano Bạc</div>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Diệt 99.9% vi khuẩn & nấm mốc</small>
+                      </div>
+                    </div>
+                    <div class="addon-price">+100.000 đ</div>
+                  </div>
+
+                  <div class="addon-card" data-addon="sofa_steam" data-price="200000">
+                    <div class="addon-card-left">
+                      <div class="addon-custom-checkbox">✓</div>
+                      <div>
+                        <div class="addon-name">Giặt đệm / Sofa hơi nóng</div>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Khử mùi & làm sạch sâu bề mặt vải</small>
+                      </div>
+                    </div>
+                    <div class="addon-price">+200.000 đ</div>
+                  </div>
+
+                  <div class="addon-card" data-addon="calcium_remove" data-price="120000">
+                    <div class="addon-card-left">
+                      <div class="addon-custom-checkbox">✓</div>
+                      <div>
+                        <div class="addon-name">Tẩy cặn canxi kính & vách tắm</div>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Làm trong suốt kính ố vảy cá</small>
+                      </div>
+                    </div>
+                    <div class="addon-price">+120.000 đ</div>
+                  </div>
+
+                  <div class="addon-card" data-addon="fridge_deep" data-price="80000">
+                    <div class="addon-card-left">
+                      <div class="addon-custom-checkbox">✓</div>
+                      <div>
+                        <div class="addon-name">Vệ sinh tủ lạnh / Lò vi sóng</div>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Khử mùi hôi & lau chùi khay kệ</small>
+                      </div>
+                    </div>
+                    <div class="addon-price">+80.000 đ</div>
                   </div>
                 </div>
               </div>
 
               <!-- Chọn Tần suất -->
-              <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label">Tần suất thực hiện dịch vụ</label>
+              <div class="form-group" style="margin-top: var(--space-xl); margin-bottom: 0;">
+                <label class="form-label" style="font-weight: 700;">Tần suất thực hiện dịch vụ</label>
                 <div class="radio-card-group" id="frequency-group">
                   <div class="radio-card active" data-val="once">
                     <div class="radio-card-title">Một lần</div>
@@ -139,7 +306,10 @@
             <div class="booking-section-card" id="section-schedule-location" style="margin-top: var(--space-xl);">
               <div class="booking-section-header">
                 <span class="section-number-badge">2</span>
-                <h3 class="booking-section-title">Lịch hẹn & Địa điểm thực hiện</h3>
+                <div>
+                  <h3 class="booking-section-title">Lịch hẹn & Địa điểm thực hiện</h3>
+                  <span style="font-size: 12px; color: var(--color-text-muted);">Chọn ngày giờ thuận tiện nhất cho gia đình bạn</span>
+                </div>
               </div>
 
               <!-- Ngày & Giờ -->
@@ -192,7 +362,10 @@
             <div class="booking-section-card" id="section-payment-notes" style="margin-top: var(--space-xl);">
               <div class="booking-section-header">
                 <span class="section-number-badge">3</span>
-                <h3 class="booking-section-title">Phương thức thanh toán & Ghi chú</h3>
+                <div>
+                  <h3 class="booking-section-title">Phương thức thanh toán & Ghi chú</h3>
+                  <span style="font-size: 12px; color: var(--color-text-muted);">Hoàn tất các ghi chú riêng và lựa chọn hình thức chi trả tiện lợi</span>
+                </div>
               </div>
 
               <!-- Chọn phương thức thanh toán -->
@@ -289,12 +462,16 @@
             <!-- Danh sách chi tiết giá -->
             <div class="summary-rows">
               <div class="summary-row">
-                <span>Quy mô:</span>
+                <span>Quy mô diện tích:</span>
                 <strong id="summary-area">Vừa (50-100m²)</strong>
               </div>
               <div class="summary-row">
-                <span>Tần suất:</span>
+                <span>Tần suất thực hiện:</span>
                 <span id="summary-frequency">Một lần</span>
+              </div>
+              <div class="summary-row" id="summary-addons-row" style="display: none;">
+                <span>Dịch vụ cộng thêm:</span>
+                <strong id="summary-addons-val" style="color: #0f766e;">+0 đ</strong>
               </div>
               <div class="summary-row">
                 <span>Thời gian hẹn:</span>
@@ -342,6 +519,83 @@
   </main>
 
   <!-- ============================================================
+       FOOTER (Chân trang hiện đại đồng bộ)
+       ============================================================ -->
+  <footer class="footer" id="footer" role="contentinfo" style="margin-top: var(--space-4xl);">
+    <div class="container">
+      <div class="footer-grid">
+
+        <!-- Cột 1: Thương hiệu -->
+        <div class="footer-brand reveal reveal-up">
+          <a href="trangchu.html" class="logo" aria-label="Cleanova">
+            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/>
+              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
+              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
+              <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <span class="logo-text">Cleanova</span>
+          </a>
+          <p>Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ dọn vệ sinh thông minh & tin cậy hàng đầu.</p>
+          <div class="footer-contact">
+            <a href="tel:19008888" aria-label="Gọi điện">📞 <span>1900-8888 (8:00 - 20:00)</span></a>
+            <a href="mailto:contact@cleanova.vn" aria-label="Gửi email">📧 <span>contact@cleanova.vn</span></a>
+            <span style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">📍 123 Đường Cầu Giấy, Hà Nội</span>
+          </div>
+        </div>
+
+        <!-- Cột 2: Dịch vụ -->
+        <div class="footer-column reveal reveal-up stagger-2">
+          <h4>Dịch vụ</h4>
+          <div class="footer-links">
+            <a href="services.html?category=gio">Dọn dẹp theo giờ</a>
+            <a href="services.html?category=tong-ve-sinh">Tổng vệ sinh Deep Cleaning</a>
+            <a href="services.html?category=van-phong">Vệ sinh văn phòng</a>
+            <a href="services.html?category=sofa">Giặt sofa & nệm hơi nóng</a>
+            <a href="services.html?category=xay-dung">Vệ sinh sau xây dựng</a>
+            <a href="trangchu.html#calculator">Bảng tính giá ước tính</a>
+          </div>
+        </div>
+
+        <!-- Cột 3: Khám phá -->
+        <div class="footer-column reveal reveal-up stagger-3">
+          <h4>Khám phá</h4>
+          <div class="footer-links">
+            <a href="khampha.html">Giới thiệu CleanNova</a>
+            <a href="khampha.html#workflow">Quy trình dọn dẹp 6 bước</a>
+            <a href="khampha.html#ai-technology">Công nghệ AI Quét độ bẩn</a>
+            <a href="trangchu.html#why-cleanova">Vì sao chọn CleanNova?</a>
+            <a href="partner-register.html">Trở thành đối tác</a>
+            <a href="khampha.html#faq">Câu hỏi thường gặp (FAQ)</a>
+          </div>
+        </div>
+
+        <!-- Cột 4: Hỗ trợ & Khách hàng -->
+        <div class="footer-column reveal reveal-up stagger-4">
+          <h4>Hỗ trợ & Đặt lịch</h4>
+          <div class="footer-links">
+            <a href="booking.html" style="font-weight: 700; color: var(--color-primary);">⚡ Đặt lịch trực tuyến</a>
+            <a href="my-bookings.html">Theo dõi đơn hàng của tôi</a>
+            <a href="profile.html">Sổ địa chỉ & Tài khoản</a>
+            <a href="login.html">Đăng nhập / Đăng ký</a>
+            <a href="khampha.html#standards">Cam kết Cleanova Care</a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Bottom -->
+      <div class="footer-bottom">
+        <p>© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
+        <div class="footer-bottom-links">
+          <a href="khampha.html#standards">Chính sách bảo mật</a>
+          <a href="khampha.html#standards">Điều khoản dịch vụ</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
        MODAL: ĐẶT LỊCH THÀNH CÔNG
        ============================================================ -->
   <div class="modal-overlay" id="success-modal" role="dialog" aria-modal="true">
@@ -371,7 +625,7 @@
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Script xử lý đặt lịch & Tính giá thời gian thực -->
+  <!-- Script xử lý đặt lịch, Quét AI & Tính giá thời gian thực -->
   <script>
     'use strict';
     document.addEventListener('DOMContentLoaded', async function () {
@@ -430,39 +684,418 @@
       let selectedArea = 'medium';
       let selectedFrequency = 'once';
       let promoApplied = false;
+      let selectedAiFile = null;
+      let currentAiData = null;
 
       const areaMultipliers = { small: 1.0, medium: 1.5, large: 2.2 };
+      const areaM2Map = { small: 45, medium: 75, large: 130 };
       const frequencyDiscounts = { once: 0, weekly: 0.15, monthly: 0.10 };
 
-      // 4. Tải danh mục dịch vụ từ Backend
+      // ============================================================
+      // A. CHỨC NĂNG AI QUÉT ĐỘ BẨN PHÒNG THỰC TẾ
+      // ============================================================
+      const aiDropzone = document.getElementById('ai-dropzone');
+      const aiFileInput = document.getElementById('ai-file-input');
+      const aiCameraInput = document.getElementById('ai-camera-input');
+      const btnAiChooseFile = document.getElementById('btn-ai-choose-file');
+      const btnAiCamera = document.getElementById('btn-ai-camera');
+      const aiPreviewCard = document.getElementById('ai-preview-card');
+      const aiPreviewImg = document.getElementById('ai-preview-img');
+      const aiPreviewName = document.getElementById('ai-preview-name');
+      const aiPreviewSize = document.getElementById('ai-preview-size');
+      const btnAiRunAnalyze = document.getElementById('btn-ai-run-analyze');
+      const btnAiChangeImg = document.getElementById('btn-ai-change-img');
+      const btnAiRemoveImg = document.getElementById('btn-ai-remove-img');
+      const aiLoadingBox = document.getElementById('ai-loading-box');
+      const aiErrorBox = document.getElementById('ai-error-box');
+      const aiResultPanel = document.getElementById('ai-result-panel');
+      const btnAiReanalyze = document.getElementById('btn-ai-reanalyze');
+      const btnAiApplyPackage = document.getElementById('btn-ai-apply-package');
+
+      // Mở hộp thoại chọn file
+      if (btnAiChooseFile) {
+        btnAiChooseFile.addEventListener('click', (e) => {
+          e.stopPropagation();
+          aiFileInput.click();
+        });
+      }
+
+      // Mở camera (mobile / tablet)
+      if (btnAiCamera) {
+        btnAiCamera.addEventListener('click', (e) => {
+          e.stopPropagation();
+          aiCameraInput.click();
+        });
+      }
+
+      // Nhấp trực tiếp vào dropzone
+      if (aiDropzone) {
+        aiDropzone.addEventListener('click', () => {
+          aiFileInput.click();
+        });
+
+        // Kéo thả ảnh vào dropzone
+        ['dragenter', 'dragover'].forEach(eventName => {
+          aiDropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            aiDropzone.classList.add('dragover');
+          }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+          aiDropzone.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            aiDropzone.classList.remove('dragover');
+          }, false);
+        });
+
+        aiDropzone.addEventListener('drop', (e) => {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          if (files && files.length > 0) {
+            handleSelectedFile(files[0]);
+          }
+        });
+      }
+
+      if (aiFileInput) {
+        aiFileInput.addEventListener('change', function () {
+          if (this.files && this.files[0]) {
+            handleSelectedFile(this.files[0]);
+          }
+        });
+      }
+
+      if (aiCameraInput) {
+        aiCameraInput.addEventListener('change', function () {
+          if (this.files && this.files[0]) {
+            handleSelectedFile(this.files[0]);
+          }
+        });
+      }
+
+      // Xử lý tệp được chọn (kiểm tra định dạng & dung lượng <= 10MB)
+      function handleSelectedFile(file) {
+        hideAiError();
+        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'];
+        if (!validTypes.includes(file.type)) {
+          showAiError('Định dạng ảnh không được hỗ trợ. Vui lòng tải file JPG, PNG, WEBP hoặc BMP.');
+          return;
+        }
+
+        const maxSizeBytes = 10 * 1024 * 1024; // 10MB
+        if (file.size > maxSizeBytes) {
+          showAiError('Dung lượng ảnh vượt quá giới hạn 10MB. Vui lòng chọn ảnh nhỏ hơn.');
+          return;
+        }
+
+        selectedAiFile = file;
+
+        // Đọc preview ảnh
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          aiPreviewImg.src = e.target.result;
+          aiPreviewName.textContent = file.name;
+          aiPreviewSize.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+          aiPreviewCard.classList.add('active');
+          if (aiDropzone) aiDropzone.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Nút Xóa ảnh
+      if (btnAiRemoveImg) {
+        btnAiRemoveImg.addEventListener('click', resetAiScanner);
+      }
+
+      // Nút Đổi ảnh khác
+      if (btnAiChangeImg) {
+        btnAiChangeImg.addEventListener('click', () => {
+          aiFileInput.click();
+        });
+      }
+
+      function resetAiScanner() {
+        selectedAiFile = null;
+        currentAiData = null;
+        if (aiFileInput) aiFileInput.value = '';
+        if (aiCameraInput) aiCameraInput.value = '';
+        aiPreviewCard.classList.remove('active');
+        if (aiDropzone) aiDropzone.style.display = 'block';
+        aiResultPanel.classList.remove('active');
+        aiLoadingBox.classList.remove('active');
+        hideAiError();
+      }
+
+      function showAiError(msg) {
+        if (aiErrorBox) {
+          aiErrorBox.textContent = msg;
+          aiErrorBox.style.display = 'block';
+        }
+      }
+
+      function hideAiError() {
+        if (aiErrorBox) {
+          aiErrorBox.textContent = '';
+          aiErrorBox.style.display = 'none';
+        }
+      }
+
+      // Thực thi phân tích ảnh bằng AI
+      async function runAiAnalysis() {
+        if (!selectedAiFile) {
+          showAiError('Vui lòng chọn hoặc chụp ảnh phòng trước khi phân tích.');
+          return;
+        }
+
+        hideAiError();
+        aiResultPanel.classList.remove('active');
+        aiLoadingBox.classList.add('active');
+        btnAiRunAnalyze.disabled = true;
+        if (btnAiReanalyze) btnAiReanalyze.disabled = true;
+
+        const formData = new FormData();
+        formData.append('image', selectedAiFile);
+        formData.append('areaSize', areaM2Map[selectedArea] || 75);
+
+        // Đính kèm các dịch vụ bổ sung nếu có
+        const activeAddons = Array.from(document.querySelectorAll('#addons-group .addon-card.active'))
+          .map(card => card.dataset.addon);
+        if (activeAddons.length > 0) {
+          formData.append('extras', activeAddons.join(','));
+        }
+
+        try {
+          const res = await window.CleanovaAPI.ai.estimate(formData);
+          if (!res || !res.success || !res.data) {
+            throw new Error(res?.message || 'Không nhận được kết quả phân tích hợp lệ từ AI.');
+          }
+
+          renderAiResult(res.data);
+          showToast('success', 'AI đã hoàn tất quét và đánh giá độ bẩn của phòng!');
+        } catch (err) {
+          console.error('[Cleanova AI Error]:', err);
+          showAiError(err.message || 'Hệ thống AI hiện chưa phản hồi. Bạn vẫn có thể tự chọn gói dịch vụ ở mục bên dưới.');
+        } finally {
+          aiLoadingBox.classList.remove('active');
+          btnAiRunAnalyze.disabled = false;
+          if (btnAiReanalyze) btnAiReanalyze.disabled = false;
+        }
+      }
+
+      if (btnAiRunAnalyze) btnAiRunAnalyze.addEventListener('click', runAiAnalysis);
+      if (btnAiReanalyze) btnAiReanalyze.addEventListener('click', runAiAnalysis);
+
+      // Hiển thị kết quả AI thực tế
+      function renderAiResult(data) {
+        const analysis = data.analysis || {};
+        const score = Math.round(analysis.overallScore != null ? analysis.overallScore : (data.dirtScore || 0));
+        const dirtLvl = data.dirtLevel || {};
+        const quote = data.quote || {};
+        const signals = analysis.signals || {};
+        const recs = data.recommendations || [];
+        const recService = quote.recommendedService || {};
+
+        currentAiData = {
+          score,
+          level: dirtLvl.level || 'moderate',
+          label: dirtLvl.label || 'Bẩn vừa',
+          recService,
+          signals,
+          quotePrice: quote.finalPrice,
+          dirtFactor: quote.dirtFactor,
+          filename: selectedAiFile ? selectedAiFile.name : 'image.jpg'
+        };
+
+        // 1. Cập nhật Badge độ bẩn
+        const dirtBadge = document.getElementById('ai-dirt-badge');
+        if (dirtBadge) {
+          dirtBadge.className = `ai-dirt-badge ${dirtLvl.level || 'moderate'}`;
+          dirtBadge.textContent = dirtLvl.label || 'Tình trạng thực tế';
+        }
+
+        // 2. Cập nhật Điểm số
+        const scoreText = document.getElementById('ai-score-text');
+        if (scoreText) {
+          scoreText.textContent = `Chỉ số độ bẩn: ${score}/100`;
+        }
+
+        // 3. Hiển thị 5 chỉ số phân tích trực quan
+        const signalsList = document.getElementById('ai-signals-list');
+        if (signalsList) {
+          const signalConfig = [
+            { key: 'stains', label: 'Vết ố / Vết dính bề mặt', icon: '🧽' },
+            { key: 'clutter', label: 'Mức độ bừa bộn đồ đạc', icon: '📦' },
+            { key: 'dust', label: 'Bụi bặm bề mặt đồ gỗ/kính', icon: '💨' },
+            { key: 'debris', label: 'Cặn bẩn / Rác nhỏ sàn nhà', icon: '🗑️' },
+            { key: 'brightness', label: 'Mức độ thiếu sáng (tối)', icon: '💡' }
+          ];
+
+          signalsList.innerHTML = signalConfig.map(cfg => {
+            const val = Math.min(100, Math.max(0, Math.round(signals[cfg.key] || 0)));
+            return `
+              <div class="ai-signal-item">
+                <div class="ai-signal-header">
+                  <span>${cfg.icon} ${cfg.label}</span>
+                  <strong>${val}%</strong>
+                </div>
+                <div class="ai-signal-bar-track">
+                  <div class="ai-signal-bar-fill" style="width: ${val}%;"></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+
+        // 4. Khuyến nghị và gói dịch vụ gợi ý
+        const recServiceName = document.getElementById('ai-rec-service-name');
+        if (recServiceName) {
+          recServiceName.textContent = recService.name || 'Gói vệ sinh tiêu chuẩn';
+        }
+
+        const recDesc = document.getElementById('ai-rec-desc');
+        if (recDesc) {
+          if (recs && recs.length > 0) {
+            recDesc.innerHTML = recs.map(r => `• ${r}`).join('<br>');
+          } else {
+            recDesc.textContent = recService.description || 'Không gian phù hợp với dịch vụ chăm sóc vệ sinh định kỳ.';
+          }
+        }
+
+        const recPrice = document.getElementById('ai-rec-price');
+        if (recPrice && quote.finalPrice) {
+          recPrice.textContent = `${Number(quote.finalPrice).toLocaleString('vi-VN')} đ`;
+        }
+
+        const recMultiplier = document.getElementById('ai-rec-multiplier');
+        if (recMultiplier) {
+          recMultiplier.textContent = quote.dirtFactor ? `(Hệ số độ bẩn: ${quote.dirtFactor}x)` : '';
+        }
+
+        aiResultPanel.classList.add('active');
+
+        // Cuộn nhẹ để khách hàng xem kết quả
+        aiResultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // Nút áp dụng gói dịch vụ từ AI
+      if (btnAiApplyPackage) {
+        btnAiApplyPackage.addEventListener('click', () => {
+          if (!currentAiData || !currentAiData.recService) return;
+
+          const recId = currentAiData.recService.id;
+          const recName = (currentAiData.recService.name || '').toLowerCase();
+
+          // Tìm dịch vụ phù hợp trong danh mục hiện hành
+          let targetService = servicesList.find(s => s.id == recId);
+          if (!targetService) {
+            if (recName.includes('sâu') || recName.includes('deep')) {
+              targetService = servicesList.find(s => s.name.toLowerCase().includes('sâu') || s.name.toLowerCase().includes('tổng'));
+            } else if (recName.includes('văn phòng') || recName.includes('office')) {
+              targetService = servicesList.find(s => s.name.toLowerCase().includes('văn phòng'));
+            } else if (recName.includes('giờ') || recName.includes('hourly')) {
+              targetService = servicesList.find(s => s.name.toLowerCase().includes('giờ'));
+            }
+          }
+
+          if (!targetService && servicesList.length > 0) {
+            targetService = servicesList[0];
+          }
+
+          if (targetService) {
+            selectServiceById(targetService.id);
+            showToast('success', `Đã chọn gói "${targetService.name}" theo gợi ý từ AI.`);
+            
+            // Cuộn xuống mục dịch vụ
+            const serviceSection = document.getElementById('section-service-scale');
+            if (serviceSection) {
+              serviceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        });
+      }
+
+      // ============================================================
+      // B. THIẾT KẾ LỰA CHỌN DỊCH VỤ DẠNG RADIO CARD
+      // ============================================================
       async function loadServices() {
         const select = document.getElementById('booking-service');
+        const grid = document.getElementById('service-cards-grid');
         try {
           const res = await window.CleanovaAPI.services.getAll();
           servicesList = res.data || [];
           select.innerHTML = '';
+          grid.innerHTML = '';
 
           const urlParams = new URLSearchParams(window.location.search);
           const preselect = urlParams.get('service_id') || urlParams.get('service');
 
-          servicesList.forEach(srv => {
+          let initialSelectedId = servicesList[0]?.id;
+
+          servicesList.forEach((srv, index) => {
+            // Option cho select ẩn
             const opt = document.createElement('option');
             opt.value = srv.id;
             opt.textContent = `${srv.icon || '🧹'} ${srv.name} (Từ ${Number(srv.base_price).toLocaleString('vi-VN')} đ/${srv.price_unit || 'lần'})`;
-            if (preselect && (preselect == srv.id || preselect === srv.slug)) {
+            
+            const isMatch = preselect ? (preselect == srv.id || preselect === srv.slug) : index === 0;
+            if (isMatch) {
               opt.selected = true;
+              initialSelectedId = srv.id;
             }
             select.appendChild(opt);
+
+            // Card hiện đại cho người dùng click
+            const card = document.createElement('div');
+            card.className = `service-select-card ${isMatch ? 'active' : ''}`;
+            card.dataset.id = srv.id;
+            card.innerHTML = `
+              <div class="service-select-icon">${srv.icon || '🧹'}</div>
+              <div class="service-select-info">
+                <div class="service-select-name">${srv.name}</div>
+                <div class="service-select-price">Từ ${Number(srv.base_price).toLocaleString('vi-VN')} đ <span style="font-size: 11px; font-weight: normal; color: var(--color-text-muted);">/${srv.price_unit || 'lần'}</span></div>
+                <div class="service-select-desc">${srv.description || ('Thời lượng dự kiến: ~' + (srv.duration_estimate || '2 - 4 giờ'))}</div>
+              </div>
+            `;
+
+            card.addEventListener('click', () => {
+              selectServiceById(srv.id);
+            });
+
+            grid.appendChild(card);
           });
 
-          updateSummary();
+          selectServiceById(initialSelectedId);
         } catch (err) {
+          console.error('[Cleanova] Load services error:', err);
           select.innerHTML = '<option value="1">🧹 Dọn dẹp nhà cửa theo giờ</option>';
           updateSummary();
         }
       }
 
-      // 5. Xử lý Radio Cards: Quy mô
+      function selectServiceById(id) {
+        const select = document.getElementById('booking-service');
+        if (select) select.value = id;
+
+        // Cập nhật trạng thái active của các card
+        document.querySelectorAll('#service-cards-grid .service-select-card').forEach(card => {
+          if (card.dataset.id == id) {
+            card.classList.add('active');
+          } else {
+            card.classList.remove('active');
+          }
+        });
+
+        updateSummary();
+      }
+
+      // ============================================================
+      // C. XỬ LÝ QUY MÔ, PHỤ PHÍ ADD-ONS, TẦN SUẤT & THANH TOÁN
+      // ============================================================
+      
+      // Xử lý Radio Cards: Quy mô
       document.querySelectorAll('#area-group .radio-card').forEach(card => {
         card.addEventListener('click', () => {
           document.querySelectorAll('#area-group .radio-card').forEach(c => c.classList.remove('active'));
@@ -473,7 +1106,15 @@
         });
       });
 
-      // 6. Xử lý Radio Cards: Tần suất
+      // Xử lý Dịch vụ bổ sung (Add-ons)
+      document.querySelectorAll('#addons-group .addon-card').forEach(card => {
+        card.addEventListener('click', () => {
+          card.classList.toggle('active');
+          updateSummary();
+        });
+      });
+
+      // Xử lý Radio Cards: Tần suất
       document.querySelectorAll('#frequency-group .radio-card').forEach(card => {
         card.addEventListener('click', () => {
           document.querySelectorAll('#frequency-group .radio-card').forEach(c => c.classList.remove('active'));
@@ -484,7 +1125,7 @@
         });
       });
 
-      // 7. Xử lý Time Slots Buttons
+      // Xử lý Khung giờ gợi ý nhanh
       document.querySelectorAll('#quick-time-slots .time-slot-btn').forEach(btn => {
         btn.addEventListener('click', function () {
           document.querySelectorAll('#quick-time-slots .time-slot-btn').forEach(b => b.classList.remove('active'));
@@ -494,7 +1135,7 @@
         });
       });
 
-      // 8. Xử lý Payment Methods Cards
+      // Xử lý Thẻ Phương thức thanh toán
       document.querySelectorAll('#payment-methods-group .payment-card').forEach(card => {
         card.addEventListener('click', function () {
           document.querySelectorAll('#payment-methods-group .payment-card').forEach(c => c.classList.remove('active'));
@@ -503,55 +1144,87 @@
         });
       });
 
-      // 9. Xử lý Mã ưu đãi
+      // Xử lý Mã ưu đãi
       const btnApplyPromo = document.getElementById('btn-apply-promo');
       const promoInput = document.getElementById('booking-promo');
       const promoBox = document.getElementById('promo-applied-box');
       const promoMsg = document.getElementById('promo-message');
       const btnRemovePromo = document.getElementById('btn-remove-promo');
 
-      btnApplyPromo.addEventListener('click', () => {
-        const code = promoInput.value.trim().toUpperCase();
-        if (code === 'CLEANOVA20') {
-          promoApplied = true;
-          promoBox.style.display = 'flex';
-          document.getElementById('promo-applied-code').textContent = code;
-          promoMsg.textContent = '';
-          promoInput.value = '';
-          showToast('success', 'Đã áp dụng mã CLEANOVA20 giảm 20%!');
-        } else {
+      if (btnApplyPromo) {
+        btnApplyPromo.addEventListener('click', () => {
+          const code = promoInput.value.trim().toUpperCase();
+          if (code === 'CLEANOVA20') {
+            promoApplied = true;
+            promoBox.style.display = 'flex';
+            document.getElementById('promo-applied-code').textContent = code;
+            promoMsg.textContent = '';
+            promoInput.value = '';
+            showToast('success', 'Đã áp dụng mã CLEANOVA20 giảm 20%!');
+          } else {
+            promoApplied = false;
+            promoBox.style.display = 'none';
+            promoMsg.textContent = 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.';
+            promoMsg.style.color = 'var(--color-error)';
+          }
+          updateSummary();
+        });
+      }
+
+      if (btnRemovePromo) {
+        btnRemovePromo.addEventListener('click', () => {
           promoApplied = false;
           promoBox.style.display = 'none';
-          promoMsg.textContent = 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.';
-          promoMsg.style.color = 'var(--color-error)';
-        }
-        updateSummary();
-      });
+          promoMsg.textContent = '';
+          updateSummary();
+        });
+      }
 
-      btnRemovePromo.addEventListener('click', () => {
-        promoApplied = false;
-        promoBox.style.display = 'none';
-        promoMsg.textContent = '';
-        updateSummary();
-      });
-
-      // 10. Cập nhật Bảng tính tiền tóm tắt thời gian thực
+      // ============================================================
+      // D. CẬP NHẬT TÓM TẮT ĐƠN HÀNG THỜI GIAN THỰC (STICKY SIDEBAR)
+      // ============================================================
       function updateSummary() {
         const select = document.getElementById('booking-service');
-        const selectedId = select.value;
+        const selectedId = select ? select.value : null;
         const srv = servicesList.find(s => s.id == selectedId) || servicesList[0] || { base_price: 200000, name: 'Dọn dẹp nhà cửa', icon: '🧹' };
 
-        document.getElementById('summary-service-name').textContent = srv.name;
-        document.getElementById('summary-icon').textContent = srv.icon || '🧹';
-        document.getElementById('summary-duration').textContent = `Thời lượng: ~${srv.duration_estimate || '2 - 4 giờ'}`;
+        const summaryName = document.getElementById('summary-service-name');
+        if (summaryName) summaryName.textContent = srv.name;
+
+        const summaryIcon = document.getElementById('summary-icon');
+        if (summaryIcon) summaryIcon.textContent = srv.icon || '🧹';
+
+        const summaryDur = document.getElementById('summary-duration');
+        if (summaryDur) summaryDur.textContent = `Thời lượng: ~${srv.duration_estimate || '2 - 4 giờ'}`;
 
         const basePrice = parseFloat(srv.base_price) || 200000;
         const mult = areaMultipliers[selectedArea] || 1.0;
-        const freqDiscPercent = frequencyDiscounts[selectedFrequency] || 0;
+        const servicePrice = basePrice * mult;
 
-        const subtotal = basePrice * mult;
+        // Tính tổng tiền các add-on đang chọn
+        let addonsTotal = 0;
+        const activeAddonElements = document.querySelectorAll('#addons-group .addon-card.active');
+        activeAddonElements.forEach(card => {
+          addonsTotal += parseFloat(card.dataset.price) || 0;
+        });
+
+        // Hiển thị dòng Add-ons trong bảng tóm tắt
+        const addonsRow = document.getElementById('summary-addons-row');
+        const addonsVal = document.getElementById('summary-addons-val');
+        if (addonsRow && addonsVal) {
+          if (addonsTotal > 0) {
+            addonsRow.style.display = 'flex';
+            addonsVal.textContent = `+${Math.round(addonsTotal).toLocaleString('vi-VN')} đ`;
+          } else {
+            addonsRow.style.display = 'none';
+          }
+        }
+
+        const subtotal = servicePrice + addonsTotal;
         document.getElementById('summary-subtotal').textContent = `${Math.round(subtotal).toLocaleString('vi-VN')} đ`;
 
+        // Chiết khấu tần suất
+        const freqDiscPercent = frequencyDiscounts[selectedFrequency] || 0;
         const freqDiscountVal = subtotal * freqDiscPercent;
         const freqRow = document.getElementById('summary-freq-discount-row');
         if (freqDiscountVal > 0) {
@@ -561,6 +1234,7 @@
           freqRow.style.display = 'none';
         }
 
+        // Voucher giảm giá 20%
         let voucherDiscountVal = 0;
         const voucherRow = document.getElementById('summary-voucher-discount-row');
         if (promoApplied) {
@@ -579,11 +1253,12 @@
         document.getElementById('summary-datetime').textContent = d && t ? `${t}, ${d}` : '--';
       }
 
-      document.getElementById('booking-service').addEventListener('change', updateSummary);
       document.getElementById('booking-date').addEventListener('change', updateSummary);
       document.getElementById('booking-time').addEventListener('change', updateSummary);
 
-      // 11. Gửi đơn đặt lịch dịch vụ
+      // ============================================================
+      // E. GỬI ĐƠN ĐẶT LỊCH DỊCH VỤ LÊN BACKEND
+      // ============================================================
       document.getElementById('booking-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const address = document.getElementById('booking-address').value.trim();
@@ -604,6 +1279,19 @@
         btn.classList.add('btn-loading');
         btn.disabled = true;
 
+        // Thu thập danh sách addon đã chọn
+        const activeAddonNames = Array.from(document.querySelectorAll('#addons-group .addon-card.active'))
+          .map(card => card.querySelector('.addon-name')?.textContent || card.dataset.addon);
+
+        // Tạo ghi chú bao gồm thông tin AI nếu khách hàng đã quét
+        let finalNotes = document.getElementById('booking-notes').value.trim();
+        if (currentAiData) {
+          finalNotes += `${finalNotes ? '\n' : ''}[Đánh giá AI: Độ bẩn ${currentAiData.score}/100 (${currentAiData.label}). Gói đề xuất: ${currentAiData.recService?.name || 'N/A'}]`;
+        }
+        if (activeAddonNames.length > 0) {
+          finalNotes += `${finalNotes ? '\n' : ''}[Dịch vụ bổ sung: ${activeAddonNames.join(', ')}]`;
+        }
+
         const bookingData = {
           service_id: document.getElementById('booking-service').value,
           booking_date: document.getElementById('booking-date').value,
@@ -612,9 +1300,15 @@
           frequency: selectedFrequency,
           address,
           phone,
-          notes: document.getElementById('booking-notes').value.trim(),
+          notes: finalNotes,
           discount_code: promoApplied ? 'CLEANOVA20' : null,
-          payment_method: document.getElementById('booking-payment').value
+          payment_method: document.getElementById('booking-payment').value,
+          ai_analysis: currentAiData ? {
+            score: currentAiData.score,
+            dirt_level: currentAiData.level,
+            label: currentAiData.label,
+            recommended_service: currentAiData.recService?.name
+          } : null
         };
 
         try {
@@ -636,7 +1330,7 @@
         t.className = `toast toast-${type}`;
         t.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : 'ℹ️'}</span><span class="toast-message">${msg}</span>`;
         c.appendChild(t);
-        setTimeout(() => t.remove(), 3200);
+        setTimeout(() => t.remove(), 3500);
       }
 
       await loadServices();

@@ -52,6 +52,7 @@
       <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
         <a href="trangchu.html" class="nav-link active" data-i18n="nav_home">Trang chủ</a>
         <a href="services.html" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
+        <a href="khampha.html" class="nav-link">Khám phá</a>
         <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn?</a>
         <a href="#customer-guide" class="nav-link" data-i18n="nav_guide">Hướng dẫn</a>
         <a href="#cleaning-timeline" class="nav-link" data-i18n="nav_timeline">Quy trình</a>
@@ -1075,7 +1076,7 @@
   </main>
 
   <!-- ============================================================
-       FOOTER (Chân trang)
+       FOOTER (Chân trang hiện đại đồng bộ)
        ============================================================ -->
   <footer class="footer" id="footer" role="contentinfo">
     <div class="container">
@@ -1093,11 +1094,11 @@
             </svg>
             <span class="logo-text">Cleanova</span>
           </a>
-          <p data-i18n="footer_slogan">Không gian sạch hơn, cuộc sống tốt hơn.</p>
+          <p data-i18n="footer_slogan">Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ dọn vệ sinh thông minh & tin cậy hàng đầu.</p>
           <div class="footer-contact">
-            <a href="tel:1900xxxx" aria-label="Gọi điện">📞 <span data-i18n="footer_phone">1900-xxxx</span></a>
+            <a href="tel:19008888" aria-label="Gọi điện">📞 <span data-i18n="footer_phone">1900-8888 (8:00 - 20:00)</span></a>
             <a href="mailto:contact@cleanova.vn" aria-label="Gửi email">📧 <span data-i18n="footer_email">contact@cleanova.vn</span></a>
-            <a href="#" aria-label="Địa chỉ">📍 <span data-i18n="footer_address">123 Đường ABC, Quận Cầu Giấy, Hà Nội</span></a>
+            <span style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">📍 <span data-i18n="footer_address">123 Đường Cầu Giấy, Hà Nội</span></span>
           </div>
         </div>
 
@@ -1105,31 +1106,38 @@
         <div class="footer-column reveal reveal-up stagger-2">
           <h4 data-i18n="footer_col2_title">Dịch vụ</h4>
           <div class="footer-links">
-            <a href="#services" data-i18n="footer_link_hourly">Dọn dẹp theo giờ</a>
-            <a href="#services" data-i18n="footer_link_deep">Tổng vệ sinh</a>
-            <a href="#services" data-i18n="footer_link_office">Vệ sinh văn phòng</a>
-            <a href="#services" data-i18n="footer_link_sofa">Giặt sofa & nệm</a>
-            <a href="#services" data-i18n="footer_link_construction">Vệ sinh sau xây dựng</a>
+            <a href="services.html?category=gio" data-i18n="footer_link_hourly">Dọn dẹp theo giờ</a>
+            <a href="services.html?category=tong-ve-sinh" data-i18n="footer_link_deep">Tổng vệ sinh Deep Cleaning</a>
+            <a href="services.html?category=van-phong" data-i18n="footer_link_office">Vệ sinh văn phòng</a>
+            <a href="services.html?category=sofa" data-i18n="footer_link_sofa">Giặt sofa & nệm hơi nóng</a>
+            <a href="services.html?category=xay-dung" data-i18n="footer_link_construction">Vệ sinh sau xây dựng</a>
+            <a href="#calculator">Bảng tính giá ước tính</a>
           </div>
         </div>
 
-        <!-- Cột 3: Về Cleanova -->
+        <!-- Cột 3: Khám phá -->
         <div class="footer-column reveal reveal-up stagger-3">
-          <h4 data-i18n="footer_col3_title">Về Cleanova</h4>
+          <h4 data-i18n="footer_col3_title">Khám phá</h4>
           <div class="footer-links">
-            <a href="#" data-i18n="footer_link_about">Giới thiệu</a>
-            <a href="#" data-i18n="footer_link_career">Tuyển dụng</a>
+            <a href="khampha.html" data-i18n="footer_link_about">Giới thiệu CleanNova</a>
+            <a href="khampha.html#workflow">Quy trình dọn dẹp 6 bước</a>
+            <a href="khampha.html#ai-technology">Công nghệ AI Quét độ bẩn</a>
+            <a href="#why-cleanova">Vì sao chọn CleanNova?</a>
             <a href="partner-register.html" data-i18n="footer_link_partner">Trở thành đối tác</a>
-            <a href="#" data-i18n="footer_link_blog">Blog</a>
-            <a href="#" data-i18n="footer_link_contact">Liên hệ</a>
-            <a href="login.html" data-i18n="footer_link_login">Tài khoản & Đăng nhập</a>
+            <a href="khampha.html#faq">Câu hỏi thường gặp (FAQ)</a>
           </div>
         </div>
 
-        <!-- Cột 4: Newsletter -->
+        <!-- Cột 4: Hỗ trợ & Khách hàng -->
         <div class="footer-newsletter reveal reveal-up stagger-4">
-          <h4 data-i18n="footer_newsletter_title">Nhận thông báo ưu đãi</h4>
-          <p data-i18n="footer_newsletter_desc">Đăng ký email để nhận thông tin khuyến mãi và mẹo vệ sinh hữu ích.</p>
+          <h4 data-i18n="footer_newsletter_title">Hỗ trợ & Đặt lịch</h4>
+          <div class="footer-links" style="margin-bottom: 14px;">
+            <a href="booking.html" style="font-weight: 700; color: var(--color-primary);">⚡ Đặt lịch trực tuyến</a>
+            <a href="my-bookings.html">Theo dõi đơn hàng của tôi</a>
+            <a href="profile.html">Sổ địa chỉ & Tài khoản</a>
+            <a href="login.html" data-i18n="footer_link_login">Đăng nhập / Đăng ký</a>
+          </div>
+          <p data-i18n="footer_newsletter_desc" style="font-size: 12px; margin-bottom: 8px;">Nhận mã ưu đãi giảm 20% định kỳ:</p>
           <form class="newsletter-form" id="newsletter-form" aria-label="Đăng ký nhận thông báo">
             <input type="email" required placeholder="Nhập email của bạn..." data-i18n-placeholder="footer_newsletter_placeholder" aria-label="Địa chỉ email">
             <button type="submit" class="btn btn-primary" data-i18n="footer_newsletter_btn">Đăng ký</button>
@@ -1140,10 +1148,11 @@
 
       <!-- Footer Bottom -->
       <div class="footer-bottom">
-        <p data-i18n="footer_copyright">© 2026 Cleanova. Bảo lưu mọi quyền.</p>
+        <p data-i18n="footer_copyright">© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
         <div class="footer-bottom-links">
-          <a href="#" data-i18n="footer_privacy">Chính sách bảo mật</a>
-          <a href="#" data-i18n="footer_terms">Điều khoản dịch vụ</a>
+          <a href="khampha.html#standards" data-i18n="footer_privacy">Chính sách bảo mật</a>
+          <a href="khampha.html#standards" data-i18n="footer_terms">Điều khoản dịch vụ</a>
+          <a href="khampha.html#standards">Cam kết Cleanova Care</a>
         </div>
       </div>
     </div>
