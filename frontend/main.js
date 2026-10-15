@@ -683,6 +683,42 @@ function initFAQ() {
 }
 
 /* ---------------------------------------------------------------
+   8.1. NOTIFICATION DROPDOWN TOGGLE
+   Xử lý mở/đóng và đánh dấu đã đọc thông báo
+   --------------------------------------------------------------- */
+function initNotifications() {
+  const btn = document.getElementById('btn-notifications');
+  const dropdown = document.getElementById('notification-dropdown');
+  const badge = document.getElementById('notification-badge');
+  const btnMarkRead = document.getElementById('btn-mark-read');
+
+  if (!btn || !dropdown) return;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isShown = dropdown.style.display !== 'none';
+    dropdown.style.display = isShown ? 'none' : 'block';
+  });
+
+  if (btnMarkRead) {
+    btnMarkRead.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (badge) badge.style.display = 'none';
+      btnMarkRead.textContent = '✓ Đã đọc tất cả';
+      btnMarkRead.style.color = 'var(--color-text-muted)';
+      btnMarkRead.style.cursor = 'default';
+      showToast('success', 'Thông báo Cleanova', 'Tất cả thông báo đã được đánh dấu là đã đọc.');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+      dropdown.style.display = 'none';
+    }
+  });
+}
+
+/* ---------------------------------------------------------------
    9. TOAST NOTIFICATION
    Hiển thị thông báo nổi thân thiện
    --------------------------------------------------------------- */
@@ -856,6 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initStickyHeader();
   initMobileMenu();
   initFAQ();
+  initNotifications();
   initScrollReveal();
   initSmoothScroll();
   initCTAButtons();

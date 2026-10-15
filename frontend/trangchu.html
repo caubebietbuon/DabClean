@@ -68,6 +68,32 @@
           <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
         </div>
 
+        <!-- Nút Thông báo (Notifications) -->
+        <div class="notification-dropdown-wrapper" style="position: relative;">
+          <button id="btn-notifications" class="btn-icon btn-ghost" style="position: relative; width: 36px; height: 36px; font-size: 16px; border-radius: 50%;" title="Thông báo mới" aria-label="Xem thông báo">
+            🔔
+            <span id="notification-badge" style="position: absolute; top: 3px; right: 3px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 1.5px solid white;"></span>
+          </button>
+          <div id="notification-dropdown" class="card" style="display: none; position: absolute; right: 0; top: 44px; width: 320px; padding: 16px; z-index: 1000; box-shadow: 0 16px 36px rgba(15,23,42,0.14); border-radius: var(--radius-xl);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
+              <strong style="font-size: 13px; color: var(--color-text-main);">Thông báo Cleanova</strong>
+              <span style="font-size: 11px; color: var(--color-primary); cursor: pointer; font-weight: 600;" id="btn-mark-read">Đã đọc</span>
+            </div>
+            <div id="notification-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto;">
+              <div style="padding: 10px; background: var(--color-primary-ultra-light); border-radius: var(--radius-md); font-size: 12px; border: 1px solid var(--color-primary-light);">
+                <div style="font-weight: 700; color: var(--color-primary-hover);">🎉 Mã ưu đãi 20% đã sẵn sàng</div>
+                <div style="color: var(--color-text-secondary); margin-top: 2px;">Nhập mã <strong>CLEANOVA20</strong> khi đặt lịch để giảm trực tiếp 20%.</div>
+                <div style="font-size: 10px; color: var(--color-text-muted); margin-top: 4px;">Vừa xong</div>
+              </div>
+              <div style="padding: 10px; background: var(--color-bg-alt); border-radius: var(--radius-md); font-size: 12px;">
+                <div style="font-weight: 700; color: var(--color-text-main);">⚡ Đơn đặt gần nhất</div>
+                <div style="color: var(--color-text-secondary); margin-top: 2px;">Đơn <strong>CNV-2026-0001</strong> đang ở trạng thái xác nhận.</div>
+                <div style="font-size: 10px; color: var(--color-text-muted); margin-top: 4px;">1 giờ trước</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Thông tin tài khoản người dùng đăng nhập -->
         <a href="profile.html" class="user-profile-badge" id="user-profile-header" style="text-decoration: none;" title="Xem hồ sơ cá nhân">
           <span class="user-avatar-mini" aria-hidden="true">👤</span>
@@ -287,6 +313,7 @@
 
           <!-- Dịch vụ 1: Dọn dẹp theo giờ -->
           <div class="service-card reveal">
+            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px;">Phổ biến nhất</span>
             <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="2"/>
@@ -296,11 +323,15 @@
             <h3 data-i18n="service_1_title">Dọn dẹp nhà cửa theo giờ</h3>
             <p class="service-desc" data-i18n="service_1_desc">Lau chùi, dọn phòng khách, phòng ngủ, nhà bếp, toilet. Linh hoạt theo nhu cầu của bạn.</p>
             <div class="service-price" data-i18n="service_1_price">Từ 150.000 VNĐ/giờ</div>
-            <a href="#calculator" class="btn btn-outline btn-sm" data-action="book" data-i18n="btn_detail">Chi tiết</a>
+            <div style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
+              <a href="booking.html?service_id=1" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            </div>
           </div>
 
           <!-- Dịch vụ 2: Tổng vệ sinh Deep Cleaning -->
           <div class="service-card reveal">
+            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe;">Tiết kiệm 20%</span>
             <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14 3L16 9H22L17 13L19 20L14 16L9 20L11 13L6 9H12L14 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
@@ -310,11 +341,15 @@
             <h3 data-i18n="service_2_title">Tổng vệ sinh Deep Cleaning</h3>
             <p class="service-desc" data-i18n="service_2_desc">Vệ sinh toàn bộ diện tích nhà, làm sạch sâu mọi ngóc ngách. Phù hợp định kỳ hàng tháng.</p>
             <div class="service-price" data-i18n="service_2_price">Từ 500.000 VNĐ/lần</div>
-            <a href="#calculator" class="btn btn-outline btn-sm" data-action="book" data-i18n="btn_detail">Chi tiết</a>
+            <div style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
+              <a href="booking.html?service_id=2" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            </div>
           </div>
 
           <!-- Dịch vụ 3: Vệ sinh văn phòng -->
           <div class="service-card reveal">
+            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #f0fdfa; color: #0f766e; border-color: #99f6e4;">Doanh nghiệp</span>
             <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="4" y="6" width="20" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
@@ -326,11 +361,15 @@
             <h3 data-i18n="service_3_title">Vệ sinh văn phòng & Workspace</h3>
             <p class="service-desc" data-i18n="service_3_desc">Dịch vụ định kỳ cho doanh nghiệp, đảm bảo môi trường làm việc sạch đẹp, chuyên nghiệp.</p>
             <div class="service-price" data-i18n="service_3_price">Từ 300.000 VNĐ/lần</div>
-            <a href="#calculator" class="btn btn-outline btn-sm" data-action="book" data-i18n="btn_detail">Chi tiết</a>
+            <div style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
+              <a href="booking.html?service_id=3" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            </div>
           </div>
 
           <!-- Dịch vụ 4: Giặt Sofa, Nệm -->
           <div class="service-card reveal">
+            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #fffbeb; color: #b45309; border-color: #fde68a;">Khử khuẩn sâu</span>
             <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4 18C4 16 6 14 8 14H20C22 14 24 16 24 18V22H4V18Z" stroke="currentColor" stroke-width="2" fill="none"/>
@@ -342,11 +381,15 @@
             <h3 data-i18n="service_4_title">Giặt Sofa, Nệm & Rèm cửa</h3>
             <p class="service-desc" data-i18n="service_4_desc">Hút bụi chuyên sâu, khử khuẩn bằng hơi nước nóng. Trả lại vẻ mới cho nội thất.</p>
             <div class="service-price" data-i18n="service_4_price">Từ 400.000 VNĐ/món</div>
-            <a href="#calculator" class="btn btn-outline btn-sm" data-action="book" data-i18n="btn_detail">Chi tiết</a>
+            <div style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
+              <a href="booking.html?service_id=4" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            </div>
           </div>
 
           <!-- Dịch vụ 5: Vệ sinh sau xây dựng -->
           <div class="service-card reveal">
+            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #f1f5f9; color: #475569; border-color: #cbd5e1;">Công trình</span>
             <div class="service-icon" aria-hidden="true">
               <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14 4L4 12H8V24H20V12H24L14 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
@@ -359,7 +402,10 @@
             <h3 data-i18n="service_5_title">Vệ sinh sau xây dựng</h3>
             <p class="service-desc" data-i18n="service_5_desc">Dọn dẹp thô, xử lý vết sơn, bụi mịn sau thi công. Sẵn sàng cho ngày dọn về.</p>
             <div class="service-price" data-i18n="service_5_price">Từ 8.000 VNĐ/m²</div>
-            <a href="#calculator" class="btn btn-outline btn-sm" data-action="book" data-i18n="btn_detail">Chi tiết</a>
+            <div style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
+              <a href="booking.html?service_id=5" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            </div>
           </div>
 
         </div>

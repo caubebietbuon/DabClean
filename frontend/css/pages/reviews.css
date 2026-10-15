@@ -1,0 +1,132 @@
+/* ============================================================
+   CLEANOVA - PAGE: REVIEWS & FEEDBACK (Đánh giá dịch vụ)
+   Interactive Star Rating, Feedback Form & Review Cards
+   ============================================================ */
+
+/* Interactive Star Picker */
+.star-rating-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 32px;
+  color: var(--color-border);
+  cursor: pointer;
+  margin: var(--space-sm) 0 var(--space-md);
+  user-select: none;
+}
+
+.star-rating-picker .star-item {
+  transition: all var(--transition-fast);
+  color: #cbd5e1;
+}
+
+.star-rating-picker .star-item:hover,
+.star-rating-picker .star-item.hovered,
+.star-rating-picker .star-item.selected {
+  color: var(--color-star);
+  transform: scale(1.15);
+}
+
+.rating-score-hint {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-left: 8px;
+}
+
+/* Review Cards Grid */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-xl);
+}
+
+.review-item-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.review-item-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: #cbd5e1;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.reviewer-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reviewer-avatar-sm {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.reviewer-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.verified-icon {
+  color: var(--color-primary);
+  font-size: 13px;
+}
+
+.review-date {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.review-stars {
+  color: var(--color-star);
+  font-size: 14px;
+  letter-spacing: 2px;
+  margin-bottom: var(--space-sm);
+}
+
+.review-body-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-md);
+  flex: 1;
+}
+
+.reviewed-service-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}

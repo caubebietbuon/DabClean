@@ -3,220 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hồ sơ cá nhân & Cài đặt · Cleanova</title>
+  <title>Hồ Sơ Cá Nhân & Sổ Địa Chỉ · Cleanova</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
-  <style>
-    .profile-layout {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: var(--space-2xl);
-    }
-    @media (max-width: 900px) {
-      .profile-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-    .profile-sidebar {
-      background: var(--color-white);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-xl);
-      text-align: center;
-      box-shadow: var(--shadow-sm);
-    }
-    .profile-avatar-circle {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
-      color: white;
-      font-size: 36px;
-      font-weight: 800;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto var(--space-md);
-      box-shadow: 0 8px 16px rgba(16, 185, 129, 0.2);
-    }
-    .profile-name {
-      font-size: var(--font-size-xl);
-      font-weight: 800;
-      color: var(--color-text);
-      margin-bottom: var(--space-xs);
-    }
-    .profile-email {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-      margin-bottom: var(--space-md);
-    }
-    .profile-menu {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xs);
-      margin-top: var(--space-xl);
-      text-align: left;
-    }
-    .profile-menu-item {
-      padding: 12px 16px;
-      border-radius: var(--radius-md);
-      color: var(--color-text);
-      font-size: var(--font-size-sm);
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all var(--transition-fast);
-      border: 1px solid transparent;
-      background: none;
-      width: 100%;
-    }
-    .profile-menu-item:hover {
-      background: var(--color-bg-alt);
-      color: var(--color-primary);
-    }
-    .profile-menu-item.active {
-      background: var(--color-primary-ultra-light);
-      color: var(--color-primary-dark);
-      border-color: var(--color-primary-light);
-      font-weight: 700;
-    }
-    .profile-stat-box {
-      background: var(--color-bg-alt);
-      border-radius: var(--radius-lg);
-      padding: var(--space-md);
-      margin-top: var(--space-lg);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-md);
-      text-align: center;
-    }
-    .profile-stat-num {
-      font-size: var(--font-size-xl);
-      font-weight: 800;
-      color: var(--color-primary-dark);
-    }
-    .profile-stat-label {
-      font-size: 11px;
-      color: var(--color-text-secondary);
-      text-transform: uppercase;
-      font-weight: 700;
-      margin-top: 2px;
-    }
-    .tab-content {
-      display: none;
-    }
-    .tab-content.active {
-      display: block;
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- ============================================================
+       HEADER (Thanh điều hướng cố định)
+       ============================================================ -->
   <header class="header scrolled" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo">
-        <svg viewBox="0 0 36 36" fill="none"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/></svg>
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
+          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
         <span class="logo-text">Cleanova</span>
       </a>
+
       <nav class="nav">
         <a href="trangchu.html" class="nav-link">Trang chủ</a>
         <a href="services.html" class="nav-link">Dịch vụ</a>
         <a href="booking.html" class="nav-link">Đặt lịch</a>
         <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
       </nav>
+
       <div class="header-actions">
         <button id="btn-logout" class="btn btn-ghost btn-sm">Đăng xuất</button>
       </div>
     </div>
   </header>
 
+  <!-- ============================================================
+       MAIN CONTENT: PROFILE & ADDRESS BOOK
+       ============================================================ -->
   <main class="page-wrapper">
     <div class="container">
-      <div class="page-header">
-        <h1 class="page-title">Hồ sơ cá nhân</h1>
-        <p class="page-subtitle">Quản lý thông tin tài khoản, địa chỉ liên hệ và bảo mật mật khẩu.</p>
+
+      <!-- Header Tiêu đề -->
+      <div class="page-header" style="max-width: 720px;">
+        <div class="section-badge">👤 Tài khoản khách hàng</div>
+        <h1 class="page-title">Hồ sơ cá nhân & Cài đặt</h1>
+        <p class="page-subtitle">Quản lý thông tin tài khoản, danh bạ sổ địa chỉ thường dùng và bảo mật mật khẩu.</p>
       </div>
 
-      <!-- Alert Box -->
-      <div id="alert-box" style="display: none; margin-bottom: var(--space-lg);"></div>
+      <div class="profile-layout-grid">
 
-      <div class="profile-layout">
-        <!-- Sidebar hồ sơ -->
-        <aside class="profile-sidebar">
-          <div class="profile-avatar-circle" id="profile-avatar">C</div>
-          <h2 class="profile-name" id="sidebar-name">Đang tải...</h2>
-          <div class="profile-email" id="sidebar-email">...</div>
-          <div>
+        <!-- CỘT TRÁI: SIDEBAR THÔNG TIN & MENU CHUYỂN TAB -->
+        <aside class="profile-sidebar-card">
+          <div class="profile-avatar-large" id="profile-avatar">
+            <span>C</span>
+            <span class="avatar-online-dot"></span>
+          </div>
+
+          <h2 class="profile-user-name" id="sidebar-name">Đang tải...</h2>
+          <div class="profile-user-email" id="sidebar-email">...</div>
+
+          <div style="margin-bottom: var(--space-lg);">
             <span class="status-badge status-confirmed" id="sidebar-role">Khách hàng</span>
           </div>
 
-          <div class="profile-stat-box">
+          <!-- Thống kê nhanh đơn hàng -->
+          <div class="profile-sidebar-stats">
             <div>
-              <div class="profile-stat-num" id="stat-total-orders">0</div>
-              <div class="profile-stat-label">Tổng đơn đặt</div>
+              <div class="sidebar-stat-number" id="stat-total-orders">0</div>
+              <div class="sidebar-stat-label">Tổng đơn</div>
             </div>
             <div>
-              <div class="profile-stat-num" id="stat-completed-orders">0</div>
-              <div class="profile-stat-label">Hoàn thành</div>
+              <div class="sidebar-stat-number" id="stat-completed-orders">0</div>
+              <div class="sidebar-stat-label">Hoàn thành</div>
             </div>
           </div>
 
-          <div class="profile-menu">
-            <button class="profile-menu-item active" data-tab="tab-info">
-              <span>👤</span> Thông tin cá nhân
+          <!-- Menu Tabs -->
+          <nav class="profile-nav-menu" role="tablist">
+            <button class="profile-nav-item active" data-tab="tab-info">
+              <span class="profile-nav-icon">👤</span> Thông tin cá nhân
             </button>
-            <button class="profile-menu-item" data-tab="tab-security">
-              <span>🔒</span> Đổi mật khẩu
+            <button class="profile-nav-item" data-tab="tab-addresses">
+              <span class="profile-nav-icon">📍</span> Sổ địa chỉ đã lưu
             </button>
-            <a href="my-bookings.html" class="profile-menu-item">
-              <span>📅</span> Lịch sử đặt lịch
+            <button class="profile-nav-item" data-tab="tab-security">
+              <span class="profile-nav-icon">🔒</span> Đổi mật khẩu
+            </button>
+            <a href="my-bookings.html" class="profile-nav-item">
+              <span class="profile-nav-icon">📅</span> Lịch sử đơn đặt
             </a>
-            <div id="admin-portal-link" style="display: none; margin-top: var(--space-sm);">
-              <a href="admin.html" class="profile-menu-item" style="color: #B45309; background: #FEF3C7; border-color: #FCD34D;">
-                <span>⚙️</span> Trang Quản trị Admin
-              </a>
-            </div>
-          </div>
+          </nav>
         </aside>
 
-        <!-- Nội dung chính -->
-        <section>
-          <!-- Tab 1: Cập nhật thông tin -->
-          <div class="card tab-content active" id="tab-info">
-            <h2 style="font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--space-xs);">Thông tin tài khoản</h2>
+        <!-- CỘT PHẢI: NỘI DUNG TỪNG TAB -->
+        <section class="profile-main-card">
+
+          <!-- TAB 1: THÔNG TIN CÁ NHÂN -->
+          <div class="tab-pane active" id="tab-info">
+            <h2 style="font-size: var(--font-size-xl); font-weight: 800; margin-bottom: 4px; color: var(--color-text-main);">
+              Thông tin tài khoản
+            </h2>
             <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-xl);">
-              Cập nhật thông tin liên hệ giúp chúng tôi hỗ trợ và phục vụ bạn chu đáo hơn.
+              Cập nhật thông tin chính xác giúp chuyên viên Cleanova liên hệ và phục vụ bạn chu đáo nhất.
             </p>
 
             <form id="form-update-profile">
               <div style="display: grid; gap: var(--space-lg);">
                 <div class="form-group">
-                  <label class="form-label" for="profile-name">Họ và tên</label>
+                  <label class="form-label" for="profile-name">Họ và tên của bạn <span class="required">*</span></label>
                   <input type="text" id="profile-name" class="form-control" placeholder="Ví dụ: Nguyễn Văn An" required>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="profile-email-input">Địa chỉ Email</label>
+                  <label class="form-label" for="profile-email-input">Địa chỉ Email đăng nhập</label>
                   <input type="email" id="profile-email-input" class="form-control" disabled style="background: var(--color-bg-alt); cursor: not-allowed;">
-                  <small style="color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; display: block;">Email được dùng làm tài khoản đăng nhập và không thể thay đổi.</small>
+                  <span class="form-hint">Email là định danh tài khoản duy nhất và không thể thay đổi.</span>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="profile-phone">Số điện thoại liên lạc</label>
-                  <input type="tel" id="profile-phone" class="form-control" placeholder="Ví dụ: 0912 345 678" pattern="[0-9]{9,11}">
+                  <label class="form-label" for="profile-phone">Số điện thoại liên hệ <span class="required">*</span></label>
+                  <input type="tel" id="profile-phone" class="form-control" placeholder="0912345678" pattern="[0-9]{9,11}">
+                  <span class="form-hint">Dùng để chuyên viên Cleanova gọi xác nhận trước khi đến nhà.</span>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="profile-address">Địa chỉ nhà / Căn hộ mặc định</label>
-                  <textarea id="profile-address" class="form-control" rows="3" placeholder="Số nhà, đường, phường/xã, quận/huyện..."></textarea>
-                  <small style="color: var(--color-text-secondary); font-size: 12px; margin-top: 4px; display: block;">Địa chỉ này sẽ được tự động điền khi bạn đặt lịch dọn vệ sinh.</small>
+                  <label class="form-label" for="profile-address">Địa chỉ nhà / Căn hộ chính</label>
+                  <textarea id="profile-address" class="form-control" rows="3" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."></textarea>
+                  <span class="form-hint">Địa chỉ này sẽ được ưu tiên làm địa chỉ mặc định trong biểu mẫu đặt lịch.</span>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end;">
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-sm); border-top: 1px solid var(--color-border-light); padding-top: var(--space-lg);">
                   <button type="submit" class="btn btn-primary" id="btn-save-profile">
                     Lưu thông tin cá nhân
                   </button>
@@ -225,31 +142,74 @@
             </form>
           </div>
 
-          <!-- Tab 2: Đổi mật khẩu -->
-          <div class="card tab-content" id="tab-security">
-            <h2 style="font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--space-xs);">Bảo mật & Đổi mật khẩu</h2>
+          <!-- TAB 2: QUẢN LÝ SỔ ĐỊA CHỈ (ADDRESS BOOK) -->
+          <div class="tab-pane" id="tab-addresses">
+            <div class="address-book-header">
+              <div>
+                <h2 style="font-size: var(--font-size-xl); font-weight: 800; color: var(--color-text-main); margin-bottom: 4px;">
+                  Sổ địa chỉ của bạn
+                </h2>
+                <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin: 0;">
+                  Lưu sẵn nhiều địa chỉ (nhà riêng, văn phòng, nhà bố mẹ) để đặt lịch nhanh trong 1 chạm.
+                </p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-open-add-address">
+                <span>➕</span> Thêm địa chỉ mới
+              </button>
+            </div>
+
+            <!-- Danh sách các thẻ địa chỉ -->
+            <div class="address-cards-grid" id="address-cards-container">
+              <!-- Render động bằng JS -->
+            </div>
+          </div>
+
+          <!-- TAB 3: ĐỔI MẬT KHẨU & BẢO MẬT -->
+          <div class="tab-pane" id="tab-security">
+            <h2 style="font-size: var(--font-size-xl); font-weight: 800; color: var(--color-text-main); margin-bottom: 4px;">
+              Bảo mật & Đổi mật khẩu
+            </h2>
             <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-xl);">
-              Khuyến nghị sử dụng mật khẩu có độ dài tối thiểu 6 ký tự để bảo vệ tài khoản.
+              Để bảo vệ an toàn cho tài khoản và thông tin đơn hàng, hãy sử dụng mật khẩu mạnh tối thiểu 6 ký tự.
             </p>
 
             <form id="form-change-password">
-              <div style="display: grid; gap: var(--space-lg); max-width: 500px;">
+              <div style="display: grid; gap: var(--space-lg); max-width: 480px;">
                 <div class="form-group">
-                  <label class="form-label" for="current-password">Mật khẩu hiện tại</label>
-                  <input type="password" id="current-password" class="form-control" placeholder="••••••••" required>
+                  <label class="form-label" for="current-password">Mật khẩu hiện tại <span class="required">*</span></label>
+                  <div class="input-password-wrap">
+                    <input type="password" id="current-password" class="form-control" placeholder="••••••••" required>
+                    <span class="password-eye-toggle" data-target="current-password">👁️</span>
+                  </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="new-password">Mật khẩu mới</label>
-                  <input type="password" id="new-password" class="form-control" placeholder="Tối thiểu 6 ký tự" minlength="6" required>
+                  <label class="form-label" for="new-password">Mật khẩu mới <span class="required">*</span></label>
+                  <div class="input-password-wrap">
+                    <input type="password" id="new-password" class="form-control" placeholder="Tối thiểu 6 ký tự" minlength="6" required>
+                    <span class="password-eye-toggle" data-target="new-password">👁️</span>
+                  </div>
+                  <!-- Password Strength Meter -->
+                  <div class="password-meter-wrap">
+                    <div class="password-meter-bar">
+                      <div class="password-meter-fill" id="password-meter-fill"></div>
+                    </div>
+                    <div class="password-meter-text">
+                      <span id="password-strength-label">Độ mạnh: Chưa nhập</span>
+                      <span>Tối thiểu 6 ký tự</span>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="form-label" for="confirm-new-password">Xác nhận mật khẩu mới</label>
-                  <input type="password" id="confirm-new-password" class="form-control" placeholder="Nhập lại mật khẩu mới" minlength="6" required>
+                  <label class="form-label" for="confirm-new-password">Xác nhận mật khẩu mới <span class="required">*</span></label>
+                  <div class="input-password-wrap">
+                    <input type="password" id="confirm-new-password" class="form-control" placeholder="Nhập lại mật khẩu mới" minlength="6" required>
+                    <span class="password-eye-toggle" data-target="confirm-new-password">👁️</span>
+                  </div>
                 </div>
 
-                <div>
+                <div style="border-top: 1px solid var(--color-border-light); padding-top: var(--space-lg);">
                   <button type="submit" class="btn btn-primary" id="btn-change-password">
                     Cập nhật mật khẩu mới
                   </button>
@@ -257,154 +217,345 @@
               </div>
             </form>
           </div>
+
         </section>
+
       </div>
+
     </div>
   </main>
 
+  <!-- ============================================================
+       MODAL: THÊM ĐỊA CHỈ MỚI
+       ============================================================ -->
+  <div class="modal-overlay" id="add-address-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📍 Thêm địa chỉ mới vào sổ</h3>
+        <button class="modal-close" id="modal-address-close">&times;</button>
+      </div>
+      <form id="form-add-address">
+        <div class="form-group">
+          <label class="form-label" for="new-address-label">Tên gợi nhớ <span class="required">*</span></label>
+          <input type="text" id="new-address-label" class="form-control" placeholder="Ví dụ: Nhà riêng, Công ty, Căn hộ Times City..." required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new-address-text">Địa chỉ chi tiết <span class="required">*</span></label>
+          <textarea id="new-address-text" class="form-control" rows="3" placeholder="Số nhà, tòa nhà, tên đường, phường/xã, quận/huyện..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="new-address-phone">Số điện thoại người nhận dịch vụ</label>
+          <input type="tel" id="new-address-phone" class="form-control" placeholder="0987654321">
+        </div>
+
+        <div class="form-group" style="flex-direction: row; align-items: center; gap: 8px;">
+          <input type="checkbox" id="new-address-default" style="width: 18px; height: 18px;">
+          <label for="new-address-default" style="font-size: var(--font-size-sm); cursor: pointer; user-select: none;">
+            Đặt làm địa chỉ mặc định khi đặt lịch
+          </label>
+        </div>
+
+        <div class="modal-footer" style="margin-top: var(--space-lg);">
+          <button type="button" class="btn btn-secondary" id="modal-address-cancel">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-new-address">Lưu địa chỉ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container" style="text-align: center; font-size: var(--font-size-xs); color: #64748b;">
+      <p style="margin-bottom: 6px;"><strong>Cleanova Việt Nam</strong> · Không gian sạch hơn, cuộc sống tốt hơn.</p>
+      <p>© 2026 Cleanova. Nền tảng đặt dịch vụ vệ sinh chuyên nghiệp.</p>
+    </div>
+  </footer>
+
   <script>
+    'use strict';
     document.addEventListener('DOMContentLoaded', async function () {
       // 1. Kiểm tra đăng nhập
       if (!CleanovaAPI.auth.isLoggedIn()) {
-        window.location.href = 'login.html';
+        window.location.replace('login.html?redirect=profile.html');
         return;
       }
 
-      function showAlert(type, message) {
-        const box = document.getElementById('alert-box');
-        box.className = `alert alert-${type}`;
-        box.textContent = message;
-        box.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setTimeout(() => { box.style.display = 'none'; }, 5000);
+      document.getElementById('btn-logout').addEventListener('click', () => CleanovaAPI.auth.logout());
+
+      // 2. Chuyển đổi Tabs
+      const navItems = document.querySelectorAll('.profile-nav-item[data-tab]');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+
+      function switchTab(tabId) {
+        navItems.forEach(i => i.classList.remove('active'));
+        tabPanes.forEach(p => p.classList.remove('active'));
+
+        const targetBtn = document.querySelector(`.profile-nav-item[data-tab="${tabId}"]`);
+        const targetPane = document.getElementById(tabId);
+        if (targetBtn) targetBtn.classList.add('active');
+        if (targetPane) targetPane.classList.add('active');
       }
 
-      // Xử lý tabs
-      const menuItems = document.querySelectorAll('.profile-menu-item[data-tab]');
-      const tabContents = document.querySelectorAll('.tab-content');
-
-      menuItems.forEach(item => {
+      navItems.forEach(item => {
         item.addEventListener('click', function () {
-          menuItems.forEach(i => i.classList.remove('active'));
-          tabContents.forEach(t => t.classList.remove('active'));
-
-          this.classList.add('active');
-          const targetTab = document.getElementById(this.dataset.tab);
-          if (targetTab) targetTab.classList.add('active');
+          switchTab(this.dataset.tab);
         });
       });
 
-      // Đăng xuất
-      document.getElementById('btn-logout').addEventListener('click', function () {
-        CleanovaAPI.auth.logout();
-      });
+      // Nếu có hash URL (ví dụ #tab-addresses)
+      if (window.location.hash) {
+        const hashTab = window.location.hash.replace('#', '');
+        if (document.getElementById(hashTab)) switchTab(hashTab);
+      }
 
-      // 2. Load thông tin người dùng từ Backend
+      // 3. Nạp thông tin người dùng từ Backend
       let currentUser = null;
       try {
         const res = await CleanovaAPI.auth.getMe();
-        currentUser = (res.data && res.data.user) ? res.data.user : (res.data || {});
-
-        // Populate sidebar
-        const displayName = currentUser.name || currentUser.email.split('@')[0];
-        document.getElementById('sidebar-name').textContent = displayName;
-        document.getElementById('sidebar-email').textContent = currentUser.email;
-        document.getElementById('profile-avatar').textContent = displayName.charAt(0).toUpperCase();
-
-        const roleBadge = document.getElementById('sidebar-role');
-        if (currentUser.role === 'admin') {
-          roleBadge.textContent = 'Quản trị viên (Admin)';
-          roleBadge.className = 'status-badge status-pending';
-          document.getElementById('admin-portal-link').style.display = 'block';
-        } else {
-          roleBadge.textContent = 'Khách hàng';
-          roleBadge.className = 'status-badge status-confirmed';
-        }
-
-        // Điền form cập nhật thông tin
-        document.getElementById('profile-name').value = currentUser.name || '';
-        document.getElementById('profile-email-input').value = currentUser.email || '';
-        document.getElementById('profile-phone').value = currentUser.phone || '';
-        document.getElementById('profile-address').value = currentUser.address || '';
-
-      } catch (err) {
-        showAlert('danger', 'Không thể tải thông tin hồ sơ: ' + (err.message || 'Lỗi server'));
+        currentUser = (res.data && res.data.user) ? res.data.user : res.data;
+      } catch {
+        currentUser = CleanovaAPI.auth.getUser() || {};
       }
 
-      // 3. Tải thống kê số đơn đặt
+      const displayName = currentUser.name || currentUser.email || 'Khách hàng';
+      document.getElementById('sidebar-name').textContent = displayName;
+      document.getElementById('sidebar-email').textContent = currentUser.email || '';
+      document.getElementById('profile-avatar').querySelector('span').textContent = displayName.charAt(0).toUpperCase();
+
+      const roleBadge = document.getElementById('sidebar-role');
+      if (currentUser.role === 'admin') {
+        roleBadge.textContent = 'Quản trị viên (Admin)';
+        roleBadge.className = 'status-badge status-pending';
+      } else if (currentUser.role === 'staff') {
+        roleBadge.textContent = 'Chuyên viên Cleanova';
+        roleBadge.className = 'status-badge status-confirmed';
+      } else {
+        roleBadge.textContent = 'Khách hàng thân thiết';
+        roleBadge.className = 'status-badge status-completed';
+      }
+
+      // Điền form cập nhật thông tin
+      document.getElementById('profile-name').value = currentUser.name || '';
+      document.getElementById('profile-email-input').value = currentUser.email || '';
+      document.getElementById('profile-phone').value = currentUser.phone || '';
+      document.getElementById('profile-address').value = currentUser.address || '';
+
+      // Tải thống kê đơn hàng cho sidebar
       try {
         const bookingsRes = await CleanovaAPI.bookings.getMyBookings();
         const bookings = bookingsRes.data || [];
         document.getElementById('stat-total-orders').textContent = bookings.length;
-        const completed = bookings.filter(b => b.status === 'completed').length;
-        document.getElementById('stat-completed-orders').textContent = completed;
-      } catch (err) {
-        console.warn('Không thể tải thống kê đơn:', err);
-      }
+        document.getElementById('stat-completed-orders').textContent = bookings.filter(b => b.status === 'completed').length;
+      } catch {}
 
-      // 4. Submit cập nhật hồ sơ
-      const formProfile = document.getElementById('form-update-profile');
-      formProfile.addEventListener('submit', async function (e) {
+      // 4. Xử lý Lưu thông tin cá nhân
+      document.getElementById('form-update-profile').addEventListener('submit', async function (e) {
         e.preventDefault();
+        const name = document.getElementById('profile-name').value.trim();
+        const phone = document.getElementById('profile-phone').value.trim();
+        const address = document.getElementById('profile-address').value.trim();
+
         const btn = document.getElementById('btn-save-profile');
+        btn.classList.add('btn-loading');
         btn.disabled = true;
-        btn.textContent = 'Đang lưu...';
 
         try {
-          const name = document.getElementById('profile-name').value.trim();
-          const phone = document.getElementById('profile-phone').value.trim();
-          const address = document.getElementById('profile-address').value.trim();
-
-          const updateRes = await CleanovaAPI.auth.updateProfile({ name, phone, address });
-          showAlert('success', 'Cập nhật thông tin hồ sơ thành công!');
-
-          // Cập nhật lại giao diện
-          if (updateRes.data && updateRes.data.user) {
-            const updated = updateRes.data.user;
-            document.getElementById('sidebar-name').textContent = updated.name;
-            document.getElementById('profile-avatar').textContent = (updated.name || 'C').charAt(0).toUpperCase();
-          }
+          await CleanovaAPI.auth.updateProfile({ name, phone, address });
+          document.getElementById('sidebar-name').textContent = name;
+          document.getElementById('profile-avatar').querySelector('span').textContent = name.charAt(0).toUpperCase();
+          showToast('success', 'Cập nhật thông tin cá nhân thành công!');
         } catch (err) {
-          showAlert('danger', err.message || 'Lỗi khi cập nhật hồ sơ.');
+          showToast('error', err.message || 'Không thể lưu thông tin.');
         } finally {
+          btn.classList.remove('btn-loading');
           btn.disabled = false;
-          btn.textContent = 'Lưu thông tin cá nhân';
         }
       });
 
-      // 5. Submit đổi mật khẩu
-      const formPassword = document.getElementById('form-change-password');
-      formPassword.addEventListener('submit', async function (e) {
+      // 5. Quản lý Sổ địa chỉ (Address Book)
+      function renderAddressCards() {
+        const container = document.getElementById('address-cards-container');
+        const addresses = CleanovaAPI.addresses.getAll();
+
+        if (addresses.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column: 1 / -1;" class="empty-state">
+              <div class="empty-icon">📍</div>
+              <h3 class="empty-title">Chưa có địa chỉ nào trong sổ</h3>
+              <p class="empty-desc">Thêm địa chỉ nhà riêng hoặc cơ quan để thuận tiện hơn khi đặt lịch.</p>
+              <button type="button" class="btn btn-primary" onclick="document.getElementById('btn-open-add-address').click()">
+                Thêm địa chỉ đầu tiên
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = addresses.map(addr => `
+          <div class="address-item-card ${addr.is_default ? 'default-address' : ''}">
+            <div>
+              <div class="address-card-top">
+                <span class="address-tag">
+                  <span>📍</span> ${addr.label}
+                </span>
+                ${addr.is_default ? '<span class="default-badge">Mặc định</span>' : ''}
+              </div>
+              <p class="address-card-text">${addr.address}</p>
+              ${addr.phone ? `<div style="font-size: 11px; color: var(--color-text-muted); margin-bottom: 8px;">📞 ${addr.phone}</div>` : ''}
+            </div>
+
+            <div class="address-card-actions">
+              ${!addr.is_default ? `
+                <button type="button" class="btn btn-outline btn-sm btn-set-default" data-id="${addr.id}">
+                  Đặt làm mặc định
+                </button>
+              ` : '<span style="font-size: 11px; color: var(--color-primary); font-weight: 700;">✓ Địa chỉ mặc định</span>'}
+              <button type="button" class="btn btn-ghost btn-sm btn-delete-address" data-id="${addr.id}" style="color: var(--color-error); margin-left: auto;" title="Xóa địa chỉ">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        // Gắn sự kiện nút Đặt làm mặc định
+        document.querySelectorAll('.btn-set-default').forEach(btn => {
+          btn.addEventListener('click', function () {
+            CleanovaAPI.addresses.setDefault(this.dataset.id);
+            renderAddressCards();
+            showToast('success', 'Đã thay đổi địa chỉ mặc định.');
+          });
+        });
+
+        // Gắn sự kiện Xóa địa chỉ
+        document.querySelectorAll('.btn-delete-address').forEach(btn => {
+          btn.addEventListener('click', function () {
+            if (confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
+              CleanovaAPI.addresses.remove(this.dataset.id);
+              renderAddressCards();
+              showToast('info', 'Đã xóa địa chỉ khỏi sổ.');
+            }
+          });
+        });
+      }
+
+      renderAddressCards();
+
+      // Modal Thêm địa chỉ mới
+      const modalAddress = document.getElementById('add-address-modal');
+      const openAddressModal = () => modalAddress.classList.add('active');
+      const closeAddressModal = () => modalAddress.classList.remove('active');
+
+      document.getElementById('btn-open-add-address').addEventListener('click', openAddressModal);
+      document.getElementById('modal-address-close').addEventListener('click', closeAddressModal);
+      document.getElementById('modal-address-cancel').addEventListener('click', closeAddressModal);
+
+      document.getElementById('form-add-address').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const label = document.getElementById('new-address-label').value.trim();
+        const address = document.getElementById('new-address-text').value.trim();
+        const phone = document.getElementById('new-address-phone').value.trim();
+        const is_default = document.getElementById('new-address-default').checked;
+
+        CleanovaAPI.addresses.add({ label, address, phone, is_default });
+        closeAddressModal();
+        this.reset();
+        renderAddressCards();
+        showToast('success', 'Đã thêm địa chỉ mới thành công!');
+      });
+
+      // 6. Xử lý Đổi mật khẩu & Password Strength Meter
+      const newPassInput = document.getElementById('new-password');
+      const meterFill = document.getElementById('password-meter-fill');
+      const meterLabel = document.getElementById('password-strength-label');
+
+      newPassInput.addEventListener('input', function () {
+        const val = this.value;
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 9) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        if (val.length === 0) {
+          meterFill.style.width = '0%';
+          meterFill.style.background = 'transparent';
+          meterLabel.textContent = 'Độ mạnh: Chưa nhập';
+        } else if (score <= 2) {
+          meterFill.style.width = '33%';
+          meterFill.style.background = 'var(--color-error)';
+          meterLabel.textContent = 'Độ mạnh: Yếu';
+          meterLabel.style.color = 'var(--color-error)';
+        } else if (score <= 4) {
+          meterFill.style.width = '66%';
+          meterFill.style.background = 'var(--color-warning)';
+          meterLabel.textContent = 'Độ mạnh: Trung bình';
+          meterLabel.style.color = 'var(--color-warning)';
+        } else {
+          meterFill.style.width = '100%';
+          meterFill.style.background = 'var(--color-success)';
+          meterLabel.textContent = 'Độ mạnh: Rất mạnh';
+          meterLabel.style.color = 'var(--color-success)';
+        }
+      });
+
+      // Eye toggle show/hide password
+      document.querySelectorAll('.password-eye-toggle').forEach(eye => {
+        eye.addEventListener('click', function () {
+          const targetInput = document.getElementById(this.dataset.target);
+          if (targetInput) {
+            const isPassword = targetInput.type === 'password';
+            targetInput.type = isPassword ? 'text' : 'password';
+            this.textContent = isPassword ? '🙈' : '👁️';
+          }
+        });
+      });
+
+      // Gửi Form Đổi mật khẩu
+      document.getElementById('form-change-password').addEventListener('submit', async function (e) {
         e.preventDefault();
         const currentPassword = document.getElementById('current-password').value;
         const newPassword = document.getElementById('new-password').value;
         const confirmPassword = document.getElementById('confirm-new-password').value;
 
         if (newPassword !== confirmPassword) {
-          showAlert('danger', 'Mật khẩu mới và xác nhận mật khẩu không khớp!');
-          return;
-        }
-
-        if (newPassword.length < 6) {
-          showAlert('danger', 'Mật khẩu mới phải có ít nhất 6 ký tự!');
+          showToast('error', 'Mật khẩu mới và xác nhận mật khẩu không khớp nhau.');
           return;
         }
 
         const btn = document.getElementById('btn-change-password');
+        btn.classList.add('btn-loading');
         btn.disabled = true;
-        btn.textContent = 'Đang cập nhật...';
 
         try {
           await CleanovaAPI.auth.changePassword({ currentPassword, newPassword });
-          showAlert('success', 'Đổi mật khẩu thành công! Hãy ghi nhớ mật khẩu mới cho lần đăng nhập tới.');
-          formPassword.reset();
+          this.reset();
+          meterFill.style.width = '0%';
+          meterLabel.textContent = 'Độ mạnh: Chưa nhập';
+          showToast('success', 'Đổi mật khẩu thành công! Hãy lưu lại mật khẩu mới.');
         } catch (err) {
-          showAlert('danger', err.message || 'Mật khẩu hiện tại không chính xác.');
+          showToast('error', err.message || 'Không thể đổi mật khẩu.');
         } finally {
+          btn.classList.remove('btn-loading');
           btn.disabled = false;
-          btn.textContent = 'Cập nhật mật khẩu mới';
         }
       });
+
+      // Toast helper
+      function showToast(type, msg) {
+        const c = document.getElementById('toast-container');
+        if (!c) return;
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : 'ℹ️'}</span><span class="toast-message">${msg}</span>`;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 3200);
+      }
     });
   </script>
 </body>

@@ -6,7 +6,10 @@ const router = express.Router();
 const bookingController = require('../controllers/bookingController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
-// Tất cả các route đặt lịch đều yêu cầu đăng nhập
+// Lấy danh sách đánh giá công khai (không bắt buộc token)
+router.get('/reviews/all', bookingController.getAllReviews);
+
+// Tất cả các route đặt lịch bên dưới đều yêu cầu đăng nhập
 router.use(verifyToken);
 
 // Tạo đơn đặt lịch dịch vụ mới
@@ -21,5 +24,14 @@ router.get('/:id', bookingController.getBookingDetail);
 
 // Hủy đơn đặt lịch
 router.put('/:id/cancel', bookingController.cancelBooking);
+
+// Khách hàng đổi lịch thực hiện dịch vụ
+router.put('/:id/reschedule', bookingController.rescheduleBooking);
+
+// Gửi đánh giá cho đơn hoàn thành
+router.post('/:id/review', bookingController.createReview);
+
+// Xem đánh giá của một đơn
+router.get('/:id/review', bookingController.getBookingReview);
 
 module.exports = router;

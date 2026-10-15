@@ -1,0 +1,345 @@
+/* ============================================================
+   CLEANOVA - PAGE: BOOKING FORM (booking.html)
+   Multi-step Stepper, Radio Cards, Sticky Summary & Price Calculation
+   ============================================================ */
+
+.booking-page-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-2xl);
+  align-items: start;
+}
+
+/* Stepper Card */
+.booking-stepper-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg) var(--space-xl);
+  margin-bottom: var(--space-xl);
+  box-shadow: var(--shadow-xs);
+}
+
+.booking-step-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.booking-section-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-normal);
+}
+
+.booking-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.section-number-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-primary-ultra-light);
+  color: var(--color-primary);
+  font-weight: 800;
+  font-size: var(--font-size-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-primary-light);
+  flex-shrink: 0;
+}
+
+.booking-section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  margin: 0;
+}
+
+/* Radio Card Groups (Quy mô & Tần suất) */
+.radio-card-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  margin-top: 6px;
+}
+
+.radio-card {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  text-align: center;
+  cursor: pointer;
+  background: var(--color-white);
+  transition: all var(--transition-fast);
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 84px;
+  position: relative;
+}
+
+.radio-card:hover {
+  border-color: var(--color-primary-light);
+  background: var(--color-primary-ultra-light);
+  transform: translateY(-2px);
+}
+
+.radio-card.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-ultra-light);
+  color: var(--color-primary-hover);
+  font-weight: var(--font-weight-bold);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.radio-card-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 4px;
+}
+
+.radio-card-subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.radio-card.active .radio-card-subtitle {
+  color: var(--color-primary);
+}
+
+.discount-pill {
+  display: inline-block;
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  margin-top: 4px;
+}
+
+/* Time Slots Chips */
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.time-slot-btn {
+  padding: 10px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-body);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.time-slot-btn:hover {
+  border-color: var(--color-primary-light);
+  background: var(--color-primary-ultra-light);
+}
+
+.time-slot-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* Payment Method Cards */
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+  margin-top: 6px;
+}
+
+.payment-card {
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  background: var(--color-white);
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.payment-card:hover {
+  border-color: var(--color-primary-light);
+  background: var(--color-primary-ultra-light);
+}
+
+.payment-card.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-ultra-light);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.payment-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.payment-info strong {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+}
+
+.payment-info small {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+/* Coupon Input Row */
+.coupon-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.coupon-applied-badge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  color: #047857;
+  font-weight: var(--font-weight-semibold);
+  margin-top: 8px;
+}
+
+/* Sticky Order Summary Card (Cột phải) */
+.order-summary-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-2xl);
+  position: sticky;
+  top: calc(var(--header-height) + 24px);
+  box-shadow: var(--shadow-lg);
+}
+
+.summary-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-service-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--color-bg-alt);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.summary-service-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  box-shadow: var(--shadow-xs);
+}
+
+.summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: var(--space-lg);
+  font-size: var(--font-size-sm);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-text-secondary);
+}
+
+.summary-row.discount {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+}
+
+.summary-row.total {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-primary);
+  border-top: 2px dashed var(--color-border);
+  padding-top: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
+.summary-total-price {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.summary-guarantee {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--space-lg);
+  padding: 12px;
+  background: var(--color-primary-ultra-light);
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-primary-hover);
+}
+
+@media (max-width: 900px) {
+  .booking-page-layout {
+    grid-template-columns: 1fr;
+  }
+  .order-summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 600px) {
+  .radio-card-group {
+    grid-template-columns: 1fr;
+  }
+  .payment-methods-grid {
+    grid-template-columns: 1fr;
+  }
+}

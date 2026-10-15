@@ -1,0 +1,151 @@
+/* ============================================================
+   CLEANOVA - PAGE: COUPONS & VOUCHERS (Mã giảm giá & Ưu đãi)
+   Ticket-style vouchers, Copy code feedback & Expiry states
+   ============================================================ */
+
+.coupons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-xl);
+}
+
+.coupon-ticket-card {
+  background: var(--color-white);
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  overflow: hidden;
+}
+
+.coupon-ticket-card::before,
+.coupon-ticket-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  background: var(--color-bg);
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  transform: translateY(-50%);
+}
+
+.coupon-ticket-card::before {
+  left: -10px;
+}
+
+.coupon-ticket-card::after {
+  right: -10px;
+}
+
+.coupon-ticket-card:hover {
+  border-color: var(--color-primary-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.coupon-ticket-card.expired {
+  opacity: 0.6;
+  filter: grayscale(0.8);
+}
+
+.coupon-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+}
+
+.coupon-value {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.1;
+}
+
+.coupon-badge {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  text-transform: uppercase;
+}
+
+.coupon-badge.expired {
+  background: #f1f5f9;
+  color: #64748b;
+  border-color: #e2e8f0;
+}
+
+.coupon-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-main);
+  margin-bottom: 4px;
+}
+
+.coupon-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--space-md);
+}
+
+.coupon-meta {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: var(--space-md);
+}
+
+.coupon-code-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--color-bg-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.coupon-code-text {
+  font-family: var(--font-family-mono);
+  font-weight: 800;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-main);
+  letter-spacing: 1px;
+}
+
+.btn-copy-code {
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
+  border: 1px solid var(--color-primary-light);
+  transition: all var(--transition-fast);
+}
+
+.btn-copy-code:hover {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn-copy-code.copied {
+  background: var(--color-success);
+  color: var(--color-white);
+  border-color: var(--color-success);
+}

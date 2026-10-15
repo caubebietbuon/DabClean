@@ -3,238 +3,377 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lịch hẹn & Đơn đặt của tôi · Cleanova</title>
+  <title>Bảng Điều Khiển & Đơn Đặt Của Tôi · Cleanova</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
-  <style>
-    .filter-tabs {
-      display: flex;
-      gap: var(--space-xs);
-      overflow-x: auto;
-      padding-bottom: var(--space-xs);
-      margin-bottom: var(--space-xl);
-      border-bottom: 1px solid var(--color-border);
-    }
-    .filter-btn {
-      padding: 10px 18px;
-      font-size: var(--font-size-sm);
-      font-weight: 600;
-      color: var(--color-text-secondary);
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all var(--transition-fast);
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
-    }
-    .filter-btn:hover {
-      color: var(--color-primary);
-      background: var(--color-primary-ultra-light);
-    }
-    .filter-btn.active {
-      color: var(--color-primary-dark);
-      border-bottom-color: var(--color-primary);
-      background: var(--color-primary-ultra-light);
-      font-weight: 700;
-    }
-    .filter-count {
-      display: inline-block;
-      padding: 2px 7px;
-      border-radius: var(--radius-full);
-      font-size: 11px;
-      background: var(--color-border);
-      color: var(--color-text-secondary);
-      margin-left: 6px;
-    }
-    .filter-btn.active .filter-count {
-      background: var(--color-primary);
-      color: white;
-    }
-
-    .booking-grid {
-      display: grid;
-      gap: var(--space-lg);
-    }
-    .booking-card {
-      background: var(--color-white);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-xl);
-      box-shadow: var(--shadow-sm);
-      transition: all var(--transition-base);
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: var(--space-lg);
-      align-items: center;
-    }
-    .booking-card:hover {
-      box-shadow: var(--shadow-md);
-      border-color: var(--color-primary-light);
-    }
-    @media (max-width: 768px) {
-      .booking-card {
-        grid-template-columns: 1fr;
-      }
-    }
-    .booking-header {
-      display: flex;
-      align-items: center;
-      gap: var(--space-md);
-      margin-bottom: var(--space-sm);
-      flex-wrap: wrap;
-    }
-    .booking-code {
-      font-weight: 800;
-      color: var(--color-text);
-      font-size: var(--font-size-base);
-      background: var(--color-bg-alt2);
-      padding: 3px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--color-border);
-    }
-    .booking-service-title {
-      font-size: var(--font-size-xl);
-      font-weight: 700;
-      color: var(--color-text);
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-    }
-    .booking-details-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-sm) var(--space-lg);
-      margin-top: var(--space-md);
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-    }
-    .booking-detail-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-    }
-    .booking-actions {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-sm);
-      min-width: 150px;
-    }
-    @media (max-width: 768px) {
-      .booking-actions {
-        flex-direction: row;
-        width: 100%;
-      }
-      .booking-actions .btn {
-        flex: 1;
-      }
-    }
-    .price-tag {
-      font-size: var(--font-size-xl);
-      font-weight: 800;
-      color: var(--color-primary-dark);
-      text-align: right;
-      margin-bottom: var(--space-xs);
-    }
-    @media (max-width: 768px) {
-      .price-tag {
-        text-align: left;
-      }
-    }
-    .empty-state {
-      text-align: center;
-      padding: var(--space-4xl) var(--space-xl);
-      background: var(--color-white);
-      border-radius: var(--radius-2xl);
-      border: 1.5px dashed var(--color-border);
-    }
-    .empty-icon {
-      font-size: 56px;
-      margin-bottom: var(--space-md);
-      opacity: 0.8;
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- ============================================================
+       HEADER (Thanh điều hướng cố định)
+       ============================================================ -->
   <header class="header scrolled" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo">
-        <svg viewBox="0 0 36 36" fill="none"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/></svg>
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
+          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
         <span class="logo-text">Cleanova</span>
       </a>
+
       <nav class="nav">
         <a href="trangchu.html" class="nav-link">Trang chủ</a>
         <a href="services.html" class="nav-link">Dịch vụ</a>
         <a href="booking.html" class="nav-link">Đặt lịch</a>
         <a href="my-bookings.html" class="nav-link active">Đơn của tôi</a>
       </nav>
+
       <div class="header-actions">
-        <a href="profile.html" class="user-profile-badge" id="nav-user-badge">
-          <span>👤</span> <span id="nav-user-name">Tài khoản</span>
+        <!-- Nút Vouchers -->
+        <button id="btn-open-coupons" class="btn btn-outline btn-sm" title="Mã ưu đãi của tôi">
+          🏷️ Ưu đãi
+        </button>
+
+        <a href="profile.html" class="user-profile-badge" id="nav-user-badge" style="text-decoration: none;">
+          <span class="user-avatar-mini">👤</span>
+          <span class="user-email-text" id="nav-user-name">Đang tải...</span>
         </a>
         <button id="btn-logout" class="btn btn-ghost btn-sm">Đăng xuất</button>
       </div>
     </div>
   </header>
 
+  <!-- ============================================================
+       MAIN CONTENT: CUSTOMER DASHBOARD
+       ============================================================ -->
   <main class="page-wrapper">
     <div class="container">
-      <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: var(--space-md);">
-        <div>
-          <h1 class="page-title">Lịch hẹn của tôi</h1>
-          <p class="page-subtitle">Theo dõi trạng thái, chi tiết các gói dịch vụ bạn đã đặt tại Cleanova.</p>
+
+      <!-- 1. Welcome Hero Banner -->
+      <div class="customer-welcome-banner">
+        <div class="welcome-info-col">
+          <div class="welcome-pill">✨ Không gian sống thảnh thơi</div>
+          <h1 class="welcome-title" id="welcome-user-title">Xin chào bạn!</h1>
+          <p class="welcome-subtitle">Theo dõi lịch trình chuyên viên, quản lý đơn đặt và đổi lịch linh hoạt bất kỳ lúc nào.</p>
         </div>
-        <a href="booking.html" class="btn btn-primary">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          Đặt lịch mới
+        <div class="welcome-actions-col">
+          <a href="booking.html" class="btn">
+            <span>➕</span> Đặt lịch mới
+          </a>
+        </div>
+      </div>
+
+      <!-- 2. KPI Stats Grid (Thống kê số liệu thực tế từ Backend) -->
+      <div class="dashboard-kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon-box amber">⏳</div>
+          <div class="kpi-info">
+            <div class="kpi-number" id="kpi-pending">0</div>
+            <div class="kpi-label">Chờ xác nhận</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon-box teal">🚀</div>
+          <div class="kpi-info">
+            <div class="kpi-number" id="kpi-in-progress">0</div>
+            <div class="kpi-label">Sắp & Đang thực hiện</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon-box green">✅</div>
+          <div class="kpi-info">
+            <div class="kpi-number" id="kpi-completed">0</div>
+            <div class="kpi-label">Đã hoàn thành</div>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-icon-box blue">💰</div>
+          <div class="kpi-info">
+            <div class="kpi-number" id="kpi-total-spent">0 đ</div>
+            <div class="kpi-label">Tổng chi tiêu</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Quick Action Shortcuts Bar -->
+      <div class="quick-action-strip">
+        <a href="booking.html" class="quick-action-btn">
+          <span>📅</span> Đặt lịch dịch vụ mới
+        </a>
+        <button type="button" class="quick-action-btn" id="btn-quick-coupons">
+          <span>🏷️</span> Mã giảm giá có sẵn
+        </button>
+        <a href="services.html" class="quick-action-btn">
+          <span>🧹</span> Khám phá bảng giá
+        </a>
+        <a href="profile.html#tab-addresses" class="quick-action-btn">
+          <span>📍</span> Quản lý sổ địa chỉ
+        </a>
+        <a href="trangchu.html#faq" class="quick-action-btn">
+          <span>❓</span> Hỗ trợ & FAQ
         </a>
       </div>
 
-      <!-- Alert Box -->
-      <div id="alert-box" style="display: none; margin-bottom: var(--space-lg);"></div>
-
-      <!-- Filter Tabs -->
-      <div class="filter-tabs" role="tablist">
-        <button class="filter-btn active" data-filter="all">Tất cả <span class="filter-count" id="count-all">0</span></button>
-        <button class="filter-btn" data-filter="pending">Chờ xác nhận <span class="filter-count" id="count-pending">0</span></button>
-        <button class="filter-btn" data-filter="confirmed">Đã xác nhận <span class="filter-count" id="count-confirmed">0</span></button>
-        <button class="filter-btn" data-filter="in_progress">Đang thực hiện <span class="filter-count" id="count-in_progress">0</span></button>
-        <button class="filter-btn" data-filter="completed">Hoàn thành <span class="filter-count" id="count-completed">0</span></button>
-        <button class="filter-btn" data-filter="cancelled">Đã hủy <span class="filter-count" id="count-cancelled">0</span></button>
-      </div>
-
-      <!-- Danh sách đơn đặt -->
-      <div id="booking-container" class="booking-grid">
-        <div class="empty-state">
-          <div class="empty-icon">⏳</div>
-          <h3>Đang tải danh sách lịch hẹn...</h3>
-          <p style="color: var(--color-text-secondary); margin-top: var(--space-xs);">Vui lòng chờ trong giây lát.</p>
+      <!-- 4. Filter Tabs -->
+      <div class="orders-filter-container">
+        <div class="tabs-nav" role="tablist">
+          <button class="tab-btn active" data-filter="all">
+            Tất cả đơn <span class="tab-badge" id="badge-all">0</span>
+          </button>
+          <button class="tab-btn" data-filter="pending">
+            Chờ xác nhận <span class="tab-badge" id="badge-pending">0</span>
+          </button>
+          <button class="tab-btn" data-filter="confirmed">
+            Đã phân công <span class="tab-badge" id="badge-confirmed">0</span>
+          </button>
+          <button class="tab-btn" data-filter="in_progress">
+            Đang làm <span class="tab-badge" id="badge-in_progress">0</span>
+          </button>
+          <button class="tab-btn" data-filter="completed">
+            Hoàn thành <span class="tab-badge" id="badge-completed">0</span>
+          </button>
+          <button class="tab-btn" data-filter="cancelled">
+            Đã hủy <span class="tab-badge" id="badge-cancelled">0</span>
+          </button>
         </div>
       </div>
+
+      <!-- 5. Orders Container -->
+      <div id="booking-container" class="orders-list-grid">
+        <div class="empty-state">
+          <div class="empty-icon">⏳</div>
+          <h3 class="empty-title">Đang đồng bộ danh sách đơn đặt từ hệ thống...</h3>
+          <p class="empty-desc">Vui lòng chờ trong giây lát.</p>
+        </div>
+      </div>
+
     </div>
   </main>
 
-  <!-- Modal Chi Tiết Đơn Hàng -->
-  <div class="modal-overlay" id="detail-modal">
-    <div class="modal">
+  <!-- ============================================================
+       MODAL 1: CHI TIẾT ĐƠN HÀNG
+       ============================================================ -->
+  <div class="modal-overlay" id="detail-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 620px;">
       <div class="modal-header">
-        <h3 id="modal-title" style="margin: 0; font-size: var(--font-size-xl);">Chi tiết đơn đặt lịch</h3>
-        <button class="modal-close" id="modal-close-btn">&times;</button>
+        <h3 id="modal-title" class="modal-title">Chi tiết đơn đặt lịch</h3>
+        <button class="modal-close" id="modal-close-btn" aria-label="Đóng">&times;</button>
       </div>
-      <div id="modal-body">
-        <!-- Render nội dung chi tiết -->
-      </div>
-      <div style="margin-top: var(--space-xl); display: flex; justify-content: flex-end; gap: var(--space-sm);">
-        <button class="btn btn-outline" id="modal-cancel-order-btn" style="display: none;">Hủy đơn này</button>
-        <button class="btn btn-primary" id="modal-close-confirm">Đóng</button>
+      <div id="modal-body"></div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-close-confirm">Đóng</button>
       </div>
     </div>
   </div>
 
+  <!-- ============================================================
+       MODAL 2: ĐỔI LỊCH THỰC HIỆN DỊCH VỤ (RESCHEDULE)
+       ============================================================ -->
+  <div class="modal-overlay" id="reschedule-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📅 Đổi lịch thực hiện dịch vụ</h3>
+        <button class="modal-close" id="reschedule-close-btn">&times;</button>
+      </div>
+      <form id="reschedule-form">
+        <input type="hidden" id="reschedule-booking-id">
+        <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: var(--space-md);">
+          Đơn hàng: <strong id="reschedule-booking-code" style="color: var(--color-primary);">CNV-2026-XXXX</strong>
+        </p>
+
+        <div class="form-group">
+          <label class="form-label" for="reschedule-date">Chọn ngày mới <span class="required">*</span></label>
+          <input type="date" id="reschedule-date" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reschedule-time">Chọn giờ bắt đầu mới <span class="required">*</span></label>
+          <input type="time" id="reschedule-time" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reschedule-notes">Lý do đổi lịch (tùy chọn)</label>
+          <textarea id="reschedule-notes" class="form-control" rows="2" placeholder="Ví dụ: Bận đột xuất, chuyển sang buổi sáng..."></textarea>
+        </div>
+
+        <div class="modal-footer" style="padding-top: var(--space-md); margin-top: var(--space-md);">
+          <button type="button" class="btn btn-secondary" id="reschedule-cancel-btn">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="reschedule-submit-btn">Xác nhận đổi lịch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: XÁC NHẬN HỦY ĐƠN (CANCEL CONFIRMATION)
+       ============================================================ -->
+  <div class="modal-overlay" id="cancel-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 460px; text-align: center;">
+      <div style="font-size: 50px; margin-bottom: 10px;">⚠️</div>
+      <h3 style="font-size: var(--font-size-xl); font-weight: 800; color: var(--color-error); margin-bottom: 6px;">
+        Xác nhận hủy đơn đặt dịch vụ?
+      </h3>
+      <p style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 16px;">
+        Bạn có chắc chắn muốn hủy đơn <strong id="cancel-booking-code">CNV-2026-XXXX</strong> không? Thao tác này không thể hoàn tác.
+      </p>
+
+      <div class="form-group" style="text-align: left; margin-bottom: var(--space-lg);">
+        <label class="form-label">Lý do hủy đơn:</label>
+        <select id="cancel-reason-select" class="form-control">
+          <option value="thay_doi_ke_hoach">Thay đổi kế hoạch cá nhân</option>
+          <option value="dat_nham_goi">Đặt nhầm gói hoặc thời gian</option>
+          <option value="gia_dinh_tu_don">Gia đình đã tự dọn dẹp</option>
+          <option value="ly_do_khac">Lý do khác</option>
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: center;">
+        <button type="button" class="btn btn-secondary" id="cancel-dialog-close">Giữ lại đơn</button>
+        <button type="button" class="btn btn-danger" id="cancel-confirm-submit">Xác nhận hủy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 4: ĐÁNH GIÁ CHẤT LƯỢNG DỊCH VỤ (REVIEW & FEEDBACK)
+       ============================================================ -->
+  <div class="modal-overlay" id="review-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">⭐ Đánh giá chất lượng dịch vụ</h3>
+        <button class="modal-close" id="review-close-btn">&times;</button>
+      </div>
+      <form id="review-form">
+        <input type="hidden" id="review-booking-id">
+        <div style="text-align: center; margin-bottom: var(--space-lg);">
+          <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 8px;">
+            Trải nghiệm của bạn với đơn <strong id="review-booking-code">CNV-2026-XXXX</strong> như thế nào?
+          </div>
+
+          <!-- Star Rating Picker -->
+          <div class="star-rating-picker" id="star-rating-picker">
+            <span class="star-item selected" data-star="1">★</span>
+            <span class="star-item selected" data-star="2">★</span>
+            <span class="star-item selected" data-star="3">★</span>
+            <span class="star-item selected" data-star="4">★</span>
+            <span class="star-item selected" data-star="5">★</span>
+            <span class="rating-score-hint" id="rating-score-text">5 / 5 - Rất hài lòng</span>
+          </div>
+          <input type="hidden" id="review-rating-value" value="5">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="review-comment">Nhận xét chi tiết của bạn:</label>
+          <textarea id="review-comment" class="form-control" rows="3" placeholder="Chia sẻ cảm nhận về sự sạch sẽ, thái độ và tay nghề của chuyên viên..."></textarea>
+        </div>
+
+        <div class="modal-footer" style="padding-top: var(--space-md); margin-top: var(--space-md);">
+          <button type="button" class="btn btn-secondary" id="review-cancel-btn">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="review-submit-btn">Gửi đánh giá</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 5: MÃ GIẢM GIÁ & ƯU ĐÃI (COUPONS VOUCHERS)
+       ============================================================ -->
+  <div class="modal-overlay" id="coupons-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 600px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🏷️ Ví ưu đãi & Voucher Cleanova</h3>
+        <button class="modal-close" id="coupons-close-btn">&times;</button>
+      </div>
+
+      <div class="coupons-grid" style="grid-template-columns: 1fr; gap: 14px;">
+        <!-- Voucher 1 -->
+        <div class="coupon-ticket-card">
+          <div class="coupon-header">
+            <div>
+              <div class="coupon-value">GIẢM 20%</div>
+              <div class="coupon-title">Chào mừng thành viên mới</div>
+            </div>
+            <span class="coupon-badge">Còn hiệu lực</span>
+          </div>
+          <p class="coupon-desc">Áp dụng cho tất cả dịch vụ dọn dẹp nhà cửa và tổng vệ sinh lần đầu tiên.</p>
+          <div class="coupon-meta">
+            <span>📅 Hạn dùng: 31/12/2026</span>
+            <span>⚡ Không giới hạn số tiền</span>
+          </div>
+          <div class="coupon-code-box">
+            <span class="coupon-code-text">CLEANOVA20</span>
+            <button type="button" class="btn-copy-code" data-code="CLEANOVA20">Sao chép</button>
+          </div>
+        </div>
+
+        <!-- Voucher 2 -->
+        <div class="coupon-ticket-card">
+          <div class="coupon-header">
+            <div>
+              <div class="coupon-value">GIẢM 15%</div>
+              <div class="coupon-title">Dọn nhà định kỳ hàng tuần</div>
+            </div>
+            <span class="coupon-badge">Tự động áp dụng</span>
+          </div>
+          <p class="coupon-desc">Tự động kích hoạt khi chọn tần suất "Hàng tuần" trong biểu mẫu đặt lịch.</p>
+          <div class="coupon-meta">
+            <span>📅 Luôn có hiệu lực</span>
+            <span>⭐ Tiết kiệm tối đa</span>
+          </div>
+          <div class="coupon-code-box">
+            <span class="coupon-code-text">CLEANWEEK</span>
+            <button type="button" class="btn-copy-code" data-code="CLEANWEEK">Sao chép</button>
+          </div>
+        </div>
+
+        <!-- Voucher 3 -->
+        <div class="coupon-ticket-card">
+          <div class="coupon-header">
+            <div>
+              <div class="coupon-value">GIẢM 50.000 đ</div>
+              <div class="coupon-title">Vệ sinh sofa & nệm hơi nước</div>
+            </div>
+            <span class="coupon-badge">Còn hiệu lực</span>
+          </div>
+          <p class="coupon-desc">Áp dụng cho đơn giặt sofa hoặc nệm khử khuẩn hơi nước nóng.</p>
+          <div class="coupon-meta">
+            <span>📅 Hạn dùng: 30/11/2026</span>
+            <span>🛋️ Dịch vụ nệm/sofa</span>
+          </div>
+          <div class="coupon-code-box">
+            <span class="coupon-code-text">SOFACLEAN50</span>
+            <button type="button" class="btn-copy-code" data-code="SOFACLEAN50">Sao chép</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button class="btn btn-primary" id="coupons-close-bottom">Đóng ví ưu đãi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container" style="text-align: center; font-size: var(--font-size-xs); color: #64748b;">
+      <p style="margin-bottom: 6px;"><strong>Cleanova Việt Nam</strong> · Không gian sạch hơn, cuộc sống tốt hơn.</p>
+      <p>© 2026 Cleanova. Nền tảng đặt dịch vụ vệ sinh chuyên nghiệp.</p>
+    </div>
+  </footer>
+
+  <!-- Logic Dashboard & Đơn hàng -->
   <script>
+    'use strict';
     document.addEventListener('DOMContentLoaded', async function () {
       // 1. Kiểm tra đăng nhập
       if (!CleanovaAPI.auth.isLoggedIn()) {
@@ -242,40 +381,23 @@
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-icon">🔒</div>
-            <h3>Bạn chưa đăng nhập</h3>
-            <p style="color: var(--color-text-secondary); margin: var(--space-sm) 0 var(--space-lg);">
-              Vui lòng đăng nhập để xem và quản lý các lịch hẹn dọn dẹp của bạn.
-            </p>
-            <a href="login.html" class="btn btn-primary">Đăng nhập ngay</a>
+            <h3 class="empty-title">Bạn chưa đăng nhập vào Cleanova</h3>
+            <p class="empty-desc">Vui lòng đăng nhập để xem danh sách lịch hẹn và quản lý đơn đặt dịch vụ của bạn.</p>
+            <a href="login.html?redirect=my-bookings.html" class="btn btn-primary">Đăng nhập ngay</a>
           </div>
         `;
         return;
       }
 
-      // 2. Hiển thị thông tin người dùng trên Header
-      const user = CleanovaAPI.auth.getUser();
-      if (user) {
-        document.getElementById('nav-user-name').textContent = user.name || user.email;
-        if (user.role === 'admin') {
-          // Thêm link admin vào nav
-          const nav = document.querySelector('.nav');
-          const adminLink = document.createElement('a');
-          adminLink.href = 'admin.html';
-          adminLink.className = 'nav-link';
-          adminLink.textContent = 'Quản trị (Admin)';
-          adminLink.style.color = '#B45309';
-          adminLink.style.fontWeight = '700';
-          nav.appendChild(adminLink);
-        }
-      }
+      const currentUser = CleanovaAPI.auth.getUser() || {};
+      const displayName = currentUser.name || currentUser.email || 'Khách hàng';
 
-      // Xử lý nút đăng xuất
-      document.getElementById('btn-logout').addEventListener('click', function () {
-        CleanovaAPI.auth.logout();
-      });
+      document.getElementById('nav-user-name').textContent = displayName;
+      document.getElementById('welcome-user-title').textContent = `Xin chào, ${displayName}! 👋`;
 
-      // 3. Tải danh sách đơn đặt của người dùng
-      let allBookings = [];
+      document.getElementById('btn-logout').addEventListener('click', () => CleanovaAPI.auth.logout());
+
+      let myBookings = [];
       let currentFilter = 'all';
 
       const statusLabels = {
@@ -286,56 +408,70 @@
         cancelled: 'Đã hủy'
       };
 
-      function showAlert(type, message) {
-        const box = document.getElementById('alert-box');
-        box.className = `alert alert-${type}`;
-        box.textContent = message;
-        box.style.display = 'block';
-        setTimeout(() => { box.style.display = 'none'; }, 5000);
-      }
+      const paymentLabels = {
+        cash: 'Tiền mặt',
+        bank_transfer: 'Chuyển khoản QR',
+        momo: 'Ví MoMo',
+        vnpay: 'VNPAY'
+      };
 
+      // 2. Tải danh sách đơn đặt từ Backend
       async function loadBookings() {
-        const container = document.getElementById('booking-container');
         try {
           const res = await CleanovaAPI.bookings.getMyBookings();
-          allBookings = res.data || [];
-          updateCounts();
-          renderBookings();
+          myBookings = res.data || [];
+          updateKPIs();
+          renderOrders();
         } catch (err) {
-          container.innerHTML = `
+          document.getElementById('booking-container').innerHTML = `
             <div class="empty-state">
               <div class="empty-icon">⚠️</div>
-              <h3>Không thể tải danh sách đơn đặt</h3>
-              <p style="color: var(--color-text-secondary); margin-top: var(--space-xs);">${err.message || 'Lỗi kết nối máy chủ.'}</p>
-              <button class="btn btn-outline" style="margin-top: var(--space-md);" onclick="location.reload()">Thử lại</button>
+              <h3 class="empty-title">Không thể tải dữ liệu đơn hàng</h3>
+              <p class="empty-desc" style="color: var(--color-error);">${err.message}</p>
+              <button class="btn btn-outline" onclick="location.reload()">Tải lại trang</button>
             </div>
           `;
         }
       }
 
-      function updateCounts() {
-        document.getElementById('count-all').textContent = allBookings.length;
-        ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'].forEach(st => {
-          const count = allBookings.filter(b => b.status === st).length;
-          const el = document.getElementById(`count-${st}`);
-          if (el) el.textContent = count;
-        });
+      // 3. Cập nhật các thẻ KPI Counters
+      function updateKPIs() {
+        const pending = myBookings.filter(b => b.status === 'pending').length;
+        const inProgress = myBookings.filter(b => b.status === 'confirmed' || b.status === 'in_progress').length;
+        const completed = myBookings.filter(b => b.status === 'completed').length;
+        const cancelled = myBookings.filter(b => b.status === 'cancelled').length;
+
+        const totalSpent = myBookings
+          .filter(b => b.status === 'completed')
+          .reduce((sum, b) => sum + (parseFloat(b.total_price) || 0), 0);
+
+        document.getElementById('kpi-pending').textContent = pending;
+        document.getElementById('kpi-in-progress').textContent = inProgress;
+        document.getElementById('kpi-completed').textContent = completed;
+        document.getElementById('kpi-total-spent').textContent = `${Math.round(totalSpent).toLocaleString('vi-VN')} đ`;
+
+        document.getElementById('badge-all').textContent = myBookings.length;
+        document.getElementById('badge-pending').textContent = pending;
+        document.getElementById('badge-confirmed').textContent = myBookings.filter(b => b.status === 'confirmed').length;
+        document.getElementById('badge-in_progress').textContent = myBookings.filter(b => b.status === 'in_progress').length;
+        document.getElementById('badge-completed').textContent = completed;
+        document.getElementById('badge-cancelled').textContent = cancelled;
       }
 
-      function renderBookings() {
+      // 4. Render danh sách đơn hàng
+      function renderOrders() {
         const container = document.getElementById('booking-container');
-        const filtered = (currentFilter === 'all')
-          ? allBookings
-          : allBookings.filter(b => b.status === currentFilter);
+        let filtered = myBookings;
+        if (currentFilter !== 'all') {
+          filtered = myBookings.filter(b => b.status === currentFilter);
+        }
 
         if (filtered.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
-              <div class="empty-icon">🧹</div>
-              <h3>Chưa có đơn đặt nào trong mục này</h3>
-              <p style="color: var(--color-text-secondary); margin: var(--space-sm) 0 var(--space-lg);">
-                Hãy chọn dịch vụ và đặt lịch để không gian của bạn luôn thơm mát, sạch tinh tươm!
-              </p>
+              <div class="empty-icon">📋</div>
+              <h3 class="empty-title">Không có lịch hẹn nào trong mục này</h3>
+              <p class="empty-desc">Bạn chưa có đơn đặt dịch vụ nào ở trạng thái "${statusLabels[currentFilter] || 'này'}".</p>
               <a href="booking.html" class="btn btn-primary">Đặt lịch dịch vụ ngay</a>
             </div>
           `;
@@ -343,68 +479,92 @@
         }
 
         container.innerHTML = filtered.map(b => {
-          const dateStr = b.booking_date
-            ? new Date(b.booking_date).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-            : 'Chưa cập nhật';
-          const priceStr = Number(b.final_price || b.total_price || 0).toLocaleString('vi-VN') + ' đ';
-          const canCancel = (b.status === 'pending' || b.status === 'confirmed');
+          const statusClass = `status-${b.status.replace('-', '_')}`;
+          const statusText = statusLabels[b.status] || b.status;
+          const price = parseFloat(b.total_price || 0);
+          const paymentText = paymentLabels[b.payment_method] || b.payment_method || 'Tiền mặt';
+          const canModify = (b.status === 'pending' || b.status === 'confirmed');
+          const isDone = (b.status === 'completed');
 
           return `
-            <div class="booking-card" id="booking-item-${b.id}">
+            <div class="order-item-card">
+              <!-- Thông tin đơn -->
               <div>
-                <div class="booking-header">
-                  <span class="booking-code">#${b.booking_code || ('CLN-' + b.id)}</span>
-                  <span class="status-badge status-${b.status}">
-                    ● ${statusLabels[b.status] || b.status}
+                <div class="order-header-meta">
+                  <span class="booking-code-tag">${b.booking_code}</span>
+                  <span class="status-badge ${statusClass}">${statusText}</span>
+                  <span class="badge ${b.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}" style="font-size: 11px; padding: 2px 8px; border-radius: 99px;">
+                    ${b.payment_status === 'paid' ? '✓ Đã thanh toán' : 'Chưa thanh toán'}
                   </span>
                 </div>
-                <div class="booking-service-title">
-                  <span>${b.service_icon || '✨'}</span>
-                  <span>${b.service_name || 'Dịch vụ dọn vệ sinh Cleanova'}</span>
+
+                <div class="order-service-name">
+                  <span>${b.service_icon || '🧹'}</span>
+                  <span>${b.service_name || 'Dịch vụ vệ sinh Cleanova'}</span>
                 </div>
-                <div class="booking-details-grid">
-                  <div class="booking-detail-item">
-                    <span>📅</span>
+
+                <div class="order-info-grid">
+                  <div class="order-info-item">
+                    <span class="order-info-icon">📅</span>
                     <div>
-                      <strong>Thời gian:</strong><br>
-                      ${dateStr} (${b.booking_time || '08:00'})
+                      <strong>${b.booking_date}</strong> (${b.booking_time})
                     </div>
                   </div>
-                  <div class="booking-detail-item">
-                    <span>📍</span>
-                    <div>
-                      <strong>Địa chỉ dọn dẹp:</strong><br>
-                      ${b.address || 'Tại nhà khách hàng'}
+                  <div class="order-info-item">
+                    <span class="order-info-icon">📍</span>
+                    <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                      ${b.address}
                     </div>
                   </div>
-                  <div class="booking-detail-item">
-                    <span>💳</span>
-                    <div>
-                      <strong>Thanh toán:</strong><br>
-                      ${b.payment_method === 'banking' ? 'Chuyển khoản ngân hàng' : 'Tiền mặt khi hoàn thành (COD)'}
-                    </div>
+                  <div class="order-info-item">
+                    <span class="order-info-icon">💳</span>
+                    <div>${paymentText}</div>
                   </div>
-                  ${b.notes ? `
-                  <div class="booking-detail-item" style="grid-column: 1 / -1;">
-                    <span>📝</span>
-                    <div>
-                      <strong>Ghi chú:</strong> ${b.notes}
-                    </div>
-                  </div>` : ''}
                 </div>
+
+                <!-- Nhân viên được phân công -->
+                ${b.staff_name ? `
+                  <div class="assigned-staff-chip">
+                    <span class="staff-mini-avatar">👷</span>
+                    <span>Chuyên viên: <strong>${b.staff_name}</strong> ${b.staff_phone ? `(${b.staff_phone})` : ''}</span>
+                  </div>
+                ` : `
+                  <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 6px;">
+                    ⏳ Đang sắp xếp chuyên viên phù hợp nhất khu vực của bạn...
+                  </div>
+                `}
+
+                ${b.notes ? `
+                  <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 6px; font-style: italic;">
+                    Ghi chú: "${b.notes}"
+                  </div>
+                ` : ''}
               </div>
-              <div>
-                <div class="price-tag">${priceStr}</div>
-                <div class="booking-actions">
-                  <button class="btn btn-outline btn-sm btn-detail" data-id="${b.id}">Xem chi tiết</button>
-                  ${canCancel ? `
-                    <button class="btn btn-ghost btn-sm btn-cancel-order" data-id="${b.id}" style="color: #DC2626;">
-                      Hủy lịch hẹn
+
+              <!-- Cột giá và các hành động -->
+              <div class="order-side-actions">
+                <div class="order-price-display">${price.toLocaleString('vi-VN')} đ</div>
+
+                <div class="order-action-btns">
+                  <button class="btn btn-outline btn-sm btn-view-detail" data-id="${b.id}">
+                    Chi tiết đơn
+                  </button>
+
+                  ${canModify ? `
+                    <button class="btn btn-secondary btn-sm btn-reschedule" data-id="${b.id}" data-code="${b.booking_code}" data-date="${b.booking_date}" data-time="${b.booking_time}">
+                      📅 Đổi lịch
+                    </button>
+                    <button class="btn btn-danger btn-sm btn-cancel-order" data-id="${b.id}" data-code="${b.booking_code}">
+                      Hủy đơn
                     </button>
                   ` : ''}
-                  ${b.status === 'completed' || b.status === 'cancelled' ? `
-                    <a href="booking.html?service=${b.service_id || ''}" class="btn btn-primary btn-sm">
-                      Đặt lại
+
+                  ${isDone ? `
+                    <button class="btn btn-outline btn-sm btn-review-order" data-id="${b.id}" data-code="${b.booking_code}">
+                      ⭐ Đánh giá
+                    </button>
+                    <a href="booking.html?service_id=${b.service_id}" class="btn btn-primary btn-sm">
+                      Đặt lại đơn này
                     </a>
                   ` : ''}
                 </div>
@@ -413,108 +573,304 @@
           `;
         }).join('');
 
-        // Gắn sự kiện xem chi tiết
-        document.querySelectorAll('.btn-detail').forEach(btn => {
+        attachActionEvents();
+      }
+
+      // 5. Gắn sự kiện các nút hành động (Xem chi tiết, Đổi lịch, Hủy, Đánh giá)
+      function attachActionEvents() {
+        // Chi tiết đơn
+        document.querySelectorAll('.btn-view-detail').forEach(btn => {
           btn.addEventListener('click', function () {
             const id = parseInt(this.dataset.id, 10);
-            openDetailModal(id);
+            const b = myBookings.find(x => x.id === id);
+            if (!b) return;
+
+            document.getElementById('modal-title').textContent = `Đơn đặt: ${b.booking_code}`;
+            document.getElementById('modal-body').innerHTML = `
+              <div style="background: var(--color-bg-alt); padding: var(--space-md); border-radius: var(--radius-lg); margin-bottom: var(--space-lg);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <span class="status-badge status-${b.status.replace('-', '_')}">${statusLabels[b.status] || b.status}</span>
+                  <strong style="font-size: 1.25rem; color: var(--color-primary);">${Number(b.total_price).toLocaleString('vi-VN')} đ</strong>
+                </div>
+                <div style="font-size: var(--font-size-sm); color: var(--color-text-main); font-weight: 700;">
+                  ${b.service_icon || '🧹'} ${b.service_name}
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: var(--font-size-sm); margin-bottom: var(--space-lg);">
+                <div>
+                  <span style="color: var(--color-text-muted); display: block; font-size: 11px;">NGÀY & GIỜ HẸN</span>
+                  <strong>${b.booking_date} lúc ${b.booking_time}</strong>
+                </div>
+                <div>
+                  <span style="color: var(--color-text-muted); display: block; font-size: 11px;">QUY MÔ & TẦN SUẤT</span>
+                  <strong>${b.area_size} · ${b.frequency}</strong>
+                </div>
+                <div>
+                  <span style="color: var(--color-text-muted); display: block; font-size: 11px;">ĐIỆN THOẠI LIÊN HỆ</span>
+                  <strong>${b.phone}</strong>
+                </div>
+                <div>
+                  <span style="color: var(--color-text-muted); display: block; font-size: 11px;">PHƯƠNG THỨC THANH TOÁN</span>
+                  <strong>${paymentLabels[b.payment_method] || b.payment_method}</strong>
+                </div>
+              </div>
+
+              <div style="margin-bottom: var(--space-lg); font-size: var(--font-size-sm);">
+                <span style="color: var(--color-text-muted); display: block; font-size: 11px;">ĐỊA CHỈ THỰC HIỆN DỊCH VỤ</span>
+                <strong>${b.address}</strong>
+              </div>
+
+              ${b.staff_name ? `
+                <div style="padding: 12px; background: var(--color-primary-ultra-light); border: 1px solid var(--color-primary-light); border-radius: var(--radius-md); margin-bottom: var(--space-lg); font-size: var(--font-size-sm);">
+                  <strong>👷 Nhân viên phụ trách: ${b.staff_name}</strong>
+                  ${b.staff_phone ? `<div>Điện thoại: <a href="tel:${b.staff_phone}">${b.staff_phone}</a></div>` : ''}
+                  ${b.staff_notes ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Ghi chú nhân viên: "${b.staff_notes}"</div>` : ''}
+                </div>
+              ` : ''}
+
+              <!-- Tiến trình Timeline -->
+              <div class="order-timeline">
+                <div class="timeline-step completed">
+                  <div class="timeline-step-title">Khách hàng tạo đơn đặt lịch</div>
+                  <div class="timeline-step-time">${b.created_at ? new Date(b.created_at).toLocaleString('vi-VN') : 'Đã ghi nhận'}</div>
+                </div>
+                <div class="timeline-step ${b.staff_id ? 'completed' : 'active'}">
+                  <div class="timeline-step-title">Tiếp nhận & Phân công nhân viên</div>
+                  <div class="timeline-step-time">${b.staff_id ? 'Đã phân công chuyên viên' : 'Đang xử lý'}</div>
+                </div>
+                <div class="timeline-step ${b.status === 'in_progress' ? 'active' : (b.status === 'completed' ? 'completed' : '')}">
+                  <div class="timeline-step-title">Chuyên viên thực hiện dọn dẹp</div>
+                  <div class="timeline-step-time">Theo giờ hẹn: ${b.booking_date}</div>
+                </div>
+                <div class="timeline-step ${b.status === 'completed' ? 'completed' : ''}">
+                  <div class="timeline-step-title">Khách hàng nghiệm thu & Hoàn thành</div>
+                  <div class="timeline-step-time">${b.status === 'completed' ? 'Đã hoàn thành xuất sắc' : 'Chờ hoàn tất'}</div>
+                </div>
+              </div>
+            `;
+            document.getElementById('detail-modal').classList.add('active');
           });
         });
 
-        // Gắn sự kiện hủy đơn
+        // Đổi lịch (Reschedule)
+        document.querySelectorAll('.btn-reschedule').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const code = this.dataset.code;
+            const date = this.dataset.date;
+            const time = this.dataset.time;
+
+            document.getElementById('reschedule-booking-id').value = id;
+            document.getElementById('reschedule-booking-code').textContent = code;
+            document.getElementById('reschedule-date').value = date;
+            document.getElementById('reschedule-time').value = time ? time.slice(0, 5) : '08:30';
+
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('reschedule-date').min = tomorrow.toISOString().split('T')[0];
+
+            document.getElementById('reschedule-modal').classList.add('active');
+          });
+        });
+
+        // Hủy đơn (Cancel)
         document.querySelectorAll('.btn-cancel-order').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const id = this.dataset.id;
+            const code = this.dataset.code;
+
+            document.getElementById('cancel-booking-code').textContent = code;
+            document.getElementById('cancel-confirm-submit').dataset.id = id;
+            document.getElementById('cancel-modal').classList.add('active');
+          });
+        });
+
+        // Đánh giá đơn (Review)
+        document.querySelectorAll('.btn-review-order').forEach(btn => {
           btn.addEventListener('click', async function () {
-            const id = parseInt(this.dataset.id, 10);
-            if (!confirm('Bạn có chắc chắn muốn hủy lịch hẹn này không?')) return;
+            const id = this.dataset.id;
+            const code = this.dataset.code;
+
+            document.getElementById('review-booking-id').value = id;
+            document.getElementById('review-booking-code').textContent = code;
+            document.getElementById('review-comment').value = '';
+            setStarRating(5);
+
+            // Kiểm tra xem đã có review chưa
             try {
-              await CleanovaAPI.bookings.cancel(id);
-              showAlert('success', 'Đã hủy lịch hẹn thành công.');
-              await loadBookings();
-            } catch (err) {
-              showAlert('danger', err.message || 'Không thể hủy đơn.');
+              const res = await CleanovaAPI.bookings.getReview(id);
+              if (res.data) {
+                setStarRating(res.data.rating);
+                document.getElementById('review-comment').value = res.data.comment || '';
+                document.getElementById('review-submit-btn').textContent = 'Đã gửi đánh giá';
+                document.getElementById('review-submit-btn').disabled = true;
+              } else {
+                document.getElementById('review-submit-btn').textContent = 'Gửi đánh giá';
+                document.getElementById('review-submit-btn').disabled = false;
+              }
+            } catch {
+              document.getElementById('review-submit-btn').textContent = 'Gửi đánh giá';
+              document.getElementById('review-submit-btn').disabled = false;
             }
+
+            document.getElementById('review-modal').classList.add('active');
           });
         });
       }
 
-      // Xử lý filter tabs
-      document.querySelectorAll('.filter-btn').forEach(btn => {
+      // Xử lý gửi Đổi lịch
+      document.getElementById('reschedule-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = document.getElementById('reschedule-booking-id').value;
+        const booking_date = document.getElementById('reschedule-date').value;
+        const booking_time = document.getElementById('reschedule-time').value;
+        const notes = document.getElementById('reschedule-notes').value.trim();
+
+        const btn = document.getElementById('reschedule-submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Đang đổi lịch...';
+
+        try {
+          await CleanovaAPI.bookings.reschedule(id, { booking_date, booking_time, notes });
+          document.getElementById('reschedule-modal').classList.remove('active');
+          showToast('success', 'Đổi lịch hẹn thành công! Lịch mới đã được cập nhật.');
+          await loadBookings();
+        } catch (err) {
+          alert(err.message || 'Không thể đổi lịch.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Xác nhận đổi lịch';
+        }
+      });
+
+      // Xử lý Hủy đơn
+      document.getElementById('cancel-confirm-submit').addEventListener('click', async function () {
+        const id = this.dataset.id;
+        this.disabled = true;
+        this.textContent = 'Đang hủy...';
+
+        try {
+          await CleanovaAPI.bookings.cancel(id);
+          document.getElementById('cancel-modal').classList.remove('active');
+          showToast('success', 'Đã hủy đơn đặt dịch vụ thành công.');
+          await loadBookings();
+        } catch (err) {
+          alert(err.message || 'Không thể hủy đơn.');
+        } finally {
+          this.disabled = false;
+          this.textContent = 'Xác nhận hủy';
+        }
+      });
+
+      // Xử lý Đánh giá sao tương tác
+      const scoreHints = {
+        1: '1 / 5 - Rất thất vọng',
+        2: '2 / 5 - Cần cải thiện',
+        3: '3 / 5 - Tạm ổn',
+        4: '4 / 5 - Hài lòng',
+        5: '5 / 5 - Rất tuyệt vời'
+      };
+
+      function setStarRating(num) {
+        document.getElementById('review-rating-value').value = num;
+        document.querySelectorAll('#star-rating-picker .star-item').forEach(s => {
+          const val = parseInt(s.dataset.star, 10);
+          s.classList.toggle('selected', val <= num);
+        });
+        document.getElementById('rating-score-text').textContent = scoreHints[num] || `${num} / 5`;
+      }
+
+      document.querySelectorAll('#star-rating-picker .star-item').forEach(star => {
+        star.addEventListener('click', function () {
+          setStarRating(parseInt(this.dataset.star, 10));
+        });
+      });
+
+      // Gửi Đánh giá
+      document.getElementById('review-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = document.getElementById('review-booking-id').value;
+        const rating = document.getElementById('review-rating-value').value;
+        const comment = document.getElementById('review-comment').value.trim();
+
+        const btn = document.getElementById('review-submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Đang gửi đánh giá...';
+
+        try {
+          await CleanovaAPI.bookings.addReview(id, { rating, comment });
+          document.getElementById('review-modal').classList.remove('active');
+          showToast('success', 'Cảm ơn bạn đã đánh giá dịch vụ của Cleanova!');
+        } catch (err) {
+          alert(err.message || 'Không thể gửi đánh giá.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Gửi đánh giá';
+        }
+      });
+
+      // Filter Tabs Click
+      document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', function () {
-          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
           this.classList.add('active');
           currentFilter = this.dataset.filter;
-          renderBookings();
+          renderOrders();
         });
       });
 
-      // Modal chi tiết
-      const modal = document.getElementById('detail-modal');
-      const closeBtn = document.getElementById('modal-close-btn');
-      const confirmCloseBtn = document.getElementById('modal-close-confirm');
-      const cancelOrderBtn = document.getElementById('modal-cancel-order-btn');
+      // Modals close events
+      const closeDetail = () => document.getElementById('detail-modal').classList.remove('active');
+      document.getElementById('modal-close-btn').addEventListener('click', closeDetail);
+      document.getElementById('modal-close-confirm').addEventListener('click', closeDetail);
 
-      function closeModal() {
-        modal.classList.remove('active');
-      }
+      const closeReschedule = () => document.getElementById('reschedule-modal').classList.remove('active');
+      document.getElementById('reschedule-close-btn').addEventListener('click', closeReschedule);
+      document.getElementById('reschedule-cancel-btn').addEventListener('click', closeReschedule);
 
-      closeBtn.addEventListener('click', closeModal);
-      confirmCloseBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
+      const closeCancel = () => document.getElementById('cancel-modal').classList.remove('active');
+      document.getElementById('cancel-dialog-close').addEventListener('click', closeCancel);
+
+      const closeReview = () => document.getElementById('review-modal').classList.remove('active');
+      document.getElementById('review-close-btn').addEventListener('click', closeReview);
+      document.getElementById('review-cancel-btn').addEventListener('click', closeReview);
+
+      // Coupons modal events
+      const openCoupons = () => document.getElementById('coupons-modal').classList.add('active');
+      const closeCoupons = () => document.getElementById('coupons-modal').classList.remove('active');
+      document.getElementById('btn-open-coupons').addEventListener('click', openCoupons);
+      document.getElementById('btn-quick-coupons').addEventListener('click', openCoupons);
+      document.getElementById('coupons-close-btn').addEventListener('click', closeCoupons);
+      document.getElementById('coupons-close-bottom').addEventListener('click', closeCoupons);
+
+      // Copy coupon code
+      document.querySelectorAll('.btn-copy-code').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const code = this.dataset.code;
+          navigator.clipboard.writeText(code);
+          this.textContent = 'Đã chép!';
+          this.classList.add('copied');
+          showToast('success', `Đã sao chép mã ${code} vào bộ nhớ tạm!`);
+          setTimeout(() => {
+            this.textContent = 'Sao chép';
+            this.classList.remove('copied');
+          }, 2000);
+        });
       });
 
-      function openDetailModal(id) {
-        const b = allBookings.find(item => item.id === id);
-        if (!b) return;
-
-        document.getElementById('modal-title').textContent = `Đơn đặt #${b.booking_code || ('CLN-' + b.id)}`;
-        const dateStr = b.booking_date
-          ? new Date(b.booking_date).toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
-          : 'Chưa cập nhật';
-        const priceStr = Number(b.final_price || b.total_price || 0).toLocaleString('vi-VN') + ' đ';
-
-        document.getElementById('modal-body').innerHTML = `
-          <div style="margin-bottom: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--color-border);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-sm);">
-              <span style="font-size: var(--font-size-lg); font-weight: 700;">${b.service_name || 'Dịch vụ Cleanova'}</span>
-              <span class="status-badge status-${b.status}">● ${statusLabels[b.status] || b.status}</span>
-            </div>
-            <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm);">${b.service_description || ''}</p>
-          </div>
-
-          <div style="display: grid; gap: var(--space-sm); font-size: var(--font-size-sm);">
-            <div><strong>Thời gian dọn dẹp:</strong> ${dateStr} - lúc ${b.booking_time || '08:00'}</div>
-            <div><strong>Địa chỉ:</strong> ${b.address || 'Tại nhà khách hàng'}</div>
-            <div><strong>Người liên hệ:</strong> ${b.customer_name || user.name || 'Khách hàng'} - ${b.customer_phone || user.phone || 'Chưa cung cấp'}</div>
-            <div><strong>Ghi chú:</strong> ${b.notes || 'Không có'}</div>
-            <div><strong>Phương thức thanh toán:</strong> ${b.payment_method === 'banking' ? 'Chuyển khoản ngân hàng' : 'Tiền mặt (COD)'} (${b.payment_status === 'paid' ? 'Đã thanh toán' : 'Chưa thanh toán'})</div>
-            <div style="margin-top: var(--space-sm); padding-top: var(--space-sm); border-top: 1px dashed var(--color-border); font-size: var(--font-size-md);">
-              <strong>Tổng số tiền:</strong> <span style="font-weight: 800; color: var(--color-primary-dark); font-size: var(--font-size-xl);">${priceStr}</span>
-            </div>
-          </div>
-        `;
-
-        if (b.status === 'pending' || b.status === 'confirmed') {
-          cancelOrderBtn.style.display = 'inline-block';
-          cancelOrderBtn.onclick = async () => {
-            if (!confirm('Bạn có chắc chắn muốn hủy lịch hẹn này không?')) return;
-            try {
-              await CleanovaAPI.bookings.cancel(id);
-              closeModal();
-              showAlert('success', 'Đã hủy lịch hẹn thành công.');
-              await loadBookings();
-            } catch (err) {
-              alert(err.message || 'Lỗi khi hủy đơn');
-            }
-          };
-        } else {
-          cancelOrderBtn.style.display = 'none';
-        }
-
-        modal.classList.add('active');
+      // Helper toast
+      function showToast(type, msg) {
+        const c = document.getElementById('toast-container');
+        if (!c) return;
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : 'ℹ️'}</span><span class="toast-message">${msg}</span>`;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 3200);
       }
 
-      // Khởi tạo
+      // Khởi tạo tải đơn ban đầu
       await loadBookings();
     });
   </script>

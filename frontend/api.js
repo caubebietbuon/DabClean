@@ -195,6 +195,133 @@
         return await request(`/bookings/${id}/cancel`, {
           method: 'PUT'
         });
+      },
+
+      async reschedule(id, rescheduleData) {
+        return await request(`/bookings/${id}/reschedule`, {
+          method: 'PUT',
+          body: JSON.stringify(rescheduleData)
+        });
+      },
+
+      async addReview(id, reviewData) {
+        return await request(`/bookings/${id}/review`, {
+          method: 'POST',
+          body: JSON.stringify(reviewData)
+        });
+      },
+
+      async getReview(id) {
+        return await request(`/bookings/${id}/review`);
+      },
+
+      async getAllReviews(limit = 10) {
+        return await request(`/bookings/reviews/all?limit=${limit}`);
+      }
+    },
+
+    // Module Sổ địa chỉ khách hàng (Address Book)
+    addresses: {
+      getStorageKey() {
+        const user = window.CleanovaAPI.auth.getUser();
+        return user ? `cleanova_addresses_${user.id}` : 'cleanova_addresses_guest';
+      },
+
+      getAll() {
+        const user = window.CleanovaAPI.auth.getUser();
+        const defaultList = [
+          {
+            id: 'addr_1',
+            label: 'Nhà riêng',
+            address: (user && user.address) ? user.address : 'Số 25 Phố Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội',
+            phone: (user && user.phone) ? user.phone : '0987654321',
+            is_default: true
+          },
+          {
+            id: 'addr_2',
+            label: 'Văn phòng làm việc',
+            address: 'Tòa nhà FPT Tower, Số 10 Phạm Văn Bạch, Cầu Giấy, Hà Nội',
+            phone: (user && user.phone) ? user.phone : '0987654321',
+            is_default: false
+          }
+        ];
+        try {
+          const saved = localStorage.getItem(this.getStorageKey());
+          return saved ? JSON.parse(saved) : defaultList;
+        } catch {
+          return defaultList;
+        }
+      },
+
+      save(list) {
+        localStorage.setItem(this.getStorageKey(), JSON.stringify(list));
+      },
+
+      add(item) {
+        const list = this.getAll();
+        const newItem = {
+          id: `addr_${Date.now()}`,
+          label: item.label || 'Địa chỉ mới',
+          address: item.address,
+          phone: item.phone,
+          is_default: list.length === 0 || item.is_default || false
+        };
+        if (newItem.is_default) {
+          list.forEach(a => a.is_default = false);
+        }
+        list.push(newItem);
+        this.save(list);
+        return newItem;
+      },
+
+      setDefault(id) {
+        const list = this.getAll();
+        list.forEach(a => {
+          a.is_default = (a.id === id);
+        });
+        this.save(list);
+      },
+
+      remove(id) {
+        let list = this.getAll();
+        list = list.filter(a => a.id !== id);
+        if (list.length > 0 && !list.some(a => a.is_default)) {
+          list[0].is_default = true;
+        }
+        this.save(list);
+      }
+    },
+
+    // Module Dịch vụ yêu thích (Favorites)
+    favorites: {
+      getStorageKey() {
+        const user = window.CleanovaAPI.auth.getUser();
+        return user ? `cleanova_favs_${user.id}` : 'cleanova_favs_guest';
+      },
+
+      getAll() {
+        try {
+          return JSON.parse(localStorage.getItem(this.getStorageKey()) || '[1, 2]');
+        } catch {
+          return [1, 2];
+        }
+      },
+
+      toggle(serviceId) {
+        const id = parseInt(serviceId, 10);
+        let favs = this.getAll();
+        if (favs.includes(id)) {
+          favs = favs.filter(item => item !== id);
+        } else {
+          favs.push(id);
+        }
+        localStorage.setItem(this.getStorageKey(), JSON.stringify(favs));
+        return favs.includes(id);
+      },
+
+      isFav(serviceId) {
+        const id = parseInt(serviceId, 10);
+        return this.getAll().includes(id);
       }
     },
 

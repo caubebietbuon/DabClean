@@ -259,6 +259,17 @@ const inMemoryData = {
       created_at: new Date('2026-10-15T01:00:00Z')
     }
   ],
+  reviews: [
+    {
+      id: 1,
+      booking_id: 2,
+      user_id: 2,
+      service_id: 4,
+      rating: 5,
+      comment: 'Giặt sofa nỉ nhung rất sạch, tẩy hết vết ố trà. Bạn Bảo đến đúng giờ và làm việc chu đáo.',
+      created_at: new Date('2026-10-13T10:00:00Z')
+    }
+  ],
   audit_logs: []
 };
 
@@ -624,6 +635,12 @@ function queryInMemory(sql, params = []) {
           booking.status = 'confirmed';
         }
       }
+      if (normalizedSql.includes('booking_date = ?')) {
+        booking.booking_date = params[0];
+        booking.booking_time = params[1];
+        if (params[2] !== undefined) booking.notes = params[2];
+        return { affectedRows: 1 };
+      }
       if (normalizedSql.includes('status = ?')) {
         booking.status = params[0];
       }
@@ -646,6 +663,45 @@ function queryInMemory(sql, params = []) {
       target_id,
       target_type: target_type || 'user',
       details: details || '',
+      created_at: new Date()
+    });
+    return { insertId: newId, affectedRows: 1 };
+  }
+
+  // 11. SELECT reviews
+  if (normalizedSql.includes('from reviews')) {
+    if (normalizedSql.includes('where r.booking_id = ?') || normalizedSql.includes('where booking_id = ?')) {
+      const bId = parseInt(params[0], 10);
+      const rev = (inMemoryData.reviews || []).find(r => r.booking_id === bId);
+      if (!rev) return [];
+      const user = inMemoryData.users.find(u => u.id === rev.user_id);
+      return [{ ...rev, user_name: user ? user.name : 'Khách hàng' }];
+    }
+    const limit = params[0] ? parseInt(params[0], 10) : 10;
+    return (inMemoryData.reviews || []).slice(0, limit).map(r => {
+      const user = inMemoryData.users.find(u => u.id === r.user_id);
+      const srv = inMemoryData.services.find(s => s.id === r.service_id);
+      return {
+        ...r,
+        user_name: user ? user.name : 'Khách hàng',
+        service_name: srv ? srv.name : 'Dịch vụ',
+        service_icon: srv ? srv.icon : '✨'
+      };
+    });
+  }
+
+  // 12. INSERT INTO reviews
+  if (normalizedSql.startsWith('insert into reviews')) {
+    const [booking_id, user_id, service_id, rating, comment] = params;
+    const newId = (inMemoryData.reviews || []).length + 1;
+    if (!inMemoryData.reviews) inMemoryData.reviews = [];
+    inMemoryData.reviews.unshift({
+      id: newId,
+      booking_id: parseInt(booking_id, 10),
+      user_id: parseInt(user_id, 10),
+      service_id: parseInt(service_id, 10),
+      rating: parseInt(rating, 10) || 5,
+      comment: comment || '',
       created_at: new Date()
     });
     return { insertId: newId, affectedRows: 1 };

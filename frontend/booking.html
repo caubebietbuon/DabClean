@@ -3,432 +3,644 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đặt lịch dịch vụ vệ sinh · Cleanova</title>
+  <title>Đặt Lịch Dịch Vụ Vệ Sinh · Cleanova</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
-  <style>
-    .booking-layout {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: var(--space-2xl);
-    }
-    @media (max-width: 900px) {
-      .booking-layout {
-        grid-template-columns: 1fr;
-      }
-    }
-    .summary-card {
-      background: var(--color-white);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-xl);
-      position: sticky;
-      top: calc(var(--header-height) + 20px);
-      box-shadow: var(--shadow-md);
-    }
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: var(--space-sm);
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-    }
-    .summary-row.total {
-      font-size: var(--font-size-lg);
-      font-weight: 800;
-      color: var(--color-primary-dark);
-      border-top: 1.5px dashed var(--color-border);
-      padding-top: var(--space-md);
-      margin-top: var(--space-md);
-    }
-    .radio-card-group {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-sm);
-    }
-    @media (max-width: 500px) {
-      .radio-card-group {
-        grid-template-columns: 1fr;
-      }
-    }
-    .radio-card {
-      border: 1.5px solid var(--color-border);
-      border-radius: var(--radius-md);
-      padding: var(--space-md);
-      text-align: center;
-      cursor: pointer;
-      transition: all var(--transition-fast);
-      user-select: none;
-    }
-    .radio-card:hover {
-      border-color: var(--color-primary);
-      background: var(--color-primary-ultra-light);
-    }
-    .radio-card.active {
-      border-color: var(--color-primary);
-      background: var(--color-primary-ultra-light);
-      font-weight: 700;
-      color: var(--color-primary-dark);
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- ============================================================
+       HEADER (Thanh điều hướng cố định)
+       ============================================================ -->
   <header class="header scrolled" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo">
-        <svg viewBox="0 0 36 36" fill="none"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/></svg>
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
+          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
         <span class="logo-text">Cleanova</span>
       </a>
+
       <nav class="nav">
         <a href="trangchu.html" class="nav-link">Trang chủ</a>
         <a href="services.html" class="nav-link">Dịch vụ</a>
+        <a href="booking.html" class="nav-link active">Đặt lịch</a>
         <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
       </nav>
+
       <div class="header-actions">
-        <div class="user-profile-badge" id="nav-user-badge">
-          <span>👤</span> <span id="nav-user-email">Đang tải...</span>
-        </div>
+        <a href="profile.html" class="user-profile-badge" id="nav-user-badge" style="text-decoration: none;">
+          <span class="user-avatar-mini">👤</span>
+          <span class="user-email-text" id="nav-user-email">Đang tải...</span>
+        </a>
         <a href="trangchu.html" class="btn btn-ghost btn-sm">Quay lại</a>
       </div>
     </div>
   </header>
 
+  <!-- ============================================================
+       MAIN CONTENT: BOOKING WIZARD (Quy trình đặt lịch 3 bước)
+       ============================================================ -->
   <main class="page-wrapper">
     <div class="container">
-      <div class="page-header">
+
+      <!-- Header Tiêu đề -->
+      <div class="page-header" style="max-width: 720px;">
+        <div class="section-badge">⚡ Đặt lịch trực tuyến 60 giây</div>
         <h1 class="page-title">Đặt lịch dịch vụ vệ sinh</h1>
-        <p class="page-subtitle">Chọn gói dịch vụ, thời gian phù hợp và để đội ngũ Cleanova chăm sóc ngôi nhà của bạn.</p>
+        <p class="page-subtitle">Chọn gói dịch vụ, thời gian phù hợp và để đội ngũ chuyên viên Cleanova chăm sóc ngôi nhà thân yêu của bạn.</p>
       </div>
 
-      <div class="booking-layout">
-        <!-- Cột trái: Form đặt lịch -->
-        <div class="card">
-          <form id="booking-form">
-            <!-- Bước 1: Chọn dịch vụ -->
-            <div class="form-group" style="margin-bottom: 24px;">
-              <label class="form-label" for="booking-service">1. Chọn gói dịch vụ vệ sinh <span style="color:#ef4444">*</span></label>
-              <select id="booking-service" class="form-control" required>
-                <option value="">-- Đang tải danh sách dịch vụ --</option>
-              </select>
-            </div>
-
-            <!-- Bước 2: Quy mô & Tần suất -->
-            <div class="form-group" style="margin-bottom: 24px;">
-              <label class="form-label">2. Quy mô diện tích căn nhà</label>
-              <div class="radio-card-group" id="area-group">
-                <div class="radio-card" data-val="small">
-                  <div>Nhỏ (&lt; 50m²)</div>
-                  <small style="color:#64748b;">1-2 phòng</small>
-                </div>
-                <div class="radio-card active" data-val="medium">
-                  <div>Vừa (50-100m²)</div>
-                  <small style="color:#64748b;">3-4 phòng</small>
-                </div>
-                <div class="radio-card" data-val="large">
-                  <div>Lớn (&gt; 100m²)</div>
-                  <small style="color:#64748b;">5+ phòng / Biệt thự</small>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 24px;">
-              <label class="form-label">3. Tần suất vệ sinh</label>
-              <div class="radio-card-group" id="frequency-group">
-                <div class="radio-card active" data-val="once">
-                  <div>Một lần</div>
-                  <small style="color:#64748b;">Trải nghiệm</small>
-                </div>
-                <div class="radio-card" data-val="weekly">
-                  <div>Hàng tuần</div>
-                  <small style="color:#10b981; font-weight:700;">Giảm 15%</small>
-                </div>
-                <div class="radio-card" data-val="monthly">
-                  <div>Hàng tháng</div>
-                  <small style="color:#10b981; font-weight:700;">Giảm 10%</small>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bước 3: Thời gian & Địa điểm -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
-              <div>
-                <label class="form-label" for="booking-date">4. Ngày thực hiện <span style="color:#ef4444">*</span></label>
-                <input type="date" id="booking-date" class="form-control" required>
-              </div>
-              <div>
-                <label class="form-label" for="booking-time">5. Giờ hẹn <span style="color:#ef4444">*</span></label>
-                <input type="time" id="booking-time" class="form-control" value="08:30" required>
-              </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
-              <div>
-                <label class="form-label" for="booking-phone">6. Số điện thoại liên hệ <span style="color:#ef4444">*</span></label>
-                <input type="tel" id="booking-phone" class="form-control" placeholder="0987654321" required>
-              </div>
-              <div>
-                <label class="form-label" for="booking-payment">7. Thanh toán</label>
-                <select id="booking-payment" class="form-control">
-                  <option value="cash">Tiền mặt khi hoàn thành</option>
-                  <option value="bank_transfer">Chuyển khoản ngân hàng</option>
-                  <option value="momo">Ví điện tử MoMo</option>
-                  <option value="vnpay">Cổng VNPay</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 24px;">
-              <label class="form-label" for="booking-address">8. Địa chỉ nhà thực hiện dịch vụ <span style="color:#ef4444">*</span></label>
-              <input type="text" id="booking-address" class="form-control" placeholder="Số nhà, tên đường, phường/xã, quận/huyện..." required>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 24px;">
-              <label class="form-label" for="booking-notes">9. Ghi chú thêm cho chuyên viên vệ sinh</label>
-              <textarea id="booking-notes" class="form-control" rows="3" placeholder="Ví dụ: Nhà có thú cưng, lưu ý lau kỹ khu vực bếp..."></textarea>
-            </div>
-
-            <div class="form-group" style="margin-bottom: 24px;">
-              <label class="form-label" for="booking-promo">10. Mã ưu đãi</label>
-              <div style="display:flex; gap:8px;">
-                <input type="text" id="booking-promo" class="form-control" placeholder="Nhập CLEANOVA20" style="text-transform:uppercase;">
-                <button type="button" class="btn btn-secondary" id="btn-apply-promo" style="flex-shrink:0;">Áp dụng</button>
-              </div>
-              <small id="promo-message" style="display:block; margin-top:4px; font-weight:600;"></small>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-booking" style="width:100%;">
-              Xác nhận Đặt lịch ngay
-            </button>
-          </form>
-        </div>
-
-        <!-- Cột phải: Bảng tóm tắt đơn giá -->
-        <div>
-          <div class="summary-card">
-            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:16px; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
-              Tóm tắt đơn đặt
-            </h3>
-            <div class="summary-row">
-              <span>Gói dịch vụ:</span>
-              <strong id="summary-service-name">--</strong>
-            </div>
-            <div class="summary-row">
-              <span>Quy mô:</span>
-              <span id="summary-area">Vừa (50-100m²)</span>
-            </div>
-            <div class="summary-row">
-              <span>Tần suất:</span>
-              <span id="summary-frequency">Một lần</span>
-            </div>
-            <div class="summary-row">
-              <span>Thời gian:</span>
-              <span id="summary-datetime">--</span>
-            </div>
-            <div class="summary-row" id="summary-discount-row" style="display:none; color:#10b981;">
-              <span>Chiết khấu ưu đãi:</span>
-              <strong id="summary-discount">-0 VNĐ</strong>
-            </div>
-            <div class="summary-row total">
-              <span>TỔNG TIỀN:</span>
-              <span id="summary-total">0 VNĐ</span>
-            </div>
-
-            <div style="background:#ecfdf5; border:1px solid #d1fae5; border-radius:12px; padding:12px; margin-top:20px; font-size:0.875rem; color:#065f46;">
-              🛡️ <strong>Bảo đảm Cleanova:</strong> Đổi lịch miễn phí trước 24h. Hoàn tiền hoặc làm lại miễn phí nếu bạn chưa hoàn toàn ưng ý.
-            </div>
+      <!-- Stepper Chỉ báo tiến trình 3 bước -->
+      <div class="booking-stepper-card">
+        <div class="stepper">
+          <div class="step-item active" id="step-nav-1">
+            <div class="step-circle">1</div>
+            <div class="step-label">Dịch vụ & Quy mô</div>
+          </div>
+          <div class="step-item" id="step-nav-2">
+            <div class="step-circle">2</div>
+            <div class="step-label">Thời gian & Địa điểm</div>
+          </div>
+          <div class="step-item" id="step-nav-3">
+            <div class="step-circle">3</div>
+            <div class="step-label">Thanh toán & Xác nhận</div>
           </div>
         </div>
       </div>
+
+      <!-- 2-Column Booking Layout -->
+      <div class="booking-page-layout">
+
+        <!-- CỘT TRÁI: FORM ĐẶT LỊCH THEO CÁC PHẦN (SECTIONS) -->
+        <div class="booking-step-section">
+          <form id="booking-form" novalidate>
+
+            <!-- PHẦN 1: GÓI DỊCH VỤ & QUY MÔ -->
+            <div class="booking-section-card" id="section-service-scale">
+              <div class="booking-section-header">
+                <span class="section-number-badge">1</span>
+                <h3 class="booking-section-title">Chọn gói dịch vụ & Quy mô căn nhà</h3>
+              </div>
+
+              <!-- Chọn Dịch vụ -->
+              <div class="form-group">
+                <label class="form-label" for="booking-service">Gói dịch vụ vệ sinh <span class="required">*</span></label>
+                <select id="booking-service" class="form-control" required>
+                  <option value="">-- Đang tải danh sách dịch vụ --</option>
+                </select>
+                <span class="form-hint">Mỗi gói dịch vụ đều bao gồm chuyên viên trang bị đầy đủ máy móc & dung dịch sinh học an toàn.</span>
+              </div>
+
+              <!-- Chọn Quy mô diện tích -->
+              <div class="form-group">
+                <label class="form-label">Quy mô diện tích không gian</label>
+                <div class="radio-card-group" id="area-group">
+                  <div class="radio-card" data-val="small">
+                    <div class="radio-card-title">Nhỏ (&lt; 50m²)</div>
+                    <div class="radio-card-subtitle">1 - 2 phòng</div>
+                  </div>
+                  <div class="radio-card active" data-val="medium">
+                    <div class="radio-card-title">Vừa (50 - 100m²)</div>
+                    <div class="radio-card-subtitle">3 - 4 phòng</div>
+                  </div>
+                  <div class="radio-card" data-val="large">
+                    <div class="radio-card-title">Lớn (&gt; 100m²)</div>
+                    <div class="radio-card-subtitle">5+ phòng / Biệt thự</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chọn Tần suất -->
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label">Tần suất thực hiện dịch vụ</label>
+                <div class="radio-card-group" id="frequency-group">
+                  <div class="radio-card active" data-val="once">
+                    <div class="radio-card-title">Một lần</div>
+                    <div class="radio-card-subtitle">Trải nghiệm dịch vụ</div>
+                  </div>
+                  <div class="radio-card" data-val="weekly">
+                    <div class="radio-card-title">Hàng tuần</div>
+                    <span class="discount-pill">Giảm 15%</span>
+                  </div>
+                  <div class="radio-card" data-val="monthly">
+                    <div class="radio-card-title">Hàng tháng</div>
+                    <span class="discount-pill">Giảm 10%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PHẦN 2: THỜI GIAN & ĐỊA ĐIỂM -->
+            <div class="booking-section-card" id="section-schedule-location" style="margin-top: var(--space-xl);">
+              <div class="booking-section-header">
+                <span class="section-number-badge">2</span>
+                <h3 class="booking-section-title">Lịch hẹn & Địa điểm thực hiện</h3>
+              </div>
+
+              <!-- Ngày & Giờ -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="booking-date">Ngày thực hiện <span class="required">*</span></label>
+                  <input type="date" id="booking-date" class="form-control" required>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label" for="booking-time">Giờ bắt đầu làm việc <span class="required">*</span></label>
+                  <input type="time" id="booking-time" class="form-control" value="08:30" required>
+                </div>
+              </div>
+
+              <!-- Khung giờ gợi ý nhanh -->
+              <div class="form-group">
+                <label class="form-label" style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Khung giờ gợi ý:</label>
+                <div class="time-slots-grid" id="quick-time-slots">
+                  <button type="button" class="time-slot-btn active" data-time="08:30">08:30 Sáng</button>
+                  <button type="button" class="time-slot-btn" data-time="10:00">10:00 Sáng</button>
+                  <button type="button" class="time-slot-btn" data-time="13:30">13:30 Chiều</button>
+                  <button type="button" class="time-slot-btn" data-time="15:30">15:30 Chiều</button>
+                  <button type="button" class="time-slot-btn" data-time="17:30">17:30 Tối</button>
+                </div>
+              </div>
+
+              <!-- Chọn nhanh từ Sổ địa chỉ -->
+              <div class="form-group" id="saved-address-group" style="display: none;">
+                <label class="form-label">Chọn nhanh từ Sổ địa chỉ đã lưu</label>
+                <select id="select-saved-address" class="form-control" style="background: var(--color-primary-ultra-light); border-color: var(--color-primary-light);">
+                  <option value="">-- Chọn địa chỉ đã lưu --</option>
+                </select>
+              </div>
+
+              <!-- Địa chỉ chi tiết -->
+              <div class="form-group">
+                <label class="form-label" for="booking-address">Địa chỉ nhà / Văn phòng thực hiện <span class="required">*</span></label>
+                <input type="text" id="booking-address" class="form-control" placeholder="Số nhà, tên tòa nhà, tên đường, phường/xã, quận/huyện..." required>
+                <span class="form-hint">Vui lòng ghi rõ số phòng / tầng nếu là tòa chung cư hoặc văn phòng.</span>
+              </div>
+
+              <!-- Số điện thoại -->
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="booking-phone">Số điện thoại liên hệ <span class="required">*</span></label>
+                <input type="tel" id="booking-phone" class="form-control" placeholder="0987654321" required>
+              </div>
+            </div>
+
+            <!-- PHẦN 3: THANH TOÁN & GHI CHÚ -->
+            <div class="booking-section-card" id="section-payment-notes" style="margin-top: var(--space-xl);">
+              <div class="booking-section-header">
+                <span class="section-number-badge">3</span>
+                <h3 class="booking-section-title">Phương thức thanh toán & Ghi chú</h3>
+              </div>
+
+              <!-- Chọn phương thức thanh toán -->
+              <div class="form-group">
+                <label class="form-label">Phương thức thanh toán</label>
+                <div class="payment-methods-grid" id="payment-methods-group">
+                  <div class="payment-card active" data-val="cash">
+                    <span class="payment-icon">💵</span>
+                    <div class="payment-info">
+                      <strong>Tiền mặt</strong>
+                      <small>Thanh toán sau khi hoàn thành</small>
+                    </div>
+                  </div>
+                  <div class="payment-card" data-val="bank_transfer">
+                    <span class="payment-icon">📱</span>
+                    <div class="payment-info">
+                      <strong>Chuyển khoản QR</strong>
+                      <small>VietQR tự động xác nhận</small>
+                    </div>
+                  </div>
+                  <div class="payment-card" data-val="momo">
+                    <span class="payment-icon">🟪</span>
+                    <div class="payment-info">
+                      <strong>Ví MoMo</strong>
+                      <small>Thanh toán ví điện tử</small>
+                    </div>
+                  </div>
+                  <div class="payment-card" data-val="vnpay">
+                    <span class="payment-icon">💳</span>
+                    <div class="payment-info">
+                      <strong>Cổng VNPAY</strong>
+                      <small>Thẻ ATM / Visa / Mastercard</small>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="booking-payment" value="cash">
+              </div>
+
+              <!-- Ghi chú thêm -->
+              <div class="form-group">
+                <label class="form-label" for="booking-notes">Ghi chú cho chuyên viên vệ sinh</label>
+                <textarea id="booking-notes" class="form-control" rows="3" placeholder="Ví dụ: Nhà có trẻ sơ sinh và mèo cưng, vui lòng lau kỹ vết ố canxi trong phòng tắm, chìa khóa gửi bảo vệ sảnh..."></textarea>
+              </div>
+
+              <!-- Nhập mã giảm giá -->
+              <div class="form-group" style="margin-bottom: 0;">
+                <label class="form-label" for="booking-promo">Mã ưu đãi / Voucher giảm giá</label>
+                <div class="coupon-input-group">
+                  <input type="text" id="booking-promo" class="form-control" placeholder="Nhập CLEANOVA20" style="text-transform: uppercase;">
+                  <button type="button" class="btn btn-secondary" id="btn-apply-promo" style="flex-shrink: 0; padding: 0 20px;">Áp dụng</button>
+                </div>
+                <div id="promo-applied-box" class="coupon-applied-badge" style="display: none;">
+                  <span>🏷️ Đã áp dụng mã <strong id="promo-applied-code">CLEANOVA20</strong> (Giảm 20%)</span>
+                  <button type="button" id="btn-remove-promo" style="color: #be123c; background: none; border: none; cursor: pointer; font-size: 14px;">✕</button>
+                </div>
+                <small id="promo-message" style="display: block; margin-top: 6px; font-weight: 600;"></small>
+              </div>
+            </div>
+
+            <!-- Submit Button (Mobile & Desktop) -->
+            <div style="margin-top: var(--space-xl);">
+              <button type="submit" class="btn btn-primary btn-lg btn-block" id="btn-submit-booking">
+                Xác nhận đặt lịch ngay →
+              </button>
+              <div style="text-align: center; margin-top: 10px; font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                Bằng cách bấm đặt lịch, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Cleanova.
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- CỘT PHẢI: STICKY ORDER SUMMARY CARD -->
+        <div>
+          <div class="order-summary-card">
+            <div class="summary-title">
+              <span>Tóm tắt đơn đặt lịch</span>
+              <span class="status-badge status-confirmed">Báo giá chuẩn</span>
+            </div>
+
+            <!-- Xem trước gói dịch vụ -->
+            <div class="summary-service-preview">
+              <div class="summary-service-icon" id="summary-icon">🧹</div>
+              <div style="flex: 1; overflow: hidden;">
+                <strong style="display: block; font-size: var(--font-size-sm); color: var(--color-text-main); text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" id="summary-service-name">
+                  Đang tải...
+                </strong>
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);" id="summary-duration">
+                  Thời lượng: ~2 - 4 giờ
+                </span>
+              </div>
+            </div>
+
+            <!-- Danh sách chi tiết giá -->
+            <div class="summary-rows">
+              <div class="summary-row">
+                <span>Quy mô:</span>
+                <strong id="summary-area">Vừa (50-100m²)</strong>
+              </div>
+              <div class="summary-row">
+                <span>Tần suất:</span>
+                <span id="summary-frequency">Một lần</span>
+              </div>
+              <div class="summary-row">
+                <span>Thời gian hẹn:</span>
+                <strong id="summary-datetime" style="color: var(--color-text-main);">--</strong>
+              </div>
+              <div class="summary-row">
+                <span>Tạm tính dịch vụ:</span>
+                <span id="summary-subtotal">300.000 đ</span>
+              </div>
+
+              <!-- Chiết khấu tần suất -->
+              <div class="summary-row discount" id="summary-freq-discount-row" style="display: none;">
+                <span>Giảm giá tần suất:</span>
+                <strong id="summary-freq-discount">-0 đ</strong>
+              </div>
+
+              <!-- Giảm giá Voucher -->
+              <div class="summary-row discount" id="summary-voucher-discount-row" style="display: none;">
+                <span>Ưu đãi mã giảm giá:</span>
+                <strong id="summary-voucher-discount">-0 đ</strong>
+              </div>
+
+              <!-- Tổng thanh toán cuối cùng -->
+              <div class="summary-row total">
+                <span>TỔNG THANH TOÁN:</span>
+                <span class="summary-total-price" id="summary-total">300.000 đ</span>
+              </div>
+            </div>
+
+            <!-- Cam kết chất lượng & Bảo hiểm -->
+            <div class="summary-guarantee">
+              <span style="font-size: 20px;">🛡️</span>
+              <div>
+                <strong>Bảo đảm Cleanova Care:</strong>
+                <div>Đổi lịch miễn phí trước 24h. Bảo hành làm lại miễn phí nếu chưa hài lòng 100%.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
     </div>
   </main>
 
-  <!-- Modal xác nhận thành công -->
-  <div class="modal-overlay" id="success-modal">
-    <div class="modal" style="text-align:center;">
-      <div style="font-size:64px; margin-bottom:16px;">🎉</div>
-      <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:8px; color:#0f172a;">Đặt lịch thành công!</h2>
-      <p style="color:#475569; margin-bottom:20px;">Đơn đặt dịch vụ của bạn đã được ghi nhận vào hệ thống Cleanova.</p>
-      
-      <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:12px; padding:16px; margin-bottom:24px;">
-        <div style="font-size:0.875rem; color:#64748b;">MÃ ĐƠN HÀNG CỦA BẠN</div>
-        <div style="font-size:1.75rem; font-weight:800; color:#10b981; letter-spacing:1px;" id="modal-booking-code">CNV-2026-XXXX</div>
+  <!-- ============================================================
+       MODAL: ĐẶT LỊCH THÀNH CÔNG
+       ============================================================ -->
+  <div class="modal-overlay" id="success-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="text-align: center; max-width: 500px;">
+      <div style="font-size: 60px; margin-bottom: 12px;">🎉</div>
+      <h2 style="font-size: var(--font-size-2xl); font-weight: 800; color: var(--color-text-main); margin-bottom: 6px;">
+        Đặt lịch thành công!
+      </h2>
+      <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: 20px;">
+        Đơn đặt dịch vụ của bạn đã được ghi nhận. Đội ngũ Cleanova sẽ liên hệ xác nhận trong ít phút.
+      </p>
+
+      <div style="background: var(--color-bg-alt); border: 1.5px dashed var(--color-primary-light); border-radius: var(--radius-xl); padding: 16px; margin-bottom: 24px;">
+        <div style="font-size: 11px; color: var(--color-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">MÃ ĐƠN HÀNG CỦA BẠN</div>
+        <div style="font-family: var(--font-family-mono); font-size: 1.8rem; font-weight: 800; color: var(--color-primary); letter-spacing: 1px; margin-top: 4px;" id="modal-booking-code">
+          CNV-2026-XXXX
+        </div>
       </div>
 
-      <div style="display:flex; gap:12px; justify-content:center;">
+      <div style="display: flex; gap: 12px; justify-content: center;">
         <a href="my-bookings.html" class="btn btn-primary">Xem đơn đã đặt</a>
         <a href="trangchu.html" class="btn btn-secondary">Về Trang chủ</a>
       </div>
     </div>
   </div>
 
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Script xử lý đặt lịch & Tính giá thời gian thực -->
   <script>
     'use strict';
-    // Kiểm tra đăng nhập
-    if (!window.CleanovaAPI.auth.isLoggedIn()) {
-      window.location.replace('login.html?redirect=booking.html');
-    }
+    document.addEventListener('DOMContentLoaded', async function () {
+      // 1. Kiểm tra đăng nhập
+      if (!window.CleanovaAPI.auth.isLoggedIn()) {
+        window.location.replace('login.html?redirect=booking.html');
+        return;
+      }
 
-    const user = window.CleanovaAPI.auth.getUser() || {};
-    document.getElementById('nav-user-email').textContent = user.name || user.email || 'Người dùng';
-    if (user.phone) document.getElementById('booking-phone').value = user.phone;
-    if (user.address) document.getElementById('booking-address').value = user.address;
+      const user = window.CleanovaAPI.auth.getUser() || {};
+      const navUserEmail = document.getElementById('nav-user-email');
+      if (navUserEmail) navUserEmail.textContent = user.name || user.email || 'Khách hàng';
 
-    // Đặt ngày tối thiểu là ngày mai
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const dateInput = document.getElementById('booking-date');
-    dateInput.min = tomorrow.toISOString().split('T')[0];
-    dateInput.value = tomorrow.toISOString().split('T')[0];
+      if (user.phone) document.getElementById('booking-phone').value = user.phone;
+      if (user.address) document.getElementById('booking-address').value = user.address;
 
-    let servicesList = [];
-    let selectedArea = 'medium';
-    let selectedFrequency = 'once';
-    let promoApplied = false;
+      // 2. Nạp Sổ địa chỉ đã lưu (nếu có)
+      const savedAddresses = window.CleanovaAPI.addresses ? window.CleanovaAPI.addresses.getAll() : [];
+      const savedAddressGroup = document.getElementById('saved-address-group');
+      const selectSavedAddress = document.getElementById('select-saved-address');
 
-    const areaMultipliers = { small: 1.0, medium: 1.5, large: 2.2 };
-    const frequencyDiscounts = { once: 0, weekly: 0.15, monthly: 0.10 };
-
-    // Tải danh sách dịch vụ từ Backend API
-    async function loadServices() {
-      const select = document.getElementById('booking-service');
-      try {
-        const res = await window.CleanovaAPI.services.getAll();
-        servicesList = res.data || [];
-        select.innerHTML = '';
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const preselect = urlParams.get('service');
-
-        servicesList.forEach(srv => {
+      if (savedAddresses.length > 0 && savedAddressGroup && selectSavedAddress) {
+        savedAddressGroup.style.display = 'block';
+        savedAddresses.forEach(addr => {
           const opt = document.createElement('option');
-          opt.value = srv.id;
-          opt.textContent = `${srv.icon || '🧹'} ${srv.name} (Từ ${Number(srv.base_price).toLocaleString('vi-VN')} đ)`;
-          if (preselect && (preselect == srv.id || preselect === srv.slug)) {
+          opt.value = addr.address;
+          opt.dataset.phone = addr.phone || '';
+          opt.textContent = `${addr.label} (${addr.address}) ${addr.is_default ? '⭐ Mặc định' : ''}`;
+          if (addr.is_default) {
             opt.selected = true;
+            document.getElementById('booking-address').value = addr.address;
+            if (addr.phone) document.getElementById('booking-phone').value = addr.phone;
           }
-          select.appendChild(opt);
+          selectSavedAddress.appendChild(opt);
         });
 
-        updateSummary();
-      } catch (err) {
-        select.innerHTML = '<option value="1">Dọn dẹp nhà cửa theo giờ</option>';
-        updateSummary();
+        selectSavedAddress.addEventListener('change', function () {
+          if (this.value) {
+            document.getElementById('booking-address').value = this.value;
+            const selectedOpt = this.options[this.selectedIndex];
+            if (selectedOpt && selectedOpt.dataset.phone) {
+              document.getElementById('booking-phone').value = selectedOpt.dataset.phone;
+            }
+          }
+        });
       }
-    }
 
-    // Xử lý radio card quy mô
-    document.querySelectorAll('#area-group .radio-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('#area-group .radio-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        selectedArea = card.dataset.val;
-        document.getElementById('summary-area').textContent = card.querySelector('div').textContent;
+      // 3. Khởi tạo ngày hẹn tối thiểu là ngày mai
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dateInput = document.getElementById('booking-date');
+      dateInput.min = tomorrow.toISOString().split('T')[0];
+      dateInput.value = tomorrow.toISOString().split('T')[0];
+
+      let servicesList = [];
+      let selectedArea = 'medium';
+      let selectedFrequency = 'once';
+      let promoApplied = false;
+
+      const areaMultipliers = { small: 1.0, medium: 1.5, large: 2.2 };
+      const frequencyDiscounts = { once: 0, weekly: 0.15, monthly: 0.10 };
+
+      // 4. Tải danh mục dịch vụ từ Backend
+      async function loadServices() {
+        const select = document.getElementById('booking-service');
+        try {
+          const res = await window.CleanovaAPI.services.getAll();
+          servicesList = res.data || [];
+          select.innerHTML = '';
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const preselect = urlParams.get('service_id') || urlParams.get('service');
+
+          servicesList.forEach(srv => {
+            const opt = document.createElement('option');
+            opt.value = srv.id;
+            opt.textContent = `${srv.icon || '🧹'} ${srv.name} (Từ ${Number(srv.base_price).toLocaleString('vi-VN')} đ/${srv.price_unit || 'lần'})`;
+            if (preselect && (preselect == srv.id || preselect === srv.slug)) {
+              opt.selected = true;
+            }
+            select.appendChild(opt);
+          });
+
+          updateSummary();
+        } catch (err) {
+          select.innerHTML = '<option value="1">🧹 Dọn dẹp nhà cửa theo giờ</option>';
+          updateSummary();
+        }
+      }
+
+      // 5. Xử lý Radio Cards: Quy mô
+      document.querySelectorAll('#area-group .radio-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('#area-group .radio-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          selectedArea = card.dataset.val;
+          document.getElementById('summary-area').textContent = card.querySelector('.radio-card-title').textContent;
+          updateSummary();
+        });
+      });
+
+      // 6. Xử lý Radio Cards: Tần suất
+      document.querySelectorAll('#frequency-group .radio-card').forEach(card => {
+        card.addEventListener('click', () => {
+          document.querySelectorAll('#frequency-group .radio-card').forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          selectedFrequency = card.dataset.val;
+          document.getElementById('summary-frequency').textContent = card.querySelector('.radio-card-title').textContent;
+          updateSummary();
+        });
+      });
+
+      // 7. Xử lý Time Slots Buttons
+      document.querySelectorAll('#quick-time-slots .time-slot-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('#quick-time-slots .time-slot-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          document.getElementById('booking-time').value = this.dataset.time;
+          updateSummary();
+        });
+      });
+
+      // 8. Xử lý Payment Methods Cards
+      document.querySelectorAll('#payment-methods-group .payment-card').forEach(card => {
+        card.addEventListener('click', function () {
+          document.querySelectorAll('#payment-methods-group .payment-card').forEach(c => c.classList.remove('active'));
+          this.classList.add('active');
+          document.getElementById('booking-payment').value = this.dataset.val;
+        });
+      });
+
+      // 9. Xử lý Mã ưu đãi
+      const btnApplyPromo = document.getElementById('btn-apply-promo');
+      const promoInput = document.getElementById('booking-promo');
+      const promoBox = document.getElementById('promo-applied-box');
+      const promoMsg = document.getElementById('promo-message');
+      const btnRemovePromo = document.getElementById('btn-remove-promo');
+
+      btnApplyPromo.addEventListener('click', () => {
+        const code = promoInput.value.trim().toUpperCase();
+        if (code === 'CLEANOVA20') {
+          promoApplied = true;
+          promoBox.style.display = 'flex';
+          document.getElementById('promo-applied-code').textContent = code;
+          promoMsg.textContent = '';
+          promoInput.value = '';
+          showToast('success', 'Đã áp dụng mã CLEANOVA20 giảm 20%!');
+        } else {
+          promoApplied = false;
+          promoBox.style.display = 'none';
+          promoMsg.textContent = 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.';
+          promoMsg.style.color = 'var(--color-error)';
+        }
         updateSummary();
       });
-    });
 
-    // Xử lý radio card tần suất
-    document.querySelectorAll('#frequency-group .radio-card').forEach(card => {
-      card.addEventListener('click', () => {
-        document.querySelectorAll('#frequency-group .radio-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        selectedFrequency = card.dataset.val;
-        document.getElementById('summary-frequency').textContent = card.querySelector('div').textContent;
-        updateSummary();
-      });
-    });
-
-    // Áp dụng mã ưu đãi
-    document.getElementById('btn-apply-promo').addEventListener('click', () => {
-      const code = document.getElementById('booking-promo').value.trim().toUpperCase();
-      const msg = document.getElementById('promo-message');
-      if (code === 'CLEANOVA20') {
-        promoApplied = true;
-        msg.textContent = '✓ Áp dụng mã CLEANOVA20 thành công! Giảm thêm 20%.';
-        msg.style.color = '#10b981';
-      } else {
+      btnRemovePromo.addEventListener('click', () => {
         promoApplied = false;
-        msg.textContent = 'Mã ưu đãi không hợp lệ.';
-        msg.style.color = '#ef4444';
+        promoBox.style.display = 'none';
+        promoMsg.textContent = '';
+        updateSummary();
+      });
+
+      // 10. Cập nhật Bảng tính tiền tóm tắt thời gian thực
+      function updateSummary() {
+        const select = document.getElementById('booking-service');
+        const selectedId = select.value;
+        const srv = servicesList.find(s => s.id == selectedId) || servicesList[0] || { base_price: 200000, name: 'Dọn dẹp nhà cửa', icon: '🧹' };
+
+        document.getElementById('summary-service-name').textContent = srv.name;
+        document.getElementById('summary-icon').textContent = srv.icon || '🧹';
+        document.getElementById('summary-duration').textContent = `Thời lượng: ~${srv.duration_estimate || '2 - 4 giờ'}`;
+
+        const basePrice = parseFloat(srv.base_price) || 200000;
+        const mult = areaMultipliers[selectedArea] || 1.0;
+        const freqDiscPercent = frequencyDiscounts[selectedFrequency] || 0;
+
+        const subtotal = basePrice * mult;
+        document.getElementById('summary-subtotal').textContent = `${Math.round(subtotal).toLocaleString('vi-VN')} đ`;
+
+        const freqDiscountVal = subtotal * freqDiscPercent;
+        const freqRow = document.getElementById('summary-freq-discount-row');
+        if (freqDiscountVal > 0) {
+          freqRow.style.display = 'flex';
+          document.getElementById('summary-freq-discount').textContent = `-${Math.round(freqDiscountVal).toLocaleString('vi-VN')} đ (${Math.round(freqDiscPercent * 100)}%)`;
+        } else {
+          freqRow.style.display = 'none';
+        }
+
+        let voucherDiscountVal = 0;
+        const voucherRow = document.getElementById('summary-voucher-discount-row');
+        if (promoApplied) {
+          voucherDiscountVal = subtotal * 0.20;
+          voucherRow.style.display = 'flex';
+          document.getElementById('summary-voucher-discount').textContent = `-${Math.round(voucherDiscountVal).toLocaleString('vi-VN')} đ (20%)`;
+        } else {
+          voucherRow.style.display = 'none';
+        }
+
+        const finalTotal = Math.max(subtotal - freqDiscountVal - voucherDiscountVal, 50000);
+        document.getElementById('summary-total').textContent = `${Math.round(finalTotal).toLocaleString('vi-VN')} đ`;
+
+        const d = document.getElementById('booking-date').value;
+        const t = document.getElementById('booking-time').value;
+        document.getElementById('summary-datetime').textContent = d && t ? `${t}, ${d}` : '--';
       }
-      updateSummary();
+
+      document.getElementById('booking-service').addEventListener('change', updateSummary);
+      document.getElementById('booking-date').addEventListener('change', updateSummary);
+      document.getElementById('booking-time').addEventListener('change', updateSummary);
+
+      // 11. Gửi đơn đặt lịch dịch vụ
+      document.getElementById('booking-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const address = document.getElementById('booking-address').value.trim();
+        const phone = document.getElementById('booking-phone').value.trim();
+
+        if (!address) {
+          alert('Vui lòng nhập địa chỉ thực hiện dịch vụ.');
+          document.getElementById('booking-address').focus();
+          return;
+        }
+        if (!phone) {
+          alert('Vui lòng nhập số điện thoại liên hệ.');
+          document.getElementById('booking-phone').focus();
+          return;
+        }
+
+        const btn = document.getElementById('btn-submit-booking');
+        btn.classList.add('btn-loading');
+        btn.disabled = true;
+
+        const bookingData = {
+          service_id: document.getElementById('booking-service').value,
+          booking_date: document.getElementById('booking-date').value,
+          booking_time: document.getElementById('booking-time').value,
+          area_size: selectedArea,
+          frequency: selectedFrequency,
+          address,
+          phone,
+          notes: document.getElementById('booking-notes').value.trim(),
+          discount_code: promoApplied ? 'CLEANOVA20' : null,
+          payment_method: document.getElementById('booking-payment').value
+        };
+
+        try {
+          const res = await window.CleanovaAPI.bookings.create(bookingData);
+          document.getElementById('modal-booking-code').textContent = res.data.booking_code;
+          document.getElementById('success-modal').classList.add('active');
+        } catch (err) {
+          alert(err.message || 'Có lỗi xảy ra khi tạo đơn đặt. Vui lòng thử lại.');
+          btn.classList.remove('btn-loading');
+          btn.disabled = false;
+        }
+      });
+
+      // Toast helper
+      function showToast(type, msg) {
+        const c = document.getElementById('toast-container');
+        if (!c) return;
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : 'ℹ️'}</span><span class="toast-message">${msg}</span>`;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 3200);
+      }
+
+      await loadServices();
     });
-
-    // Cập nhật bảng tính tiền tóm tắt
-    function updateSummary() {
-      const select = document.getElementById('booking-service');
-      const selectedId = select.value;
-      const srv = servicesList.find(s => s.id == selectedId) || servicesList[0] || { base_price: 200000, name: 'Dọn dẹp nhà cửa' };
-
-      document.getElementById('summary-service-name').textContent = srv.name;
-
-      const basePrice = parseFloat(srv.base_price) || 200000;
-      const mult = areaMultipliers[selectedArea] || 1.0;
-      const freqDisc = frequencyDiscounts[selectedFrequency] || 0;
-
-      let subtotal = basePrice * mult;
-      let totalDiscount = subtotal * freqDisc;
-
-      if (promoApplied) {
-        totalDiscount += subtotal * 0.20;
-      }
-
-      const total = Math.max(subtotal - totalDiscount, 50000);
-
-      const discountRow = document.getElementById('summary-discount-row');
-      if (totalDiscount > 0) {
-        discountRow.style.display = 'flex';
-        document.getElementById('summary-discount').textContent = `-${Math.round(totalDiscount).toLocaleString('vi-VN')} đ`;
-      } else {
-        discountRow.style.display = 'none';
-      }
-
-      document.getElementById('summary-total').textContent = `${Math.round(total).toLocaleString('vi-VN')} đ`;
-
-      const d = document.getElementById('booking-date').value;
-      const t = document.getElementById('booking-time').value;
-      document.getElementById('summary-datetime').textContent = d && t ? `${t}, ${d}` : '--';
-    }
-
-    document.getElementById('booking-service').addEventListener('change', updateSummary);
-    document.getElementById('booking-date').addEventListener('change', updateSummary);
-    document.getElementById('booking-time').addEventListener('change', updateSummary);
-
-    // Gửi đơn đặt lịch
-    document.getElementById('booking-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('btn-submit-booking');
-      btn.disabled = true;
-      btn.textContent = 'Đang xử lý đơn đặt lịch...';
-
-      const bookingData = {
-        service_id: document.getElementById('booking-service').value,
-        booking_date: document.getElementById('booking-date').value,
-        booking_time: document.getElementById('booking-time').value,
-        area_size: selectedArea,
-        frequency: selectedFrequency,
-        address: document.getElementById('booking-address').value.trim(),
-        phone: document.getElementById('booking-phone').value.trim(),
-        notes: document.getElementById('booking-notes').value.trim(),
-        discount_code: promoApplied ? 'CLEANOVA20' : null,
-        payment_method: document.getElementById('booking-payment').value
-      };
-
-      try {
-        const res = await window.CleanovaAPI.bookings.create(bookingData);
-        document.getElementById('modal-booking-code').textContent = res.data.booking_code;
-        document.getElementById('success-modal').classList.add('active');
-      } catch (err) {
-        alert(err.message || 'Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại.');
-        btn.disabled = false;
-        btn.textContent = 'Xác nhận Đặt lịch ngay';
-      }
-    });
-
-    loadServices();
   </script>
 </body>
 </html>

@@ -7,76 +7,35 @@
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
-  <style>
-    .services-search-bar {
-      display: flex;
-      gap: var(--space-md);
-      max-width: 600px;
-      margin: 0 auto var(--space-2xl);
-    }
-    .service-card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: var(--space-xl);
-    }
-    .service-item-card {
-      background: var(--color-white);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-2xl);
-      padding: var(--space-2xl);
-      box-shadow: var(--shadow-sm);
-      transition: all var(--transition-base);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-    }
-    .service-item-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--color-primary-light);
-    }
-    .service-icon-box {
-      width: 64px;
-      height: 64px;
-      border-radius: var(--radius-xl);
-      background: var(--color-primary-ultra-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      margin-bottom: var(--space-lg);
-      border: 1px solid rgba(16, 185, 129, 0.2);
-    }
-    .service-price-tag {
-      font-size: var(--font-size-2xl);
-      font-weight: 800;
-      color: var(--color-primary-dark);
-      margin: var(--space-md) 0 var(--space-sm);
-    }
-    .service-unit {
-      font-size: var(--font-size-sm);
-      color: var(--color-text-secondary);
-      font-weight: normal;
-    }
-  </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- ============================================================
+       HEADER (Thanh điều hướng cố định)
+       ============================================================ -->
   <header class="header scrolled" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo">
-        <svg viewBox="0 0 36 36" fill="none"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/></svg>
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
+          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
         <span class="logo-text">Cleanova</span>
       </a>
+
       <nav class="nav">
         <a href="trangchu.html" class="nav-link">Trang chủ</a>
         <a href="services.html" class="nav-link active">Dịch vụ</a>
         <a href="booking.html" class="nav-link">Đặt lịch</a>
         <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
       </nav>
+
       <div class="header-actions">
+        <!-- Thông báo -->
+        <a href="my-bookings.html#notifications" class="btn-icon btn-ghost" title="Thông báo" style="font-size: 16px;">🔔</a>
+
         <div id="auth-header-slot">
           <a href="login.html" class="btn btn-ghost btn-sm">Đăng nhập</a>
           <a href="register.html" class="btn btn-primary btn-sm">Đăng ký</a>
@@ -85,92 +44,108 @@
     </div>
   </header>
 
+  <!-- ============================================================
+       MAIN CONTENT: SERVICES CATALOG
+       ============================================================ -->
   <main class="page-wrapper">
     <div class="container">
-      <div class="page-header" style="text-align: center; max-width: 700px; margin: 0 auto var(--space-2xl);">
-        <h1 class="page-title">Giải pháp Vệ sinh Chuẩn Nhật Bản</h1>
-        <p class="page-subtitle">Cleanova cung cấp các gói dịch vụ làm sạch linh hoạt từ theo giờ đến tổng vệ sinh chuyên sâu, cam kết hài lòng 100%.</p>
+
+      <!-- Hero Header -->
+      <div class="services-hero-banner">
+        <div class="section-badge">✨ Dịch vụ vệ sinh cao cấp</div>
+        <h1 class="page-title">Giải pháp làm sạch chuyên nghiệp</h1>
+        <p class="page-subtitle">Khám phá các gói dịch vụ vệ sinh được tiêu chuẩn hóa theo quy trình Nhật Bản, đảm bảo sạch sâu và an toàn cho sức khỏe gia đình bạn.</p>
       </div>
 
-      <!-- Tìm kiếm dịch vụ -->
-      <div class="services-search-bar">
-        <input type="text" id="search-input" class="form-control" placeholder="Tìm gói dịch vụ theo nhu cầu (ví dụ: sofa, giờ, tổng vệ sinh...)" style="border-radius: var(--radius-full); padding-left: 20px;">
-        <button class="btn btn-primary" id="btn-search" style="border-radius: var(--radius-full); padding: 0 24px;">
-          Tìm kiếm
-        </button>
+      <!-- Category Filter Pills -->
+      <div class="services-filter-bar">
+        <button class="filter-pill active" data-cat="all">Tất cả dịch vụ</button>
+        <button class="filter-pill" data-cat="gio">Theo giờ</button>
+        <button class="filter-pill" data-cat="tong-ve-sinh">Deep Cleaning</button>
+        <button class="filter-pill" data-cat="van-phong">Văn phòng</button>
+        <button class="filter-pill" data-cat="sofa">Sofa & Nệm</button>
+        <button class="filter-pill" data-cat="xay-dung">Sau xây dựng</button>
       </div>
 
-      <!-- Danh sách Dịch vụ -->
-      <div id="services-grid" class="service-card-grid">
-        <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+      <!-- Search Input Bar -->
+      <div class="services-search-wrapper">
+        <span class="search-icon-left">🔍</span>
+        <input type="text" id="search-input" class="services-search-input" placeholder="Tìm theo tên dịch vụ, nhu cầu làm sạch (ví dụ: sofa, giờ, deep...)" aria-label="Tìm kiếm dịch vụ">
+        <button class="btn btn-primary search-btn-inside" id="btn-search">Tìm kiếm</button>
+      </div>
+
+      <!-- Service Card Grid -->
+      <div id="services-grid" class="services-catalog-grid">
+        <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-4xl) var(--space-xl);">
           <div style="font-size: 40px; margin-bottom: var(--space-sm);">⏳</div>
-          <p style="color: var(--color-text-secondary);">Đang tải danh mục dịch vụ từ hệ thống...</p>
+          <p style="color: var(--color-text-secondary); font-weight: 600;">Đang tải danh mục dịch vụ từ hệ thống Cleanova...</p>
         </div>
       </div>
+
     </div>
   </main>
 
-  <!-- Modal Chi Tiết Dịch Vụ -->
-  <div class="modal-overlay" id="service-detail-modal">
+  <!-- ============================================================
+       MODAL: CHI TIẾT DỊCH VỤ
+       ============================================================ -->
+  <div class="modal-overlay" id="service-detail-modal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal">
       <div class="modal-header">
-        <h3 id="modal-service-name" style="margin: 0; font-size: var(--font-size-xl);">Chi tiết Dịch vụ</h3>
-        <button class="modal-close" id="modal-service-close">&times;</button>
+        <h3 id="modal-service-name" class="modal-title">Chi tiết dịch vụ</h3>
+        <button class="modal-close" id="modal-service-close" aria-label="Đóng cửa sổ">&times;</button>
       </div>
-      <div id="modal-service-body"></div>
-      <div style="margin-top: var(--space-xl); display: flex; justify-content: flex-end; gap: var(--space-sm);">
-        <button class="btn btn-outline" id="modal-service-btn-close">Đóng</button>
-        <a href="booking.html" class="btn btn-primary" id="modal-service-btn-book">Đặt lịch ngay</a>
+      <div id="modal-service-body">
+        <!-- Nội dung chi tiết được điền động bằng JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="modal-service-btn-close">Đóng</button>
+        <a href="booking.html" class="btn btn-primary" id="modal-service-btn-book">Đặt dịch vụ này ngay →</a>
       </div>
     </div>
   </div>
 
-  <footer class="footer" style="margin-top: var(--space-4xl); background: var(--color-white); border-top: 1px solid var(--color-border); padding: var(--space-3xl) 0;">
-    <div class="container" style="text-align: center; color: var(--color-text-secondary); font-size: var(--font-size-sm);">
-      <p style="margin-bottom: var(--space-xs);"><strong>Cleanova Việt Nam</strong> · A Cleaner Space, A Better Life.</p>
-      <p>© 2026 Cleanova. Dự án phát triển ứng dụng Full-stack môn Công nghệ Phần mềm.</p>
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container" style="text-align: center; font-size: var(--font-size-xs); color: #64748b;">
+      <p style="margin-bottom: 6px;"><strong>Cleanova Việt Nam</strong> · Không gian sạch hơn, cuộc sống tốt hơn.</p>
+      <p>© 2026 Cleanova. Nền tảng đặt dịch vụ vệ sinh nhà cửa & văn phòng cao cấp.</p>
     </div>
   </footer>
 
   <script>
     document.addEventListener('DOMContentLoaded', async function () {
-      // 1. Kiểm tra trạng thái đăng nhập trên Header
+      // 1. Kiểm tra trạng thái đăng nhập
       const user = CleanovaAPI.auth.getUser();
       const authSlot = document.getElementById('auth-header-slot');
       if (user) {
         authSlot.innerHTML = `
           <a href="profile.html" class="user-profile-badge" style="margin-right: 8px;">
-            <span>👤</span> <span>${user.name || user.email.split('@')[0]}</span>
+            <span class="user-avatar-mini">👤</span>
+            <span class="user-email-text">${user.name || user.email.split('@')[0]}</span>
           </a>
           <button id="btn-logout" class="btn btn-ghost btn-sm">Đăng xuất</button>
         `;
         document.getElementById('btn-logout').addEventListener('click', () => CleanovaAPI.auth.logout());
-
-        if (user.role === 'admin') {
-          const nav = document.querySelector('.nav');
-          const adminA = document.createElement('a');
-          adminA.href = 'admin.html';
-          adminA.className = 'nav-link';
-          adminA.textContent = 'Admin';
-          adminA.style.color = '#B45309';
-          nav.appendChild(adminA);
-        }
       }
 
-      // 2. Tải và hiển thị danh sách dịch vụ từ API
-      let services = [];
+      let allServices = [];
+      let currentFilter = 'all';
 
+      // 2. Tải danh mục dịch vụ từ Backend
       async function fetchServices(keyword = '') {
         const grid = document.getElementById('services-grid');
         try {
           const res = await CleanovaAPI.services.getAll(keyword);
-          services = res.data || [];
+          allServices = res.data || [];
           renderServices();
         } catch (err) {
           grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
+            <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-4xl);">
               <div style="font-size: 40px; margin-bottom: var(--space-sm);">⚠️</div>
-              <p style="color: var(--color-text-secondary);">Không thể tải danh sách dịch vụ: ${err.message}</p>
+              <p style="color: var(--color-error); font-weight: 600;">Không thể tải danh sách dịch vụ: ${err.message}</p>
             </div>
           `;
         }
@@ -178,89 +153,183 @@
 
       function renderServices() {
         const grid = document.getElementById('services-grid');
-        if (services.length === 0) {
+        let filtered = allServices;
+
+        if (currentFilter !== 'all') {
+          filtered = allServices.filter(s => {
+            const str = (s.name + ' ' + (s.slug || '') + ' ' + (s.description || '')).toLowerCase();
+            return str.includes(currentFilter);
+          });
+        }
+
+        if (filtered.length === 0) {
           grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-3xl);">
-              <div style="font-size: 40px; margin-bottom: var(--space-sm);">🔍</div>
-              <p style="color: var(--color-text-secondary);">Không tìm thấy dịch vụ nào phù hợp với từ khóa.</p>
+            <div style="grid-column: 1 / -1;" class="empty-state">
+              <div class="empty-icon">🔍</div>
+              <h3 class="empty-title">Không tìm thấy dịch vụ phù hợp</h3>
+              <p class="empty-desc">Vui lòng thử tìm kiếm với từ khóa khác hoặc bấm nút "Tất cả dịch vụ" để xem toàn bộ danh mục.</p>
+              <button class="btn btn-outline" id="btn-reset-filter">Xem tất cả dịch vụ</button>
             </div>
           `;
+          const resetBtn = document.getElementById('btn-reset-filter');
+          if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+              currentFilter = 'all';
+              document.querySelectorAll('.filter-pill').forEach(p => p.classList.toggle('active', p.dataset.cat === 'all'));
+              document.getElementById('search-input').value = '';
+              fetchServices('');
+            });
+          }
           return;
         }
 
-        grid.innerHTML = services.map(s => `
-          <div class="service-item-card">
-            <div>
-              <div class="service-icon-box">${s.icon || '✨'}</div>
-              <h3 style="font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--space-xs);">${s.name}</h3>
-              <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); line-height: 1.6; margin-bottom: var(--space-md);">
-                ${s.description || 'Dịch vụ dọn dẹp vệ sinh tiêu chuẩn cao từ Cleanova.'}
-              </p>
-              <div class="service-price-tag">
-                ${Number(s.price || 0).toLocaleString('vi-VN')} đ
-                <span class="service-unit">/ ${s.unit || 'lần'}</span>
-              </div>
-              <div style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px; margin-bottom: var(--space-lg);">
-                <span>⏱️</span> Thời lượng: ~${s.duration_minutes || 60} phút
-              </div>
-            </div>
-            <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-md);">
-              <button class="btn btn-outline btn-sm btn-service-detail" data-id="${s.id}" style="flex: 1;">
-                Chi tiết
-              </button>
-              <a href="booking.html?service=${s.id}" class="btn btn-primary btn-sm" style="flex: 1; text-align: center;">
-                Đặt lịch ngay
-              </a>
-            </div>
-          </div>
-        `).join('');
+        const favs = CleanovaAPI.favorites ? CleanovaAPI.favorites.getAll() : [];
 
-        // Gắn sự kiện modal xem chi tiết
+        grid.innerHTML = filtered.map(s => {
+          const price = parseFloat(s.base_price || s.price || 0);
+          const unit = s.price_unit || s.unit || 'lần';
+          const duration = s.duration_estimate || (s.duration_minutes ? `~${s.duration_minutes} phút` : '2-4 giờ');
+          const isFav = favs.includes(s.id);
+
+          return `
+            <div class="catalog-card">
+              <div class="catalog-card-header">
+                <div class="catalog-icon-box">${s.icon || '🧹'}</div>
+                <button class="favorite-btn ${isFav ? 'active' : ''}" data-fav-id="${s.id}" title="${isFav ? 'Xóa khỏi yêu thích' : 'Lưu vào yêu thích'}">
+                  ${isFav ? '❤️' : '🤍'}
+                </button>
+              </div>
+
+              <h3 class="catalog-card-title">${s.name}</h3>
+              <p class="catalog-card-desc">${s.short_description || s.description || 'Dịch vụ vệ sinh cao cấp chuẩn Cleanova.'}</p>
+
+              <div class="catalog-meta-row">
+                <div class="catalog-meta-item"><span>⏱️</span> ${duration}</div>
+                <div class="catalog-meta-item"><span>🛡️</span> Bảo hiểm 100%</div>
+              </div>
+
+              <div class="catalog-card-price-row">
+                <div>
+                  <span class="catalog-price">${price.toLocaleString('vi-VN')} đ</span>
+                  <span class="catalog-price-unit">/${unit}</span>
+                </div>
+                <span class="coupon-badge" style="font-size: 10px;">Chuẩn Nhật</span>
+              </div>
+
+              <div class="catalog-card-actions">
+                <button class="btn btn-outline btn-sm btn-service-detail" data-id="${s.id}">
+                  Chi tiết
+                </button>
+                <a href="booking.html?service_id=${s.id}" class="btn btn-primary btn-sm">
+                  Đặt lịch ngay
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Gắn sự kiện chi tiết
         document.querySelectorAll('.btn-service-detail').forEach(btn => {
           btn.addEventListener('click', function () {
             const id = parseInt(this.dataset.id, 10);
-            const item = services.find(x => x.id === id);
+            const item = allServices.find(x => x.id === id);
             if (!item) return;
 
-            document.getElementById('modal-service-name').textContent = item.icon + ' ' + item.name;
-            document.getElementById('modal-service-btn-book').href = `booking.html?service=${item.id}`;
+            const price = parseFloat(item.base_price || item.price || 0);
+            const unit = item.price_unit || item.unit || 'lần';
+            const duration = item.duration_estimate || '2-4 giờ';
+
+            document.getElementById('modal-service-name').textContent = item.name;
+            document.getElementById('modal-service-btn-book').href = `booking.html?service_id=${item.id}`;
             document.getElementById('modal-service-body').innerHTML = `
-              <div style="margin-bottom: var(--space-md);">
-                <p style="font-size: var(--font-size-base); color: var(--color-text); margin-bottom: var(--space-md);">${item.description || ''}</p>
-                <div style="background: var(--color-bg-alt); padding: var(--space-md); border-radius: var(--radius-lg); margin-bottom: var(--space-md);">
-                  <div style="font-size: var(--font-size-xl); font-weight: 800; color: var(--color-primary-dark);">
-                    ${Number(item.price).toLocaleString('vi-VN')} đ <span style="font-size: 13px; color: var(--color-text-secondary); font-weight: normal;">/ ${item.unit}</span>
+              <div class="service-modal-header-hero">
+                <div class="service-modal-icon">${item.icon || '🧹'}</div>
+                <div>
+                  <div style="font-size: 1.4rem; font-weight: 800; color: var(--color-primary);">
+                    ${price.toLocaleString('vi-VN')} đ <span style="font-size: 13px; color: var(--color-text-muted); font-weight: normal;">/${unit}</span>
                   </div>
-                  <div style="font-size: 13px; color: var(--color-text-secondary); margin-top: 4px;">⏱️ Thời lượng ước tính: ${item.duration_minutes} phút</div>
+                  <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">
+                    ⏱️ Thời lượng ước tính: <strong>${duration}</strong>
+                  </div>
                 </div>
-                ${item.detail_description ? `
-                  <div style="font-size: var(--font-size-sm); color: var(--color-text); line-height: 1.7;">
-                    <strong>Quy trình thực hiện:</strong>
-                    <div style="white-space: pre-line; margin-top: 6px; color: var(--color-text-secondary);">${item.detail_description}</div>
-                  </div>
-                ` : ''}
+              </div>
+
+              <p style="font-size: var(--font-size-sm); color: var(--color-text-body); line-height: 1.6; margin-bottom: var(--space-lg);">
+                ${item.description || item.short_description || ''}
+              </p>
+
+              <h4 style="font-size: var(--font-size-sm); font-weight: 700; margin-bottom: 8px;">Quy trình & Tiêu chuẩn thực hiện:</h4>
+              <div class="service-features-list">
+                <div class="service-feature-item">
+                  <span class="service-feature-check">✓</span>
+                  <span>Nhân viên Cleanova chuẩn hóa tác phong, mang đầy đủ đồng phục & dụng cụ chuyên dụng.</span>
+                </div>
+                <div class="service-feature-item">
+                  <span class="service-feature-check">✓</span>
+                  <span>Sử dụng dung dịch sinh học hữu cơ thân thiện môi trường, an toàn cho trẻ sơ sinh và thú cưng.</span>
+                </div>
+                <div class="service-feature-item">
+                  <span class="service-feature-check">✓</span>
+                  <span>Nghiệm thu trực tiếp cùng khách hàng, bảo hành làm lại miễn phí nếu chưa hài lòng.</span>
+                </div>
+                <div class="service-feature-item">
+                  <span class="service-feature-check">✓</span>
+                  <span>Được bảo hiểm trách nhiệm tài sản lên tới 50.000.000 VNĐ.</span>
+                </div>
               </div>
             `;
             modal.classList.add('active');
           });
         });
+
+        // Gắn sự kiện yêu thích
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            const id = parseInt(this.dataset.favId, 10);
+            const isNowFav = CleanovaAPI.favorites.toggle(id);
+            this.classList.toggle('active', isNowFav);
+            this.innerHTML = isNowFav ? '❤️' : '🤍';
+            showToast(isNowFav ? 'success' : 'info', isNowFav ? 'Đã lưu vào danh sách yêu thích!' : 'Đã bỏ yêu thích.');
+          });
+        });
       }
 
-      // Xử lý Modal
+      // Xử lý Modal đóng
       const modal = document.getElementById('service-detail-modal');
       const closeModal = () => modal.classList.remove('active');
       document.getElementById('modal-service-close').addEventListener('click', closeModal);
       document.getElementById('modal-service-btn-close').addEventListener('click', closeModal);
       modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 
+      // Xử lý Filter Pills
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', function () {
+          document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+          this.classList.add('active');
+          currentFilter = this.dataset.cat;
+          renderServices();
+        });
+      });
+
       // Xử lý Tìm kiếm
       const searchInput = document.getElementById('search-input');
       const searchBtn = document.getElementById('btn-search');
-
       searchBtn.addEventListener('click', () => fetchServices(searchInput.value.trim()));
-      searchInput.addEventListener('keypress', (e) => {
+      searchInput.addEventListener('keypress', e => {
         if (e.key === 'Enter') fetchServices(searchInput.value.trim());
       });
+
+      // Toast helper
+      function showToast(type, msg) {
+        const c = document.getElementById('toast-container');
+        if (!c) return;
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : 'ℹ️'}</span><span class="toast-message">${msg}</span>`;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 3200);
+      }
 
       // Tải dữ liệu ban đầu
       await fetchServices();

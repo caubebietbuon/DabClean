@@ -86,6 +86,45 @@ const BookingModel = {
     return result.affectedRows > 0;
   },
 
+  // Khách hàng yêu cầu đổi lịch đơn đặt dịch vụ
+  async reschedule(id, { booking_date, booking_time, notes }) {
+    const result = await db.query(
+      'UPDATE bookings SET booking_date = ?, booking_time = ?, notes = ? WHERE id = ?',
+      [booking_date, booking_time, notes || '', id]
+    );
+    return result.affectedRows > 0;
+  },
+
+  // Tạo đánh giá chất lượng dịch vụ cho đơn đã hoàn thành
+  async createReview({ booking_id, user_id, service_id, rating, comment }) {
+    const result = await db.query(
+      'INSERT INTO reviews (booking_id, user_id, service_id, rating, comment) VALUES (?, ?, ?, ?, ?)',
+      [booking_id, user_id, service_id, rating, comment || '']
+    );
+    return result.insertId;
+  },
+
+  // Lấy đánh giá của một đơn
+  async getReviewByBookingId(bookingId) {
+    const rows = await db.query(
+      'SELECT r.*, u.name AS user_name FROM reviews r LEFT JOIN users u ON r.user_id = u.id WHERE r.booking_id = ? LIMIT 1',
+      [bookingId]
+    );
+    return rows[0] || null;
+  },
+
+  // Lấy danh sách đánh giá mới nhất
+  async getAllReviews(limit = 10) {
+    return await db.query(
+      `SELECT r.*, u.name AS user_name, s.name AS service_name, s.icon AS service_icon
+       FROM reviews r
+       LEFT JOIN users u ON r.user_id = u.id
+       LEFT JOIN services s ON r.service_id = s.id
+       ORDER BY r.id DESC LIMIT ?`,
+      [limit]
+    );
+  },
+
   // Lấy toàn bộ đơn hàng (Dành cho Admin)
   async getAll() {
     return await db.query(

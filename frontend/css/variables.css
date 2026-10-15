@@ -1,0 +1,175 @@
+/* ============================================================
+   CLEANOVA DESIGN SYSTEM - VARIABLES & TOKENS
+   Modern SaaS Dashboard & Premium Service Platform
+   ============================================================ */
+
+:root {
+  /* --- Brand Colors: Modern Royal Blue + Fresh Emerald/Teal --- */
+  --color-primary: #2563eb;             /* Royal Blue - công nghệ, uy tín */
+  --color-primary-hover: #1d4ed8;       /* Blue darker */
+  --color-primary-active: #1e40af;
+  --color-primary-light: #dbeafe;      /* Nhẹ cho tags, hover nền */
+  --color-primary-ultra-light: #eff6ff;
+  --color-primary-rgb: 37, 99, 235;
+
+  --color-secondary: #0d9488;           /* Teal / Xanh ngọc - sạch sẽ, tươi mới */
+  --color-secondary-hover: #0f766e;
+  --color-secondary-light: #ccfbf1;
+  --color-secondary-ultra-light: #f0fdfa;
+  --color-secondary-rgb: 13, 148, 136;
+
+  --color-accent: #10b981;              /* Emerald Green */
+  --color-accent-light: #d1fae5;
+
+  /* --- Surface & Background Tones --- */
+  --color-bg: #f8fafc;                  /* Slate tint rất nhạt, sang trọng */
+  --color-bg-alt: #f1f5f9;              /* Slate 100 */
+  --color-surface: #ffffff;             /* Thẻ trắng nổi bật trên nền Slate */
+  --color-surface-hover: #fbfcfe;
+  --color-card-bg: #ffffff;
+
+  /* --- Borders & Hairlines --- */
+  --color-border: #e2e8f0;              /* Slate 200 */
+  --color-border-light: #f1f5f9;        /* Slate 100 */
+  --color-border-focus: #3b82f6;        /* Focus border */
+  --color-divider: #e2e8f0;
+
+  /* --- Typography & Text Tones --- */
+  --color-text-main: #0f172a;           /* Slate 900 - Độ tương phản cao nhất */
+  --color-text: #0f172a;
+  --color-text-body: #334155;           /* Slate 700 - Đọc êm mắt */
+  --color-text-secondary: #475569;      /* Slate 600 */
+  --color-text-muted: #64748b;          /* Slate 500 */
+  --color-text-light: #94a3b8;          /* Slate 400 */
+  --color-text-white: #ffffff;
+
+  /* --- Semantic Status Colors --- */
+  --color-success: #059669;
+  --color-success-bg: #ecfdf5;
+  --color-success-border: #a7f3d0;
+
+  --color-warning: #d97706;
+  --color-warning-bg: #fffbeb;
+  --color-warning-border: #fde68a;
+
+  --color-error: #e11d48;
+  --color-error-bg: #fff1f2;
+  --color-error-border: #fecdd3;
+
+  --color-info: #0284c7;
+  --color-info-bg: #f0f9ff;
+  --color-info-border: #bae6fd;
+
+  --color-star: #f59e0b;                /* Vàng sao đánh giá */
+
+  /* --- Status Badges (Đơn hàng Cleanova) --- */
+  --status-pending-bg: #fffbeb;
+  --status-pending-text: #b45309;
+  --status-pending-border: #fde68a;
+
+  --status-confirmed-bg: #f0fdfa;
+  --status-confirmed-text: #0f766e;
+  --status-confirmed-border: #99f6e4;
+
+  --status-in-progress-bg: #eef2ff;
+  --status-in-progress-text: #4338ca;
+  --status-in-progress-border: #c7d2fe;
+
+  --status-completed-bg: #ecfdf5;
+  --status-completed-text: #047857;
+  --status-completed-border: #a7f3d0;
+
+  --status-cancelled-bg: #fff1f2;
+  --status-cancelled-text: #be123c;
+  --status-cancelled-border: #fecdd3;
+
+  /* --- Gradients --- */
+  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #0d9488 100%);
+  --gradient-primary-hover: linear-gradient(135deg, #1d4ed8 0%, #0f766e 100%);
+  --gradient-hero: linear-gradient(135deg, #eff6ff 0%, #f0fdfa 50%, #ffffff 100%);
+  --gradient-mesh: radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.08) 0px, transparent 50%),
+                   radial-gradient(at 100% 0%, rgba(13, 148, 136, 0.08) 0px, transparent 50%),
+                   radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+  --gradient-card-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 100%);
+  --gradient-badge: linear-gradient(135deg, #dbeafe 0%, #ccfbf1 100%);
+  --gradient-promo: linear-gradient(135deg, #1e40af 0%, #0f766e 100%);
+
+  /* --- Typography --- */
+  --font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-md: 1.125rem;   /* 18px */
+  --font-size-lg: 1.25rem;    /* 20px */
+  --font-size-xl: 1.5rem;     /* 24px */
+  --font-size-2xl: 1.875rem;  /* 30px */
+  --font-size-3xl: 2.25rem;   /* 36px */
+  --font-size-4xl: 3rem;      /* 48px */
+  --font-size-5xl: 3.75rem;   /* 60px */
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.35;
+  --line-height-normal: 1.55;
+  --line-height-relaxed: 1.7;
+
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-wide: 0.03em;
+
+  /* --- Spacing System --- */
+  --space-2xs: 0.25rem;  /* 4px */
+  --space-xs: 0.5rem;    /* 8px */
+  --space-sm: 0.75rem;   /* 12px */
+  --space-md: 1rem;      /* 16px */
+  --space-lg: 1.5rem;    /* 24px */
+  --space-xl: 2rem;      /* 32px */
+  --space-2xl: 3rem;     /* 48px */
+  --space-3xl: 4rem;     /* 64px */
+  --space-4xl: 6rem;     /* 96px */
+
+  /* --- Border Radius --- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+
+  /* --- Shadows (Layered for visual depth) --- */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 40px rgba(15, 23, 42, 0.11);
+  --shadow-xl: 0 24px 60px rgba(15, 23, 42, 0.15);
+  --shadow-card: 0 2px 10px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 14px 34px rgba(15, 23, 42, 0.09);
+  --shadow-primary: 0 8px 24px rgba(37, 99, 235, 0.22);
+  --shadow-secondary: 0 8px 24px rgba(13, 148, 136, 0.22);
+
+  /* --- Transitions --- */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 380ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* --- Layout Sizes --- */
+  --container-max: 1240px;
+  --container-narrow: 900px;
+  --header-height: 72px;
+
+  /* --- Z-index Scale --- */
+  --z-base: 1;
+  --z-card: 10;
+  --z-header: 100;
+  --z-dropdown: 200;
+  --z-modal: 1000;
+  --z-toast: 2000;
+}

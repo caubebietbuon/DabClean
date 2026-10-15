@@ -172,6 +172,112 @@ const bookingController = {
     } catch (err) {
       next(err);
     }
+  },
+
+  // 5. Khách hàng yêu cầu đổi lịch đơn đặt dịch vụ (PUT /api/bookings/:id/reschedule)
+  async rescheduleBooking(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const { booking_date, booking_time, notes } = req.body;
+
+      if (!booking_date || !booking_time) {
+        return res.status(400).json({ success: false, message: 'Vui lòng chọn ngày và giờ mới cần đổi lịch.' });
+      }
+
+      const booking = await BookingModel.getById(id);
+      if (!booking) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
+      }
+
+      if (booking.user_id !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, message: 'Bạn không có quyền thao tác trên đơn này.' });
+      }
+
+      if (booking.status === 'completed' || booking.status === 'cancelled') {
+        return res.status(400).json({ success: false, message: 'Đơn đã hoàn thành hoặc đã hủy, không thể đổi lịch.' });
+      }
+
+      await BookingModel.reschedule(id, { booking_date, booking_time, notes });
+      const updated = await BookingModel.getById(id);
+
+      res.json({
+        success: true,
+        message: 'Đổi lịch thực hiện dịch vụ thành công! Đội ngũ Cleanova đã ghi nhận lịch hẹn mới.',
+        data: updated
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 6. Gửi đánh giá dịch vụ cho đơn đã hoàn thành (POST /api/bookings/:id/review)
+  async createReview(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const { rating = 5, comment = '' } = req.body;
+
+      const booking = await BookingModel.getById(id);
+      if (!booking) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
+      }
+
+      if (booking.user_id !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, message: 'Bạn không có quyền đánh giá đơn này.' });
+      }
+
+      if (booking.status !== 'completed') {
+        return res.status(400).json({ success: false, message: 'Chỉ có thể đánh giá dịch vụ sau khi đơn đã hoàn thành.' });
+      }
+
+      const existingReview = await BookingModel.getReviewByBookingId(id);
+      if (existingReview) {
+        return res.status(400).json({ success: false, message: 'Bạn đã gửi đánh giá cho đơn này rồi. Cảm ơn bạn!' });
+      }
+
+      const reviewId = await BookingModel.createReview({
+        booking_id: id,
+        user_id: req.user.id,
+        service_id: booking.service_id,
+        rating: Math.min(5, Math.max(1, parseInt(rating, 10) || 5)),
+        comment
+      });
+
+      res.status(201).json({
+        success: true,
+        message: 'Cảm ơn bạn đã gửi đánh giá chất lượng dịch vụ cho Cleanova!',
+        data: { id: reviewId, rating, comment }
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 7. Lấy đánh giá của một đơn (GET /api/bookings/:id/review)
+  async getBookingReview(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const review = await BookingModel.getReviewByBookingId(id);
+      res.json({
+        success: true,
+        data: review
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 8. Lấy toàn bộ đánh giá công khai (GET /api/bookings/reviews/all)
+  async getAllReviews(req, res, next) {
+    try {
+      const limit = parseInt(req.query.limit, 10) || 10;
+      const reviews = await BookingModel.getAllReviews(limit);
+      res.json({
+        success: true,
+        data: reviews
+      });
+    } catch (err) {
+      next(err);
+    }
   }
 };
 

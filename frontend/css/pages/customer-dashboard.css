@@ -1,0 +1,218 @@
+/* ============================================================
+   CLEANOVA - PAGE: CUSTOMER DASHBOARD (my-bookings.html)
+   Welcome Hero, Quick KPI Counters, Quick Action Bar & Notifications
+   ============================================================ */
+
+/* Welcome Banner */
+.customer-welcome-banner {
+  background: linear-gradient(135deg, #1e40af 0%, #0d9488 100%);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-2xl);
+  color: var(--color-white);
+  margin-bottom: var(--space-2xl);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.18);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.customer-welcome-banner::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.welcome-info-col {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+}
+
+.welcome-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-sm);
+  text-transform: uppercase;
+}
+
+.welcome-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-white);
+  margin-bottom: var(--space-xs);
+}
+
+.welcome-subtitle {
+  color: #dbeafe;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  margin: 0;
+}
+
+.welcome-actions-col {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.welcome-actions-col .btn {
+  background: var(--color-white);
+  color: #1e40af !important;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.welcome-actions-col .btn:hover {
+  background: #f8fafc;
+  transform: translateY(-2px);
+}
+
+/* KPI Counter Stats Grid */
+.dashboard-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin-bottom: var(--space-2xl);
+}
+
+.kpi-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: #cbd5e1;
+}
+
+.kpi-card:hover::after {
+  opacity: 1;
+}
+
+.kpi-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.kpi-icon-box.amber { background: #fffbeb; color: #b45309; }
+.kpi-icon-box.teal { background: #f0fdfa; color: #0f766e; }
+.kpi-icon-box.green { background: #ecfdf5; color: #059669; }
+.kpi-icon-box.blue { background: #eff6ff; color: #2563eb; }
+
+.kpi-info .kpi-number {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-text-main);
+  line-height: 1.1;
+}
+
+.kpi-info .kpi-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+/* Quick Action Shortcuts Bar */
+.quick-action-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.quick-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  color: var(--color-text-main);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  box-shadow: var(--shadow-xs);
+}
+
+.quick-action-btn:hover {
+  background: var(--color-primary-ultra-light);
+  border-color: var(--color-primary-light);
+  color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 1024px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .customer-welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-lg);
+  }
+  .welcome-actions-col {
+    width: 100%;
+  }
+  .welcome-actions-col .btn {
+    width: 100%;
+  }
+  .dashboard-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
