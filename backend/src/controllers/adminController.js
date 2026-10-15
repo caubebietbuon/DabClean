@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const BookingModel = require('../models/bookingModel');
 const ServiceModel = require('../models/serviceModel');
 const UserModel = require('../models/userModel');
+const PartnerModel = require('../models/partnerModel');
 
 const adminController = {
   // 1. Thống kê tổng quan Dashboard (GET /api/admin/stats)
@@ -555,6 +556,140 @@ const adminController = {
         },
         count: tasks.length,
         data: tasks
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 16. Lấy danh sách hồ sơ đối tác / nhân viên (GET /api/admin/partners)
+  async getPartners(req, res, next) {
+    try {
+      const { status } = req.query;
+      const partners = await PartnerModel.getAll(status);
+      const pendingCount = await PartnerModel.countPending();
+      res.json({
+        success: true,
+        count: partners.length,
+        pending_count: pendingCount,
+        data: partners
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 17. Lấy chi tiết hồ sơ đối tác (GET /api/admin/partners/:id)
+  async getPartnerDetail(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const partner = await PartnerModel.findById(id);
+      if (!partner) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy hồ sơ đối tác này.' });
+      }
+      res.json({
+        success: true,
+        data: partner
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 18. Phê duyệt hồ sơ đối tác & Cấp quyền tài khoản Staff (PATCH /api/admin/partners/:id/approve)
+  async approvePartner(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const partner = await PartnerModel.findById(id);
+      if (!partner) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy hồ sơ đối tác.' });
+      }
+
+      if (partner.status === 'approved') {
+        return res.status(400).json({ success: false, message: 'Hồ sơ này đã được phê duyệt trước đó.' });
+      }
+
+      // Tạo hoặc kích hoạt tài khoản nhân viên (Role: staff, Status: active)
+      let staffUserId = partner.user_id;
+      const existingUser = await UserModel.findByEmail(partner.email);
+
+      if (existingUser) {
+        staffUserId = existingUser.id;
+        await UserModel.updateRole(staffUserId, 'staff');
+        await UserModel.updateStatus(staffUserId, 'active');
+      } else {
+        staffUserId = await UserModel.create({
+          name: partner.name,
+          email: partner.email,
+          password: partner.password, // Mật khẩu đã được mã hóa bcrypt an toàn khi đăng ký
+          phone: partner.phone,
+          address: partner.address,
+          role: 'staff',
+          status: 'active'
+        });
+      }
+
+      // Cập nhật trạng thái hồ sơ đối tác thành approved
+      await PartnerModel.approve(id, {
+        user_id: staffUserId,
+        reviewed_by: req.user.id
+      });
+
+      // Ghi nhật ký quản trị
+      await UserModel.logAudit(
+        req.user.id,
+        'APPROVE_PARTNER',
+        id,
+        'partner',
+        `Phê duyệt hồ sơ đối tác ${partner.name} (${partner.email}), cấp quyền nhân viên Staff #${staffUserId}`
+      );
+
+      res.json({
+        success: true,
+        message: `Đã phê duyệt hồ sơ đối tác thành công và cấp quyền nhân viên cho ${partner.name}.`,
+        data: {
+          partner_id: id,
+          staff_id: staffUserId,
+          status: 'approved'
+        }
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 19. Từ chối hồ sơ đối tác (PATCH /api/admin/partners/:id/reject)
+  async rejectPartner(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const { rejection_reason } = req.body;
+      const partner = await PartnerModel.findById(id);
+      if (!partner) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy hồ sơ đối tác.' });
+      }
+
+      await PartnerModel.reject(id, {
+        rejection_reason: rejection_reason || 'Chưa đáp ứng tiêu chí đợt tuyển dụng này',
+        reviewed_by: req.user.id
+      });
+
+      // Ghi nhật ký quản trị
+      await UserModel.logAudit(
+        req.user.id,
+        'REJECT_PARTNER',
+        id,
+        'partner',
+        `Từ chối hồ sơ đối tác ${partner.name} (${partner.email}). Lý do: ${rejection_reason || 'Không nêu'}`
+      );
+
+      res.json({
+        success: true,
+        message: `Đã cập nhật trạng thái từ chối hồ sơ của ${partner.name}.`,
+        data: {
+          partner_id: id,
+          status: 'rejected',
+          rejection_reason
+        }
       });
     } catch (err) {
       next(err);

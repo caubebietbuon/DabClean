@@ -270,7 +270,47 @@ const inMemoryData = {
       created_at: new Date('2026-10-13T10:00:00Z')
     }
   ],
-  audit_logs: []
+  audit_logs: [],
+  partner_applications: [
+    {
+      id: 1,
+      name: 'Đặng Quốc Anh',
+      email: 'quocanh.partner@gmail.com',
+      phone: '0977112233',
+      password: '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', // Staff@Cleanova2026!
+      address: 'Số 45 ngõ 165 Cầu Giấy, Hà Nội',
+      work_area: 'Cầu Giấy, Nam Từ Liêm',
+      experience: '1-3 năm',
+      available_hours: 'Toàn thời gian (Full-time)',
+      bio: 'Đã có 2 năm làm dịch vụ dọn dẹp buồng phòng khách sạn, cẩn thận, trung thực, có xe máy đi lại.',
+      status: 'pending',
+      rejection_reason: null,
+      reviewed_by: null,
+      reviewed_at: null,
+      user_id: null,
+      created_at: new Date('2026-10-15T08:00:00Z'),
+      updated_at: new Date('2026-10-15T08:00:00Z')
+    },
+    {
+      id: 2,
+      name: 'Nguyễn Thị Hồng',
+      email: 'hong.partner@gmail.com',
+      phone: '0988776655',
+      password: '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC',
+      address: 'Số 89 Nguyễn Trãi, Thanh Xuân, Hà Nội',
+      work_area: 'Thanh Xuân, Đống Đa',
+      experience: 'Trên 3 năm',
+      available_hours: 'Linh hoạt theo ca',
+      bio: 'Kinh nghiệm tổng vệ sinh căn hộ cao cấp và giặt ghế sofa, nhiệt tình, tỉ mỉ.',
+      status: 'approved',
+      rejection_reason: null,
+      reviewed_by: 1,
+      reviewed_at: new Date('2026-10-12T09:00:00Z'),
+      user_id: 3,
+      created_at: new Date('2026-10-10T10:00:00Z'),
+      updated_at: new Date('2026-10-12T09:00:00Z')
+    }
+  ]
 };
 
 // Khởi tạo và kiểm tra kết nối MySQL
@@ -324,6 +364,16 @@ function queryInMemory(sql, params = []) {
       return [{ count: bookingCount, total: bookingCount }];
     }
 
+    // Đếm số hồ sơ đối tác
+    if (normalizedSql.includes('from partner_applications')) {
+      if (normalizedSql.includes("status = 'pending'") || (params && params[0] === 'pending')) {
+        const pendingCount = (inMemoryData.partner_applications || []).filter(p => p.status === 'pending').length;
+        return [{ count: pendingCount, total: pendingCount }];
+      }
+      const totalPartners = (inMemoryData.partner_applications || []).length;
+      return [{ count: totalPartners, total: totalPartners }];
+    }
+
     // Thống kê Dashboard tổng quan
     const totalUsers = inMemoryData.users.filter(u => u.role === 'customer' || u.role === 'user').length;
     const totalStaff = inMemoryData.users.filter(u => u.role === 'staff').length;
@@ -331,6 +381,7 @@ function queryInMemory(sql, params = []) {
     const totalServices = inMemoryData.services.length;
     const totalBookings = inMemoryData.bookings.length;
     const pendingBookings = inMemoryData.bookings.filter(b => b.status === 'pending').length;
+    const pendingPartners = (inMemoryData.partner_applications || []).filter(p => p.status === 'pending').length;
     const totalRevenue = inMemoryData.bookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + (b.total_price || 0), 0);
 
     return [{
@@ -340,6 +391,7 @@ function queryInMemory(sql, params = []) {
       total_services: totalServices,
       total_bookings: totalBookings,
       pending_bookings: pendingBookings,
+      pending_partners: pendingPartners,
       total_revenue: totalRevenue,
       totalUsers: totalUsers,
       totalStaff: totalStaff,
@@ -705,6 +757,90 @@ function queryInMemory(sql, params = []) {
       created_at: new Date()
     });
     return { insertId: newId, affectedRows: 1 };
+  }
+
+  // 13. SELECT partner_applications
+  if (normalizedSql.includes('from partner_applications')) {
+    const apps = inMemoryData.partner_applications || [];
+    // Theo ID
+    if (normalizedSql.includes('where id =')) {
+      const id = parseInt(params[0], 10);
+      const app = apps.find(a => a.id === id);
+      return app ? [{ ...app }] : [];
+    }
+    // Theo Email
+    if (normalizedSql.includes('where email =')) {
+      const email = (params[0] || '').toLowerCase().trim();
+      const app = apps.find(a => (a.email || '').toLowerCase() === email);
+      return app ? [{ ...app }] : [];
+    }
+    // Theo Phone
+    if (normalizedSql.includes('where phone =')) {
+      const phone = (params[0] || '').trim();
+      const app = apps.find(a => (a.phone || '').trim() === phone);
+      return app ? [{ ...app }] : [];
+    }
+    // Lọc theo Status
+    if (normalizedSql.includes('where status =')) {
+      const status = params[0];
+      return apps.filter(a => a.status === status).map(a => ({ ...a })).reverse();
+    }
+    // Lấy tất cả
+    return apps.map(a => ({ ...a })).reverse();
+  }
+
+  // 14. INSERT INTO partner_applications
+  if (normalizedSql.startsWith('insert into partner_applications')) {
+    const [name, email, phone, password, address, work_area, experience, available_hours, bio, status] = params;
+    if (!inMemoryData.partner_applications) inMemoryData.partner_applications = [];
+    const newId = inMemoryData.partner_applications.length > 0 
+      ? Math.max(...inMemoryData.partner_applications.map(p => p.id)) + 1 
+      : 1;
+    const newApp = {
+      id: newId,
+      name: (name || '').trim(),
+      email: (email || '').trim().toLowerCase(),
+      phone: (phone || '').trim(),
+      password,
+      address: (address || '').trim(),
+      work_area: (work_area || '').trim(),
+      experience: experience || '',
+      available_hours: available_hours || '',
+      bio: bio || '',
+      status: status || 'pending',
+      rejection_reason: null,
+      reviewed_by: null,
+      reviewed_at: null,
+      user_id: null,
+      created_at: new Date(),
+      updated_at: new Date()
+    };
+    inMemoryData.partner_applications.push(newApp);
+    return { insertId: newId, affectedRows: 1 };
+  }
+
+  // 15. UPDATE partner_applications (Approve / Reject / Update status)
+  if (normalizedSql.startsWith('update partner_applications')) {
+    const id = parseInt(params[params.length - 1], 10);
+    const app = (inMemoryData.partner_applications || []).find(p => p.id === id);
+    if (app) {
+      if (normalizedSql.includes('status = ?') && normalizedSql.includes('rejection_reason = ?')) {
+        app.status = params[0];
+        app.rejection_reason = params[1];
+        app.reviewed_by = params[2];
+        app.reviewed_at = new Date();
+      } else if (normalizedSql.includes('status = ?') && normalizedSql.includes('user_id = ?')) {
+        app.status = params[0];
+        app.user_id = params[1];
+        app.reviewed_by = params[2];
+        app.reviewed_at = new Date();
+      } else if (normalizedSql.includes('status = ?')) {
+        app.status = params[0];
+      }
+      app.updated_at = new Date();
+      return { affectedRows: 1 };
+    }
+    return { affectedRows: 0 };
   }
 
   return [];

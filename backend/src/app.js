@@ -24,6 +24,7 @@ const serviceRoutes = require('./routes/serviceRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const staffRoutes = require('./routes/staffRoutes');
+const partnerRoutes = require('./routes/partnerRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 // Khai báo API Endpoints
@@ -32,6 +33,7 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/partner', partnerRoutes);
 
 // Endpoint kiểm tra sức khỏe hệ thống (Health Check)
 app.get('/api/health', (req, res) => {
@@ -47,6 +49,12 @@ app.get('/api/health', (req, res) => {
 
 // Phục vụ các file tĩnh Frontend từ thư mục frontend/
 const frontendPath = path.join(__dirname, '../../frontend');
+
+// Friendly clean routing cho trang Đăng ký đối tác / nhân viên Cleanova
+app.get(['/partner/register', '/employee/register', '/partner-register'], (req, res) => {
+  res.sendFile(path.join(frontendPath, 'partner-register.html'));
+});
+
 app.use(express.static(frontendPath));
 
 // Xử lý trang lỗi 404 cho API

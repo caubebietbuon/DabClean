@@ -1,0 +1,1142 @@
+/* ============================================================
+   CLEANOVA - PARTNER, CUSTOMER GUIDE & ENHANCED SECTIONS
+   Design System: Royal Blue + Teal/Emerald SaaS Clean Architecture
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   1. HEADER PARTNER BUTTON (Nút "Trở thành đối tác" trên Header)
+   ------------------------------------------------------------ */
+.btn-partner-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f766e;
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, rgba(37, 99, 235, 0.08) 100%);
+  border: 1.5px solid rgba(13, 148, 136, 0.4);
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+
+.btn-partner-header:hover {
+  background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.28);
+  transform: translateY(-2px);
+}
+
+.btn-partner-header:active {
+  transform: translateY(0);
+}
+
+.btn-partner-header:focus-visible {
+  outline: 2px solid #0d9488;
+  outline-offset: 2px;
+}
+
+.btn-partner-icon {
+  font-size: 15px;
+  line-height: 1;
+  display: inline-block;
+  transition: transform var(--transition-normal);
+}
+
+.btn-partner-header:hover .btn-partner-icon {
+  transform: scale(1.15) rotate(-6deg);
+}
+
+/* Nút Đối tác trên Mobile Navigation Drawer */
+.mobile-partner-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+  border: 1.5px solid #99f6e4;
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: #0f766e;
+  transition: all var(--transition-fast);
+}
+
+.mobile-partner-card:hover {
+  background: linear-gradient(135deg, #ccfbf1 0%, #dbeafe 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-partner-card .card-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  box-shadow: var(--shadow-xs);
+  flex-shrink: 0;
+}
+
+.mobile-partner-card .card-text strong {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.mobile-partner-card .card-text span {
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+/* ------------------------------------------------------------
+   2. SECTION: VÌ SAO CHỌN CLEANOVA (7 Practical Benefits)
+   ------------------------------------------------------------ */
+.why-cleanova {
+  background: #ffffff;
+  position: relative;
+}
+
+.why-cleanova-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+}
+
+.why-benefit-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.why-benefit-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #0d9488);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.why-benefit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  border-color: rgba(37, 99, 235, 0.25);
+}
+
+.why-benefit-card:hover::before {
+  opacity: 1;
+}
+
+.why-benefit-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(13, 148, 136, 0.08) 100%);
+  color: var(--color-primary);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  margin-bottom: var(--space-md);
+  transition: transform var(--transition-normal);
+}
+
+.why-benefit-card:hover .why-benefit-icon {
+  transform: scale(1.1) rotate(4deg);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(13, 148, 136, 0.15) 100%);
+}
+
+.why-benefit-card h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+.why-benefit-card p {
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Card thứ 7 trải dài nổi bật hoặc layout cân xứng */
+.why-benefit-card.highlight-card {
+  grid-column: span 3;
+  background: linear-gradient(135deg, #f8fafc 0%, #f0fdfa 100%);
+  border: 1px solid #ccfbf1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-xl);
+  padding: var(--space-xl) var(--space-2xl);
+}
+
+.why-benefit-card.highlight-card .why-benefit-icon {
+  margin-bottom: 0;
+  width: 56px;
+  height: 56px;
+  font-size: 26px;
+}
+
+.why-cleanova-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-3xl);
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------
+   3. SECTION: HƯỚNG DẪN KHÁCH HÀNG (6 Steps Timeline)
+   ------------------------------------------------------------ */
+.customer-guide {
+  background: var(--color-bg);
+  position: relative;
+}
+
+.guide-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+  position: relative;
+}
+
+.guide-step-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  position: relative;
+  transition: all var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.guide-step-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  border-color: rgba(13, 148, 136, 0.3);
+}
+
+.guide-step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.guide-step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(13, 148, 136, 0.1) 100%);
+  color: var(--color-primary);
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+
+.guide-step-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-alt);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  transition: transform var(--transition-normal);
+}
+
+.guide-step-card:hover .guide-step-icon {
+  transform: scale(1.12);
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(13, 148, 136, 0.12) 100%);
+}
+
+.guide-step-card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 8px;
+}
+
+.guide-step-card p {
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.guide-bottom-bar {
+  margin-top: var(--space-3xl);
+  padding: var(--space-xl) var(--space-2xl);
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+}
+
+.guide-bottom-bar-text strong {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--color-text-main);
+  margin-bottom: 4px;
+}
+
+.guide-bottom-bar-text span {
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+}
+
+.guide-bottom-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------
+   4. SECTION: MỘT BUỔI DỌN DẸP (Cleaning Session Timeline)
+   ------------------------------------------------------------ */
+.cleaning-timeline-section {
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.timeline-intro-box {
+  max-width: 760px;
+  margin: 0 auto var(--space-3xl);
+  text-align: center;
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Timeline Container: 2-cột so le trên desktop */
+.cleaning-timeline {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: var(--space-xl) 0;
+}
+
+/* Trục thời gian trung tâm */
+.cleaning-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  background: linear-gradient(180deg, #2563eb 0%, #0d9488 50%, #10b981 100%);
+  transform: translateX(-50%);
+  border-radius: var(--radius-full);
+}
+
+.timeline-phase-item {
+  display: flex;
+  position: relative;
+  margin-bottom: var(--space-3xl);
+  width: 50%;
+}
+
+.timeline-phase-item:nth-child(odd) {
+  left: 0;
+  padding-right: var(--space-3xl);
+  justify-content: flex-end;
+}
+
+.timeline-phase-item:nth-child(even) {
+  left: 50%;
+  padding-left: var(--space-3xl);
+  justify-content: flex-start;
+}
+
+/* Node chấm tròn trên trục trung tâm */
+.timeline-phase-node {
+  position: absolute;
+  top: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #0d9488;
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 2;
+  transition: transform var(--transition-normal);
+}
+
+.timeline-phase-item:nth-child(odd) .timeline-phase-node {
+  right: -20px;
+}
+
+.timeline-phase-item:nth-child(even) .timeline-phase-node {
+  left: -20px;
+}
+
+.timeline-phase-item:hover .timeline-phase-node {
+  transform: scale(1.2);
+  background: #0d9488;
+  color: white;
+}
+
+/* Thẻ giai đoạn */
+.timeline-phase-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+  width: 100%;
+  max-width: 430px;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.timeline-phase-item:hover .timeline-phase-card {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.08);
+  border-color: rgba(13, 148, 136, 0.35);
+}
+
+.timeline-phase-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.timeline-phase-badge {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timeline-duration-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  background: #ecfdf5;
+  color: #047857;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid #a7f3d0;
+}
+
+.timeline-phase-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timeline-tasks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeline-tasks-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.timeline-tasks-list li::before {
+  content: '✓';
+  color: #10b981;
+  font-weight: 800;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Hộp Lưu ý thời lượng & phạm vi ở cuối section */
+.timeline-disclaimer-box {
+  max-width: 880px;
+  margin: var(--space-2xl) auto 0;
+  padding: var(--space-lg) var(--space-xl);
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 13px;
+  color: #92400e;
+  line-height: 1.6;
+}
+
+.timeline-disclaimer-box .disclaimer-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ------------------------------------------------------------
+   5. SECTION: TRỞ THÀNH ĐỐI TÁC TRÊN HOMEPAGE (Gần Footer)
+   ------------------------------------------------------------ */
+.partner-hero-banner {
+  padding: var(--space-4xl) 0;
+  background: linear-gradient(135deg, #f0fdfa 0%, #eff6ff 100%);
+  position: relative;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.partner-banner-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  align-items: center;
+  gap: var(--space-3xl);
+}
+
+.partner-banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  background: #ffffff;
+  border: 1px solid #99f6e4;
+  color: #0f766e;
+  font-size: 12px;
+  font-weight: 800;
+  margin-bottom: var(--space-md);
+  box-shadow: var(--shadow-xs);
+}
+
+.partner-banner-title {
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  color: var(--color-text-main);
+  line-height: 1.25;
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.02em;
+}
+
+.partner-banner-desc {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-xl);
+}
+
+.partner-process-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: var(--space-2xl);
+}
+
+.partner-step-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+  color: var(--color-text-main);
+  font-weight: 600;
+}
+
+.partner-step-mini .step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #0d9488;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* Thẻ minh họa quyền lợi đối tác */
+.partner-visual-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-2xl);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+  position: relative;
+}
+
+.partner-visual-card .feature-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.partner-visual-card .feature-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.partner-visual-card .feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(37, 99, 235, 0.1) 100%);
+  color: #0f766e;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.partner-visual-card .feature-text strong {
+  display: block;
+  font-size: 14px;
+  color: var(--color-text-main);
+  margin-bottom: 2px;
+}
+
+.partner-visual-card .feature-text span {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* ------------------------------------------------------------
+   6. DEDICATED PARTNER REGISTRATION PAGE (partner-register.html)
+   ------------------------------------------------------------ */
+.partner-register-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 85% 15%, rgba(13, 148, 136, 0.08), transparent 30rem),
+    radial-gradient(ellipse at 15% 85%, rgba(37, 99, 235, 0.08), transparent 30rem),
+    #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+.partner-page-header {
+  height: 72px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.partner-page-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.btn-back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-alt);
+  transition: all var(--transition-fast);
+}
+
+.btn-back-home:hover {
+  background: #ffffff;
+  color: var(--color-primary);
+  box-shadow: var(--shadow-xs);
+  transform: translateX(-3px);
+}
+
+.partner-form-wrapper {
+  flex: 1;
+  padding: var(--space-3xl) 0 var(--space-4xl);
+}
+
+.partner-split-layout {
+  display: grid;
+  grid-template-columns: 0.95fr 1.05fr;
+  gap: var(--space-3xl);
+  align-items: flex-start;
+}
+
+/* Cột thông tin giới thiệu đối tác bên trái */
+.partner-intro-panel {
+  position: sticky;
+  top: 100px;
+}
+
+.partner-tagline {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f766e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.partner-main-title {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 800;
+  color: var(--color-text-main);
+  line-height: 1.2;
+  margin-bottom: var(--space-md);
+  letter-spacing: -0.03em;
+}
+
+.partner-lead-desc {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin-bottom: var(--space-2xl);
+}
+
+.partner-perks-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-2xl);
+}
+
+.partner-perk-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.03);
+  transition: transform var(--transition-fast);
+}
+
+.partner-perk-card:hover {
+  transform: translateX(4px);
+  border-color: rgba(13, 148, 136, 0.35);
+}
+
+.partner-perk-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.12) 0%, rgba(37, 99, 235, 0.12) 100%);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.partner-perk-info h4 {
+  margin: 0 0 3px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.partner-perk-info p {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+/* Cột form bên phải */
+.partner-form-card {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-2xl);
+  box-shadow: 0 16px 48px rgba(15, 23, 42, 0.07);
+  position: relative;
+}
+
+.partner-form-header {
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.partner-form-header h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 4px;
+}
+
+.partner-form-header p {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.form-grid-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.form-field-group {
+  margin-bottom: var(--space-md);
+  position: relative;
+}
+
+.form-field-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 6px;
+}
+
+.form-field-group label .required-star {
+  color: #ef4444;
+  margin-left: 2px;
+}
+
+.form-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input-wrapper input,
+.form-input-wrapper select,
+.form-input-wrapper textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--color-text-main);
+  background: #ffffff;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+.form-input-wrapper input:focus,
+.form-input-wrapper select:focus,
+.form-input-wrapper textarea:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+}
+
+.form-input-wrapper.has-error input,
+.form-input-wrapper.has-error select,
+.form-input-wrapper.has-error textarea {
+  border-color: #ef4444;
+  background: #fff1f2;
+}
+
+.form-input-wrapper.has-error input:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  transition: color var(--transition-fast);
+}
+
+.password-toggle-btn:hover {
+  color: var(--color-primary);
+}
+
+.field-error-msg {
+  font-size: 11.5px;
+  color: #e11d48;
+  margin-top: 4px;
+  margin-bottom: 0;
+  display: none;
+}
+
+.field-error-msg.visible {
+  display: block;
+}
+
+/* Password Strength Indicator */
+.pw-strength-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #e2e8f0;
+  margin-top: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.pw-strength-fill {
+  height: 100%;
+  width: 0;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.pw-strength-fill.weak { width: 33%; background: #ef4444; }
+.pw-strength-fill.medium { width: 66%; background: #f59e0b; }
+.pw-strength-fill.strong { width: 100%; background: #10b981; }
+
+.terms-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.terms-checkbox-label input[type="checkbox"] {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: #0d9488;
+  flex-shrink: 0;
+}
+
+.btn-submit-partner {
+  width: 100%;
+  padding: 13px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.28);
+  margin-top: var(--space-md);
+}
+
+.btn-submit-partner:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(13, 148, 136, 0.38);
+}
+
+.btn-submit-partner:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Success Confirmation State */
+.partner-success-state {
+  display: none;
+  text-align: center;
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.partner-success-state.active {
+  display: block;
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.success-badge-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: #059669;
+  border: 4px solid #a7f3d0;
+  display: grid;
+  place-items: center;
+  font-size: 36px;
+  margin: 0 auto var(--space-lg);
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.success-details-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  margin: var(--space-lg) 0 var(--space-xl);
+  text-align: left;
+  font-size: 13px;
+}
+
+.success-details-card .detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.success-details-card .detail-row:last-child {
+  border-bottom: none;
+}
+
+/* ------------------------------------------------------------
+   7. RESPONSIVE BREAKPOINTS (Mobile & Tablet)
+   ------------------------------------------------------------ */
+@media (max-width: 992px) {
+  .why-cleanova-grid,
+  .guide-steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .why-benefit-card.highlight-card {
+    grid-column: span 2;
+  }
+
+  .partner-banner-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-2xl);
+  }
+
+  .partner-split-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .partner-intro-panel {
+    position: static;
+  }
+
+  .guide-bottom-bar {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Timeline chuyển sang 1 cột trên mobile */
+  .cleaning-timeline::before {
+    left: 20px;
+    transform: none;
+  }
+
+  .timeline-phase-item {
+    width: 100% !important;
+    left: 0 !important;
+    padding-left: 56px !important;
+    padding-right: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  .timeline-phase-node {
+    left: 2px !important;
+    right: auto !important;
+  }
+
+  .timeline-phase-card {
+    max-width: 100%;
+  }
+
+  .why-cleanova-grid,
+  .guide-steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .why-benefit-card.highlight-card {
+    grid-column: span 1;
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid-row-2 {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .btn-partner-header span {
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .partner-form-card {
+    padding: var(--space-lg);
+  }
+
+  .btn-partner-header {
+    padding: 6px 12px;
+  }
+}
+
+/* ------------------------------------------------------------
+   8. PREFERS-REDUCED-MOTION SUPPORT
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .btn-partner-header,
+  .why-benefit-card,
+  .guide-step-card,
+  .timeline-phase-card,
+  .timeline-phase-node,
+  .partner-perk-card,
+  .btn-submit-partner {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}

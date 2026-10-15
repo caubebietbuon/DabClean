@@ -38,4 +38,10 @@ router.post('/staff', adminController.createStaff);
 router.patch('/staff/:id/status', adminController.toggleUserStatus);
 router.get('/staff/:id/tasks', adminController.getStaffTasks);
 
+// 6. Quản lý hồ sơ đối tác & tuyển dụng (Partner Applications)
+router.get('/partners', adminController.getPartners);
+router.get('/partners/:id', adminController.getPartnerDetail);
+router.patch('/partners/:id/approve', adminController.approvePartner);
+router.patch('/partners/:id/reject', adminController.rejectPartner);
+
 module.exports = router;

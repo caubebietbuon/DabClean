@@ -11,6 +11,8 @@ CREATE DATABASE IF NOT EXISTS cleanova_db
 USE cleanova_db;
 
 -- 2. Xóa bảng cũ nếu tồn tại (theo thứ tự khóa ngoại)
+DROP TABLE IF EXISTS audit_logs;
+DROP TABLE IF EXISTS partner_applications;
 DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS services;
@@ -125,3 +127,32 @@ CREATE TABLE audit_logs (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_audit_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 6: partner_applications (Hồ sơ đăng ký đối tác & nhân viên Cleanova)
+-- ------------------------------------------------------------
+CREATE TABLE partner_applications (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL COMMENT 'Họ và tên ứng viên',
+  email VARCHAR(100) NOT NULL UNIQUE COMMENT 'Địa chỉ email liên hệ',
+  phone VARCHAR(20) NOT NULL COMMENT 'Số điện thoại liên hệ',
+  password VARCHAR(255) NOT NULL COMMENT 'Mật khẩu đã mã hóa bcrypt',
+  address VARCHAR(255) NOT NULL COMMENT 'Địa chỉ hiện tại',
+  work_area VARCHAR(150) NOT NULL COMMENT 'Khu vực làm việc mong muốn',
+  experience VARCHAR(100) DEFAULT NULL COMMENT 'Kinh nghiệm làm việc',
+  available_hours VARCHAR(100) DEFAULT NULL COMMENT 'Khung giờ có thể làm việc',
+  bio TEXT DEFAULT NULL COMMENT 'Giới thiệu ngắn về bản thân & kỹ năng',
+  status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending' COMMENT 'Trạng thái: pending (chờ duyệt), approved (đã duyệt), rejected (từ chối)',
+  rejection_reason TEXT DEFAULT NULL COMMENT 'Lý do từ chối (nếu có)',
+  reviewed_by INT DEFAULT NULL COMMENT 'Admin ID đã duyệt',
+  reviewed_at TIMESTAMP NULL DEFAULT NULL COMMENT 'Thời điểm duyệt',
+  user_id INT DEFAULT NULL COMMENT 'ID tài khoản staff được tạo sau khi duyệt',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_partner_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL,
+  CONSTRAINT fk_partner_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE INDEX idx_partner_email ON partner_applications(email);
+CREATE INDEX idx_partner_phone ON partner_applications(phone);
+CREATE INDEX idx_partner_status ON partner_applications(status);

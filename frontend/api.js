@@ -422,6 +422,32 @@
 
       async getStaffTasks(staffId) {
         return await request(`/admin/staff/${staffId}/tasks`);
+      },
+
+      // Quản lý hồ sơ đối tác & tuyển dụng
+      async getPartners(params = {}) {
+        const searchParams = new URLSearchParams();
+        if (params.status) searchParams.append('status', params.status);
+        if (params.search) searchParams.append('search', params.search);
+        const qs = searchParams.toString() ? `?${searchParams.toString()}` : '';
+        return await request(`/admin/partners${qs}`);
+      },
+
+      async getPartnerDetail(id) {
+        return await request(`/admin/partners/${id}`);
+      },
+
+      async approvePartner(id) {
+        return await request(`/admin/partners/${id}/approve`, {
+          method: 'PATCH'
+        });
+      },
+
+      async rejectPartner(id, reason = '') {
+        return await request(`/admin/partners/${id}/reject`, {
+          method: 'PATCH',
+          body: JSON.stringify({ rejection_reason: reason })
+        });
       }
     },
 
@@ -458,6 +484,16 @@
         return await request('/staff/change-password', {
           method: 'PUT',
           body: JSON.stringify(passwordData)
+        });
+      }
+    },
+
+    // Module Đối tác Cleanova (Partner & Employee Onboarding)
+    partner: {
+      async register(applicationData) {
+        return await request('/partner/register', {
+          method: 'POST',
+          body: JSON.stringify(applicationData)
         });
       }
     }

@@ -4,6 +4,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
+const PartnerModel = require('../models/partnerModel');
 
 // Tạo JWT Token cho người dùng
 function generateToken(user) {
@@ -93,6 +94,24 @@ const authController = {
       // Tìm người dùng trong cơ sở dữ liệu
       const user = await UserModel.findByEmail(email);
       if (!user) {
+        // Kiểm tra xem có phải là ứng viên đối tác đang chờ xét duyệt không
+        const partnerApp = await PartnerModel.findByEmail(email);
+        if (partnerApp) {
+          if (partnerApp.status === 'pending') {
+            return res.status(403).json({
+              success: false,
+              code: 'PARTNER_APPLICATION_PENDING',
+              message: 'Hồ sơ đăng ký đối tác của bạn đang trong trạng thái chờ xét duyệt. Bạn sẽ có thể đăng nhập sau khi hồ sơ được Cleanova phê duyệt.'
+            });
+          }
+          if (partnerApp.status === 'rejected') {
+            return res.status(403).json({
+              success: false,
+              code: 'PARTNER_APPLICATION_REJECTED',
+              message: 'Hồ sơ đối tác chưa được phê duyệt đợt này. Vui lòng liên hệ ban quản trị để biết thêm thông tin.'
+            });
+          }
+        }
         return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không chính xác.' });
       }
 

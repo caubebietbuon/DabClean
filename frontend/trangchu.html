@@ -52,10 +52,12 @@
       <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
         <a href="trangchu.html" class="nav-link active" data-i18n="nav_home">Trang chủ</a>
         <a href="services.html" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
+        <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn?</a>
+        <a href="#customer-guide" class="nav-link" data-i18n="nav_guide">Hướng dẫn</a>
+        <a href="#cleaning-timeline" class="nav-link" data-i18n="nav_timeline">Quy trình</a>
+        <a href="#calculator" class="nav-link" data-i18n="nav_pricing">Bảng giá</a>
         <a href="booking.html" class="nav-link">Đặt lịch</a>
         <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings">Đơn của tôi</a>
-        <a href="#how-it-works" class="nav-link" data-i18n="nav_process">Quy trình</a>
-        <a href="#calculator" class="nav-link" data-i18n="nav_pricing">Bảng giá</a>
         <a href="admin.html" class="nav-link" id="nav-link-admin" style="display: none; color: #B45309; font-weight: 700;">Quản trị</a>
         <a href="staff.html" class="nav-link" id="nav-link-staff" style="display: none; color: #1D4ED8; font-weight: 700;">Nhân viên</a>
       </nav>
@@ -106,6 +108,12 @@
         <!-- Nút Đăng nhập (khi chưa đăng nhập) -->
         <a href="login.html" class="btn btn-ghost btn-sm" id="btn-login-header" data-i18n="btn_login" style="display: none;">Đăng nhập</a>
 
+        <!-- Nút Trở thành đối tác Cleanova (Mới bổ sung theo yêu cầu) -->
+        <a href="partner-register.html" class="btn-partner-header" id="btn-partner-nav" title="Đăng ký trở thành đối tác Cleanova">
+          <span class="btn-partner-icon" aria-hidden="true">🤝</span>
+          <span data-i18n="nav_partner">Trở thành đối tác</span>
+        </a>
+
         <!-- Nút CTA chính - Đặt lịch ngay -->
         <a href="booking.html" class="btn btn-primary btn-sm" data-action="book" data-i18n="btn_book_now">Đặt lịch ngay</a>
 
@@ -126,14 +134,25 @@
   <nav class="mobile-nav" id="mobile-nav" role="navigation" aria-label="Menu mobile">
     <a href="trangchu.html" class="nav-link" data-i18n="nav_home">Trang chủ</a>
     <a href="services.html" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
+    <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn Cleanova</a>
+    <a href="#customer-guide" class="nav-link" data-i18n="nav_guide">Hướng dẫn đặt dịch vụ</a>
+    <a href="#cleaning-timeline" class="nav-link" data-i18n="nav_timeline">Một buổi dọn dẹp</a>
+    <a href="#calculator" class="nav-link" data-i18n="nav_pricing">Bảng giá ước tính</a>
     <a href="booking.html" class="nav-link">Đặt lịch</a>
     <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
     <a href="profile.html" class="nav-link">Hồ sơ cá nhân</a>
     <a href="admin.html" class="nav-link" id="mobile-link-admin" style="display: none; color: #B45309; font-weight: 700;">Quản trị (Admin)</a>
     <a href="staff.html" class="nav-link" id="mobile-link-staff" style="display: none; color: #1D4ED8; font-weight: 700;">Khu vực Nhân viên</a>
-    <a href="#how-it-works" class="nav-link" data-i18n="nav_process">Quy trình</a>
-    <a href="#calculator" class="nav-link" data-i18n="nav_pricing">Bảng giá</a>
-    <a href="#testimonials" class="nav-link" data-i18n="nav_reviews">Đánh giá</a>
+
+    <!-- Card nổi bật Trở thành đối tác trên Mobile -->
+    <a href="partner-register.html" class="mobile-partner-card">
+      <span class="card-icon" aria-hidden="true">🤝</span>
+      <span class="card-text">
+        <strong>Trở thành đối tác Cleanova</strong>
+        <span>Đăng ký tham gia đội ngũ & nhận việc</span>
+      </span>
+    </a>
+
     <div class="mobile-nav-actions">
       <!-- Thông tin tài khoản trên mobile -->
       <a href="profile.html" class="user-profile-mobile" id="user-profile-mobile" style="text-decoration: none;">
@@ -413,6 +432,322 @@
     </section>
 
     <!-- ============================================================
+         04. VÌ SAO CHỌN CLEANOVA (Lợi ích thực tế, rõ ràng & minh bạch)
+         ============================================================ -->
+    <section class="section why-cleanova" id="why-cleanova" aria-label="Vì sao chọn Cleanova">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-badge" data-i18n="why_badge">✨ Giá trị cốt lõi</div>
+          <h2 class="section-title" data-i18n="why_title">Vì sao CleanNova là lựa chọn đáng cân nhắc?</h2>
+          <p class="section-subtitle" data-i18n="why_subtitle">Lợi ích thực tế, minh bạch và an tâm cho mọi khách hàng khi đặt dịch vụ dọn dẹp không gian sống và làm việc.</p>
+        </div>
+
+        <!-- Grid 7 lợi ích thực tế -->
+        <div class="why-cleanova-grid">
+
+          <!-- 1. Đặt lịch thuận tiện -->
+          <div class="why-benefit-card reveal">
+            <div class="why-benefit-icon" aria-hidden="true">⏱️</div>
+            <h3 data-i18n="why_benefit_1_title">1. Đặt lịch thuận tiện</h3>
+            <p data-i18n="why_benefit_1_desc">Khách hàng có thể xem dịch vụ, chọn thời gian phù hợp và gửi yêu cầu ngay trên website nhanh chóng chỉ trong vài thao tác.</p>
+          </div>
+
+          <!-- 2. Thông tin chi phí rõ ràng -->
+          <div class="why-benefit-card reveal">
+            <div class="why-benefit-icon" aria-hidden="true">💎</div>
+            <h3 data-i18n="why_benefit_2_title">2. Thông tin chi phí rõ ràng</h3>
+            <p data-i18n="why_benefit_2_desc">Hiển thị các khoản phí và tổng chi phí dự kiến trước khi khách hàng xác nhận, dựa trên quy tắc tính giá thực tế, không có chi phí ẩn.</p>
+          </div>
+
+          <!-- 3. Theo dõi đơn hàng dễ dàng -->
+          <div class="why-benefit-card reveal">
+            <div class="why-benefit-icon" aria-hidden="true">📍</div>
+            <h3 data-i18n="why_benefit_3_title">3. Theo dõi đơn hàng dễ dàng</h3>
+            <p data-i18n="why_benefit_3_desc">Khách hàng xem trạng thái đơn hàng theo thời gian thực và thông tin nhân viên được phân công khi dữ liệu này sẵn sàng trên hệ thống.</p>
+          </div>
+
+          <!-- 4. Nhiều lựa chọn dịch vụ -->
+          <div class="why-benefit-card reveal">
+            <div class="why-benefit-icon" aria-hidden="true">🧹</div>
+            <h3 data-i18n="why_benefit_4_title">4. Nhiều lựa chọn dịch vụ</h3>
+            <p data-i18n="why_benefit_4_desc">Giúp khách hàng dễ dàng chọn gói phù hợp với nhu cầu: dọn dẹp theo giờ, tổng vệ sinh deep cleaning, giặt sofa/nệm hoặc văn phòng.</p>
+          </div>
+
+          <!-- 5. Quy trình làm việc minh bạch -->
+          <div class="why-benefit-card reveal">
+            <div class="why-benefit-icon" aria-hidden="true">📋</div>
+            <h3 data-i18n="why_benefit_5_title">5. Quy trình làm việc minh bạch</h3>
+            <p data-i18n="why_benefit_5_desc">Khách hàng có thể xem hướng dẫn chi tiết về các bước nhân viên thực hiện, phạm vi công việc của từng gói và cách thức nghiệm thu.</p>
+          </div>
+
+          <!-- 6. Hỗ trợ khi cần thiết -->
+          <div class="why-benefit-card reveal">
+            <div class="why-benefit-icon" aria-hidden="true">💬</div>
+            <h3 data-i18n="why_benefit_6_title">6. Hỗ trợ khi cần thiết</h3>
+            <p data-i18n="why_benefit_6_desc">Khách hàng có thể gửi yêu cầu hỗ trợ và theo dõi trạng thái xử lý thông qua các tính năng và kênh liên hệ chính thức của website.</p>
+          </div>
+
+          <!-- 7. Có thể đánh giá dịch vụ (Card trải rộng) -->
+          <div class="why-benefit-card highlight-card reveal">
+            <div class="why-benefit-icon" aria-hidden="true">⭐</div>
+            <div>
+              <h3 data-i18n="why_benefit_7_title">7. Chủ động đánh giá dịch vụ sau khi hoàn thành</h3>
+              <p data-i18n="why_benefit_7_desc">Khách hàng gửi phản hồi và chấm điểm chất lượng trực tiếp sau mỗi ca dịch vụ hoàn tất, giúp Cleanova không ngừng nâng cao trải nghiệm phục vụ.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Nút CTA cuối section -->
+        <div class="why-cleanova-actions reveal">
+          <a href="services.html" class="btn btn-primary btn-lg" data-i18n="btn_explore_services">Khám phá dịch vụ</a>
+          <a href="booking.html" class="btn btn-secondary btn-lg" data-action="book" data-i18n="hero_cta_book">Đặt lịch ngay</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         05. HƯỚNG DẪN KHÁCH HÀNG (Customer Guide: 6 Steps Timeline)
+         ============================================================ -->
+    <section class="section customer-guide" id="customer-guide" aria-label="Hướng dẫn khách hàng đặt dịch vụ">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-badge" data-i18n="guide_badge">📖 Hướng dẫn khách hàng</div>
+          <h2 class="section-title" data-i18n="guide_title">Đặt dịch vụ dễ dàng chỉ với vài bước</h2>
+          <p class="section-subtitle" data-i18n="guide_subtitle">Quy trình 6 bước rõ ràng từ đầu đến cuối, giúp bạn dễ dàng đặt lịch và an tâm theo dõi dịch vụ.</p>
+        </div>
+
+        <!-- Grid 6 Bước -->
+        <div class="guide-steps-grid">
+
+          <!-- Bước 1 -->
+          <div class="guide-step-card reveal">
+            <div class="guide-step-header">
+              <span class="guide-step-badge">Bước 01</span>
+              <div class="guide-step-icon" aria-hidden="true">🧹</div>
+            </div>
+            <h3 data-i18n="guide_step_1_title">Chọn dịch vụ</h3>
+            <p data-i18n="guide_step_1_desc">Khách hàng chọn dịch vụ vệ sinh phù hợp với nhu cầu, quy mô không gian và thời gian dự kiến thực hiện.</p>
+          </div>
+
+          <!-- Bước 2 -->
+          <div class="guide-step-card reveal">
+            <div class="guide-step-header">
+              <span class="guide-step-badge">Bước 02</span>
+              <div class="guide-step-icon" aria-hidden="true">📅</div>
+            </div>
+            <h3 data-i18n="guide_step_2_title">Chọn lịch và địa điểm</h3>
+            <p data-i18n="guide_step_2_desc">Khách hàng nhập địa chỉ thực hiện, ngày, khung giờ mong muốn và các yêu cầu cần thiết cho chuyên viên.</p>
+          </div>
+
+          <!-- Bước 3 -->
+          <div class="guide-step-card reveal">
+            <div class="guide-step-header">
+              <span class="guide-step-badge">Bước 03</span>
+              <div class="guide-step-icon" aria-hidden="true">💰</div>
+            </div>
+            <h3 data-i18n="guide_step_3_title">Kiểm tra chi phí</h3>
+            <p data-i18n="guide_step_3_desc">Website hiển thị bảng tóm tắt dịch vụ, các khoản phí áp dụng, ưu đãi hợp lệ và tổng số tiền dự kiến thanh toán.</p>
+          </div>
+
+          <!-- Bước 4 -->
+          <div class="guide-step-card reveal">
+            <div class="guide-step-header">
+              <span class="guide-step-badge">Bước 04</span>
+              <div class="guide-step-icon" aria-hidden="true">✅</div>
+            </div>
+            <h3 data-i18n="guide_step_4_title">Xác nhận đặt lịch</h3>
+            <p data-i18n="guide_step_4_desc">Khách hàng kiểm tra lại toàn bộ thông tin đơn hàng và gửi yêu cầu đặt dịch vụ lên hệ thống Cleanova.</p>
+          </div>
+
+          <!-- Bước 5 -->
+          <div class="guide-step-card reveal">
+            <div class="guide-step-header">
+              <span class="guide-step-badge">Bước 05</span>
+              <div class="guide-step-icon" aria-hidden="true">📱</div>
+            </div>
+            <h3 data-i18n="guide_step_5_title">Theo dõi đơn hàng</h3>
+            <p data-i18n="guide_step_5_desc">Khách hàng theo dõi trạng thái đơn hàng, thông tin nhân viên được phân công khi có và những cập nhật liên quan.</p>
+          </div>
+
+          <!-- Bước 6 -->
+          <div class="guide-step-card reveal">
+            <div class="guide-step-header">
+              <span class="guide-step-badge">Bước 06</span>
+              <div class="guide-step-icon" aria-hidden="true">⭐</div>
+            </div>
+            <h3 data-i18n="guide_step_6_title">Nghiệm thu và đánh giá</h3>
+            <p data-i18n="guide_step_6_desc">Sau khi dịch vụ hoàn thành, khách hàng kiểm tra kết quả làm sạch thực tế và gửi đánh giá nếu muốn.</p>
+          </div>
+
+        </div>
+
+        <!-- Thanh CTA cuối Guide -->
+        <div class="guide-bottom-bar reveal">
+          <div class="guide-bottom-bar-text">
+            <strong>Sẵn sàng trải nghiệm dịch vụ dọn dẹp chuyên nghiệp?</strong>
+            <span>Đặt lịch ngay hôm nay để tận hưởng không gian sống thoáng đãng, sạch sẽ.</span>
+          </div>
+          <div class="guide-bottom-bar-actions">
+            <a href="booking.html" class="btn btn-primary" data-action="book">Đặt dịch vụ ngay</a>
+            <a href="#faq" class="btn btn-outline">Xem câu hỏi thường gặp</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         06. MỘT BUỔI DỌN VỆ SINH DIỄN RA NHƯ THẾ NÀO? (Timeline)
+         ============================================================ -->
+    <section class="section cleaning-timeline-section" id="cleaning-timeline" aria-label="Quy trình một buổi dọn dẹp">
+      <div class="container">
+        <div class="section-header reveal">
+          <div class="section-badge" data-i18n="timeline_badge">🕒 Minh họa ca làm việc</div>
+          <h2 class="section-title" data-i18n="timeline_title">Một buổi dọn dẹp – Không gian sạch sẽ hơn từng bước</h2>
+          <p class="section-subtitle" data-i18n="timeline_subtitle">Bạn có thắc mắc nhân viên CleanNova sẽ thực hiện những công việc gì trong một buổi? Hãy tham khảo quy trình minh họa dưới đây.</p>
+        </div>
+
+        <!-- Timeline 6 Giai đoạn -->
+        <div class="cleaning-timeline reveal">
+
+          <!-- Giai đoạn 1 -->
+          <div class="timeline-phase-item">
+            <div class="timeline-phase-node" aria-hidden="true">1</div>
+            <div class="timeline-phase-card">
+              <div class="timeline-phase-top">
+                <span class="timeline-phase-badge">Giai đoạn 1</span>
+                <span class="timeline-duration-chip">⏱️ Khoảng 10 phút</span>
+              </div>
+              <h3 class="timeline-phase-title">
+                <span>🤝</span> Tiếp nhận và khảo sát
+              </h3>
+              <ul class="timeline-tasks-list">
+                <li>Trao đổi với khách hàng về những khu vực cần ưu tiên làm sạch trước.</li>
+                <li>Xác nhận phạm vi công việc của gói dịch vụ đã đặt.</li>
+                <li>Ghi nhận các yêu cầu đặc biệt đã được hai bên thống nhất.</li>
+                <li>Kiểm tra các vật dụng nội thất hoặc bề mặt cần lưu ý kỹ thuật.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Giai đoạn 2 -->
+          <div class="timeline-phase-item">
+            <div class="timeline-phase-node" aria-hidden="true">2</div>
+            <div class="timeline-phase-card">
+              <div class="timeline-phase-top">
+                <span class="timeline-phase-badge">Giai đoạn 2</span>
+                <span class="timeline-duration-chip">⏱️ Khoảng 10–15 phút</span>
+              </div>
+              <h3 class="timeline-phase-title">
+                <span>📦</span> Thu gom và sắp xếp sơ bộ
+              </h3>
+              <ul class="timeline-tasks-list">
+                <li>Thu gom rác thông thường theo thỏa thuận của gói dịch vụ.</li>
+                <li>Sắp xếp gọn gàng các vật dụng nhỏ ở khu vực cần làm sạch.</li>
+                <li>Chuẩn bị dụng cụ chuyên dụng và hóa chất sinh học phù hợp bề mặt.</li>
+                <li>Tránh di chuyển đồ có giá trị hoặc đồ dễ vỡ khi chưa được khách đồng ý.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Giai đoạn 3 -->
+          <div class="timeline-phase-item">
+            <div class="timeline-phase-node" aria-hidden="true">3</div>
+            <div class="timeline-phase-card">
+              <div class="timeline-phase-top">
+                <span class="timeline-phase-badge">Giai đoạn 3</span>
+                <span class="timeline-duration-chip">⏱️ Khoảng 20–30 phút</span>
+              </div>
+              <h3 class="timeline-phase-title">
+                <span>🛋️</span> Vệ sinh phòng khách & phòng ngủ
+              </h3>
+              <ul class="timeline-tasks-list">
+                <li>Lau bụi các bề mặt nội thất, kệ tủ trong tầm với an toàn.</li>
+                <li>Lau những khu vực có thể tiếp cận an toàn mà không trèo cao.</li>
+                <li>Làm sạch mặt bàn và các bề mặt vật dụng thông thường.</li>
+                <li>Hút bụi thảm hoặc quét dọn sàn nhà sạch sẽ.</li>
+                <li>Lau sàn kỹ lưỡng theo điều kiện vật liệu sàn (gỗ, gạch men).</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Giai đoạn 4 -->
+          <div class="timeline-phase-item">
+            <div class="timeline-phase-node" aria-hidden="true">4</div>
+            <div class="timeline-phase-card">
+              <div class="timeline-phase-top">
+                <span class="timeline-phase-badge">Giai đoạn 4</span>
+                <span class="timeline-duration-chip">⏱️ Khoảng 20–30 phút</span>
+              </div>
+              <h3 class="timeline-phase-title">
+                <span>🍳</span> Vệ sinh khu vực bếp
+              </h3>
+              <ul class="timeline-tasks-list">
+                <li>Lau các mặt bàn bếp và khu vực sơ chế thực phẩm.</li>
+                <li>Làm sạch bề mặt bên ngoài của các thiết bị bếp thông dụng.</li>
+                <li>Lau khu vực bồn rửa chén và các vị trí phù hợp trong gói.</li>
+                <li>Thu gom và thay túi rác nhà bếp theo yêu cầu.</li>
+                <li>Không xử lý các khu vực đặc biệt nguy hiểm hoặc vượt ngoài gói dịch vụ.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Giai đoạn 5 -->
+          <div class="timeline-phase-item">
+            <div class="timeline-phase-node" aria-hidden="true">5</div>
+            <div class="timeline-phase-card">
+              <div class="timeline-phase-top">
+                <span class="timeline-phase-badge">Giai đoạn 5</span>
+                <span class="timeline-duration-chip">⏱️ Khoảng 15–25 phút</span>
+              </div>
+              <h3 class="timeline-phase-title">
+                <span>🚿</span> Vệ sinh phòng tắm & nhà vệ sinh
+              </h3>
+              <ul class="timeline-tasks-list">
+                <li>Làm sạch bồn rửa tay (lavabo) và lau gương soi sáng bóng.</li>
+                <li>Làm sạch bề mặt thiết bị vệ sinh theo đúng phạm vi công việc.</li>
+                <li>Lau chùi các khu vực sàn phòng tắm và thoát sàn phù hợp.</li>
+                <li>Kiểm tra lại những góc khuất hoặc vị trí ẩm dễ bị bỏ sót.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Giai đoạn 6 -->
+          <div class="timeline-phase-item">
+            <div class="timeline-phase-node" aria-hidden="true">6</div>
+            <div class="timeline-phase-card">
+              <div class="timeline-phase-top">
+                <span class="timeline-phase-badge">Giai đoạn 6</span>
+                <span class="timeline-duration-chip">⏱️ Khoảng 10 phút</span>
+              </div>
+              <h3 class="timeline-phase-title">
+                <span>📋</span> Kiểm tra và bàn giao
+              </h3>
+              <ul class="timeline-tasks-list">
+                <li>Kiểm tra tổng thể các khu vực vừa hoàn thành làm sạch.</li>
+                <li>Hoàn trả đồ vật dụng cụ về vị trí đã được khách thống nhất.</li>
+                <li>Trao đổi trực tiếp với khách hàng về những công việc đã hoàn thành.</li>
+                <li>Ghi nhận các vấn đề hoặc hạng mục chưa thể thực hiện (nếu có).</li>
+                <li>Kết thúc dịch vụ và cập nhật trạng thái đơn theo quy trình thật của Cleanova.</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Hộp Lưu ý thời lượng & phạm vi ở cuối section -->
+        <div class="timeline-disclaimer-box reveal">
+          <div class="disclaimer-icon">📌</div>
+          <div>
+            <strong>Lưu ý quan trọng về thời lượng & phạm vi dịch vụ:</strong> Các mốc thời gian trên mang tính chất minh họa cho một ca làm việc tiêu chuẩn và không phải cam kết thời lượng cố định cho mọi không gian. Thời gian thực tế có thể điều chỉnh linh hoạt tùy thuộc vào diện tích căn hộ, mức độ bám bẩn và gói dịch vụ cụ thể khách hàng lựa chọn.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
          CALCULATOR SECTION (Công cụ tính giá nhanh)
          ============================================================ -->
     <section class="section calculator" id="calculator" aria-label="Công cụ tính giá">
@@ -470,116 +805,10 @@
               <div class="result-discount" id="calc-discount-row" style="display: none;">
                 🏷️ <span id="calc-discount-display"></span>
               </div>
-              <a href="#hero" class="btn" data-action="book" data-i18n="calc_btn_continue">Tiếp tục đặt lịch →</a>
+              <a href="booking.html" class="btn" data-action="book" data-i18n="calc_btn_continue">Tiếp tục đặt lịch →</a>
             </div>
           </div>
 
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         HOW IT WORKS (Quy trình hoạt động 4 bước)
-         ============================================================ -->
-    <section class="section how-it-works" id="how-it-works" aria-label="Quy trình hoạt động">
-      <div class="container">
-        <div class="section-header reveal">
-          <div class="section-badge" data-i18n="how_badge">⚡ Quy trình đặt dịch vụ</div>
-          <h2 class="section-title" data-i18n="how_title">Đơn giản chỉ 4 bước</h2>
-          <p class="section-subtitle" data-i18n="how_subtitle">Từ đặt lịch đến tận hưởng không gian sạch sẽ, mọi thứ diễn ra nhanh chóng và thuận tiện.</p>
-        </div>
-
-        <!-- Grid 4 bước -->
-        <div class="steps-grid reveal">
-          <!-- Bước 1 -->
-          <div class="step-card">
-            <div class="step-number">1</div>
-            <div class="step-icon" aria-hidden="true">📋</div>
-            <h3 data-i18n="step_1_title">Chọn dịch vụ & Thời gian</h3>
-            <p data-i18n="step_1_desc">Chọn loại vệ sinh, ngày giờ phù hợp với lịch trình của bạn.</p>
-          </div>
-
-          <!-- Bước 2 -->
-          <div class="step-card">
-            <div class="step-number">2</div>
-            <div class="step-icon" aria-hidden="true">💳</div>
-            <h3 data-i18n="step_2_title">Xác nhận & Thanh toán</h3>
-            <p data-i18n="step_2_desc">Xác nhận đơn và thanh toán tiện lợi qua nhiều phương thức.</p>
-          </div>
-
-          <!-- Bước 3 -->
-          <div class="step-card">
-            <div class="step-number">3</div>
-            <div class="step-icon" aria-hidden="true">🧹</div>
-            <h3 data-i18n="step_3_title">Chuyên viên tới nhà</h3>
-            <p data-i18n="step_3_desc">Đội ngũ chuyên nghiệp đến đúng giờ, đầy đủ dụng cụ.</p>
-          </div>
-
-          <!-- Bước 4 -->
-          <div class="step-card">
-            <div class="step-number">4</div>
-            <div class="step-icon" aria-hidden="true">✨</div>
-            <h3 data-i18n="step_4_title">Tận hưởng không gian sạch</h3>
-            <p data-i18n="step_4_desc">Kiểm tra, đánh giá và tận hưởng kết quả hoàn hảo.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============================================================
-         WHY CHOOSE US (Tại sao chọn Cleanova)
-         ============================================================ -->
-    <section class="section why-choose" id="why-choose" aria-label="Tại sao chọn Cleanova">
-      <div class="container">
-        <div class="section-header reveal">
-          <div class="section-badge" data-i18n="why_badge">✨ Tại sao chọn Cleanova</div>
-          <h2 class="section-title" data-i18n="why_title">6 lý do bạn nên tin tưởng chúng tôi</h2>
-          <p class="section-subtitle" data-i18n="why_subtitle">Chúng tôi cam kết mang đến dịch vụ vệ sinh chất lượng cao nhất với trải nghiệm tốt nhất.</p>
-        </div>
-
-        <!-- Grid 6 lý do -->
-        <div class="why-grid">
-          <!-- Lý do 1 -->
-          <div class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">🔒</div>
-            <h3 data-i18n="why_1_title">Nhân viên được xác minh</h3>
-            <p data-i18n="why_1_desc">Minh bạch nhân thân, đào tạo bài bản, cam kết uy tín và an toàn tuyệt đối.</p>
-          </div>
-
-          <!-- Lý do 2 -->
-          <div class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">💎</div>
-            <h3 data-i18n="why_2_title">Giá cả minh bạch</h3>
-            <p data-i18n="why_2_desc">Không chi phí ẩn, báo giá rõ ràng trước khi đặt dịch vụ. Thanh toán an toàn.</p>
-          </div>
-
-          <!-- Lý do 3 -->
-          <div class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">🌿</div>
-            <h3 data-i18n="why_3_title">Khử khuẩn an toàn</h3>
-            <p data-i18n="why_3_desc">Sử dụng dung dịch thân thiện môi trường, an toàn cho trẻ nhỏ và thú cưng.</p>
-          </div>
-
-          <!-- Lý do 4 -->
-          <div class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">📅</div>
-            <h3 data-i18n="why_4_title">Đặt lịch linh hoạt</h3>
-            <p data-i18n="why_4_desc">Đổi lịch miễn phí, hủy trước 24h không mất phí. Phù hợp mọi lịch trình.</p>
-          </div>
-
-          <!-- Lý do 5 -->
-          <div class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">🛡️</div>
-            <h3 data-i18n="why_5_title">Bảo hiểm tài sản</h3>
-            <p data-i18n="why_5_desc">Bảo hiểm lên đến 50 triệu VNĐ. Đảm bảo hài lòng 100% hoặc hoàn tiền.</p>
-          </div>
-
-          <!-- Lý do 6 -->
-          <div class="why-card reveal">
-            <div class="why-icon" aria-hidden="true">💬</div>
-            <h3 data-i18n="why_6_title">Hỗ trợ 24/7</h3>
-            <p data-i18n="why_6_desc">Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ mọi lúc, mọi nơi.</p>
-          </div>
         </div>
       </div>
     </section>
@@ -674,6 +903,101 @@
           <div class="promo-code">🏷️ CLEANOVA20</div>
           <br><br>
           <a href="#calculator" class="btn" data-action="promo" data-i18n="promo_btn">Đặt ngay — Nhập mã CLEANOVA20</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         08. SECTION TRỞ THÀNH ĐỐI TÁC (Tuyển dụng & Đồng hành cùng Cleanova)
+         ============================================================ -->
+    <section class="partner-hero-banner" id="partner-section" aria-label="Trở thành đối tác Cleanova">
+      <div class="container">
+        <div class="partner-banner-grid reveal">
+
+          <!-- Cột trái: Giới thiệu cơ hội & Các bước đăng ký -->
+          <div class="partner-banner-content">
+            <div class="partner-banner-badge">
+              <span>🤝</span>
+              <span data-i18n="partner_badge">Đồng hành phát triển</span>
+            </div>
+            <h2 class="partner-banner-title" data-i18n="partner_title">
+              Cùng CleanNova mang đến không gian sạch hơn
+            </h2>
+            <p class="partner-banner-desc" data-i18n="partner_desc">
+              Tham gia đội ngũ đối tác cung cấp dịch vụ vệ sinh chuyên nghiệp, chủ động thời gian và phát triển thu nhập ổn định theo chính sách minh bạch của CleanNova.
+            </p>
+
+            <!-- 4 bước đăng ký đối tác -->
+            <div class="partner-process-mini">
+              <div class="partner-step-mini">
+                <span class="step-num">1</span>
+                <span>Gửi hồ sơ đăng ký trực tuyến trên trang riêng biệt</span>
+              </div>
+              <div class="partner-step-mini">
+                <span class="step-num">2</span>
+                <span>Chờ Cleanova thẩm định và xét duyệt hồ sơ</span>
+              </div>
+              <div class="partner-step-mini">
+                <span class="step-num">3</span>
+                <span>Hoàn thiện quy trình tiếp nhận & hướng dẫn tiêu chuẩn</span>
+              </div>
+              <div class="partner-step-mini">
+                <span class="step-num">4</span>
+                <span>Bắt đầu nhận công việc sau khi hồ sơ được phê duyệt</span>
+              </div>
+            </div>
+
+            <!-- Nút nổi bật "Trở thành đối tác" điều hướng sang partner-register.html -->
+            <div style="margin-top: 24px;">
+              <a href="partner-register.html" class="btn btn-primary btn-lg" style="background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);">
+                <span>🤝</span>
+                <span>Trở thành đối tác Cleanova</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Cột phải: Card trực quan hóa lợi ích thực tế -->
+          <div class="partner-visual-wrapper">
+            <div class="partner-visual-card">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md); padding-bottom: var(--space-sm); border-bottom: 1px solid var(--color-border-light);">
+                <span style="font-weight: 800; color: #0f766e; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">⭐ Cơ hội nghề nghiệp linh hoạt</span>
+                <span style="font-size: 11px; background: #ecfdf5; color: #047857; font-weight: 700; padding: 2px 8px; border-radius: 999px;">Đang mở đơn</span>
+              </div>
+
+              <div class="feature-row">
+                <div class="feature-icon" aria-hidden="true">⏱️</div>
+                <div class="feature-text">
+                  <strong>Chủ động thời gian</strong>
+                  <span>Tự do đăng ký nhận ca trực sáng, chiều, tối hoặc ngày cuối tuần.</span>
+                </div>
+              </div>
+
+              <div class="feature-row">
+                <div class="feature-icon" aria-hidden="true">💰</div>
+                <div class="feature-text">
+                  <strong>Thu nhập rõ ràng</strong>
+                  <span>Thù lao hiển thị minh bạch cho từng đơn hoàn thành, theo đúng thỏa thuận.</span>
+                </div>
+              </div>
+
+              <div class="feature-row">
+                <div class="feature-icon" aria-hidden="true">🛠️</div>
+                <div class="feature-text">
+                  <strong>Dụng cụ & Hóa chất chuẩn mực</strong>
+                  <span>Được tiếp cận hướng dẫn kỹ thuật an toàn và dụng cụ làm sạch chuẩn 5 sao.</span>
+                </div>
+              </div>
+
+              <div class="feature-row">
+                <div class="feature-icon" aria-hidden="true">📱</div>
+                <div class="feature-text">
+                  <strong>Ứng dụng nhân viên tiện lợi</strong>
+                  <span>Giao diện làm việc riêng (Staff Portal) giúp theo dõi lịch trình và trạng thái ca.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -796,7 +1120,7 @@
           <div class="footer-links">
             <a href="#" data-i18n="footer_link_about">Giới thiệu</a>
             <a href="#" data-i18n="footer_link_career">Tuyển dụng</a>
-            <a href="#" data-i18n="footer_link_partner">Trở thành đối tác</a>
+            <a href="partner-register.html" data-i18n="footer_link_partner">Trở thành đối tác</a>
             <a href="#" data-i18n="footer_link_blog">Blog</a>
             <a href="#" data-i18n="footer_link_contact">Liên hệ</a>
             <a href="login.html" data-i18n="footer_link_login">Tài khoản & Đăng nhập</a>

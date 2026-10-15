@@ -36,16 +36,21 @@
     }
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: var(--space-lg);
       margin-bottom: var(--space-2xl);
     }
-    @media (max-width: 992px) {
+    @media (max-width: 1200px) {
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
-    @media (max-width: 576px) {
+    @media (max-width: 480px) {
       .stats-grid {
         grid-template-columns: 1fr;
       }
@@ -72,6 +77,7 @@
     .stat-card.bookings::before { background: #3B82F6; }
     .stat-card.users::before { background: #8B5CF6; }
     .stat-card.staff::before { background: #F59E0B; }
+    .stat-card.partners::before { background: #06B6D4; }
     .stat-title {
       font-size: var(--font-size-xs);
       font-weight: 700;
@@ -191,6 +197,9 @@
     }
     .status-active { background: #ECFDF5; color: #065F46; }
     .status-inactive { background: #FEE2E2; color: #991B1B; }
+    .status-partner-pending { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .status-partner-approved { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+    .status-partner-rejected { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
 
     /* Staff cards grid */
     .staff-grid {
@@ -285,6 +294,11 @@
           <div class="stat-value" id="stat-staff">0</div>
           <div class="stat-desc">Chuyên viên đang hoạt động</div>
         </div>
+        <div class="stat-card partners">
+          <div class="stat-title">Hồ sơ đối tác mới</div>
+          <div class="stat-value" id="stat-partners">0</div>
+          <div class="stat-desc">Đơn ứng tuyển chờ duyệt</div>
+        </div>
       </section>
 
       <!-- Tabs điều hướng quản trị -->
@@ -300,6 +314,9 @@
         </button>
         <button class="admin-tab-btn" data-tab="tab-services" role="tab">
           <span>🧹</span> Danh mục Dịch vụ (<span id="tab-count-services">0</span>)
+        </button>
+        <button class="admin-tab-btn" data-tab="tab-partners" role="tab">
+          <span>🤝</span> Hồ sơ Đối tác / Tuyển dụng (<span id="tab-count-partners">0</span>)
         </button>
       </nav>
 
@@ -437,6 +454,47 @@
             </thead>
             <tbody id="services-table-body">
               <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải dịch vụ...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 5: QUẢN LÝ HỒ SƠ ĐỐI TÁC / TUYỂN DỤNG (PARTNERS) -->
+      <section id="tab-partners" class="tab-pane" style="display: none;" role="tabpanel">
+        <div class="table-controls">
+          <div style="display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap;">
+            <div class="search-input-wrap">
+              <span>🔍</span>
+              <input type="text" id="search-partners-input" placeholder="Tìm kiếm theo tên, email, SĐT, khu vực...">
+            </div>
+
+            <select id="filter-partner-status" class="form-control" style="width: auto; padding: 6px 12px;">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="pending" selected>Chờ xét duyệt (Pending)</option>
+              <option value="approved">Đã phê duyệt (Approved)</option>
+              <option value="rejected">Đã từ chối (Rejected)</option>
+            </select>
+          </div>
+
+          <button id="btn-refresh-partners" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách</button>
+        </div>
+
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+          <table class="table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>Mã hồ sơ</th>
+                <th>Ứng viên</th>
+                <th>Khu vực & Địa chỉ</th>
+                <th>Khung giờ làm việc</th>
+                <th>Kinh nghiệm</th>
+                <th>Trạng thái</th>
+                <th>Ngày nộp</th>
+                <th style="text-align: right;">Hành động</th>
+              </tr>
+            </thead>
+            <tbody id="partners-table-body">
+              <tr><td colspan="8" style="text-align: center; padding: var(--space-2xl);">Đang tải danh sách hồ sơ đối tác...</td></tr>
             </tbody>
           </table>
         </div>
@@ -625,6 +683,31 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       MODAL 5: CHI TIẾT HỒ SƠ ĐỐI TÁC / XÉT DUYỆT
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-partner-detail" style="display: none;">
+    <div class="modal-box" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="modal-partner-title" class="modal-title">Chi tiết hồ sơ đối tác / Ứng viên Cleanova</h3>
+        <button class="modal-close" data-close="modal-partner-detail">&times;</button>
+      </div>
+      <div style="padding: var(--space-xl);">
+        <div id="partner-detail-body">
+          <!-- Render thông tin chi tiết ứng viên -->
+        </div>
+
+        <div id="partner-review-actions" style="margin-top: var(--space-xl); padding-top: var(--space-lg); border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <button type="button" class="btn btn-ghost" data-close="modal-partner-detail">Đóng</button>
+          <div style="display: flex; gap: 8px;" id="partner-action-buttons">
+            <button type="button" id="btn-reject-partner" class="btn btn-outline" style="color: #ef4444; border-color: #fca5a5;">❌ Từ chối hồ sơ</button>
+            <button type="button" id="btn-approve-partner" class="btn btn-primary" style="background: #10B981; border-color: #10B981;">✅ Phê duyệt thành Nhân viên</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- JavaScript xử lý Bảng điều khiển Admin -->
   <script>
     'use strict';
@@ -687,6 +770,8 @@
       let allUsers = [];
       let allStaff = [];
       let allServices = [];
+      let allPartners = [];
+      let currentViewingPartner = null;
       let currentUsersPage = 1;
 
       // ------------------------------------------------------------
@@ -700,6 +785,8 @@
           document.getElementById('stat-bookings').textContent = s.totalBookings || s.total_bookings || 0;
           document.getElementById('stat-users').textContent = s.totalUsers || s.total_users || 0;
           document.getElementById('stat-staff').textContent = s.activeStaff || s.total_staff || 0;
+          const pendingPartners = (s.pendingPartners !== undefined ? s.pendingPartners : (s.pending_partners !== undefined ? s.pending_partners : 0));
+          document.getElementById('stat-partners').textContent = pendingPartners;
         } catch (err) {
           console.warn('Lỗi tải thống kê:', err);
         }
@@ -1262,6 +1349,224 @@
       });
 
       // ------------------------------------------------------------
+      // 5. TAB 5: QUẢN LÝ HỒ SƠ ĐỐI TÁC (PARTNER RECRUITMENT)
+      // ------------------------------------------------------------
+      async function loadPartners() {
+        try {
+          const res = await CleanovaAPI.admin.getPartners();
+          allPartners = res.data || [];
+          const pendingCount = allPartners.filter(p => p.status === 'pending').length;
+          document.getElementById('tab-count-partners').textContent = pendingCount;
+          document.getElementById('stat-partners').textContent = pendingCount;
+          renderPartnersTable();
+        } catch (err) {
+          showAlert('danger', 'Lỗi tải danh sách hồ sơ đối tác: ' + err.message);
+        }
+      }
+
+      function renderPartnersTable() {
+        const filterStatus = document.getElementById('filter-partner-status').value;
+        const searchVal = document.getElementById('search-partners-input').value.trim().toLowerCase();
+        const tbody = document.getElementById('partners-table-body');
+
+        let filtered = allPartners;
+        if (filterStatus !== 'all') {
+          filtered = filtered.filter(p => p.status === filterStatus);
+        }
+        if (searchVal) {
+          filtered = filtered.filter(p =>
+            (p.name && p.name.toLowerCase().includes(searchVal)) ||
+            (p.email && p.email.toLowerCase().includes(searchVal)) ||
+            (p.phone && p.phone.toLowerCase().includes(searchVal)) ||
+            (p.work_area && p.work_area.toLowerCase().includes(searchVal))
+          );
+        }
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">Không có hồ sơ nào phù hợp bộ lọc.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(p => {
+          const dateStr = p.created_at ? new Date(p.created_at).toLocaleDateString('vi-VN') : '---';
+          let statusBadge = '';
+          if (p.status === 'pending') {
+            statusBadge = `<span class="user-status-badge status-partner-pending">⏳ Chờ duyệt</span>`;
+          } else if (p.status === 'approved') {
+            statusBadge = `<span class="user-status-badge status-partner-approved">✅ Đã phê duyệt</span>`;
+          } else {
+            statusBadge = `<span class="user-status-badge status-partner-rejected">❌ Bị từ chối</span>`;
+          }
+
+          return `
+            <tr>
+              <td><strong>#APP-${p.id}</strong></td>
+              <td>
+                <div style="font-weight: 700; color: var(--color-text-main);">${p.name || '---'}</div>
+                <div style="font-size: 12px; color: var(--color-text-secondary);">${p.email || '---'}</div>
+                <div style="font-size: 12px; color: var(--color-primary); font-weight: 600;">📞 ${p.phone || '---'}</div>
+              </td>
+              <td>
+                <div style="font-weight: 600; font-size: 13px;">${p.work_area || 'Chưa chọn'}</div>
+                <div style="font-size: 12px; color: var(--color-text-secondary); max-width: 180px;">${p.address || '---'}</div>
+              </td>
+              <td style="font-size: 13px;">${p.available_hours || 'Linh hoạt'}</td>
+              <td style="font-size: 13px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.experience || 'Chưa ghi'}</td>
+              <td>${statusBadge}</td>
+              <td style="font-size: 12px; color: var(--color-text-muted);">${dateStr}</td>
+              <td style="text-align: right; white-space: nowrap;">
+                <button class="btn btn-outline btn-sm btn-view-partner" data-id="${p.id}" style="padding: 4px 10px; font-size: 12px;">Xem chi tiết</button>
+                ${p.status === 'pending' ? `
+                  <button class="btn btn-primary btn-sm btn-quick-approve" data-id="${p.id}" style="padding: 4px 10px; font-size: 12px; background: #10B981; border-color: #10B981; margin-left: 4px;">Duyệt</button>
+                ` : ''}
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        tbody.querySelectorAll('.btn-view-partner').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const id = parseInt(btn.dataset.id, 10);
+            openPartnerDetail(id);
+          });
+        });
+
+        tbody.querySelectorAll('.btn-quick-approve').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = parseInt(btn.dataset.id, 10);
+            if (confirm(`Bạn có chắc muốn phê duyệt ứng viên #APP-${id} thành Nhân viên chính thức của Cleanova?`)) {
+              await approvePartnerApplication(id);
+            }
+          });
+        });
+      }
+
+      function openPartnerDetail(id) {
+        const p = allPartners.find(item => item.id === id);
+        if (!p) return;
+        currentViewingPartner = p;
+
+        const body = document.getElementById('partner-detail-body');
+        const actionsBox = document.getElementById('partner-action-buttons');
+        const dateStr = p.created_at ? new Date(p.created_at).toLocaleString('vi-VN') : '---';
+
+        let statusText = '';
+        if (p.status === 'pending') {
+          statusText = '<span style="color: #b45309; font-weight: 700;">⏳ Đang chờ xét duyệt</span>';
+          actionsBox.style.display = 'flex';
+        } else if (p.status === 'approved') {
+          const reviewedDate = p.reviewed_at ? new Date(p.reviewed_at).toLocaleString('vi-VN') : '---';
+          statusText = `<span style="color: #065f46; font-weight: 700;">✅ Đã phê duyệt cấp tài khoản nhân viên (Ngày duyệt: ${reviewedDate})</span>`;
+          actionsBox.style.display = 'none';
+        } else {
+          statusText = `<span style="color: #991b1b; font-weight: 700;">❌ Đã từ chối (Lý do: ${p.rejection_reason || 'Không đáp ứng tiêu chuẩn'})</span>`;
+          actionsBox.style.display = 'none';
+        }
+
+        body.innerHTML = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-lg); background: var(--color-bg-alt); padding: var(--space-md); border-radius: var(--radius-lg);">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Họ và tên</div>
+              <div style="font-weight: 700; font-size: 15px; color: var(--color-text-main);">${p.name}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Trạng thái hồ sơ</div>
+              <div style="font-size: 13px;">${statusText}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Email liên hệ</div>
+              <div style="font-size: 14px; color: var(--color-primary); font-weight: 600;">${p.email}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Số điện thoại</div>
+              <div style="font-size: 14px; font-weight: 700;">${p.phone}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Khu vực làm việc mong muốn</div>
+              <div style="font-size: 13px; font-weight: 600;">${p.work_area || 'Chưa xác định'}</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Khung giờ sẵn sàng làm việc</div>
+              <div style="font-size: 13px;">${p.available_hours || 'Toàn thời gian'}</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: var(--space-md);">
+            <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px;">Địa chỉ thường trú / liên hệ:</div>
+            <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 8px 12px; font-size: 13px;">
+              ${p.address || 'Chưa cung cấp'}
+            </div>
+          </div>
+
+          <div style="margin-bottom: var(--space-md);">
+            <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px;">Kinh nghiệm làm việc trong ngành vệ sinh:</div>
+            <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; white-space: pre-line;">
+              ${p.experience || 'Chưa có kinh nghiệm (Cần đào tạo định hướng từ đầu)'}
+            </div>
+          </div>
+
+          <div style="margin-bottom: var(--space-md);">
+            <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px;">Giới thiệu bản thân & nguyện vọng:</div>
+            <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; white-space: pre-line; color: var(--color-text-secondary);">
+              ${p.bio || 'Không có ghi chú thêm.'}
+            </div>
+          </div>
+
+          <div style="font-size: 11px; color: var(--color-text-muted); text-align: right;">
+            Hồ sơ nộp lúc: ${dateStr}
+          </div>
+        `;
+
+        document.getElementById('modal-partner-detail').style.display = 'flex';
+      }
+
+      async function approvePartnerApplication(id) {
+        try {
+          await CleanovaAPI.admin.approvePartner(id);
+          showAlert('success', `Đã phê duyệt hồ sơ #APP-${id}! Tài khoản nhân viên Cleanova đã được tạo/kích hoạt thành công.`);
+          document.getElementById('modal-partner-detail').style.display = 'none';
+          await loadPartners();
+          await loadStaff();
+          await loadUsers();
+          await loadStats();
+        } catch (err) {
+          showAlert('danger', 'Lỗi phê duyệt: ' + err.message);
+        }
+      }
+
+      async function rejectPartnerApplication(id) {
+        const reason = prompt('Nhập lý do từ chối hồ sơ này (để lưu vào hệ thống):', 'Hồ sơ chưa đạt yêu cầu tiêu chuẩn Cleanova');
+        if (reason === null) return;
+        try {
+          await CleanovaAPI.admin.rejectPartner(id, reason);
+          showAlert('info', `Hồ sơ #APP-${id} đã được chuyển sang trạng thái Từ chối.`);
+          document.getElementById('modal-partner-detail').style.display = 'none';
+          await loadPartners();
+          await loadStats();
+        } catch (err) {
+          showAlert('danger', 'Lỗi từ chối hồ sơ: ' + err.message);
+        }
+      }
+
+      document.getElementById('filter-partner-status').addEventListener('change', renderPartnersTable);
+      document.getElementById('search-partners-input').addEventListener('input', renderPartnersTable);
+      document.getElementById('btn-refresh-partners').addEventListener('click', loadPartners);
+
+      document.getElementById('btn-approve-partner').addEventListener('click', () => {
+        if (currentViewingPartner) {
+          if (confirm(`Xác nhận phê duyệt ứng viên "${currentViewingPartner.name}" thành nhân viên chính thức?`)) {
+            approvePartnerApplication(currentViewingPartner.id);
+          }
+        }
+      });
+
+      document.getElementById('btn-reject-partner').addEventListener('click', () => {
+        if (currentViewingPartner) {
+          rejectPartnerApplication(currentViewingPartner.id);
+        }
+      });
+
+      // ------------------------------------------------------------
       // KHỞI CHẠY TẢI TOÀN BỘ DỮ LIỆU
       // ------------------------------------------------------------
       await loadStats();
@@ -1269,6 +1574,7 @@
       await loadBookings();
       await loadUsers();
       await loadServices();
+      await loadPartners();
     });
   </script>
 </body>
