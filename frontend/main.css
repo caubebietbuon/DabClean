@@ -17,6 +17,7 @@
 
 /* 5. Shared UI Components */
 @import url('css/components.css');
+@import url('css/animations.css');
 
 /* 6. Page-specific Styles */
 @import url('css/pages/home.css');

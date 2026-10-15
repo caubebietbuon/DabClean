@@ -832,28 +832,80 @@ function removeToast(toast) {
    10. SCROLL REVEAL ANIMATION
    Hiệu ứng xuất hiện các section khi cuộn vào viewport
    --------------------------------------------------------------- */
+/* ---------------------------------------------------------------
+   10. SCROLL REVEAL ANIMATION (IntersectionObserver)
+   Hiệu ứng cuộn trang hiện đại, mượt mà và an toàn cho trải nghiệm
+   --------------------------------------------------------------- */
 function initScrollReveal() {
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const revealElements = document.querySelectorAll('.reveal');
 
+  // 1. Selector hỗ trợ tất cả các dạng reveal
+  const selector = '.reveal, .reveal-up, .reveal-left, .reveal-right, .reveal-fade, .reveal-scale, .timeline-phase-item, [data-reveal]';
+  const revealElements = document.querySelectorAll(selector);
+
+  // Nếu không có phần tử nào cần reveal, thoát an toàn
+  if (!revealElements.length) return;
+
+  // 2. Nếu người dùng bật giảm chuyển động, hiển thị ngay lập tức
   if (prefersReducedMotion) {
-    revealElements.forEach(el => el.classList.add('visible'));
+    revealElements.forEach(el => {
+      el.classList.add('visible', 'is-visible');
+    });
     return;
   }
 
+  // 3. Đánh dấu HTML đã sẵn sàng hiệu ứng (Progressive Enhancement)
+  document.documentElement.classList.add('js-reveal-ready');
+
+  // 4. Khởi tạo IntersectionObserver đơn nhất
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
+        const target = entry.target;
+        target.classList.add('visible', 'is-visible');
+
+        // Đọc data-reveal-delay nếu có
+        const customDelay = target.getAttribute('data-reveal-delay');
+        if (customDelay) {
+          target.style.transitionDelay = `${customDelay}ms`;
+        }
+
+        // Ngừng quan sát sau khi đã hiển thị 1 lần duy nhất
+        observer.unobserve(target);
       }
     });
   }, {
-    threshold: 0.15,
-    rootMargin: '0px 0px -50px 0px'
+    threshold: 0.12,
+    rootMargin: '0px 0px -40px 0px'
   });
 
   revealElements.forEach(el => observer.observe(el));
+
+  // 5. Kích hoạt hiệu ứng mượt cho các phần tử Hero section ngay khi tải trang
+  const heroElements = [
+    { sel: '.hero .hero-badge', animClass: 'hero-animate-badge' },
+    { sel: '.hero .hero-title', animClass: 'hero-animate-title' },
+    { sel: '.hero .hero-subtitle', animClass: 'hero-animate-subtitle' },
+    { sel: '.hero .hero-cta', animClass: 'hero-animate-cta' },
+    { sel: '.hero .trust-badges', animClass: 'hero-animate-trust' },
+    { sel: '.hero .hero-illustration', animClass: 'hero-animate-visual' },
+    { sel: '.hero .hero-float-card.card-1', animClass: 'hero-animate-card-1' },
+    { sel: '.hero .hero-float-card.card-2', animClass: 'hero-animate-card-2' }
+  ];
+
+  heroElements.forEach(item => {
+    const el = document.querySelector(item.sel);
+    if (el) el.classList.add(item.animClass);
+  });
+
+  // 6. Cơ chế an toàn (Safety fallback): Sau 4 giây nếu còn phần tử chưa hiện thì tự động mở
+  setTimeout(() => {
+    revealElements.forEach(el => {
+      if (!el.classList.contains('visible') && !el.classList.contains('is-visible')) {
+        el.classList.add('visible', 'is-visible');
+      }
+    });
+  }, 4000);
 }
 
 /* ---------------------------------------------------------------
