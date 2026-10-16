@@ -25,7 +25,7 @@ INSERT INTO users (id, name, email, password, phone, address, role, status) VALU
 -- 2. DỮ LIỆU DỊCH VỤ VỆ SINH CHỦ ĐẠO (services)
 -- Khớp hoàn toàn với các gói dịch vụ trên Landing Page
 -- ------------------------------------------------------------
-INSERT INTO services (id, name, slug, description, short_description, base_price, price_unit, duration_estimate, icon, is_active) VALUES
+INSERT INTO services (id, name, slug, description, short_description, base_price, price_unit, duration_estimate, category, min_duration_hours, staff_wage_rate, icon, is_active) VALUES
 (1, 
  'Dọn dẹp nhà cửa theo giờ', 
  'don-dep-theo-gio', 
@@ -34,6 +34,9 @@ INSERT INTO services (id, name, slug, description, short_description, base_price
  150000.00, 
  'giờ', 
  '2 - 4 giờ', 
+ 'cleaning',
+ 1,
+ 105000.00,
  '⏱️', 
  1),
 
@@ -45,6 +48,9 @@ INSERT INTO services (id, name, slug, description, short_description, base_price
  500000.00, 
  'lần', 
  '4 - 6 giờ', 
+ 'cleaning',
+ 1,
+ 350000.00,
  '✨', 
  1),
 
@@ -56,6 +62,9 @@ INSERT INTO services (id, name, slug, description, short_description, base_price
  300000.00, 
  'lần', 
  '2 - 3 giờ', 
+ 'cleaning',
+ 1,
+ 210000.00,
  '🏢', 
  1),
 
@@ -67,6 +76,9 @@ INSERT INTO services (id, name, slug, description, short_description, base_price
  400000.00, 
  'món', 
  '1 - 2 giờ', 
+ 'cleaning',
+ 1,
+ 280000.00,
  '🛋️', 
  1),
 
@@ -78,7 +90,52 @@ INSERT INTO services (id, name, slug, description, short_description, base_price
  8000.00, 
  'm²', 
  '1 - 2 ngày', 
+ 'cleaning',
+ 1,
+ 5600.00,
  '🏗️', 
+ 1),
+
+(6, 
+ 'Chăm sóc trẻ em tại nhà', 
+ 'cham-soc-tre-em', 
+ 'Dịch vụ bảo mẫu chăm sóc trẻ chuyên nghiệp tại nhà: đón bé, chuẩn bị bữa ăn nhẹ dinh dưỡng, hỗ trợ bé vệ sinh cá nhân, kèm bé học bài, đọc sách và tổ chức trò chơi phát triển tư duy lành mạnh theo độ tuổi. Nhân viên lý lịch minh bạch, chu đáo và kiên nhẫn.', 
+ 'Chăm sóc trẻ, hỗ trợ sinh hoạt, ăn uống và vui chơi lành mạnh theo độ tuổi.', 
+ 80000.00, 
+ 'giờ', 
+ 'Tối thiểu 2 giờ', 
+ 'care',
+ 2,
+ 60000.00,
+ '👶', 
+ 1),
+
+(7, 
+ 'Chăm sóc người cao tuổi tại nhà', 
+ 'cham-soc-nguoi-cao-tuoi', 
+ 'Dịch vụ điều dưỡng viên đồng hành cùng người cao tuổi: hỗ trợ người lớn tuổi sinh hoạt, chuẩn bị bữa ăn hợp khẩu vị, nhắc nhở uống thuốc đúng giờ theo chỉ định của bác sĩ, hỗ trợ đi dạo, trò chuyện tâm tình và giúp người cao tuổi vận động nhẹ nhàng an toàn.', 
+ 'Hỗ trợ sinh hoạt, ăn uống, nhắc thuốc và đồng hành cùng người cao tuổi.', 
+ 90000.00, 
+ 'giờ', 
+ 'Tối thiểu 2 giờ', 
+ 'care',
+ 2,
+ 70000.00,
+ '👵', 
+ 1),
+
+(8, 
+ 'Chăm sóc người bệnh tại nhà', 
+ 'cham-soc-nguoi-benh', 
+ 'Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người ốm, người sau phẫu thuật hoặc đang hồi phục sức khỏe: hỗ trợ vệ sinh cá nhân, thay ga giường, theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ) và hỗ trợ dinh dưỡng theo chế độ ăn uống đã thống nhất. LƯU Ý: Dịch vụ hỗ trợ đời sống, nhân viên Cleanova không thực hiện các thủ thuật can thiệp y tế chuyên sâu.', 
+ 'Hỗ trợ sinh hoạt và chăm sóc thông thường theo kế hoạch đã thống nhất.', 
+ 120000.00, 
+ 'giờ', 
+ 'Tối thiểu 2 giờ', 
+ 'care',
+ 2,
+ 90000.00,
+ '🩺', 
  1);
 
 -- ------------------------------------------------------------

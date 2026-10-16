@@ -30,7 +30,7 @@ async function getChecklistProgress(booking) {
   const photos = await BookingModel.getJobPhotos(booking.id);
   return {
     photos,
-    progress: getPhotoProgress(getRequiredAreas(booking.service_name), photos)
+    progress: getPhotoProgress(getRequiredAreas(booking.service_name, booking.category || ''), photos)
   };
 }
 
@@ -104,7 +104,7 @@ const staffController = {
       if (!booking) return;
 
       const { photos, progress } = await getChecklistProgress(booking);
-      const areas = getRequiredAreas(booking.service_name);
+      const areas = getRequiredAreas(booking.service_name, booking.category || '');
       const checklist = areas.flatMap(areaName => {
         const beforePhotos = photos.filter(photo =>
           photo.area_name === areaName && photo.stage === 'before'
@@ -211,7 +211,7 @@ const staffController = {
         }
 
         const { areaName, angleId, stage, capturedAt, latitude, longitude } = req.body;
-        const areas = getRequiredAreas(booking.service_name);
+        const areas = getRequiredAreas(booking.service_name, booking.category || '');
         if (!areas.includes(areaName)) {
           await fs.unlink(file.path);
           return res.status(400).json({

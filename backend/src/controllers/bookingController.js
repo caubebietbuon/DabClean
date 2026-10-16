@@ -4,6 +4,7 @@
 const crypto = require('crypto');
 const BookingModel = require('../models/bookingModel');
 const ServiceModel = require('../models/serviceModel');
+const pricingService = require('../services/pricingService');
 const { sanitizeInput } = require('../utils/sanitize');
 
 // Bảng hệ số tính giá theo quy mô diện tích
@@ -37,6 +38,13 @@ const bookingController = {
         booking_time,
         area_size = 'medium',
         frequency = 'once',
+        duration_hours = null,
+        package_type = 'hourly',
+        shift_choice = null,
+        recipient_name = null,
+        recipient_age = null,
+        recipient_gender = null,
+        care_scope_notes = null,
         address,
         phone,
         notes = '',
@@ -84,13 +92,36 @@ const bookingController = {
         });
       }
 
-      // Bảo vệ Bug 6: Kiểm tra quy mô diện tích
+      // Kiểm tra dịch vụ có tồn tại không
+      const service = await ServiceModel.getById(parseInt(service_id, 10));
+      if (!service) {
+        return res.status(404).json({ success: false, message: 'Dịch vụ được chọn không tồn tại.' });
+      }
+
+      // Kiểm tra trạng thái hoạt động của dịch vụ
+      if (service.is_active === 0 || service.is_active === false) {
+        return res.status(400).json({ success: false, message: 'Dịch vụ này hiện đang tạm dừng tiếp nhận đơn đặt mới.' });
+      }
+
+      const isCareService = service.category === 'care' || (service.min_duration_hours && service.min_duration_hours >= 2);
+
+      // Bảo vệ Bug 6: Kiểm tra quy mô diện tích (chỉ dành cho dịch vụ vệ sinh)
       const validAreaSizes = ['small', 'medium', 'large'];
       const isNumericArea = typeof area_size === 'number' && area_size > 0;
-      if (!validAreaSizes.includes(area_size) && !isNumericArea) {
+      if (!isCareService && !validAreaSizes.includes(area_size) && !isNumericArea) {
         return res.status(400).json({
           success: false,
           message: 'Quy mô diện tích không hợp lệ. Cho phép: small, medium, large hoặc số m² dương.'
+        });
+      }
+
+      // Kiểm tra gói dịch vụ chăm sóc nếu là dịch vụ chăm sóc
+      const validPackages = ['hourly', 'shift', 'daily', 'monthly'];
+      const normalizedPackage = isCareService ? (package_type || 'hourly') : 'hourly';
+      if (isCareService && !validPackages.includes(normalizedPackage)) {
+        return res.status(400).json({
+          success: false,
+          message: `Hình thức gói chăm sóc không hợp lệ. Cho phép: ${validPackages.join(', ')}.`
         });
       }
 
@@ -103,54 +134,46 @@ const bookingController = {
         });
       }
 
-      // Kiểm tra dịch vụ có tồn tại không
-      const service = await ServiceModel.getById(parseInt(service_id, 10));
-      if (!service) {
-        return res.status(404).json({ success: false, message: 'Dịch vụ được chọn không tồn tại.' });
+      // Kiểm tra nếu là dịch vụ chăm sóc tại nhà gói giờ thì bắt buộc kiểm tra thời lượng tối thiểu
+      if (isCareService && normalizedPackage === 'hourly') {
+        const minHours = service.min_duration_hours || 2;
+        const hours = parseFloat(duration_hours);
+        if (isNaN(hours) || hours < minHours) {
+          return res.status(400).json({
+            success: false,
+            message: `Dịch vụ ${service.name} yêu cầu thời lượng tối thiểu là ${minHours} giờ.`
+          });
+        }
       }
 
-      // Bảo vệ Bug 5: Tính toán giá tiền thực tế chính xác
-      const basePrice = parseFloat(service.base_price) || 200000;
-      const isUnitPerM2 = service.price_unit === 'm²' || service.price_unit === 'm2' || service.slug === 've-sinh-sau-xay-dung';
-
-      let subtotal = 0;
-      if (isUnitPerM2) {
-        // Dịch vụ tính theo m² (VD: Vệ sinh sau xây dựng 8.000đ/m²)
-        const m2 = isNumericArea ? area_size : (areaM2Mapping[area_size] || 50);
-        subtotal = basePrice * m2;
-      } else {
-        const areaMultiplier = areaMultipliers[area_size] || 1.0;
-        subtotal = basePrice * areaMultiplier;
-      }
-
-      const freqDiscount = frequencyDiscounts[frequency] || 0.0;
-      let discountAmount = subtotal * freqDiscount;
-
-      // Bảo vệ Bug 5: Xử lý ưu đãi mã CLEANOVA20 (Giảm 20%, giới hạn 1 lần/khách, không cộng dồn 35%)
+      // Kiểm tra mã ưu đãi CLEANOVA20 đã dùng chưa
       const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
+      let alreadyUsedPromo = false;
       if (normalizedPromo === 'CLEANOVA20') {
-        const alreadyUsed = await BookingModel.hasUsedPromoCode(req.user.id, 'CLEANOVA20');
-        if (alreadyUsed) {
-          return res.status(400).json({
-            success: false,
-            message: 'Mã ưu đãi CLEANOVA20 chỉ được áp dụng 1 lần duy nhất cho mỗi tài khoản khách hàng.'
-          });
-        }
-        if (freqDiscount > 0) {
-          return res.status(400).json({
-            success: false,
-            message: 'Mã ưu đãi CLEANOVA20 chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.'
-          });
-        }
-        discountAmount = subtotal * 0.20;
-      } else if (normalizedPromo) {
-        return res.status(400).json({
+        alreadyUsedPromo = await BookingModel.hasUsedPromoCode(req.user.id, 'CLEANOVA20');
+      }
+
+      // Tính giá & tiền công thống nhất qua Pricing Service
+      let calculation;
+      try {
+        calculation = pricingService.calculatePrice(service, {
+          area_size: isCareService ? 'care' : (isNumericArea ? area_size : String(area_size)),
+          frequency,
+          duration_hours: isCareService ? parseFloat(duration_hours) : null,
+          package_type: normalizedPackage,
+          discount_code: normalizedPromo,
+          hasUsedPromo: alreadyUsedPromo
+        });
+      } catch (calcErr) {
+        return res.status(calcErr.statusCode || 400).json({
           success: false,
-          message: 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.'
+          message: calcErr.message
         });
       }
 
-      const totalPrice = Math.max(subtotal - discountAmount, 50000);
+      const totalPrice = calculation.totalPrice;
+      const staffWage = calculation.staffWage;
+      const finalDurationHours = calculation.durationHours;
 
       // Bảo vệ Bug 8: Sinh mã đơn động theo Năm-Tháng hiện tại + 6 ký tự hex ngẫu nhiên (16.7 triệu mã/tháng)
       const now = new Date();
@@ -169,14 +192,23 @@ const bookingController = {
             service_id: service.id,
             booking_date,
             booking_time,
-            area_size: String(area_size),
+            area_size: isCareService ? 'care' : String(area_size),
             frequency,
             address: sanitizeInput(address),
             phone: sanitizeInput(phone),
             notes: notes ? sanitizeInput(notes) : '',
             total_price: totalPrice,
-            discount_code: normalizedPromo,
-            payment_method
+            discount_code: calculation.promoCode,
+            payment_method,
+            duration_hours: finalDurationHours,
+            staff_wage: staffWage,
+            wage_status: 'pending',
+            package_type: normalizedPackage,
+            shift_choice: shift_choice ? sanitizeInput(shift_choice) : null,
+            recipient_name: recipient_name ? sanitizeInput(recipient_name) : null,
+            recipient_age: recipient_age ? sanitizeInput(recipient_age) : null,
+            recipient_gender: recipient_gender ? sanitizeInput(recipient_gender) : null,
+            care_scope_notes: care_scope_notes ? sanitizeInput(care_scope_notes) : null
           });
           break;
         } catch (err) {
@@ -193,6 +225,62 @@ const bookingController = {
         success: true,
         message: 'Đặt lịch dịch vụ thành công! Đội ngũ Cleanova sẽ liên hệ xác nhận trong ít phút.',
         data: newBooking
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // Lấy báo giá chi tiết trực tiếp từ backend (POST /api/bookings/quote)
+  async getQuote(req, res, next) {
+    try {
+      const {
+        service_id,
+        area_size = 'medium',
+        frequency = 'once',
+        duration_hours = null,
+        package_type = 'hourly',
+        discount_code = null
+      } = req.body;
+
+      if (!service_id) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp service_id.' });
+      }
+
+      const service = await ServiceModel.getById(parseInt(service_id, 10));
+      if (!service) {
+        return res.status(404).json({ success: false, message: 'Dịch vụ được chọn không tồn tại.' });
+      }
+
+      const isCareService = service.category === 'care' || (service.min_duration_hours && service.min_duration_hours >= 2);
+      const isNumericArea = typeof area_size === 'number' && area_size > 0;
+      const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
+
+      let alreadyUsedPromo = false;
+      if (req.user && normalizedPromo === 'CLEANOVA20') {
+        alreadyUsedPromo = await BookingModel.hasUsedPromoCode(req.user.id, 'CLEANOVA20');
+      }
+
+      const calculation = pricingService.calculatePrice(service, {
+        area_size: isCareService ? 'care' : (isNumericArea ? area_size : String(area_size)),
+        frequency,
+        duration_hours: isCareService ? parseFloat(duration_hours) : null,
+        package_type: isCareService ? (package_type || 'hourly') : 'hourly',
+        discount_code: normalizedPromo,
+        hasUsedPromo: alreadyUsedPromo
+      });
+
+      res.json({
+        success: true,
+        data: {
+          ...calculation,
+          total_price: calculation.totalPrice,
+          final_price: calculation.totalPrice,
+          staff_wage: calculation.staffWage,
+          service_name: service.name,
+          service_category: service.category || (isCareService ? 'care' : 'cleaning'),
+          base_price: parseFloat(service.base_price) || 0
+        }
       });
     } catch (err) {
       next(err);

@@ -15,12 +15,15 @@ function errorHandler(err, req, res, next) {
   console.error('[Internal Server Error]', err);
 
   const statusCode = err.statusCode || 500;
-  const message = err.message || 'Đã xảy ra lỗi máy chủ nội bộ. Vui lòng thử lại sau.';
+  const isProd = process.env.NODE_ENV === 'production';
+  const message = isProd && statusCode === 500
+    ? 'Đã xảy ra lỗi máy chủ nội bộ. Vui lòng liên hệ bộ phận hỗ trợ.'
+    : (err.message || 'Đã xảy ra lỗi máy chủ nội bộ. Vui lòng thử lại sau.');
 
   res.status(statusCode).json({
     success: false,
     message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    ...(!isProd && { stack: err.stack, details: err.sqlMessage || err.message })
   });
 }
 

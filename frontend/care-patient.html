@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dịch vụ chăm sóc người bệnh tại nhà CleanNova — Hỗ trợ sinh hoạt thông thường, phục hồi sức khỏe chu đáo và đồng hành tận tâm cùng gia đình.">
+  <title>Chăm sóc người bệnh tại nhà — CleanNova Care</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232563EB'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="css/pages/care.css">
+</head>
+<body>
+
+  <!-- HEADER / NAVIGATION -->
+  <header class="header" id="header" role="banner">
+    <div class="container">
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563EB" opacity="0.15"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563EB" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#2563EB"/>
+        </svg>
+        <span class="logo-text">Cleanova <span style="font-size: 13px; font-weight: 600; color: #2563eb; background: #eff6ff; padding: 2px 8px; border-radius: 6px; margin-left: 4px;">Care</span></span>
+      </a>
+
+      <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
+        <a href="trangchu.html" class="nav-link">Trang chủ</a>
+        <a href="care-elderly.html" class="nav-link">Chăm sóc người cao tuổi</a>
+        <a href="care-child.html" class="nav-link">Chăm sóc trẻ em</a>
+        <a href="care-patient.html" class="nav-link active">Chăm sóc người bệnh</a>
+        <a href="#pricing" class="nav-link">Bảng giá</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="booking-care.html?service=8" class="btn btn-primary" style="padding: 0.6rem 1.25rem;">Đặt lịch ngay</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- 3.1. HERO SECTION -->
+    <section class="care-hero" aria-labelledby="hero-title">
+      <div class="care-hero-container">
+        <div>
+          <span class="care-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Hỗ trợ phục hồi tại nhà
+          </span>
+          <h1 class="care-hero-title" id="hero-title">Chăm sóc người bệnh tại nhà</h1>
+          <p class="care-hero-desc">
+            Sự hỗ trợ sinh hoạt tận tình và chu đáo trong giai đoạn hồi phục sức khỏe. San sẻ nỗi lo cùng gia đình khi người thân cần được chăm sóc thường nhật, ăn uống và nâng đỡ an toàn tại nhà.
+          </p>
+          <div class="care-hero-actions">
+            <a href="booking-care.html?service=8" class="care-btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Đặt lịch chăm sóc
+            </a>
+            <a href="#pricing" class="care-btn-secondary">
+              Xem bảng giá
+            </a>
+          </div>
+        </div>
+
+        <div class="care-hero-card">
+          <div class="care-hero-illustration">
+            <div class="care-avatar-ring" aria-hidden="true">🩺</div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main); margin-bottom: 0.35rem;">San sẻ áp lực chăm sóc cùng gia đình</h3>
+            <p style="font-size: 0.9rem; color: var(--color-text-body); max-width: 320px; line-height: 1.5;">Hỗ trợ ăn uống theo chế độ, giúp người bệnh vận động nhẹ nhàng và giữ gìn vệ sinh sạch sẽ.</p>
+            
+            <div class="care-hero-stat-row">
+              <div class="care-stat-item">
+                <div class="care-stat-val">120.000đ</div>
+                <div class="care-stat-lbl">Từ / giờ</div>
+              </div>
+              <div class="care-stat-item">
+                <div class="care-stat-val">2 giờ</div>
+                <div class="care-stat-lbl">Tối thiểu/ca</div>
+              </div>
+              <div class="care-stat-item">
+                <div class="care-stat-val">4 gói</div>
+                <div class="care-stat-lbl">Giờ/Buổi/Ngày/Tháng</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.2. GIỚI THIỆU DỊCH VỤ -->
+    <section class="care-section" id="about">
+      <div class="care-container">
+        <div class="care-sec-header">
+          <span class="care-sec-tag">Thông tin chi tiết</span>
+          <h2 class="care-sec-title">Dịch vụ chăm sóc người bệnh là gì?</h2>
+          <p class="care-sec-desc">Giải pháp trợ giúp sinh hoạt thể chất thông thường cho người sau phẫu thuật, người đang dưỡng bệnh hoặc cần hỗ trợ đi lại trong giai đoạn phục hồi.</p>
+        </div>
+
+        <div class="care-overview-grid">
+          <div class="care-overview-card">
+            <div class="care-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <h3>Phù hợp với ai?</h3>
+            <p>Người bệnh vừa xuất viện về nhà dưỡng bệnh, người sau chấn thương, người già ốm yếu hoặc người cần hỗ trợ vệ sinh và ăn uống hằng ngày.</p>
+          </div>
+
+          <div class="care-overview-card">
+            <div class="care-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </div>
+            <h3>Công việc hỗ trợ</h3>
+            <p>Hỗ trợ ăn uống theo chế độ gia đình chỉ định, lau người thay đồ, vệ sinh ga giường, đỡ dậy vận động nhẹ và nhắc nhở uống thuốc đúng toa.</p>
+          </div>
+
+          <div class="care-overview-card">
+            <div class="care-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+            </div>
+            <h3>Giới hạn phạm vi</h3>
+            <p>Không thực hiện các thủ thuật y tế xâm lấn như tiêm thuốc, truyền dịch, thay băng vết mổ phức tạp hay hút đờm nội khí quản.</p>
+          </div>
+
+          <div class="care-overview-card">
+            <div class="care-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+            </div>
+            <h3>Khi nào nên dùng?</h3>
+            <p>Khi người nhà không thể túc trực liên tục bên giường bệnh, khi cần người có sức khỏe và sự khéo léo để hỗ trợ nâng đỡ người bệnh an toàn.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.3. TẠI SAO GIA ĐÌNH CẦN DỊCH VỤ? -->
+    <section class="care-section care-section-alt" id="why-need">
+      <div class="care-container">
+        <div class="care-sec-header">
+          <span class="care-sec-tag">Tình huống thực tế</span>
+          <h2 class="care-sec-title">Tại sao gia đình cần người chăm sóc người bệnh?</h2>
+          <p class="care-sec-desc">Chăm sóc người bệnh đòi hỏi nhiều sức lực và sự kiên nhẫn. Có người đồng hành giúp cả gia đình vượt qua giai đoạn khó khăn một cách nhẹ nhàng hơn.</p>
+        </div>
+
+        <div class="care-scenarios-grid">
+          <div class="care-scenario-card">
+            <span class="care-scenario-badge">Tình huống 1</span>
+            <h3 class="care-scenario-title">Người bệnh cần hỗ trợ sinh hoạt thường ngày</h3>
+            <p class="care-scenario-desc">Sau xuất viện, việc ngồi dậy, đi vệ sinh, tắm gội hay thay áo quần đều cần người khỏe mạnh và nhẹ nhàng trợ giúp.</p>
+          </div>
+
+          <div class="care-scenario-card">
+            <span class="care-scenario-badge">Tình huống 2</span>
+            <h3 class="care-scenario-title">Giảm tải kiệt sức cho người nhà</h3>
+            <p class="care-scenario-desc">Người thân phải thức đêm chăm nom liên tục dễ dẫn đến kiệt sức. Dịch vụ theo ca giúp người nhà có thời gian nghỉ ngơi phục hồi.</p>
+          </div>
+
+          <div class="care-scenario-card">
+            <span class="care-scenario-badge">Tình huống 3</span>
+            <h3 class="care-scenario-title">Theo dõi sát sao nếp sinh hoạt</h3>
+            <p class="care-scenario-desc">Người bệnh được nhắc uống thuốc đúng giờ, ăn thức ăn mềm dễ tiêu hóa và luôn có người bên cạnh khi cần nước uống hay xoay trở mình.</p>
+          </div>
+
+          <div class="care-scenario-card">
+            <span class="care-scenario-badge">Tình huống 4</span>
+            <h3 class="care-scenario-title">Phối hợp chặt chẽ cùng gia đình</h3>
+            <p class="care-scenario-desc">Mọi dấu hiệu bất thường về nhiệt độ, hô hấp hoặc ăn uống đều được ghi nhận và báo ngay cho người nhà để kịp thời xử trí y tế.</p>
+          </div>
+        </div>
+
+        <div class="care-disclaimer-box" role="note">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink: 0;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <div>
+            <strong>Lưu ý quan trọng:</strong> CleanNova cung cấp dịch vụ hỗ trợ chăm sóc đời sống, không cung cấp dịch vụ khám chữa bệnh. Dịch vụ này không thay thế bác sĩ điều trị, điều dưỡng y khoa hay cơ sở y tế. Khi xảy ra tình huống khẩn cấp, nhân viên sẽ lập tức gọi cấp cứu 115 và thông báo người nhà.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.4. VÌ SAO CHỌN CLEANOVA? -->
+    <section class="care-section" id="why-cleanova">
+      <div class="care-container">
+        <div class="care-sec-header">
+          <span class="care-sec-tag">Điểm tựa tin cậy</span>
+          <h2 class="care-sec-title">Vì sao nên chọn nền tảng CleanNova?</h2>
+          <p class="care-sec-desc">Sự minh bạch trong phân công nhân sự và kiểm soát lịch trình mang lại trải nghiệm chuyên nghiệp, an tâm cho mọi gia đình.</p>
+        </div>
+
+        <div class="care-strengths-grid">
+          <div class="care-strength-item">
+            <div class="care-strength-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="care-strength-content">
+              <h4>Bảng giá niêm yết rõ ràng</h4>
+              <p>Mức giá 120.000 VNĐ/giờ công khai, có chính sách gói theo buổi, theo ngày và tháng tối ưu chi phí.</p>
+            </div>
+          </div>
+
+          <div class="care-strength-item">
+            <div class="care-strength-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="care-strength-content">
+              <h4>Chủ động sắp xếp ca chăm sóc</h4>
+              <p>Đặt linh hoạt theo ca sáng (8h-12h), ca chiều (13h-17h), toàn ngày (8 tiếng) hoặc theo tháng tùy diễn biến hồi phục.</p>
+            </div>
+          </div>
+
+          <div class="care-strength-item">
+            <div class="care-strength-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div class="care-strength-content">
+              <h4>Hồ sơ nhân viên điều phối rõ ràng</h4>
+              <p>Nhân viên có sức khỏe tốt, chu đáo, có thông tin liên lạc minh bạch hiển thị ngay trên hệ thống trước ca làm.</p>
+            </div>
+          </div>
+
+          <div class="care-strength-item">
+            <div class="care-strength-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div class="care-strength-content">
+              <h4>Cập nhật trạng thái từng mốc ca</h4>
+              <p>Biết rõ khi nào nhân viên đã có mặt tại nhà, bắt đầu thực hiện ca và khi kết thúc bàn giao cho gia đình.</p>
+            </div>
+          </div>
+
+          <div class="care-strength-item">
+            <div class="care-strength-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <div class="care-strength-content">
+              <h4>Bộ phận điều phối luôn đồng hành</h4>
+              <p>Hotline tiếp nhận thông tin 24/7 để gia đình kịp thời thông báo các dặn dò đặc biệt về người bệnh.</p>
+            </div>
+          </div>
+
+          <div class="care-strength-item">
+            <div class="care-strength-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="care-strength-content">
+              <h4>Lịch sử & Đánh giá chất lượng</h4>
+              <p>Dễ dàng xem lại lịch sử các ca chăm sóc, mức độ chu đáo của nhân sự và quản lý hóa đơn chi tiêu minh bạch.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.5. MỘT CA CHĂM SÓC DIỄN RA NHƯ THẾ NÀO? (5 Bước - NO AI Dirt Scan) -->
+    <section class="care-section care-section-alt" id="workflow">
+      <div class="care-container">
+        <div class="care-sec-header">
+          <span class="care-sec-tag">Quy trình chuyên nghiệp</span>
+          <h2 class="care-sec-title">Một ca chăm sóc người bệnh diễn ra như thế nào?</h2>
+          <p class="care-sec-desc">Quy trình 5 bước cẩn trọng, tôn trọng tâm lý người bệnh và đảm bảo an toàn tối đa trong sinh hoạt.</p>
+        </div>
+
+        <div class="care-timeline">
+          <div class="care-timeline-step">
+            <div class="care-step-num">1</div>
+            <h4 class="care-step-title">Tiếp nhận yêu cầu</h4>
+            <p class="care-step-desc">Ghi nhận thông tin tình trạng hồi phục của người bệnh, nhu cầu ăn uống, khả năng đi lại và thời gian đặt lịch.</p>
+          </div>
+
+          <div class="care-timeline-step">
+            <div class="care-step-num">2</div>
+            <h4 class="care-step-title">Phân công nhân viên</h4>
+            <p class="care-step-desc">Lựa chọn nhân sự điềm đạm, có sức khỏe và kinh nghiệm nâng đỡ hỗ trợ sinh hoạt người ốm chu đáo.</p>
+          </div>
+
+          <div class="care-timeline-step">
+            <div class="care-step-num">3</div>
+            <h4 class="care-step-title">Đến nơi & Nhận bàn giao</h4>
+            <p class="care-step-desc">Có mặt đúng giờ, trao đổi kỹ với người nhà về các cử động cần tránh và thói quen sinh hoạt của người bệnh.</p>
+          </div>
+
+          <div class="care-timeline-step">
+            <div class="care-step-num">4</div>
+            <h4 class="care-step-title">Hỗ trợ chăm sóc</h4>
+            <p class="care-step-desc">Thực hiện các công việc đã thống nhất: cho ăn đồ mềm, lau người, thay ga gối, đỡ ngồi dậy và nhắc uống thuốc.</p>
+          </div>
+
+          <div class="care-timeline-step">
+            <div class="care-step-num">5</div>
+            <h4 class="care-step-title">Bàn giao & Kết thúc</h4>
+            <p class="care-step-desc">Ghi nhận thời gian thực tế, báo cáo tình trạng trong ca cho người nhà và xác nhận hoàn thành công việc.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.6. MÔ TẢ CÔNG VIỆC CỦA NHÂN VIÊN -->
+    <section class="care-section" id="scope">
+      <div class="care-container">
+        <div class="care-sec-header">
+          <span class="care-sec-tag">Phạm vi công việc</span>
+          <h2 class="care-sec-title">Nhân viên sẽ hỗ trợ những công việc gì?</h2>
+          <p class="care-sec-desc">Ranh giới công việc rõ ràng giúp bảo vệ an toàn cho người bệnh và duy trì sự chuyên nghiệp trong ca làm việc.</p>
+        </div>
+
+        <div class="care-scope-layout">
+          <div class="care-scope-box included">
+            <h3>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Được hỗ trợ trong gói
+            </h3>
+            <ul class="care-scope-list">
+              <li class="care-scope-item">
+                <span class="care-scope-icon-yes">✓</span>
+                <span><strong>Hỗ trợ dinh dưỡng:</strong> Chuẩn bị cháo, súp dinh dưỡng theo thực đơn người nhà chuẩn bị, bón ăn nhẹ nhàng.</span>
+              </li>
+              <li class="care-scope-item">
+                <span class="care-scope-icon-yes">✓</span>
+                <span><strong>Vệ sinh thân thể:</strong> Lau người bằng nước ấm tại giường, thay quần áo sạch, thay ga trải giường tinh tươm.</span>
+              </li>
+              <li class="care-scope-item">
+                <span class="care-scope-icon-yes">✓</span>
+                <span><strong>Nâng đỡ & Vận động:</strong> Đỡ người bệnh ngồi dậy, đổi tư thế nằm tránh mỏi, hỗ trợ đi lại an toàn trong phòng.</span>
+              </li>
+              <li class="care-scope-item">
+                <span class="care-scope-icon-yes">✓</span>
+                <span><strong>Nhắc nhở uống thuốc:</strong> Rót nước ấm, chuẩn bị thuốc theo đúng toa bác sĩ đã dặn dò sẵn trong khay.</span>
+              </li>
+              <li class="care-scope-item">
+                <span class="care-scope-icon-yes">✓</span>
+                <span><strong>Thông báo kịp thời:</strong> Thông báo ngay cho người nhà khi nhận thấy dấu hiệu mệt mỏi hoặc biểu hiện khác thường.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="care-scope-box excluded">
+            <h3>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              Ngoài phạm vi gói cơ bản
+            </h3>
+            <ul class="care-scope-list">
+              <li class="care-scope-item">
+                <span class="care-scope-icon-no">✕</span>
+                <span><strong>Thủ thuật y khoa xâm lấn:</strong> Không tiêm bắp, tiêm ven, truyền dịch, đặt ống sonde dạ dày hay rút chỉ mổ.</span>
+              </li>
+              <li class="care-scope-item">
+                <span class="care-scope-icon-no">✕</span>
+                <span><strong>Chẩn đoán & Kê đơn:</strong> Không tự ý chẩn đoán bệnh, không chỉ định hoặc điều chỉnh liều lượng thuốc tây.</span>
+              </li>
+              <li class="care-scope-item">
+                <span class="care-scope-icon-no">✕</span>
+                <span><strong>Xử lý cấp cứu chuyên sâu:</strong> Khi xảy ra đột quỵ hoặc ngừng thở, nhân viên gọi ngay cấp cứu 115 và sơ cứu cơ bản theo quy định.</span>
+              </li>
+              <li class="care-scope-item">
+                <span class="care-scope-icon-no">✕</span>
+                <span><strong>Việc vệ sinh nặng nhọc:</strong> Không làm việc tổng vệ sinh nhà cửa, chà rửa toilet nặng ngoài khu vực người bệnh.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.7. BẢNG GIÁ CHI PHÍ DỊCH VỤ (4 HÌNH THỨC) -->
+    <section class="care-section care-section-alt" id="pricing">
+      <div class="care-container">
+        <div class="care-sec-header">
+          <span class="care-sec-tag">Bảng giá minh bạch</span>
+          <h2 class="care-sec-title">Bảng giá chăm sóc người bệnh tại nhà</h2>
+          <p class="care-sec-desc">Bảng giá công khai niêm yết theo giờ, buổi, ngày và tháng. Hệ thống tự động tính giá chính xác trước khi quý khách xác nhận đặt.</p>
+        </div>
+
+        <div class="care-pricing-grid">
+          <!-- Gói Theo Giờ -->
+          <div class="care-price-card">
+            <div>
+              <h3 class="care-pkg-title">Theo giờ linh hoạt</h3>
+              <div class="care-pkg-duration">Tối thiểu 2 giờ / ca</div>
+              <div class="care-pkg-price-row">
+                <span class="care-pkg-price">120.000</span>
+                <span class="care-pkg-unit">VNĐ / giờ</span>
+              </div>
+              <ul class="care-pkg-features">
+                <li class="care-pkg-feature-item">✓ Linh hoạt số giờ cần hỗ trợ</li>
+                <li class="care-pkg-feature-item">✓ Phù hợp ca tắm gội, đỡ đi lại</li>
+                <li class="care-pkg-feature-item">✓ Bón ăn & nhắc uống thuốc</li>
+                <li class="care-pkg-feature-item">✓ Thay ga trải giường sạch sẽ</li>
+              </ul>
+            </div>
+            <a href="booking-care.html?service=8&package=hourly" class="care-pkg-btn">Chọn gói này</a>
+          </div>
+
+          <!-- Gói Theo Buổi -->
+          <div class="care-price-card featured">
+            <span class="care-price-badge">Khuyên dùng</span>
+            <div>
+              <h3 class="care-pkg-title">Theo ca buổi</h3>
+              <div class="care-pkg-duration">4 giờ / ca (Sáng, Chiều hoặc Tối)</div>
+              <div class="care-pkg-price-row">
+                <span class="care-pkg-price">450.000</span>
+                <span class="care-pkg-unit">VNĐ / buổi</span>
+              </div>
+              <ul class="care-pkg-features">
+                <li class="care-pkg-feature-item">✓ Ca sáng (8h-12h) hoặc chiều (13h-17h)</li>
+                <li class="care-pkg-feature-item">✓ Trợ giúp bữa chính & nghỉ ngơi</li>
+                <li class="care-pkg-feature-item">✓ Đỡ ngồi dậy & xoay trở mình</li>
+                <li class="care-pkg-feature-item">✓ Giúp người nhà có thời gian hồi sức</li>
+              </ul>
+            </div>
+            <a href="booking-care.html?service=8&package=shift" class="care-pkg-btn">Chọn gói này</a>
+          </div>
+
+          <!-- Gói Theo Ngày -->
+          <div class="care-price-card">
+            <div>
+              <h3 class="care-pkg-title">Theo ngày</h3>
+              <div class="care-pkg-duration">8 giờ / ngày (Toàn thời gian)</div>
+              <div class="care-pkg-price-row">
+                <span class="care-pkg-price">860.000</span>
+                <span class="care-pkg-unit">VNĐ / ngày</span>
+              </div>
+              <ul class="care-pkg-features">
+                <li class="care-pkg-feature-item">✓ Hỗ trợ toàn bộ ngày làm việc</li>
+                <li class="care-pkg-feature-item">✓ Phục vụ 2 bữa ăn dinh dưỡng</li>
+                <li class="care-pkg-feature-item">✓ Vệ sinh thân thể chu đáo</li>
+                <li class="care-pkg-feature-item">✓ Ghi nhận tình hình buổi trưa & chiều</li>
+              </ul>
+            </div>
+            <a href="booking-care.html?service=8&package=daily" class="care-pkg-btn">Chọn gói này</a>
+          </div>
+
+          <!-- Gói Theo Tháng -->
+          <div class="care-price-card">
+            <div>
+              <h3 class="care-pkg-title">Theo tháng</h3>
+              <div class="care-pkg-duration">26 ngày làm việc / tháng (8h/ngày)</div>
+              <div class="care-pkg-price-row">
+                <span class="care-pkg-price">20.500.000</span>
+                <span class="care-pkg-unit">VNĐ / tháng</span>
+              </div>
+              <ul class="care-pkg-features">
+                <li class="care-pkg-feature-item">✓ Cố định nhân viên am hiểu bệnh trạng</li>
+                <li class="care-pkg-feature-item">✓ Tiết kiệm đáng kể so với đặt lẻ</li>
+                <li class="care-pkg-feature-item">✓ Hỗ trợ đổi người nếu không hợp ý</li>
+                <li class="care-pkg-feature-item">✓ Quản lý ca trực sát sao cùng gia đình</li>
+              </ul>
+            </div>
+            <a href="booking-care.html?service=8&package=monthly" class="care-pkg-btn">Chọn gói này</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3.8. CÂU HỎI THƯỜNG GẶP (FAQ) -->
+    <section class="care-section" id="faq">
+      <div class="care-container">
+        <div class="care-sec-header">
+          <span class="care-sec-tag">Giải đáp thắc mắc</span>
+          <h2 class="care-sec-title">Câu hỏi thường gặp</h2>
+          <p class="care-sec-desc">Những thắc mắc thường gặp của gia đình khi cần người hỗ trợ chăm sóc người bệnh tại CleanNova.</p>
+        </div>
+
+        <div class="care-faq-list">
+          <div class="care-faq-item active">
+            <button class="care-faq-question" type="button" aria-expanded="true">
+              <span>Giá dịch vụ đã bao gồm những công việc nào?</span>
+              <span class="care-faq-icon">▾</span>
+            </button>
+            <div class="care-faq-answer">
+              <p>Mức giá đã bao gồm toàn bộ thời gian nhân viên túc trực hỗ trợ sinh hoạt: bón ăn thức ăn mềm, lau người tại giường, thay ga trải giường, đỡ dậy xoay mình, nhắc uống thuốc và theo dõi tình trạng chung của người bệnh trong ca.</p>
+            </div>
+          </div>
+
+          <div class="care-faq-item">
+            <button class="care-faq-question" type="button" aria-expanded="false">
+              <span>Gia đình có thể chọn giờ làm việc ban đêm không?</span>
+              <span class="care-faq-icon">▾</span>
+            </button>
+            <div class="care-faq-answer">
+              <p>Có. Quý khách có thể lựa chọn ca tối hoặc liên hệ bộ phận chăm sóc khách hàng CleanNova để bố trí ca túc trực đêm nếu người bệnh cần người đỡ dậy đi vệ sinh nhiều lần.</p>
+            </div>
+          </div>
+
+          <div class="care-faq-item">
+            <button class="care-faq-question" type="button" aria-expanded="false">
+              <span>Có thể đặt dịch vụ dài hạn theo tháng trong giai đoạn phục hồi không?</span>
+              <span class="care-faq-icon">▾</span>
+            </button>
+            <div class="care-faq-answer">
+              <p>Có. Gói tháng 26 ngày làm việc là giải pháp tối ưu chi phí và giúp cố định một nhân viên quen thuộc với thể trạng và nếp sinh hoạt của người bệnh.</p>
+            </div>
+          </div>
+
+          <div class="care-faq-item">
+            <button class="care-faq-question" type="button" aria-expanded="false">
+              <span>Làm thế nào để đổi hoặc hủy lịch khi lịch khám bệnh thay đổi?</span>
+              <span class="care-faq-icon">▾</span>
+            </button>
+            <div class="care-faq-answer">
+              <p>Quý khách có thể thao tác trực tiếp trên mục "Đơn của tôi" hoặc liên hệ tổng đài hỗ trợ trước ca làm việc ít nhất 2 giờ để được hỗ trợ chuyển lịch sang ngày phù hợp.</p>
+            </div>
+          </div>
+
+          <div class="care-faq-item">
+            <button class="care-faq-question" type="button" aria-expanded="false">
+              <span>Nhân viên có thực hiện tiêm truyền hay thay băng vết mổ không?</span>
+              <span class="care-faq-icon">▾</span>
+            </button>
+            <div class="care-faq-answer">
+              <p>Không. CleanNova không cung cấp dịch vụ y tế can thiệp xâm lấn. Nhân viên chỉ hỗ trợ sinh hoạt đời sống. Các thao tác tiêm truyền, thay băng vết thương sâu bắt buộc phải do điều dưỡng y tế có chứng chỉ phụ trách.</p>
+            </div>
+          </div>
+
+          <div class="care-faq-item">
+            <button class="care-faq-question" type="button" aria-expanded="false">
+              <span>Nếu người bệnh đột ngột có dấu hiệu nguy kịch thì xử lý thế nào?</span>
+              <span class="care-faq-icon">▾</span>
+            </button>
+            <div class="care-faq-answer">
+              <p>Nhân viên CleanNova được hướng dẫn quy trình an toàn: gọi ngay cấp cứu y tế 115, đồng thời gọi điện trực tiếp cho người giám hộ gia đình để phối hợp xử lý khẩn cấp.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="trangchu.html" class="logo" style="margin-bottom: 12px;">
+            <svg viewBox="0 0 36 36" fill="none" width="28" height="28"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563EB" opacity="0.15"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#2563EB"/></svg>
+            <span class="logo-text">Cleanova Care</span>
+          </a>
+          <p class="footer-desc">Hệ thống dịch vụ gia đình tiện ích: Vệ sinh không gian sống & Chăm sóc tận tâm tại nhà.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Dịch vụ chăm sóc</h4>
+          <div class="footer-links">
+            <a href="care-elderly.html">Chăm sóc người cao tuổi</a>
+            <a href="care-child.html">Chăm sóc trẻ em tại nhà</a>
+            <a href="care-patient.html">Chăm sóc người bệnh</a>
+            <a href="service-cleaning.html">Dọn dẹp nhà theo giờ</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Hỗ trợ khách hàng</h4>
+          <div class="footer-links">
+            <a href="booking-care.html">Đặt lịch trực tuyến</a>
+            <a href="my-bookings.html">Theo dõi ca chăm sóc</a>
+            <a href="login.html">Đăng nhập tài khoản</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Liên hệ</h4>
+          <div class="footer-links">
+            <span>Hotline: 1900-8888</span>
+            <span>Email: contact@cleanova.vn</span>
+            <span>Địa chỉ: 123 Đường Cầu Giấy, Hà Nội</span>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.care-faq-question').forEach(button => {
+      button.addEventListener('click', () => {
+        const item = button.closest('.care-faq-item');
+        const isActive = item.classList.contains('active');
+        document.querySelectorAll('.care-faq-item').forEach(i => {
+          i.classList.remove('active');
+          i.querySelector('.care-faq-question').setAttribute('aria-expanded', 'false');
+        });
+        if (!isActive) {
+          item.classList.add('active');
+          button.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

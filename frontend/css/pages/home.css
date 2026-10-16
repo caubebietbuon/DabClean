@@ -278,6 +278,13 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  outline: none;
+}
+
+.service-card:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
 }
 
 .service-card::after {
@@ -805,23 +812,607 @@
   .calculator-wrapper {
     grid-template-columns: 1fr;
   }
-  .steps-grid {
+  .steps-grid,
+  .workflow-process-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .why-grid {
+  .why-grid,
+  .why-cleanova-grid {
     grid-template-columns: 1fr;
   }
   .testimonials-grid {
     grid-template-columns: 1fr;
   }
+  .pricing-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
 }
 
 @media (max-width: 600px) {
-  .steps-grid {
+  .steps-grid,
+  .workflow-process-grid {
     grid-template-columns: 1fr;
   }
   .trust-badges {
     flex-direction: column;
     gap: var(--space-md);
   }
+  .pricing-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------------------------------------------------
+   CATEGORY FILTER TABS (Dịch vụ & Bảng giá)
+   ------------------------------------------------------------ */
+.service-category-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: var(--space-2xl);
+  flex-wrap: wrap;
+}
+
+.category-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-xs);
+}
+
+.category-tab-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.category-tab-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28);
+}
+
+.category-tab-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Service Card Header: Icon on Left, Badge on Right */
+.service-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  width: 100%;
+}
+
+.service-card-header .service-icon {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.service-card-header .badge-category {
+  flex-shrink: 0;
+}
+
+/* Category Badges on Service Cards (Thu nhỏ gọn gàng, căn phải tương xứng icon) */
+.badge-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2.5px 8px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.15px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.badge-category-cleaning {
+  background: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-category-care {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.service-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: var(--space-sm) 0 var(--space-md);
+}
+
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  background: var(--color-bg-alt);
+  color: var(--color-text-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+}
+
+.meta-chip strong {
+  color: var(--color-text-main);
+}
+
+/* ------------------------------------------------------------
+   4-STEP BOOKING WORKFLOW (Section 4)
+   ------------------------------------------------------------ */
+.workflow-process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-2xl);
+}
+
+.workflow-step-card {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.workflow-step-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.workflow-step-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.workflow-step-num {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--color-primary);
+  background: var(--color-primary-ultra-light);
+  border: 1px solid var(--color-primary-light);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.workflow-step-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-alt);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border: 1px solid var(--color-border-light);
+}
+
+.workflow-step-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: var(--space-xs);
+  line-height: 1.35;
+}
+
+.workflow-step-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  margin: 0;
+}
+
+/* ------------------------------------------------------------
+   PRICING TABLE SECTION (Section 5)
+   ------------------------------------------------------------ */
+.pricing-table-section {
+  background: var(--color-bg-alt);
+  padding: var(--space-4xl) 0;
+}
+
+.pricing-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: var(--space-xl);
+}
+
+.pricing-plan-card {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-card);
+  position: relative;
+}
+
+.pricing-plan-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--color-primary);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.1);
+}
+
+.pricing-plan-card.highlight {
+  border-color: var(--color-primary);
+  box-shadow: 0 14px 34px rgba(37, 99, 235, 0.14);
+}
+
+.pricing-plan-card.highlight::before {
+  content: 'Khuyên Dùng';
+  position: absolute;
+  top: -12px;
+  right: 24px;
+  background: linear-gradient(135deg, #2563eb, #0d9488);
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.pricing-plan-header {
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.pricing-plan-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 4px;
+}
+
+.pricing-plan-price-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: var(--space-md) 0 var(--space-xs);
+}
+
+.pricing-plan-amount {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-primary-hover);
+  letter-spacing: -0.02em;
+}
+
+.pricing-plan-unit {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.pricing-plan-min {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f766e;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  padding: 3px 9px;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-md);
+}
+
+.pricing-features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-xl) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.pricing-features-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.pricing-features-list li .check-icon {
+  color: #10b981;
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* Pricing error state */
+.pricing-error-state {
+  text-align: center;
+  padding: var(--space-3xl);
+  background: var(--color-white);
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.pricing-error-state h4 {
+  font-size: 1.15rem;
+  color: var(--color-text-main);
+  margin-bottom: 8px;
+}
+
+.pricing-error-state p {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+/* ------------------------------------------------------------
+   SCOPE & COMMITMENTS SECTION (Section 6)
+   ------------------------------------------------------------ */
+.commitments-section {
+  background: var(--color-bg);
+  padding: var(--space-4xl) 0;
+}
+
+.scope-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.scope-card {
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.scope-card-icon {
+  font-size: 26px;
+  margin-bottom: var(--space-sm);
+}
+
+.scope-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: var(--space-sm);
+}
+
+.scope-card ul {
+  padding-left: 18px;
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.scope-card ul li {
+  margin-bottom: 6px;
+}
+
+.scope-disclaimer-callout {
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-left: 5px solid #b45309;
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg) var(--space-xl);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  box-shadow: var(--shadow-xs);
+}
+
+.scope-disclaimer-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.scope-disclaimer-content strong {
+  display: block;
+  font-size: 14.5px;
+  color: #92400e;
+  margin-bottom: 4px;
+}
+
+.scope-disclaimer-content p {
+  font-size: 13.5px;
+  color: #78350f;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------
+   SERVICE DETAILS MODAL DIALOG
+   ------------------------------------------------------------ */
+.service-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+}
+
+.service-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.service-modal-dialog {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+  transform: scale(0.95);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: var(--space-2xl);
+  position: relative;
+}
+
+.service-modal-overlay.active .service-modal-dialog {
+  transform: scale(1);
+}
+
+.service-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-alt);
+  color: var(--color-text-secondary);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.service-modal-close:hover {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fca5a5;
+}
+
+.service-modal-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding-right: 40px;
+}
+
+.service-modal-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-ultra-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-primary-light);
+}
+
+.service-modal-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 4px;
+}
+
+.service-modal-body {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-body);
+  line-height: var(--line-height-relaxed);
+}
+
+.service-modal-body p {
+  margin-bottom: var(--space-md);
+}
+
+.service-modal-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  background: var(--color-bg-alt);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  margin: var(--space-md) 0 var(--space-lg);
+  border: 1px solid var(--color-border-light);
+}
+
+.service-modal-meta-item small {
+  display: block;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.service-modal-meta-item strong {
+  font-size: 15px;
+  color: var(--color-primary-hover);
+}
+
+.service-modal-scope-box {
+  background: #f8fafc;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.service-modal-scope-box strong {
+  display: block;
+  font-size: 13px;
+  color: var(--color-text-main);
+  margin-bottom: 6px;
+}
+
+.service-modal-scope-box ul {
+  padding-left: 18px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.service-modal-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+  border-top: 1px solid var(--color-border-light);
+  padding-top: var(--space-lg);
 }

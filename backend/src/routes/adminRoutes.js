@@ -17,6 +17,7 @@ router.get('/stats', adminController.getStats);
 router.get('/bookings', adminController.getAllBookings);
 router.put('/bookings/:id/status', adminController.updateBookingStatus);
 router.put('/bookings/:id/assign', adminController.assignBookingStaff);
+router.patch('/bookings/:id/payout', adminController.payoutStaffWage);
 
 // 3. Quản lý dịch vụ vệ sinh
 router.get('/services', serviceController.getAllServices);

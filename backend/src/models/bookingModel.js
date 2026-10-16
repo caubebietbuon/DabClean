@@ -5,12 +5,58 @@ const db = require('../config/db');
 
 const BookingModel = {
   // Tạo đơn đặt dịch vụ mới
-  async create({ booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method }) {
+  async create({
+    booking_code,
+    user_id,
+    service_id,
+    booking_date,
+    booking_time,
+    area_size,
+    frequency,
+    address,
+    phone,
+    notes,
+    total_price,
+    discount_code,
+    payment_method,
+    duration_hours,
+    staff_wage,
+    wage_status,
+    package_type,
+    shift_choice,
+    recipient_name,
+    recipient_age,
+    recipient_gender,
+    care_scope_notes
+  }) {
     const result = await db.query(
       `INSERT INTO bookings 
-       (booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes || '', total_price, discount_code || null, payment_method || 'cash']
+       (booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, duration_hours, staff_wage, wage_status, package_type, shift_choice, recipient_name, recipient_age, recipient_gender, care_scope_notes) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        booking_code,
+        user_id,
+        service_id,
+        booking_date,
+        booking_time,
+        area_size,
+        frequency,
+        address,
+        phone,
+        notes || '',
+        total_price,
+        discount_code || null,
+        payment_method || 'cash',
+        duration_hours || null,
+        staff_wage || 0,
+        wage_status || 'pending',
+        package_type || 'hourly',
+        shift_choice || null,
+        recipient_name || null,
+        recipient_age || null,
+        recipient_gender || null,
+        care_scope_notes || null
+      ]
     );
     return result.insertId;
   },
@@ -116,9 +162,14 @@ const BookingModel = {
   async updateStaffTaskStatus(bookingId, staffId, status, staff_notes = '', cancel_reason = '', expectedCurrentStatus = null) {
     let sql = `UPDATE bookings
        SET status = ?, staff_notes = ?, cancel_reason = ?,
-           arrived_at = IF(? = 'arrived', COALESCE(arrived_at, NOW()), arrived_at)
+           arrived_at = IF(? = 'arrived', COALESCE(arrived_at, NOW()), arrived_at),
+           wage_status = CASE 
+             WHEN ? = 'completed' AND wage_status = 'pending' THEN 'approved'
+             WHEN ? = 'cancelled' THEN 'cancelled'
+             ELSE wage_status
+           END
        WHERE id = ? AND staff_id = ?`;
-    const params = [status, staff_notes, cancel_reason || null, status, bookingId, staffId];
+    const params = [status, staff_notes, cancel_reason || null, status, status, status, bookingId, staffId];
     if (expectedCurrentStatus) {
       sql += ' AND status = ?';
       params.push(expectedCurrentStatus);
@@ -163,8 +214,14 @@ const BookingModel = {
 
   // Cập nhật trạng thái đơn (User hủy đơn hoặc Admin đổi trạng thái, kèm điều kiện chống race condition)
   async updateStatus(id, status, cancel_reason = '', expectedCurrentStatus = null) {
-    let sql = 'UPDATE bookings SET status = ?, cancel_reason = ? WHERE id = ?';
-    const params = [status, cancel_reason || null, id];
+    let sql = `UPDATE bookings SET status = ?, cancel_reason = ?,
+               wage_status = CASE
+                 WHEN ? = 'completed' AND wage_status = 'pending' THEN 'approved'
+                 WHEN ? = 'cancelled' THEN 'cancelled'
+                 ELSE wage_status
+               END
+               WHERE id = ?`;
+    const params = [status, cancel_reason || null, status, status, id];
     if (expectedCurrentStatus) {
       sql += ' AND status = ?';
       params.push(expectedCurrentStatus);

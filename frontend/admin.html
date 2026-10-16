@@ -472,6 +472,12 @@
               <option value="completed">Đã hoàn thành</option>
               <option value="cancelled">Đã hủy bỏ</option>
             </select>
+            <label style="font-weight: 700; font-size: 13px; margin-left: 8px;">Danh mục:</label>
+            <select id="filter-booking-category" class="form-control" style="width: auto; padding: 6px 12px;">
+              <option value="all">Tất cả danh mục</option>
+              <option value="cleaning">Dịch vụ vệ sinh</option>
+              <option value="care">Dịch vụ chăm sóc tại nhà</option>
+            </select>
           </div>
           <button id="btn-refresh-bookings" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách</button>
         </div>
@@ -670,14 +676,23 @@
       </div>
       <form id="form-service" style="padding: var(--space-xl);">
         <input type="hidden" id="service-edit-id">
-        <div class="form-group" style="margin-bottom: var(--space-md);">
-          <label class="form-label">Tên dịch vụ <span style="color: red;">*</span></label>
-          <input type="text" id="service-name" class="form-control" required placeholder="VD: Dọn dẹp nhà theo giờ">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div class="form-group">
+            <label class="form-label">Tên dịch vụ <span style="color: red;">*</span></label>
+            <input type="text" id="service-name" class="form-control" required placeholder="VD: Chăm sóc người cao tuổi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phân loại danh mục <span style="color: red;">*</span></label>
+            <select id="service-category" class="form-control" required>
+              <option value="cleaning">Dịch vụ vệ sinh</option>
+              <option value="care">Dịch vụ chăm sóc tại nhà</option>
+            </select>
+          </div>
         </div>
         <div
           style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
           <div class="form-group">
-            <label class="form-label">Giá cơ sở (VNĐ) <span style="color: red;">*</span></label>
+            <label class="form-label">Giá cơ sở theo giờ (VNĐ) <span style="color: red;">*</span></label>
             <input type="number" id="service-price" class="form-control" required min="1000" step="1000"
               placeholder="150000">
           </div>
@@ -694,18 +709,65 @@
           </div>
           <div class="form-group">
             <label class="form-label">Icon / Emoji</label>
-            <input type="text" id="service-icon" class="form-control" placeholder="🧹, ✨, 🏢...">
+            <input type="text" id="service-icon" class="form-control" placeholder="🧹, ✨, 👵, 👶, 🩺...">
           </div>
         </div>
         <div class="form-group" style="margin-bottom: var(--space-md);">
           <label class="form-label">Mô tả ngắn</label>
           <input type="text" id="service-short-desc" class="form-control" placeholder="Hiển thị trên thẻ tóm tắt...">
         </div>
-        <div class="form-group" style="margin-bottom: var(--space-xl);">
-          <label class="form-label">Mô tả đầy đủ</label>
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <label class="form-label">Mô tả đầy đủ & Phạm vi công việc</label>
           <textarea id="service-desc" class="form-control" rows="3"
             placeholder="Chi tiết các hạng mục công việc thực hiện..."></textarea>
         </div>
+
+        <!-- Cấu hình các gói dịch vụ chăm sóc -->
+        <div id="care-pricing-section" style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-md); margin-bottom: var(--space-lg);">
+          <div style="font-weight: 700; font-size: 13px; margin-bottom: 8px; color: #0F766E;">⚙️ Cấu hình gói dịch vụ chăm sóc & Tiền công nhân viên</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-sm);">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 12px;">Giá theo buổi (4h, VNĐ)</label>
+              <input type="number" id="service-shift-price" class="form-control" min="0" step="1000" placeholder="VD: 340000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="font-size: 12px;">Tiền công NV / buổi (VNĐ)</label>
+              <input type="number" id="service-staff-shift-wage" class="form-control" min="0" step="1000" placeholder="VD: 250000">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-sm);">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 12px;">Giá theo ngày (8h, VNĐ)</label>
+              <input type="number" id="service-daily-price" class="form-control" min="0" step="1000" placeholder="VD: 650000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="font-size: 12px;">Tiền công NV / ngày (VNĐ)</label>
+              <input type="number" id="service-staff-daily-wage" class="form-control" min="0" step="1000" placeholder="VD: 480000">
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-sm);">
+            <div class="form-group">
+              <label class="form-label" style="font-size: 12px;">Giá theo tháng (26 ngày, VNĐ)</label>
+              <input type="number" id="service-monthly-price" class="form-control" min="0" step="10000" placeholder="VD: 15500000">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="font-size: 12px;">Tiền công NV / tháng (VNĐ)</label>
+              <input type="number" id="service-staff-monthly-wage" class="form-control" min="0" step="10000" placeholder="VD: 11500000">
+            </div>
+          </div>
+          <div style="display: flex; gap: 16px; margin-top: 8px; flex-wrap: wrap; font-size: 12px;">
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="service-is-shift-active" checked> Kích hoạt gói Buổi
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="service-is-daily-active" checked> Kích hoạt gói Ngày
+            </label>
+            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+              <input type="checkbox" id="service-is-monthly-active" checked> Kích hoạt gói Tháng
+            </label>
+          </div>
+        </div>
+
         <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
           <button type="button" class="btn btn-ghost" data-close="modal-service">Hủy bỏ</button>
           <button type="submit" id="btn-save-service" class="btn btn-primary">Lưu dịch vụ</button>
@@ -1060,12 +1122,16 @@
       }
 
       function renderBookingsTable() {
-        const filterVal = document.getElementById('filter-booking-status').value;
+        const statusVal = document.getElementById('filter-booking-status').value;
+        const catVal = document.getElementById('filter-booking-category') ? document.getElementById('filter-booking-category').value : 'all';
         const tbody = document.getElementById('bookings-table-body');
 
-        const filtered = (filterVal === 'all')
-          ? allBookings
-          : allBookings.filter(b => b.status === filterVal);
+        const filtered = allBookings.filter(b => {
+          const matchStatus = (statusVal === 'all') || (b.status === statusVal);
+          const isCare = b.category === 'care' || Boolean(b.package_type);
+          const matchCat = (catVal === 'all') || (catVal === 'care' ? isCare : !isCare);
+          return matchStatus && matchCat;
+        });
 
         if (filtered.length === 0) {
           tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: var(--space-2xl); color: var(--color-text-secondary);">Không có đơn đặt lịch nào phù hợp.</td></tr>`;
@@ -1075,6 +1141,7 @@
         tbody.innerHTML = filtered.map(b => {
           const dateStr = b.booking_date ? new Date(b.booking_date).toLocaleDateString('vi-VN') : '---';
           const priceStr = Number(b.total_price || 0).toLocaleString('vi-VN') + ' đ';
+          const isCare = b.category === 'care' || Boolean(b.package_type);
 
           // Options nhân viên để phân công
           const staffOptions = allStaff.map(st => `
@@ -1082,6 +1149,35 @@
               ${escapeHtml(st.name)} ${st.status === 'inactive' ? '(Đã khóa)' : ''}
             </option>
           `).join('');
+
+          let careInfoHtml = '';
+          if (isCare) {
+            const pkgName = b.package_type === 'shift' ? 'Theo buổi (4h)' :
+                            b.package_type === 'daily' ? 'Theo ngày (8h)' :
+                            b.package_type === 'monthly' ? 'Theo tháng (26 ngày)' : 'Theo giờ';
+            const shiftText = b.shift_choice ? ` · ${escapeHtml(b.shift_choice)}` : '';
+            careInfoHtml = `
+              <div style="margin-top: 4px; font-size: 11px;">
+                <span style="background: #ECFDF5; color: #047857; font-weight: 700; padding: 1px 6px; border-radius: 4px;">🏡 Chăm sóc</span>
+                <span style="color: #4B5563;">Gói: <strong>${pkgName}${shiftText}</strong></span>
+              </div>
+              ${b.recipient_name ? `
+                <div style="font-size: 11px; color: #1D4ED8; margin-top: 2px;">
+                  👶 Người nhận: <strong>${escapeHtml(b.recipient_name)}</strong> (${escapeHtml(b.recipient_age)}t${b.recipient_gender ? ', ' + escapeHtml(b.recipient_gender) : ''})
+                </div>
+              ` : ''}
+              ${b.care_scope_notes ? `
+                <div style="font-size: 11px; color: #6B7280; margin-top: 2px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(b.care_scope_notes)}">
+                  📝 ${escapeHtml(b.care_scope_notes)}
+                </div>
+              ` : ''}
+            `;
+          }
+
+          let wageHtml = '';
+          if (Number(b.staff_wage || 0) > 0) {
+            wageHtml = `<div style="font-size: 11px; color: #059669; margin-top: 2px;">Công NV: ${Number(b.staff_wage).toLocaleString('vi-VN')} đ</div>`;
+          }
 
           return `
             <tr>
@@ -1093,10 +1189,14 @@
               <td>
                 <span>${escapeHtml(b.service_icon || '✨')}</span>
                 <strong>${escapeHtml(b.service_name || 'Dịch vụ')}</strong>
+                ${careInfoHtml}
               </td>
               <td>${dateStr} (${escapeHtml(b.booking_time || '08:00')})</td>
               <td style="max-width: 200px; font-size: 13px;">${escapeHtml(b.address || '---')}</td>
-              <td style="font-weight: 700; color: var(--color-primary-dark);">${priceStr}</td>
+              <td style="font-weight: 700; color: var(--color-primary-dark);">
+                ${priceStr}
+                ${wageHtml}
+              </td>
               <td>
                 <select class="staff-select" data-id="${b.id}" style="max-width: 170px;">
                   <option value="">-- Chưa phân công --</option>
@@ -1161,6 +1261,8 @@
       }
 
       document.getElementById('filter-booking-status').addEventListener('change', renderBookingsTable);
+      const catFilterEl = document.getElementById('filter-booking-category');
+      if (catFilterEl) catFilterEl.addEventListener('change', renderBookingsTable);
       document.getElementById('btn-refresh-bookings').addEventListener('click', loadBookings);
 
       // ------------------------------------------------------------
@@ -1673,12 +1775,22 @@
               document.getElementById('modal-service-title').textContent = 'Chỉnh sửa dịch vụ';
               document.getElementById('service-edit-id').value = s.id;
               document.getElementById('service-name').value = s.name;
+              document.getElementById('service-category').value = s.category || 'cleaning';
               document.getElementById('service-price').value = s.base_price;
               document.getElementById('service-unit').value = s.price_unit;
               document.getElementById('service-duration').value = s.duration_estimate || '';
               document.getElementById('service-icon').value = s.icon || '';
               document.getElementById('service-short-desc').value = s.short_description || '';
               document.getElementById('service-desc').value = s.description || '';
+              document.getElementById('service-shift-price').value = s.shift_price !== null && s.shift_price !== undefined ? s.shift_price : '';
+              document.getElementById('service-staff-shift-wage').value = s.staff_shift_wage !== null && s.staff_shift_wage !== undefined ? s.staff_shift_wage : '';
+              document.getElementById('service-daily-price').value = s.daily_price !== null && s.daily_price !== undefined ? s.daily_price : '';
+              document.getElementById('service-staff-daily-wage').value = s.staff_daily_wage !== null && s.staff_daily_wage !== undefined ? s.staff_daily_wage : '';
+              document.getElementById('service-monthly-price').value = s.monthly_price !== null && s.monthly_price !== undefined ? s.monthly_price : '';
+              document.getElementById('service-staff-monthly-wage').value = s.staff_monthly_wage !== null && s.staff_monthly_wage !== undefined ? s.staff_monthly_wage : '';
+              document.getElementById('service-is-shift-active').checked = s.is_shift_active !== 0 && s.is_shift_active !== false;
+              document.getElementById('service-is-daily-active').checked = s.is_daily_active !== 0 && s.is_daily_active !== false;
+              document.getElementById('service-is-monthly-active').checked = s.is_monthly_active !== 0 && s.is_monthly_active !== false;
               document.getElementById('modal-service').style.display = 'flex';
             }
           });
@@ -1711,14 +1823,50 @@
       document.getElementById('form-service').addEventListener('submit', async function (e) {
         e.preventDefault();
         const id = document.getElementById('service-edit-id').value;
+        const base_price = parseFloat(document.getElementById('service-price').value);
+        if (isNaN(base_price) || base_price <= 0) {
+          alert('Giá dịch vụ phải là số dương lớn hơn 0.');
+          return;
+        }
+
+        const shift_price_val = document.getElementById('service-shift-price').value;
+        const daily_price_val = document.getElementById('service-daily-price').value;
+        const monthly_price_val = document.getElementById('service-monthly-price').value;
+        const staff_shift_val = document.getElementById('service-staff-shift-wage').value;
+        const staff_daily_val = document.getElementById('service-staff-daily-wage').value;
+        const staff_monthly_val = document.getElementById('service-staff-monthly-wage').value;
+
+        if (shift_price_val && parseFloat(shift_price_val) < 0) {
+          alert('Giá theo buổi không được âm.');
+          return;
+        }
+        if (daily_price_val && parseFloat(daily_price_val) < 0) {
+          alert('Giá theo ngày không được âm.');
+          return;
+        }
+        if (monthly_price_val && parseFloat(monthly_price_val) < 0) {
+          alert('Giá theo tháng không được âm.');
+          return;
+        }
+
         const serviceData = {
           name: document.getElementById('service-name').value.trim(),
-          base_price: parseFloat(document.getElementById('service-price').value),
+          category: document.getElementById('service-category').value,
+          base_price: base_price,
           price_unit: document.getElementById('service-unit').value.trim(),
           duration_estimate: document.getElementById('service-duration').value.trim(),
           icon: document.getElementById('service-icon').value.trim() || '🧹',
           short_description: document.getElementById('service-short-desc').value.trim(),
-          description: document.getElementById('service-desc').value.trim()
+          description: document.getElementById('service-desc').value.trim(),
+          shift_price: shift_price_val ? parseFloat(shift_price_val) : null,
+          staff_shift_wage: staff_shift_val ? parseFloat(staff_shift_val) : null,
+          daily_price: daily_price_val ? parseFloat(daily_price_val) : null,
+          staff_daily_wage: staff_daily_val ? parseFloat(staff_daily_val) : null,
+          monthly_price: monthly_price_val ? parseFloat(monthly_price_val) : null,
+          staff_monthly_wage: staff_monthly_val ? parseFloat(staff_monthly_val) : null,
+          is_shift_active: document.getElementById('service-is-shift-active').checked ? 1 : 0,
+          is_daily_active: document.getElementById('service-is-daily-active').checked ? 1 : 0,
+          is_monthly_active: document.getElementById('service-is-monthly-active').checked ? 1 : 0
         };
 
         try {

@@ -397,6 +397,12 @@
         });
       },
 
+      async payoutStaffWage(bookingId) {
+        return await request(`/admin/bookings/${bookingId}/payout`, {
+          method: 'PATCH'
+        });
+      },
+
       // Quản lý dịch vụ
       async createService(serviceData) {
         return await request('/admin/services', {

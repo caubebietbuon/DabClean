@@ -1,5 +1,10 @@
-function getRequiredAreas(serviceName = '') {
-  const normalizedName = serviceName.toLocaleLowerCase('vi');
+function getRequiredAreas(serviceName = '', category = '') {
+  const normalizedName = (serviceName || '').toLocaleLowerCase('vi');
+
+  // Dịch vụ chăm sóc tại nhà: Không áp dụng quy trình chụp ảnh phòng vệ sinh
+  if (category === 'care' || normalizedName.includes('chăm sóc') || normalizedName.includes('bảo mẫu') || normalizedName.includes('điều dưỡng')) {
+    return [];
+  }
 
   if (normalizedName.includes('sofa') || normalizedName.includes('nệm') || normalizedName.includes('rèm')) {
     return ['Sofa / Nệm / Rèm'];

@@ -1223,38 +1223,70 @@
           const hasCustomerNotes = Boolean(task.notes && task.notes.trim());
           const hasStaffNotes = Boolean(task.staff_notes && task.staff_notes.trim());
 
+          const isCare = task.category === 'care' || Boolean(task.package_type);
+
           // Action buttons theo luồng quy trình
           let quickActionsHtml = '';
           if (task.status === 'assigned') {
             quickActionsHtml = `
               <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="confirmed">
-                ✅ Xác nhận công việc
+                ✅ Xác nhận nhận ca
               </button>
             `;
           } else if (task.status === 'confirmed') {
             quickActionsHtml = `
               <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="arrived" style="background:#2563EB;border-color:#2563EB;">
-                📍 Đã đến nhà khách hàng
+                📍 Đã đến nơi
               </button>
             `;
           } else if (task.status === 'arrived') {
-            quickActionsHtml = `
-              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="before" style="background: #7C3AED; border-color: #7C3AED;">
-                📷 Chụp ảnh Before & bắt đầu
-              </button>
-            `;
+            if (isCare) {
+              quickActionsHtml = `
+                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="in_progress" style="background: #7C3AED; border-color: #7C3AED;">
+                  ▶️ Bắt đầu ca chăm sóc
+                </button>
+              `;
+            } else {
+              quickActionsHtml = `
+                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="before" style="background: #7C3AED; border-color: #7C3AED;">
+                  📷 Chụp ảnh Before & bắt đầu
+                </button>
+              `;
+            }
           } else if (task.status === 'in_progress') {
-            quickActionsHtml = `
-              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="after" style="background: #059669; border-color: #059669;">
-                📷 Chụp ảnh After & hoàn thành
-              </button>
-            `;
+            if (isCare) {
+              if (task.payment_method === 'cash' && task.payment_status !== 'paid') {
+                quickActionsHtml = `
+                  <button type="button" class="btn btn-sm btn-warning btn-confirm-care-cash" data-id="${task.id}" style="background: #D97706; border-color: #D97706; color: white;">
+                    💵 Đã thu ${price}
+                  </button>
+                `;
+              } else {
+                quickActionsHtml = `
+                  <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="completed" style="background: #059669; border-color: #059669;">
+                    ✅ Hoàn thành ca chăm sóc
+                  </button>
+                `;
+              }
+            } else {
+              quickActionsHtml = `
+                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="after" style="background: #059669; border-color: #059669;">
+                  📷 Chụp ảnh After & hoàn thành
+                </button>
+              `;
+            }
           } else if (task.status === 'completed') {
-            quickActionsHtml = `
-              <button type="button" class="btn btn-sm btn-primary btn-view-photo-report" data-id="${task.id}" style="background: #0F766E; border-color: #0F766E;">
-                🖼️ Xem ảnh Before / After
-              </button>
-            `;
+            if (isCare) {
+              quickActionsHtml = `
+                <span style="font-size: 13px; color: #059669; font-weight: 700;">✅ Ca chăm sóc hoàn tất</span>
+              `;
+            } else {
+              quickActionsHtml = `
+                <button type="button" class="btn btn-sm btn-primary btn-view-photo-report" data-id="${task.id}" style="background: #0F766E; border-color: #0F766E;">
+                  🖼️ Xem ảnh Before / After
+                </button>
+              `;
+            }
           }
           const canCancel = ['assigned', 'confirmed', 'arrived', 'in_progress'].includes(task.status);
 
@@ -1283,15 +1315,15 @@
                   <span class="task-info-val" style="color: #1E40AF;">${bookingTime} · ${bookingDate}</span>
                 </div>
                 <div class="task-info-item">
-                  <span class="task-info-label">📍 Địa chỉ thi công</span>
+                  <span class="task-info-label">📍 Địa chỉ</span>
                   <span class="task-info-val" title="${escapeHtml(address)}">
                     ${escapeHtml(address)}
                     <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}" target="_blank" rel="noopener" style="font-size: 12px; color: #2563EB; margin-left: 4px; text-decoration: none;">🗺️ Bản đồ</a>
                   </span>
                 </div>
                 <div class="task-info-item">
-                  <span class="task-info-label">💵 Giá trị đơn</span>
-                  <span class="task-info-val" style="color: #059669;">${price} (${task.payment_status === 'paid' ? 'Đã thanh toán' : task.payment_method === 'cash' ? 'Thu tiền mặt' : 'Chờ thanh toán'})</span>
+                  <span class="task-info-label">💵 Tiền công nhận được</span>
+                  <span class="task-info-val" style="color: #059669; font-weight: 800;">${formatPriceVND(task.staff_wage || 0)}</span>
                 </div>
               </div>
 
@@ -1311,6 +1343,16 @@
                   </a>
                 </div>
               </div>
+
+              <!-- Hộp thông tin người nhận chăm sóc nếu là dịch vụ chăm sóc -->
+              ${isCare ? `
+                <div class="task-notes-box" style="background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; margin-top: 8px;">
+                  <div style="font-weight: 800; margin-bottom: 4px;">🏡 Thông tin ca chăm sóc:</div>
+                  <div>Gói: <strong>${task.package_type === 'shift' ? 'Theo buổi (4h)' : task.package_type === 'daily' ? 'Theo ngày (8h)' : task.package_type === 'monthly' ? 'Theo tháng (26 ngày)' : 'Theo giờ'}${task.shift_choice ? ' (' + escapeHtml(task.shift_choice) + ')' : ''}</strong></div>
+                  ${task.recipient_name ? `<div>Người nhận: <strong>${escapeHtml(task.recipient_name)}</strong> (${escapeHtml(task.recipient_age || '---')} tuổi${task.recipient_gender ? ', ' + escapeHtml(task.recipient_gender) : ''})</div>` : ''}
+                  ${task.care_scope_notes ? `<div style="margin-top: 4px;"><strong>Phạm vi chăm sóc:</strong> ${escapeHtml(task.care_scope_notes)}</div>` : ''}
+                </div>
+              ` : ''}
 
               <!-- Ghi chú của khách hàng (nếu có) -->
               ${hasCustomerNotes ? `
@@ -1375,6 +1417,23 @@
                 alert(`Không thể cập nhật công việc: ${err.message}`);
                 this.disabled = false;
               });
+          });
+        });
+
+        // Xác nhận thu tiền mặt cho ca chăm sóc
+        container.querySelectorAll('.btn-confirm-care-cash').forEach(btn => {
+          btn.addEventListener('click', async function () {
+            const taskId = parseInt(this.dataset.id, 10);
+            if (!confirm('Bạn đã nhận đủ tiền mặt từ khách hàng?')) return;
+            this.disabled = true;
+            try {
+              const res = await CleanovaAPI.staff.confirmCashPayment(taskId);
+              showAlert('success', res.message || 'Đã ghi nhận thu tiền mặt thành công.');
+              await loadStaffTasks();
+            } catch (err) {
+              alert(`Không thể xác nhận thanh toán: ${err.message}`);
+              this.disabled = false;
+            }
           });
         });
         container.querySelectorAll('.btn-cancel-task').forEach(btn => {
@@ -1484,8 +1543,11 @@
         const newStatus = document.getElementById('task-modal-status-select').value;
         const staffNotes = document.getElementById('task-modal-staff-notes').value.trim();
         const originalStatus = document.getElementById('task-modal-status-select').dataset.originalStatus;
-        if ((newStatus === 'in_progress' && originalStatus !== 'in_progress') ||
-            (newStatus === 'completed' && originalStatus !== 'completed')) {
+        const currentTask = myTasksList.find(t => t.id === taskId);
+        const isCare = currentTask && (currentTask.category === 'care' || Boolean(currentTask.package_type));
+
+        if (!isCare && ((newStatus === 'in_progress' && originalStatus !== 'in_progress') ||
+            (newStatus === 'completed' && originalStatus !== 'completed'))) {
           document.getElementById('modal-task-detail').style.display = 'none';
           await openPhotoChecklist(taskId, newStatus === 'in_progress' ? 'before' : 'after');
           return;

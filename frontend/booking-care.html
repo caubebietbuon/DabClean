@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Đặt lịch dịch vụ chăm sóc tại nhà CleanNova — Chăm sóc trẻ em, người cao tuổi và người bệnh tận tâm, an toàn. Bảng giá tự động, minh bạch.">
+  <title>Đặt lịch chăm sóc tại nhà — CleanNova Care</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232563EB'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="css/pages/care.css">
+  <style>
+    .booking-care-wrap {
+      padding: 3rem 1.5rem 5rem;
+      background: var(--color-bg);
+      min-height: calc(100vh - 160px);
+    }
+    .booking-care-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 2.5rem;
+      max-width: 1120px;
+      margin: 0 auto;
+      align-items: flex-start;
+    }
+    @media (max-width: 900px) {
+      .booking-care-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .care-form-card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid var(--color-border);
+      padding: 2.25rem;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
+    }
+    .care-form-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .care-form-header h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--color-text-main);
+      margin-bottom: 0.5rem;
+    }
+    .care-form-header p {
+      color: var(--color-text-body);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .care-field-group {
+      margin-bottom: 1.5rem;
+    }
+    .care-field-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-text-main);
+      margin-bottom: 0.5rem;
+    }
+    .care-field-input, .care-field-select, .care-field-textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      font-size: 0.95rem;
+      color: var(--color-text-main);
+      background: #ffffff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      font-family: inherit;
+    }
+    .care-field-input:focus, .care-field-select:focus, .care-field-textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+    .care-pkg-radio-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    @media (max-width: 640px) {
+      .care-pkg-radio-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .care-pkg-radio-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0.5rem;
+      border-radius: 12px;
+      border: 1.5px solid var(--color-border);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+      background: #ffffff;
+    }
+    .care-pkg-radio-label:hover {
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+    .care-pkg-radio-label input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .care-pkg-radio-label.selected {
+      border-color: var(--color-primary);
+      background: #eff6ff;
+    }
+    .care-pkg-radio-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--color-text-main);
+    }
+    .care-pkg-radio-sub {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-top: 0.25rem;
+    }
+    /* Summary Card */
+    .care-summary-card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid var(--color-border);
+      padding: 1.75rem;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      position: sticky;
+      top: 90px;
+    }
+    .care-summary-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--color-text-main);
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--color-border);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .care-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.925rem;
+      color: var(--color-text-body);
+      margin-bottom: 0.85rem;
+    }
+    .care-summary-row.total {
+      padding-top: 1rem;
+      margin-top: 1rem;
+      border-top: 1.5px dashed var(--color-border);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-primary);
+    }
+    .care-submit-btn {
+      width: 100%;
+      padding: 0.95rem;
+      background: var(--color-primary);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+    .care-submit-btn:hover {
+      background: var(--color-primary-hover);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+    .care-submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .care-alert {
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      margin-bottom: 1.25rem;
+      display: none;
+    }
+    .care-alert.error {
+      background: #fff1f2;
+      color: #e11d48;
+      border: 1px solid #fecdd3;
+    }
+    .care-alert.success {
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header" id="header" role="banner">
+    <div class="container">
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563EB" opacity="0.15"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563EB" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#2563EB"/>
+        </svg>
+        <span class="logo-text">Cleanova <span style="font-size: 13px; font-weight: 600; color: #2563eb; background: #eff6ff; padding: 2px 8px; border-radius: 6px; margin-left: 4px;">Care</span></span>
+      </a>
+
+      <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
+        <a href="trangchu.html" class="nav-link">Trang chủ</a>
+        <a href="care-elderly.html" class="nav-link">Chăm sóc người cao tuổi</a>
+        <a href="care-child.html" class="nav-link">Chăm sóc trẻ em</a>
+        <a href="care-patient.html" class="nav-link">Chăm sóc người bệnh</a>
+        <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="trangchu.html" class="btn btn-outline" style="padding: 0.5rem 1rem;">Về trang chủ</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="booking-care-wrap">
+    <div class="booking-care-grid">
+      <!-- FORM ĐẶT LỊCH CHĂM SÓC -->
+      <div class="care-form-card">
+        <div class="care-form-header">
+          <h1>Đặt lịch chăm sóc tại nhà</h1>
+          <p>Điền thông tin người thân và lịch trình mong muốn. Bảng tính giá hiển thị trực tiếp theo thời gian thực.</p>
+        </div>
+
+        <div id="care-alert" class="care-alert" role="alert"></div>
+
+        <form id="care-booking-form">
+          <!-- 1. CHỌN DỊCH VỤ -->
+          <div class="care-field-group">
+            <label class="care-field-label" for="care-service-select">Dịch vụ chăm sóc <span style="color: #e11d48;">*</span></label>
+            <select id="care-service-select" class="care-field-select" required>
+              <option value="7" selected>👵 Chăm sóc người cao tuổi tại nhà (Từ 90.000đ/h)</option>
+              <option value="6">👶 Chăm sóc trẻ em tại nhà (Từ 80.000đ/h)</option>
+              <option value="8">🩺 Chăm sóc người bệnh tại nhà (Từ 120.000đ/h)</option>
+            </select>
+          </div>
+
+          <!-- 2. CHỌN HÌNH THỨC GÓI TÍNH GIÁ -->
+          <div class="care-field-group">
+            <label class="care-field-label">Hình thức gói dịch vụ <span style="color: #e11d48;">*</span></label>
+            <div class="care-pkg-radio-grid">
+              <label class="care-pkg-radio-label selected" id="lbl-pkg-hourly">
+                <input type="radio" name="package_type" value="hourly" checked>
+                <span class="care-pkg-radio-title">Theo giờ</span>
+                <span class="care-pkg-radio-sub">Tối thiểu 2h</span>
+              </label>
+              <label class="care-pkg-radio-label" id="lbl-pkg-shift">
+                <input type="radio" name="package_type" value="shift">
+                <span class="care-pkg-radio-title">Theo ca buổi</span>
+                <span class="care-pkg-radio-sub">4 tiếng / ca</span>
+              </label>
+              <label class="care-pkg-radio-label" id="lbl-pkg-daily">
+                <input type="radio" name="package_type" value="daily">
+                <span class="care-pkg-radio-title">Theo ngày</span>
+                <span class="care-pkg-radio-sub">8 tiếng / ngày</span>
+              </label>
+              <label class="care-pkg-radio-label" id="lbl-pkg-monthly">
+                <input type="radio" name="package_type" value="monthly">
+                <span class="care-pkg-radio-title">Theo tháng</span>
+                <span class="care-pkg-radio-sub">26 ngày / tháng</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- KHUNG CHỌN SỐ GIỜ (CHO GÓI THEO GIỜ) -->
+          <div class="care-field-group" id="group-duration-hours">
+            <label class="care-field-label" for="care-duration-hours">Thời lượng ca làm việc (Số giờ) <span style="color: #e11d48;">*</span></label>
+            <select id="care-duration-hours" class="care-field-select">
+              <option value="2">2 giờ (Tối thiểu)</option>
+              <option value="3" selected>3 giờ</option>
+              <option value="4">4 giờ</option>
+              <option value="5">5 giờ</option>
+              <option value="6">6 giờ</option>
+            </select>
+          </div>
+
+          <!-- KHUNG CHỌN CA (CHO GÓI BUỔI) -->
+          <div class="care-field-group" id="group-shift-choice" style="display: none;">
+            <label class="care-field-label" for="care-shift-choice">Chọn ca làm việc <span style="color: #e11d48;">*</span></label>
+            <select id="care-shift-choice" class="care-field-select">
+              <option value="morning">Ca sáng: 08:00 – 12:00 (4 tiếng)</option>
+              <option value="afternoon">Ca chiều: 13:00 – 17:00 (4 tiếng)</option>
+              <option value="evening">Ca tối: 18:00 – 22:00 (4 tiếng)</option>
+            </select>
+          </div>
+
+          <!-- 3. NGÀY VÀ GIỜ BẮT ĐẦU -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;" class="care-field-group">
+            <div>
+              <label class="care-field-label" for="care-date">Ngày bắt đầu <span style="color: #e11d48;">*</span></label>
+              <input type="date" id="care-date" class="care-field-input" required>
+            </div>
+            <div>
+              <label class="care-field-label" for="care-time">Giờ có mặt <span style="color: #e11d48;">*</span></label>
+              <input type="time" id="care-time" class="care-field-input" value="08:30" required>
+            </div>
+          </div>
+
+          <!-- 4. THÔNG TIN NGƯỜI ĐƯỢC CHĂM SÓC -->
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;" class="care-field-group">
+            <div>
+              <label class="care-field-label" for="care-recipient-name">Họ tên người được chăm sóc <span style="color: #e11d48;">*</span></label>
+              <input type="text" id="care-recipient-name" class="care-field-input" placeholder="VD: Bà Nguyễn Thị Lan" required>
+            </div>
+            <div>
+              <label class="care-field-label" for="care-recipient-age">Tuổi / Năm sinh <span style="color: #e11d48;">*</span></label>
+              <input type="text" id="care-recipient-age" class="care-field-input" placeholder="VD: 75 tuổi" required>
+            </div>
+          </div>
+
+          <!-- 5. PHẠM VI CHĂM SÓC & THÓI QUEN SINH HOẠT -->
+          <div class="care-field-group">
+            <label class="care-field-label" for="care-scope-notes">Ghi chú thói quen & Nhu cầu hỗ trợ cụ thể</label>
+            <textarea id="care-scope-notes" class="care-field-textarea" rows="3" placeholder="VD: Cần hỗ trợ dìu đi vệ sinh, nhắc uống thuốc huyết áp lúc 9h sáng, thích ăn cháo hạt sen nấu mềm..."></textarea>
+          </div>
+
+          <!-- 6. ĐỊA CHỈ & SỐ ĐIỆN THOẠI LIÊN HỆ -->
+          <div class="care-field-group">
+            <label class="care-field-label" for="care-address">Địa chỉ nhà thực hiện dịch vụ <span style="color: #e11d48;">*</span></label>
+            <input type="text" id="care-address" class="care-field-input" placeholder="Số nhà, ngõ/phố, phường, quận, thành phố..." required>
+          </div>
+
+          <div class="care-field-group">
+            <label class="care-field-label" for="care-phone">Số điện thoại liên hệ người giám hộ <span style="color: #e11d48;">*</span></label>
+            <input type="tel" id="care-phone" class="care-field-input" placeholder="Số điện thoại nhận xác nhận..." required>
+          </div>
+
+          <!-- 7. MÃ ƯU ĐÃI & PHƯƠNG THỨC THANH TOÁN -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;" class="care-field-group">
+            <div>
+              <label class="care-field-label" for="care-promo">Mã ưu đãi (nếu có)</label>
+              <input type="text" id="care-promo" class="care-field-input" placeholder="Nhập CLEANOVA20...">
+            </div>
+            <div>
+              <label class="care-field-label" for="care-payment">Phương thức thanh toán <span style="color: #e11d48;">*</span></label>
+              <select id="care-payment" class="care-field-select" required>
+                <option value="cash">Tiền mặt sau khi hoàn thành</option>
+                <option value="bank_transfer">Chuyển khoản ngân hàng</option>
+                <option value="momo">Ví điện tử MoMo</option>
+                <option value="vnpay">Cổng thanh toán VNPAY</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- SUMMARY QUOTE CARD (LIVE BẢNG TÍNH GIÁ BACKEND) -->
+      <aside class="care-summary-card" aria-labelledby="summary-title">
+        <h2 class="care-summary-title" id="summary-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Chi tiết báo giá dự kiến
+        </h2>
+
+        <div class="care-summary-row">
+          <span>Dịch vụ:</span>
+          <strong id="quote-service-name">Chăm sóc người cao tuổi</strong>
+        </div>
+
+        <div class="care-summary-row">
+          <span>Hình thức gói:</span>
+          <span id="quote-package-type">Theo giờ (3h)</span>
+        </div>
+
+        <div class="care-summary-row">
+          <span>Đơn giá cơ sở:</span>
+          <span id="quote-base-price">90.000 VNĐ</span>
+        </div>
+
+        <div class="care-summary-row">
+          <span>Tạm tính:</span>
+          <span id="quote-subtotal">270.000 VNĐ</span>
+        </div>
+
+        <div class="care-summary-row" id="row-discount" style="display: none; color: #16a34a;">
+          <span>Giảm giá:</span>
+          <span id="quote-discount">- 0 VNĐ</span>
+        </div>
+
+        <div class="care-summary-row total">
+          <span>Tổng thanh toán:</span>
+          <span id="quote-total">270.000 VNĐ</span>
+        </div>
+
+        <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 1rem; line-height: 1.5;">
+          * Giá đã bao gồm toàn bộ thời gian nhân viên túc trực và hỗ trợ sinh hoạt đời sống tại nhà.
+        </p>
+
+        <button type="submit" form="care-booking-form" class="care-submit-btn" id="btn-submit-care">
+          Xác nhận đặt lịch ngay
+        </button>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+        <p>© 2026 Cleanova Inc. Dịch vụ chăm sóc tại nhà uy tín.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="api.js"></script>
+  <script>
+    // Xử lý logic đặt lịch chăm sóc & tính giá trực tiếp từ backend
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Set min date là ngày hôm nay
+      const dateInput = document.getElementById('care-date');
+      const today = new Date().toISOString().split('T')[0];
+      dateInput.min = today;
+      dateInput.value = today;
+
+      // 2. Đọc query params: ?service=6/7/8 & package=hourly/shift/daily/monthly
+      const urlParams = new URLSearchParams(window.location.search);
+      const initialService = urlParams.get('service');
+      const initialPackage = urlParams.get('package');
+
+      const serviceSelect = document.getElementById('care-service-select');
+      if (initialService && ['6', '7', '8'].includes(initialService)) {
+        serviceSelect.value = initialService;
+      }
+
+      const radioPackages = document.querySelectorAll('input[name="package_type"]');
+      if (initialPackage && ['hourly', 'shift', 'daily', 'monthly'].includes(initialPackage)) {
+        radioPackages.forEach(r => {
+          if (r.value === initialPackage) {
+            r.checked = true;
+          }
+        });
+      }
+
+      // 3. Radio button packaging styling
+      function updatePackageRadioUI() {
+        radioPackages.forEach(r => {
+          const lbl = r.closest('.care-pkg-radio-label');
+          if (r.checked) {
+            lbl.classList.add('selected');
+          } else {
+            lbl.classList.remove('selected');
+          }
+        });
+
+        const selectedPkg = document.querySelector('input[name="package_type"]:checked').value;
+        const groupHours = document.getElementById('group-duration-hours');
+        const groupShift = document.getElementById('group-shift-choice');
+
+        if (selectedPkg === 'hourly') {
+          groupHours.style.display = 'block';
+          groupShift.style.display = 'none';
+        } else if (selectedPkg === 'shift') {
+          groupHours.style.display = 'none';
+          groupShift.style.display = 'block';
+        } else {
+          groupHours.style.display = 'none';
+          groupShift.style.display = 'none';
+        }
+
+        fetchQuote();
+      }
+
+      radioPackages.forEach(r => {
+        r.addEventListener('change', updatePackageRadioUI);
+      });
+
+      // 4. Báo giá trực tiếp từ backend
+      async function fetchQuote() {
+        const serviceId = parseInt(serviceSelect.value, 10);
+        const packageType = document.querySelector('input[name="package_type"]:checked').value;
+        const durationHours = packageType === 'hourly' ? parseFloat(document.getElementById('care-duration-hours').value) : null;
+        const discountCode = document.getElementById('care-promo').value.trim();
+
+        try {
+          const res = await fetch('/api/bookings/quote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              service_id: serviceId,
+              package_type: packageType,
+              duration_hours: durationHours,
+              discount_code: discountCode || null
+            })
+          });
+          const result = await res.json();
+          if (result.success && result.data) {
+            const d = result.data;
+            document.getElementById('quote-service-name').textContent = d.service_name || 'Dịch vụ chăm sóc';
+            
+            let pkgText = 'Theo giờ (' + d.durationHours + 'h)';
+            if (packageType === 'shift') pkgText = 'Theo ca buổi (4h)';
+            else if (packageType === 'daily') pkgText = 'Theo ngày (8h)';
+            else if (packageType === 'monthly') pkgText = 'Theo tháng (26 ngày)';
+            document.getElementById('quote-package-type').textContent = pkgText;
+
+            document.getElementById('quote-base-price').textContent = Number(d.base_price).toLocaleString('vi-VN') + ' đ';
+            document.getElementById('quote-subtotal').textContent = Number(d.subtotal).toLocaleString('vi-VN') + ' đ';
+            
+            const rowDiscount = document.getElementById('row-discount');
+            if (d.discountAmount > 0) {
+              rowDiscount.style.display = 'flex';
+              document.getElementById('quote-discount').textContent = '- ' + Number(d.discountAmount).toLocaleString('vi-VN') + ' đ';
+            } else {
+              rowDiscount.style.display = 'none';
+            }
+
+            document.getElementById('quote-total').textContent = Number(d.totalPrice).toLocaleString('vi-VN') + ' đ';
+          }
+        } catch (err) {
+          console.warn('Lỗi kết nối báo giá:', err);
+        }
+      }
+
+      serviceSelect.addEventListener('change', fetchQuote);
+      document.getElementById('care-duration-hours').addEventListener('change', fetchQuote);
+      document.getElementById('care-promo').addEventListener('blur', fetchQuote);
+
+      updatePackageRadioUI();
+
+      // 5. Submit form đặt lịch
+      const form = document.getElementById('care-booking-form');
+      const submitBtn = document.getElementById('btn-submit-care');
+      const alertBox = document.getElementById('care-alert');
+
+      function showAlert(msg, isSuccess = false) {
+        alertBox.textContent = msg;
+        alertBox.className = 'care-alert ' + (isSuccess ? 'success' : 'error');
+        alertBox.style.display = 'block';
+        alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        alertBox.style.display = 'none';
+
+        // Kiểm tra đăng nhập
+        const token = localStorage.getItem('token');
+        if (!token) {
+          const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+          showAlert('Vui lòng đăng nhập tài khoản trước khi đặt lịch dịch vụ.');
+          setTimeout(() => {
+            window.location.href = `login.html?redirect=${returnUrl}&message=${encodeURIComponent('Vui lòng đăng nhập để tiếp tục đặt lịch chăm sóc.')}`;
+          }, 1200);
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang xử lý đơn đặt...';
+
+        const serviceId = parseInt(serviceSelect.value, 10);
+        const packageType = document.querySelector('input[name="package_type"]:checked').value;
+        const durationHours = packageType === 'hourly' ? parseFloat(document.getElementById('care-duration-hours').value) : null;
+        const shiftChoice = packageType === 'shift' ? document.getElementById('care-shift-choice').value : null;
+        const bookingDate = dateInput.value;
+        const bookingTime = document.getElementById('care-time').value;
+        const recipientName = document.getElementById('care-recipient-name').value.trim();
+        const recipientAge = document.getElementById('care-recipient-age').value.trim();
+        const careScopeNotes = document.getElementById('care-scope-notes').value.trim();
+        const address = document.getElementById('care-address').value.trim();
+        const phone = document.getElementById('care-phone').value.trim();
+        const promoCode = document.getElementById('care-promo').value.trim();
+        const paymentMethod = document.getElementById('care-payment').value;
+
+        try {
+          const res = await fetch('/api/bookings', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({
+              service_id: serviceId,
+              booking_date: bookingDate,
+              booking_time: bookingTime,
+              package_type: packageType,
+              shift_choice: shiftChoice,
+              duration_hours: durationHours,
+              recipient_name: recipientName,
+              recipient_age: recipientAge,
+              care_scope_notes: careScopeNotes,
+              address: address,
+              phone: phone,
+              discount_code: promoCode || null,
+              payment_method: paymentMethod
+            })
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showAlert('Đặt lịch chăm sóc thành công! Mã đơn: ' + data.data.booking_code, true);
+            setTimeout(() => {
+              window.location.href = 'my-bookings.html';
+            }, 1500);
+          } else {
+            showAlert(data.message || 'Có lỗi xảy ra khi gửi đơn đặt.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Xác nhận đặt lịch ngay';
+          }
+        } catch (err) {
+          showAlert('Lỗi kết nối tới máy chủ. Vui lòng thử lại sau.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Xác nhận đặt lịch ngay';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -300,7 +300,8 @@ function validateReturnUrl(rawUrl, userRole) {
     }
 
     const allowedPages = [
-      'trangchu.html', 'services.html', 'khampha.html', 'booking.html',
+      'trangchu.html', 'services.html', 'khampha.html', 'booking.html', 'booking-care.html',
+      'care-child.html', 'care-elderly.html', 'care-patient.html', 'service-cleaning.html',
       'my-bookings.html', 'profile.html', 'partner-register.html'
     ];
 

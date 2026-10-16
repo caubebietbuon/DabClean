@@ -1,0 +1,700 @@
+/* ============================================================
+   CLEANOVA — IN-HOME CARE SERVICES STYLESHEET (care.css)
+   Light / Minimal & Premium Aesthetics for Dedicated Care Services
+   ============================================================ */
+
+/* --- Hero Section --- */
+.care-hero {
+  padding: 5rem 1.5rem 3.5rem;
+  background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.care-hero-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.care-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  margin-bottom: 1.25rem;
+  border: 1px solid #bae6fd;
+}
+
+.care-hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--color-text-main);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.care-hero-desc {
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--color-text-body);
+  margin-bottom: 2rem;
+  max-width: 620px;
+}
+
+.care-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.care-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.care-btn-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
+}
+
+.care-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.75rem;
+  background: #ffffff;
+  color: var(--color-text-main);
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.care-btn-secondary:hover {
+  background: var(--color-bg);
+  border-color: #cbd5e1;
+  color: var(--color-primary);
+}
+
+.care-hero-card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.care-hero-illustration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.care-avatar-ring {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+}
+
+.care-hero-stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.care-stat-item {
+  text-align: center;
+}
+
+.care-stat-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.care-stat-lbl {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: 0.25rem;
+}
+
+/* --- Content Sections General --- */
+.care-section {
+  padding: 4.5rem 1.5rem;
+}
+
+.care-section-alt {
+  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.care-container {
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.care-sec-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 3.5rem;
+}
+
+.care-sec-tag {
+  display: inline-block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.care-sec-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  letter-spacing: -0.015em;
+  margin-bottom: 0.85rem;
+}
+
+.care-sec-desc {
+  font-size: 1.05rem;
+  color: var(--color-text-body);
+  line-height: 1.65;
+}
+
+/* --- Section 3.2: Service Overview Cards --- */
+.care-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.care-overview-card {
+  background: #ffffff;
+  padding: 1.75rem;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.care-overview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.care-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.care-overview-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.65rem;
+}
+
+.care-overview-card p {
+  font-size: 0.95rem;
+  color: var(--color-text-body);
+  line-height: 1.6;
+}
+
+/* --- Section 3.3: Why Family Needs It (Scenarios) --- */
+.care-scenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.care-scenario-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.care-scenario-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #0284c7;
+  background: #f0f9ff;
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  align-self: flex-start;
+}
+
+.care-scenario-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+}
+
+.care-scenario-desc {
+  font-size: 0.925rem;
+  color: var(--color-text-body);
+  line-height: 1.6;
+}
+
+.care-disclaimer-box {
+  margin-top: 2.5rem;
+  padding: 1.25rem 1.5rem;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  font-size: 0.925rem;
+  color: #92400e;
+  line-height: 1.6;
+}
+
+/* --- Section 3.4: Why Choose CleanNova --- */
+.care-strengths-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.75rem;
+}
+
+.care-strength-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+}
+
+.care-strength-icon {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: #f0fdf4;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.care-strength-content h4 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.35rem;
+}
+
+.care-strength-content p {
+  font-size: 0.9rem;
+  color: var(--color-text-body);
+  line-height: 1.55;
+}
+
+/* --- Section 3.5: Shift Timeline (4-5 steps, NO AI scan) --- */
+.care-timeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  position: relative;
+  margin-top: 2rem;
+}
+
+@media (max-width: 900px) {
+  .care-timeline {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+}
+
+.care-timeline-step {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  padding: 1.5rem 1.25rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.care-step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.care-step-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  margin-bottom: 0.5rem;
+}
+
+.care-step-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-body);
+  line-height: 1.55;
+}
+
+/* --- Section 3.6: Job Scope & Exclusions --- */
+.care-scope-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .care-scope-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.care-scope-box {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid var(--color-border);
+  padding: 2rem;
+}
+
+.care-scope-box.included {
+  border-top: 4px solid #16a34a;
+}
+
+.care-scope-box.excluded {
+  border-top: 4px solid #64748b;
+  background: #fdfdfd;
+}
+
+.care-scope-box h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.care-scope-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.care-scope-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--color-text-body);
+}
+
+.care-scope-icon-yes {
+  flex-shrink: 0;
+  color: #16a34a;
+  margin-top: 0.15rem;
+}
+
+.care-scope-icon-no {
+  flex-shrink: 0;
+  color: #94a3b8;
+  margin-top: 0.15rem;
+}
+
+/* --- Section 3.7: 4 Pricing Packages --- */
+.care-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .care-pricing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .care-pricing-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.care-price-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid var(--color-border);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.care-price-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.care-price-card.featured {
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.12);
+}
+
+.care-price-badge {
+  position: absolute;
+  top: -12px;
+  right: 18px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.care-pkg-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text-main);
+  margin-bottom: 0.35rem;
+}
+
+.care-pkg-duration {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: 1.25rem;
+}
+
+.care-pkg-price-row {
+  margin-bottom: 1.5rem;
+}
+
+.care-pkg-price {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.care-pkg-unit {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+.care-pkg-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text-body);
+}
+
+.care-pkg-feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.care-pkg-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.25rem;
+  background: #f1f5f9;
+  color: var(--color-text-main);
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.care-pkg-btn:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.care-price-card.featured .care-pkg-btn {
+  background: var(--color-primary);
+  color: #ffffff;
+  border-color: var(--color-primary);
+}
+
+.care-price-card.featured .care-pkg-btn:hover {
+  background: var(--color-primary-hover);
+}
+
+/* --- Section 3.8: FAQ Accordion --- */
+.care-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+.care-faq-item {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.care-faq-item:hover {
+  border-color: #cbd5e1;
+}
+
+.care-faq-question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-main);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.care-faq-question:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.care-faq-icon {
+  font-size: 1.25rem;
+  transition: transform 0.2s ease;
+  color: var(--color-text-muted);
+}
+
+.care-faq-item.active .care-faq-icon {
+  transform: rotate(180deg);
+  color: var(--color-primary);
+}
+
+.care-faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease-out;
+  padding: 0 1.5rem;
+}
+
+.care-faq-item.active .care-faq-answer {
+  max-height: 250px;
+  padding-bottom: 1.25rem;
+}
+
+.care-faq-answer p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--color-text-body);
+  margin: 0;
+}
+
+/* --- Responsive & Accessibility --- */
+@media (max-width: 900px) {
+  .care-hero-container {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .care-hero-title {
+    font-size: 2rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .care-overview-card,
+  .care-price-card,
+  .care-btn-primary,
+  .care-btn-secondary,
+  .care-faq-icon,
+  .care-faq-answer {
+    transition: none !important;
+    transform: none !important;
+  }
+}

@@ -72,7 +72,7 @@ const adminController = {
       }
       if (status === 'in_progress' || status === 'completed') {
         const photos = await BookingModel.getJobPhotos(id);
-        const progress = getPhotoProgress(getRequiredAreas(booking.service_name), photos);
+        const progress = getPhotoProgress(getRequiredAreas(booking.service_name, booking.category || ''), photos);
         if (status === 'in_progress' && !progress.canStart) {
           return res.status(409).json({ success: false, message: 'Không thể bắt đầu: còn thiếu ảnh Before ở các khu vực bắt buộc.' });
         }
@@ -96,6 +96,50 @@ const adminController = {
       res.json({
         success: true,
         message: `Đã cập nhật trạng thái đơn ${booking.booking_code} thành "${status}".`
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 3b. Quyết toán chi trả tiền công cho nhân viên (PATCH /api/admin/bookings/:id/payout)
+  async payoutStaffWage(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const booking = await BookingModel.getById(id);
+      if (!booking) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
+      }
+      if (booking.status !== 'completed') {
+        return res.status(400).json({ success: false, message: 'Chỉ có thể quyết toán tiền công cho đơn hàng đã hoàn thành.' });
+      }
+      if (booking.wage_status === 'paid') {
+        return res.status(409).json({ success: false, message: 'Đơn hàng này đã được quyết toán tiền công trước đó.' });
+      }
+      if (!booking.staff_id) {
+        return res.status(400).json({ success: false, message: 'Đơn hàng chưa có nhân viên phụ trách.' });
+      }
+
+      await db.query(
+        `UPDATE bookings SET wage_status = 'paid', wage_settled_at = NOW(), wage_settled_by = ? WHERE id = ? AND wage_status != 'paid'`,
+        [req.user.id, id]
+      );
+
+      await db.query(
+        `INSERT INTO staff_payout_logs (booking_id, staff_id, amount, settled_by, notes) VALUES (?, ?, ?, ?, ?)`,
+        [id, booking.staff_id, booking.staff_wage || 0, req.user.id, `Quyết toán thù lao cho đơn #${booking.booking_code}`]
+      );
+
+      await UserModel.logAudit(req.user.id, 'PAYOUT_STAFF_WAGE', id, 'booking', `Quyết toán ${booking.staff_wage} VND cho nhân viên ID ${booking.staff_id}`);
+
+      res.json({
+        success: true,
+        message: `Đã quyết toán thành công tiền công cho đơn #${booking.booking_code}.`,
+        data: {
+          booking_id: id,
+          wage_status: 'paid',
+          staff_wage: booking.staff_wage
+        }
       });
     } catch (err) {
       next(err);
@@ -191,14 +235,20 @@ const adminController = {
   async updateService(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
-      const { name, description, short_description, base_price, price_unit, duration_estimate, icon } = req.body;
+      const {
+        name, description, short_description, base_price, price_unit, duration_estimate, icon,
+        category, min_duration_hours, staff_wage_rate,
+        shift_price, daily_price, monthly_price,
+        is_shift_active, is_daily_active, is_monthly_active,
+        staff_shift_wage, staff_daily_wage, staff_monthly_wage
+      } = req.body;
 
       const service = await ServiceModel.getById(id);
       if (!service) {
         return res.status(404).json({ success: false, message: 'Không tìm thấy dịch vụ cần cập nhật.' });
       }
 
-      // Bảo vệ Bug 5: Không cho phép cập nhật giá âm hoặc bằng 0
+      // Bảo vệ Bug 5: Không cho phép cập nhật giá âm hoặc bằng 0 đối với base_price
       let updatedBasePrice = service.base_price;
       if (base_price !== undefined) {
         const parsed = parseFloat(base_price);
@@ -208,6 +258,32 @@ const adminController = {
         updatedBasePrice = parsed;
       }
 
+      // Kiểm tra các mức giá gói chăm sóc không được âm
+      if (shift_price !== undefined && shift_price !== null) {
+        const p = parseFloat(shift_price);
+        if (isNaN(p) || p < 0) {
+          return res.status(400).json({ success: false, message: 'Giá theo buổi không được là số âm.' });
+        }
+      }
+      if (daily_price !== undefined && daily_price !== null) {
+        const p = parseFloat(daily_price);
+        if (isNaN(p) || p < 0) {
+          return res.status(400).json({ success: false, message: 'Giá theo ngày không được là số âm.' });
+        }
+      }
+      if (monthly_price !== undefined && monthly_price !== null) {
+        const p = parseFloat(monthly_price);
+        if (isNaN(p) || p < 0) {
+          return res.status(400).json({ success: false, message: 'Giá theo tháng không được là số âm.' });
+        }
+      }
+      if (staff_wage_rate !== undefined && staff_wage_rate !== null) {
+        const p = parseFloat(staff_wage_rate);
+        if (isNaN(p) || p < 0) {
+          return res.status(400).json({ success: false, message: 'Tiền công nhân viên không được là số âm.' });
+        }
+      }
+
       await ServiceModel.update(id, {
         name: name !== undefined ? sanitizeInput(name) : service.name,
         description: description !== undefined ? sanitizeInput(description) : service.description,
@@ -215,7 +291,19 @@ const adminController = {
         base_price: updatedBasePrice,
         price_unit: price_unit !== undefined ? sanitizeInput(price_unit) : service.price_unit,
         duration_estimate: duration_estimate !== undefined ? sanitizeInput(duration_estimate) : service.duration_estimate,
-        icon: icon !== undefined ? sanitizeInput(icon) : service.icon
+        icon: icon !== undefined ? sanitizeInput(icon) : service.icon,
+        category: category !== undefined ? sanitizeInput(category) : service.category,
+        min_duration_hours: min_duration_hours !== undefined ? parseInt(min_duration_hours, 10) : service.min_duration_hours,
+        staff_wage_rate: staff_wage_rate !== undefined ? parseFloat(staff_wage_rate) : service.staff_wage_rate,
+        shift_price: shift_price !== undefined ? parseFloat(shift_price) : service.shift_price,
+        daily_price: daily_price !== undefined ? parseFloat(daily_price) : service.daily_price,
+        monthly_price: monthly_price !== undefined ? parseFloat(monthly_price) : service.monthly_price,
+        is_shift_active: is_shift_active !== undefined ? (is_shift_active ? 1 : 0) : service.is_shift_active,
+        is_daily_active: is_daily_active !== undefined ? (is_daily_active ? 1 : 0) : service.is_daily_active,
+        is_monthly_active: is_monthly_active !== undefined ? (is_monthly_active ? 1 : 0) : service.is_monthly_active,
+        staff_shift_wage: staff_shift_wage !== undefined ? parseFloat(staff_shift_wage) : service.staff_shift_wage,
+        staff_daily_wage: staff_daily_wage !== undefined ? parseFloat(staff_daily_wage) : service.staff_daily_wage,
+        staff_monthly_wage: staff_monthly_wage !== undefined ? parseFloat(staff_monthly_wage) : service.staff_monthly_wage
       });
 
       const updated = await ServiceModel.getById(id);

@@ -23,7 +23,17 @@ function getJwtSecret() {
     return envSecret;
   }
 
-  // Tự sinh secret ngẫu nhiên bảo mật cao tại runtime để ngăn chặn kẻ xấu tự ký JWT
+  // Trong môi trường Production, bắt buộc phải có JWT_SECRET an toàn, từ chối khởi động
+  if (process.env.NODE_ENV === 'production') {
+    console.error('====================================================');
+    console.error('[FATAL SECURITY ERROR] Trong môi trường Production, biến môi trường JWT_SECRET');
+    console.error('bắt buộc phải được cấu hình an toàn và KHÔNG được trùng với secret mẫu công khai!');
+    console.error('Ứng dụng từ chối khởi động để ngăn chặn nguy cơ giả mạo Token.');
+    console.error('====================================================');
+    process.exit(1);
+  }
+
+  // Trong môi trường dev/test, tự sinh secret ngẫu nhiên bảo mật cao tại runtime để ngăn chặn kẻ xấu tự ký JWT
   if (!runtimeSecret) {
     runtimeSecret = crypto.randomBytes(48).toString('hex');
     console.warn('[Security Warning] JWT_SECRET chưa được cấu hình hoặc trùng với mẫu công khai trên GitHub.');

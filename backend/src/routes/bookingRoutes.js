@@ -9,6 +9,9 @@ const { verifyToken } = require('../middleware/authMiddleware');
 // Lấy danh sách đánh giá công khai (không bắt buộc token)
 router.get('/reviews/all', bookingController.getAllReviews);
 
+// Tính toán báo giá nhanh (Công khai hoặc kiểm tra ưu đãi)
+router.post('/quote', bookingController.getQuote);
+
 // Tất cả các route đặt lịch bên dưới đều yêu cầu đăng nhập
 router.use(verifyToken);
 

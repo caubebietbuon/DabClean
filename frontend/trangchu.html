@@ -7,11 +7,10 @@
        ============================================================ -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Cleanova - Dịch vụ dọn vệ sinh nhà cửa & văn phòng chuyên nghiệp. Đặt lịch trong 60 giây. Đội ngũ uy tín, giá minh bạch, đảm bảo hài lòng 100%.">
-  <meta name="keywords" content="dọn vệ sinh, dịch vụ vệ sinh, dọn nhà, vệ sinh văn phòng, deep cleaning, cleanova">
+  <meta name="description" content="Cleanova - Nền tảng dịch vụ dọn vệ sinh chuyên nghiệp và chăm sóc tại nhà uy tín. Đặt lịch nhanh chóng, bảng giá minh bạch, an tâm chăm sóc gia đình.">
+  <meta name="keywords" content="dọn vệ sinh, chăm sóc tại nhà, chăm sóc trẻ em, chăm sóc người cao tuổi, chăm sóc người bệnh, deep cleaning, cleanova">
   <meta name="author" content="Cleanova">
-  <title>Cleanova — Dịch vụ vệ sinh chuyên nghiệp | A Cleaner Space, A Better Life</title>
-
+  <title>Cleanova — Chăm sóc ngôi nhà, an tâm chăm sóc gia đình | Dịch vụ vệ sinh & Chăm sóc tại nhà</title>
 
   <!-- Favicon SVG -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310B981'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3Cpath d='M13 18 Q16 12 19 18' stroke='%2310B981' stroke-width='2' fill='none'/%3E%3C/svg%3E">
@@ -45,12 +44,13 @@
       <!-- Navigation Links (Desktop) -->
       <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
         <a href="trangchu.html" class="nav-link active" data-i18n="nav_home">Trang chủ</a>
-        <a href="services.html" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
-        <a href="khampha.html" class="nav-link">Khám phá</a>
+        <a href="#services" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
         <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn?</a>
-        <a href="#customer-guide" class="nav-link" data-i18n="nav_guide">Hướng dẫn</a>
-        <a href="#cleaning-timeline" class="nav-link" data-i18n="nav_timeline">Quy trình</a>
-        <a href="#calculator" class="nav-link" data-i18n="nav_pricing">Bảng giá</a>
+        <a href="#booking-workflow" class="nav-link" data-i18n="nav_workflow">Quy trình</a>
+        <a href="#pricing-table" class="nav-link" data-i18n="nav_pricing">Bảng giá</a>
+        <a href="#commitments" class="nav-link" data-i18n="nav_commitments">Cam kết</a>
+        <a href="#faq" class="nav-link" data-i18n="nav_faq">FAQ</a>
+        <a href="khampha.html" class="nav-link">Khám phá</a>
         <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" style="display: none;">Đơn của tôi</a>
         <a href="admin.html" class="nav-link" id="nav-link-admin" style="display: none; color: #B45309; font-weight: 700;">Quản trị</a>
         <a href="staff.html" class="nav-link" id="nav-link-staff" style="display: none; color: #1D4ED8; font-weight: 700;">Nhân viên</a>
@@ -103,14 +103,11 @@
         <a href="login.html" class="btn btn-ghost btn-sm" id="btn-login-header" data-i18n="btn_login" style="display: none;">Đăng nhập</a>
         <a href="register.html" class="btn btn-ghost btn-sm" id="btn-register-header" data-i18n="btn_register" style="display: none;">Đăng ký</a>
 
-        <!-- Nút Trở thành đối tác Cleanova (Mới bổ sung theo yêu cầu) -->
+        <!-- Nút Trở thành đối tác Cleanova -->
         <a href="partner-register.html" class="btn-partner-header" id="btn-partner-nav" title="Đăng ký trở thành đối tác Cleanova">
           <span class="btn-partner-icon" aria-hidden="true">🤝</span>
           <span data-i18n="nav_partner">Trở thành đối tác</span>
         </a>
-
-        <!-- Nút CTA chính - Đặt lịch ngay -->
-        <a href="booking.html" class="btn btn-primary btn-sm" data-action="book" data-i18n="btn_book_now">Đặt lịch ngay</a>
 
         <!-- Nút Hamburger Menu (Mobile) -->
         <button class="menu-toggle" id="menu-toggle" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-nav">
@@ -128,11 +125,12 @@
   <!-- Mobile Navigation Drawer -->
   <nav class="mobile-nav" id="mobile-nav" role="navigation" aria-label="Menu mobile">
     <a href="trangchu.html" class="nav-link" data-i18n="nav_home">Trang chủ</a>
-    <a href="services.html" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
-    <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn Cleanova</a>
-    <a href="#customer-guide" class="nav-link" data-i18n="nav_guide">Hướng dẫn đặt dịch vụ</a>
-    <a href="#cleaning-timeline" class="nav-link" data-i18n="nav_timeline">Một buổi dọn dẹp</a>
-    <a href="#calculator" class="nav-link" data-i18n="nav_pricing">Bảng giá ước tính</a>
+    <a href="#services" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
+    <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn CleanNova</a>
+    <a href="#booking-workflow" class="nav-link" data-i18n="nav_workflow">Quy trình đặt lịch</a>
+    <a href="#pricing-table" class="nav-link" data-i18n="nav_pricing">Bảng giá dịch vụ</a>
+    <a href="#commitments" class="nav-link" data-i18n="nav_commitments">Cam kết & Quy định</a>
+    <a href="#faq" class="nav-link" data-i18n="nav_faq">Câu hỏi thường gặp</a>
     <a href="booking.html" class="nav-link" data-action="book">Đặt lịch</a>
     <a href="my-bookings.html" class="nav-link" id="mobile-link-my-bookings" style="display: none;">Đơn của tôi</a>
     <a href="profile.html" class="nav-link" id="mobile-link-profile" style="display: none;">Hồ sơ cá nhân</a>
@@ -178,27 +176,26 @@
           <div class="hero-badge-container">
             <div class="hero-badge">
               <span class="badge-dot" aria-hidden="true"></span>
-              <span data-i18n="hero_badge">🟢 Ứng dụng dọn vệ sinh #2 Việt Nam</span>
+              <span data-i18n="hero_badge">🟢 Dịch vụ Vệ sinh & Chăm sóc gia đình toàn diện</span>
             </div>
-            <div class="hero-badge-note" data-i18n="hero_badge_note">Vì chưa qua kiểm chứng</div>
+            <div class="hero-badge-note" data-i18n="hero_badge_note">Minh bạch chi phí · Đặt lịch tức thì</div>
           </div>
 
           <!-- Headline chính -->
           <h1 class="hero-title">
-            <span data-i18n="hero_title_1">Dịch vụ dọn vệ sinh</span><br>
-            <span class="highlight" data-i18n="hero_title_highlight">nhà cửa & văn phòng</span><br>
-            <span data-i18n="hero_title_2">chuyên nghiệp</span>
+            <span data-i18n="hero_title_1">Chăm sóc ngôi nhà,</span><br>
+            <span class="highlight" data-i18n="hero_title_highlight">an tâm chăm sóc gia đình</span>
           </h1>
 
           <!-- Subheadline -->
           <p class="hero-subtitle" data-i18n="hero_subtitle">
-            Đặt lịch trong 60 giây. Đội ngũ đối tác uy tín, tận tâm, chuẩn hóa quy trình. Cho bạn không gian sống sạch hoàn hảo.
+            Từ không gian sống sạch sẽ đến sự chăm sóc tận tâm dành cho những người thân yêu. CleanNova giúp bạn tìm dịch vụ phù hợp ngay tại nhà.
           </p>
 
           <!-- Nút CTA -->
           <div class="hero-cta">
-            <a href="#calculator" class="btn btn-primary btn-lg" data-action="book" data-i18n="hero_cta_book">Đặt dịch vụ ngay</a>
-            <a href="#calculator" class="btn btn-secondary btn-lg" data-i18n="hero_cta_price">Xem bảng giá</a>
+            <a href="#services" class="btn btn-secondary btn-lg" data-i18n="hero_cta_explore">Khám phá dịch vụ</a>
+            <a href="booking.html" class="btn btn-primary btn-lg" data-action="book" data-i18n="hero_cta_book">Đặt lịch ngay</a>
           </div>
 
           <!-- Trust Badges -->
@@ -305,7 +302,7 @@
               <div class="float-icon blue">💬</div>
               <div class="float-text">
                 <strong data-i18n="hero_float_2_title">⭐ 5.0</strong>
-                <span data-i18n="hero_float_2_text">Dịch vụ tuyệt vời!</span>
+                <span data-i18n="hero_float_2_text">Chăm sóc chu đáo, tận tâm!</span>
               </div>
             </div>
           </div>
@@ -315,114 +312,197 @@
     </section>
 
     <!-- ============================================================
-         SERVICES SECTION (Dịch vụ vệ sinh chủ đạo)
+         SERVICES SECTION (Dịch vụ Vệ sinh & Chăm sóc tại nhà)
          ============================================================ -->
-    <section class="section services" id="services" aria-label="Dịch vụ của Cleanova">
+    <section class="section services" id="services" aria-label="Dịch vụ của CleanNova">
       <div class="container">
         <!-- Tiêu đề Section -->
         <div class="section-header reveal reveal-up">
-          <div class="section-badge" data-i18n="services_badge">🧹 Dịch vụ của chúng tôi</div>
-          <h2 class="section-title" data-i18n="services_title">Giải pháp vệ sinh toàn diện</h2>
-          <p class="section-subtitle" data-i18n="services_subtitle">Từ dọn dẹp nhà cửa hàng ngày đến tổng vệ sinh chuyên sâu, chúng tôi đáp ứng mọi nhu cầu của bạn.</p>
+          <div class="section-badge" data-i18n="services_badge">✨ Dịch vụ của CleanNova</div>
+          <h2 class="section-title" data-i18n="services_title">Dịch vụ Vệ sinh & Chăm sóc tại nhà</h2>
+          <p class="section-subtitle" data-i18n="services_subtitle">Giải pháp toàn diện từ chăm sóc không gian sống sạch sẽ đến hỗ trợ tận tình cho trẻ nhỏ, người lớn tuổi và người bệnh.</p>
         </div>
 
-        <!-- Grid dịch vụ 5 thẻ -->
-        <div class="services-grid">
+        <!-- Bộ lọc danh mục dịch vụ -->
+        <div class="service-category-tabs reveal reveal-up" id="services-category-tabs" role="tablist">
+          <button class="category-tab-btn active" data-filter="all" role="tab" aria-selected="true">
+            <span>✨</span> <span data-i18n="tab_all_services">Tất cả dịch vụ</span>
+          </button>
+          <button class="category-tab-btn" data-filter="cleaning" role="tab" aria-selected="false">
+            <span>🧹</span> <span data-i18n="tab_cleaning_services">Dịch vụ vệ sinh</span>
+          </button>
+          <button class="category-tab-btn" data-filter="care" role="tab" aria-selected="false">
+            <span>🏡</span> <span data-i18n="tab_care_services">Dịch vụ chăm sóc tại nhà</span>
+          </button>
+        </div>
+
+        <!-- Grid dịch vụ 8 thẻ -->
+        <div class="services-grid" id="services-grid-container">
 
           <!-- Dịch vụ 1: Dọn dẹp theo giờ -->
-          <div class="service-card reveal reveal-up stagger-1">
-            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px;">Phổ biến nhất</span>
-            <div class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="2"/>
-                <path d="M14 8V14L18 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
+          <div class="service-card reveal reveal-up stagger-1" data-service-id="1" data-category="cleaning" data-href="service-cleaning.html" tabindex="0" role="link" aria-label="Xem chi tiết Dọn dẹp nhà cửa theo giờ">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              </div>
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
             </div>
             <h3 data-i18n="service_1_title">Dọn dẹp nhà cửa theo giờ</h3>
-            <p class="service-desc" data-i18n="service_1_desc">Lau chùi, dọn phòng khách, phòng ngủ, nhà bếp, toilet. Linh hoạt theo nhu cầu của bạn.</p>
-            <div class="service-price" data-i18n="service_1_price">Từ 150.000 VNĐ/giờ</div>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
-              <a href="booking.html?service_id=1" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            <p class="service-desc" data-i18n="service_1_desc">Lau chùi, dọn phòng khách, phòng ngủ, nhà bếp và khu vực sinh hoạt theo nhu cầu của bạn.</p>
+            <div class="service-card-meta">
+              <span class="meta-chip">⏱️ <strong>Tối thiểu: 1 giờ</strong></span>
+            </div>
+            <div class="service-price" data-i18n="service_1_price">Từ 150.000 VNĐ / giờ</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="service-cleaning.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="1" style="flex: 1;" data-i18n="btn_detail">Chi tiết dịch vụ</a>
+              <a href="booking.html?service_id=1" class="btn btn-primary btn-sm btn-service-book" data-service-id="1" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
             </div>
           </div>
 
           <!-- Dịch vụ 2: Tổng vệ sinh Deep Cleaning -->
-          <div class="service-card reveal reveal-up stagger-2">
-            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe;">Tiết kiệm 20%</span>
-            <div class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14 3L16 9H22L17 13L19 20L14 16L9 20L11 13L6 9H12L14 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
-                <circle cx="14" cy="14" r="4" fill="currentColor" opacity="0.2"/>
-              </svg>
+          <div class="service-card reveal reveal-up stagger-2" data-service-id="2" data-category="cleaning" data-href="service-cleaning.html" tabindex="0" role="link" aria-label="Xem chi tiết Tổng vệ sinh Deep Cleaning">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
             </div>
             <h3 data-i18n="service_2_title">Tổng vệ sinh Deep Cleaning</h3>
             <p class="service-desc" data-i18n="service_2_desc">Vệ sinh toàn bộ diện tích nhà, làm sạch sâu mọi ngóc ngách. Phù hợp định kỳ hàng tháng.</p>
-            <div class="service-price" data-i18n="service_2_price">Từ 500.000 VNĐ/lần</div>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
-              <a href="booking.html?service_id=2" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            <div class="service-card-meta">
+              <span class="meta-chip">⏱️ <strong>Ước tính: 4 - 6 giờ</strong></span>
+              <span class="meta-chip">🏷️ Tiết kiệm 20%</span>
+            </div>
+            <div class="service-price" data-i18n="service_2_price">Từ 500.000 VNĐ / lần</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="service-cleaning.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="2" style="flex: 1;" data-i18n="btn_detail">Chi tiết dịch vụ</a>
+              <a href="booking.html?service_id=2" class="btn btn-primary btn-sm btn-service-book" data-service-id="2" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
             </div>
           </div>
 
           <!-- Dịch vụ 3: Vệ sinh văn phòng -->
-          <div class="service-card reveal reveal-up stagger-3">
-            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #f0fdfa; color: #0f766e; border-color: #99f6e4;">Doanh nghiệp</span>
-            <div class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="6" width="20" height="16" rx="2" stroke="currentColor" stroke-width="2"/>
-                <path d="M4 10H24" stroke="currentColor" stroke-width="2"/>
-                <rect x="8" y="14" width="4" height="4" rx="1" fill="currentColor" opacity="0.3"/>
-                <rect x="16" y="14" width="4" height="4" rx="1" fill="currentColor" opacity="0.3"/>
-              </svg>
+          <div class="service-card reveal reveal-up stagger-3" data-service-id="3" data-category="cleaning" data-href="service-cleaning.html" tabindex="0" role="link" aria-label="Xem chi tiết Vệ sinh văn phòng và Workspace">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="22.01"/><line x1="15" y1="22" x2="15" y2="22.01"/><line x1="9" y1="18" x2="9" y2="18.01"/><line x1="15" y1="18" x2="15" y2="18.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/></svg>
+              </div>
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
             </div>
             <h3 data-i18n="service_3_title">Vệ sinh văn phòng & Workspace</h3>
             <p class="service-desc" data-i18n="service_3_desc">Dịch vụ định kỳ cho doanh nghiệp, đảm bảo môi trường làm việc sạch đẹp, chuyên nghiệp.</p>
-            <div class="service-price" data-i18n="service_3_price">Từ 300.000 VNĐ/lần</div>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
-              <a href="booking.html?service_id=3" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            <div class="service-card-meta">
+              <span class="meta-chip">⏱️ <strong>Ước tính: 2 - 3 giờ</strong></span>
+              <span class="meta-chip">💼 Doanh nghiệp</span>
+            </div>
+            <div class="service-price" data-i18n="service_3_price">Từ 300.000 VNĐ / lần</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="service-cleaning.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="3" style="flex: 1;" data-i18n="btn_detail">Chi tiết dịch vụ</a>
+              <a href="booking.html?service_id=3" class="btn btn-primary btn-sm btn-service-book" data-service-id="3" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
             </div>
           </div>
 
           <!-- Dịch vụ 4: Giặt Sofa, Nệm -->
-          <div class="service-card reveal reveal-up stagger-4">
-            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #fffbeb; color: #b45309; border-color: #fde68a;">Khử khuẩn sâu</span>
-            <div class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4 18C4 16 6 14 8 14H20C22 14 24 16 24 18V22H4V18Z" stroke="currentColor" stroke-width="2" fill="none"/>
-                <path d="M6 14V10C6 8 8 6 10 6H18C20 6 22 8 22 10V14" stroke="currentColor" stroke-width="2"/>
-                <path d="M8 22V24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                <path d="M20 22V24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
+          <div class="service-card reveal reveal-up stagger-4" data-service-id="4" data-category="cleaning" data-href="service-cleaning.html" tabindex="0" role="link" aria-label="Xem chi tiết Giặt Sofa, Nệm và Rèm cửa">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M4 18v3"/><path d="M20 18v3"/></svg>
+              </div>
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
             </div>
             <h3 data-i18n="service_4_title">Giặt Sofa, Nệm & Rèm cửa</h3>
             <p class="service-desc" data-i18n="service_4_desc">Hút bụi chuyên sâu, khử khuẩn bằng hơi nước nóng. Trả lại vẻ mới cho nội thất.</p>
-            <div class="service-price" data-i18n="service_4_price">Từ 400.000 VNĐ/món</div>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
-              <a href="booking.html?service_id=4" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            <div class="service-card-meta">
+              <span class="meta-chip">⏱️ <strong>Ước tính: 1 - 2 giờ</strong></span>
+              <span class="meta-chip">🔥 Hơi nóng 140°C</span>
+            </div>
+            <div class="service-price" data-i18n="service_4_price">Từ 400.000 VNĐ / món</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="service-cleaning.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="4" style="flex: 1;" data-i18n="btn_detail">Chi tiết dịch vụ</a>
+              <a href="booking.html?service_id=4" class="btn btn-primary btn-sm btn-service-book" data-service-id="4" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
             </div>
           </div>
 
           <!-- Dịch vụ 5: Vệ sinh sau xây dựng -->
-          <div class="service-card reveal reveal-up stagger-5">
-            <span class="coupon-badge" style="position: absolute; top: 16px; right: 16px; font-size: 11px; background: #f1f5f9; color: #475569; border-color: #cbd5e1;">Công trình</span>
-            <div class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14 4L4 12H8V24H20V12H24L14 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/>
-                <path d="M11 24V18H17V24" stroke="currentColor" stroke-width="2"/>
-                <circle cx="20" cy="6" r="3" fill="currentColor" opacity="0.3"/>
-                <path d="M19 5L21 7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
-                <path d="M21 5L19 7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
-              </svg>
+          <div class="service-card reveal reveal-up stagger-5" data-service-id="5" data-category="cleaning" data-href="service-cleaning.html" tabindex="0" role="link" aria-label="Xem chi tiết Vệ sinh sau xây dựng">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 22h20"/><path d="M20 22V6l-7-4-7 4v16"/><path d="M10 22V12h4v10"/></svg>
+              </div>
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
             </div>
             <h3 data-i18n="service_5_title">Vệ sinh sau xây dựng</h3>
             <p class="service-desc" data-i18n="service_5_desc">Dọn dẹp thô, xử lý vết sơn, bụi mịn sau thi công. Sẵn sàng cho ngày dọn về.</p>
-            <div class="service-price" data-i18n="service_5_price">Từ 8.000 VNĐ/m²</div>
-            <div style="display: flex; gap: 8px; margin-top: auto;">
-              <a href="services.html" class="btn btn-outline btn-sm" style="flex: 1;" data-i18n="btn_detail">Chi tiết</a>
-              <a href="booking.html?service_id=5" class="btn btn-primary btn-sm" style="flex: 1.2;">Đặt ngay</a>
+            <div class="service-card-meta">
+              <span class="meta-chip">⏱️ <strong>Ước tính: 1 - 2 ngày</strong></span>
+              <span class="meta-chip">📐 Tính theo m²</span>
+            </div>
+            <div class="service-price" data-i18n="service_5_price">Từ 8.000 VNĐ / m²</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="service-cleaning.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="5" style="flex: 1;" data-i18n="btn_detail">Chi tiết dịch vụ</a>
+              <a href="booking.html?service_id=5" class="btn btn-primary btn-sm btn-service-book" data-service-id="5" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
+            </div>
+          </div>
+
+          <!-- Dịch vụ 6: Chăm sóc trẻ em tại nhà -->
+          <div class="service-card reveal reveal-up stagger-6" data-service-id="6" data-category="care" data-href="care-child.html" tabindex="0" role="link" aria-label="Xem chi tiết Chăm sóc trẻ em tại nhà">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/><circle cx="9" cy="8" r="1" fill="currentColor"/><circle cx="15" cy="8" r="1" fill="currentColor"/><path d="M10 11c.7.7 3.3.7 4 0"/></svg>
+              </div>
+              <span class="badge-category badge-category-care">🏡 Chăm sóc tại nhà</span>
+            </div>
+            <h3 data-i18n="service_6_title">Chăm sóc trẻ em tại nhà</h3>
+            <p class="service-desc" data-i18n="service_6_desc">Chăm sóc trẻ, hỗ trợ sinh hoạt, ăn uống và vui chơi lành mạnh theo độ tuổi và hướng dẫn của gia đình.</p>
+            <div class="service-card-meta">
+              <span class="meta-chip">🧸 Hỗ trợ sinh hoạt & vui chơi an toàn</span>
+              <span class="meta-chip">⏱️ <strong>Tối thiểu: 2 giờ</strong></span>
+            </div>
+            <div class="service-price" data-i18n="service_6_price">Từ 80.000 VNĐ / giờ</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="care-child.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="6" style="flex: 1;">Tìm hiểu dịch vụ</a>
+              <a href="booking-care.html?service=6" class="btn btn-primary btn-sm btn-service-book" data-service-id="6" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
+            </div>
+          </div>
+
+          <!-- Dịch vụ 7: Chăm sóc người cao tuổi tại nhà -->
+          <div class="service-card reveal reveal-up stagger-7" data-service-id="7" data-category="care" data-href="care-elderly.html" tabindex="0" role="link" aria-label="Xem chi tiết Chăm sóc người cao tuổi tại nhà">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M12 5v4"/></svg>
+              </div>
+              <span class="badge-category badge-category-care">🏡 Chăm sóc tại nhà</span>
+            </div>
+            <h3 data-i18n="service_7_title">Chăm sóc người cao tuổi</h3>
+            <p class="service-desc" data-i18n="service_7_desc">Hỗ trợ sinh hoạt, ăn uống, nhắc thuốc và đồng hành trò chuyện cùng người cao tuổi mỗi ngày.</p>
+            <div class="service-card-meta">
+              <span class="meta-chip">❤️ Đồng hành & hỗ trợ sinh hoạt hằng ngày</span>
+              <span class="meta-chip">⏱️ <strong>Tối thiểu: 2 giờ</strong></span>
+            </div>
+            <div class="service-price" data-i18n="service_7_price">Từ 90.000 VNĐ / giờ</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="care-elderly.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="7" style="flex: 1;">Tìm hiểu dịch vụ</a>
+              <a href="booking-care.html?service=7" class="btn btn-primary btn-sm btn-service-book" data-service-id="7" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
+            </div>
+          </div>
+
+          <!-- Dịch vụ 8: Chăm sóc người bệnh tại nhà -->
+          <div class="service-card reveal reveal-up stagger-8" data-service-id="8" data-category="care" data-href="care-patient.html" tabindex="0" role="link" aria-label="Xem chi tiết Chăm sóc người bệnh tại nhà">
+            <div class="service-card-header">
+              <div class="service-icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+              </div>
+              <span class="badge-category badge-category-care">🏡 Chăm sóc tại nhà</span>
+            </div>
+            <h3 data-i18n="service_8_title">Chăm sóc người bệnh tại nhà</h3>
+            <p class="service-desc" data-i18n="service_8_desc">Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường theo kế hoạch chăm sóc gia đình đã thống nhất.</p>
+            <div class="service-card-meta">
+              <span class="meta-chip">📋 Hỗ trợ sinh hoạt thông thường theo kế hoạch</span>
+              <span class="meta-chip">⏱️ <strong>Tối thiểu: 2 giờ</strong></span>
+            </div>
+            <div class="service-price" data-i18n="service_8_price">Từ 120.000 VNĐ / giờ</div>
+            <div class="service-card-actions" style="display: flex; gap: 8px; margin-top: auto;">
+              <a href="care-patient.html" class="btn btn-outline btn-sm btn-service-detail" data-service-id="8" style="flex: 1;">Tìm hiểu dịch vụ</a>
+              <a href="booking-care.html?service=8" class="btn btn-primary btn-sm btn-service-book" data-service-id="8" style="flex: 1.2;" data-i18n="btn_book_service">Đặt dịch vụ</a>
             </div>
           </div>
 
@@ -431,67 +511,53 @@
     </section>
 
     <!-- ============================================================
-         04. VÌ SAO CHỌN CLEANOVA (Lợi ích thực tế, rõ ràng & minh bạch)
+         03. VÌ SAO CHỌN CLEANOVA (Section 3: 5 Tiêu chí thực tế & minh bạch)
          ============================================================ -->
-    <section class="section why-cleanova" id="why-cleanova" aria-label="Vì sao chọn Cleanova">
+    <section class="section why-cleanova" id="why-cleanova" aria-label="Vì sao chọn CleanNova">
       <div class="container">
         <div class="section-header reveal reveal-up">
-          <div class="section-badge" data-i18n="why_badge">✨ Giá trị cốt lõi</div>
-          <h2 class="section-title" data-i18n="why_title">Vì sao CleanNova là lựa chọn đáng cân nhắc?</h2>
-          <p class="section-subtitle" data-i18n="why_subtitle">Lợi ích thực tế, minh bạch và an tâm cho mọi khách hàng khi đặt dịch vụ dọn dẹp không gian sống và làm việc.</p>
+          <div class="section-badge" data-i18n="why_badge">✨ Vì sao chọn chúng tôi</div>
+          <h2 class="section-title" data-i18n="why_title">Vì sao chọn CleanNova?</h2>
+          <p class="section-subtitle" data-i18n="why_subtitle">Cam kết đem lại trải nghiệm dịch vụ tiện lợi, minh bạch và an tâm cho từng tổ ấm gia đình.</p>
         </div>
 
-        <!-- Grid 7 lợi ích thực tế -->
+        <!-- Grid 5 lợi ích thực tế -->
         <div class="why-cleanova-grid">
 
-          <!-- 1. Đặt lịch thuận tiện -->
+          <!-- 1. Dễ dàng đặt dịch vụ tại nhà -->
           <div class="why-benefit-card reveal reveal-up stagger-1">
             <div class="why-benefit-icon" aria-hidden="true">⏱️</div>
-            <h3 data-i18n="why_benefit_1_title">1. Đặt lịch thuận tiện</h3>
-            <p data-i18n="why_benefit_1_desc">Khách hàng có thể xem dịch vụ, chọn thời gian phù hợp và gửi yêu cầu ngay trên website nhanh chóng chỉ trong vài thao tác.</p>
+            <h3 data-i18n="why_point_1_title">1. Dễ dàng đặt dịch vụ tại nhà</h3>
+            <p data-i18n="why_point_1_desc">Khách hàng có thể xem dịch vụ, chọn thời gian phù hợp và gửi yêu cầu ngay trên website nhanh chóng chỉ trong vài thao tác.</p>
           </div>
 
-          <!-- 2. Thông tin chi phí rõ ràng -->
+          <!-- 2. Thông tin giá minh bạch trước khi đặt -->
           <div class="why-benefit-card reveal reveal-up stagger-2">
             <div class="why-benefit-icon" aria-hidden="true">💎</div>
-            <h3 data-i18n="why_benefit_2_title">2. Thông tin chi phí rõ ràng</h3>
-            <p data-i18n="why_benefit_2_desc">Hiển thị các khoản phí và tổng chi phí dự kiến trước khi khách hàng xác nhận, dựa trên quy tắc tính giá thực tế, không có chi phí ẩn.</p>
+            <h3 data-i18n="why_point_2_title">2. Thông tin giá minh bạch trước khi đặt</h3>
+            <p data-i18n="why_point_2_desc">Hiển thị các khoản phí và tổng chi phí dự kiến trước khi khách hàng xác nhận, dựa trên quy tắc tính giá thực tế, tuyệt đối không có chi phí ẩn.</p>
           </div>
 
-          <!-- 3. Theo dõi đơn hàng dễ dàng -->
+          <!-- 3. Theo dõi lịch hẹn và trạng thái dịch vụ -->
           <div class="why-benefit-card reveal reveal-up stagger-3">
             <div class="why-benefit-icon" aria-hidden="true">📍</div>
-            <h3 data-i18n="why_benefit_3_title">3. Theo dõi đơn hàng dễ dàng</h3>
-            <p data-i18n="why_benefit_3_desc">Khách hàng xem trạng thái đơn hàng theo thời gian thực và thông tin nhân viên được phân công khi dữ liệu này sẵn sàng trên hệ thống.</p>
+            <h3 data-i18n="why_point_3_title">3. Theo dõi lịch hẹn và trạng thái dịch vụ</h3>
+            <p data-i18n="why_point_3_desc">Khách hàng xem trạng thái đơn hàng theo thời gian thực và thông tin nhân viên được phân công khi dữ liệu này sẵn sàng trên hệ thống.</p>
           </div>
 
-          <!-- 4. Nhiều lựa chọn dịch vụ -->
+          <!-- 4. Hỗ trợ khách hàng trong quá trình sử dụng -->
           <div class="why-benefit-card reveal reveal-up stagger-4">
-            <div class="why-benefit-icon" aria-hidden="true">🧹</div>
-            <h3 data-i18n="why_benefit_4_title">4. Nhiều lựa chọn dịch vụ</h3>
-            <p data-i18n="why_benefit_4_desc">Giúp khách hàng dễ dàng chọn gói phù hợp với nhu cầu: dọn dẹp theo giờ, tổng vệ sinh deep cleaning, giặt sofa/nệm hoặc văn phòng.</p>
-          </div>
-
-          <!-- 5. Quy trình làm việc minh bạch -->
-          <div class="why-benefit-card reveal reveal-up stagger-5">
-            <div class="why-benefit-icon" aria-hidden="true">📋</div>
-            <h3 data-i18n="why_benefit_5_title">5. Quy trình làm việc minh bạch</h3>
-            <p data-i18n="why_benefit_5_desc">Khách hàng có thể xem hướng dẫn chi tiết về các bước nhân viên thực hiện, phạm vi công việc của từng gói và cách thức nghiệm thu.</p>
-          </div>
-
-          <!-- 6. Hỗ trợ khi cần thiết -->
-          <div class="why-benefit-card reveal reveal-up stagger-6">
             <div class="why-benefit-icon" aria-hidden="true">💬</div>
-            <h3 data-i18n="why_benefit_6_title">6. Hỗ trợ khi cần thiết</h3>
-            <p data-i18n="why_benefit_6_desc">Khách hàng có thể gửi yêu cầu hỗ trợ và theo dõi trạng thái xử lý thông qua các tính năng và kênh liên hệ chính thức của website.</p>
+            <h3 data-i18n="why_point_4_title">4. Hỗ trợ khách hàng trong quá trình sử dụng</h3>
+            <p data-i18n="why_point_4_desc">Khách hàng có thể gửi yêu cầu hỗ trợ và theo dõi trạng thái xử lý thông qua các tính năng và kênh liên hệ chính thức của website.</p>
           </div>
 
-          <!-- 7. Có thể đánh giá dịch vụ (Card trải rộng) -->
-          <div class="why-benefit-card highlight-card reveal reveal-up stagger-7">
-            <div class="why-benefit-icon" aria-hidden="true">⭐</div>
+          <!-- 5. Có thông tin nhân viên và phạm vi công việc rõ ràng -->
+          <div class="why-benefit-card highlight-card reveal reveal-up stagger-5">
+            <div class="why-benefit-icon" aria-hidden="true">📋</div>
             <div>
-              <h3 data-i18n="why_benefit_7_title">7. Chủ động đánh giá dịch vụ sau khi hoàn thành</h3>
-              <p data-i18n="why_benefit_7_desc">Khách hàng gửi phản hồi và chấm điểm chất lượng trực tiếp sau mỗi ca dịch vụ hoàn tất, giúp Cleanova không ngừng nâng cao trải nghiệm phục vụ.</p>
+              <h3 data-i18n="why_point_5_title">5. Có thông tin nhân viên và phạm vi công việc rõ ràng</h3>
+              <p data-i18n="why_point_5_desc">Khách hàng được thông báo trước nhân viên phụ trách và phạm vi công việc cụ thể cho từng buổi làm việc.</p>
             </div>
           </div>
 
@@ -499,97 +565,77 @@
 
         <!-- Nút CTA cuối section -->
         <div class="why-cleanova-actions reveal reveal-up">
-          <a href="services.html" class="btn btn-primary btn-lg" data-i18n="btn_explore_services">Khám phá dịch vụ</a>
+          <a href="#services" class="btn btn-primary btn-lg" data-i18n="btn_explore_services">Khám phá dịch vụ</a>
           <a href="booking.html" class="btn btn-secondary btn-lg" data-action="book" data-i18n="hero_cta_book">Đặt lịch ngay</a>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-         05. HƯỚNG DẪN KHÁCH HÀNG (Customer Guide: 6 Steps Timeline)
+         04. QUY TRÌNH ĐẶT DỊCH VỤ (Section 4: 4 Bước chuẩn)
          ============================================================ -->
-    <section class="section customer-guide" id="customer-guide" aria-label="Hướng dẫn khách hàng đặt dịch vụ">
+    <section class="section booking-workflow-section" id="booking-workflow" aria-label="Quy trình 4 bước đặt dịch vụ">
       <div class="container">
         <div class="section-header reveal reveal-up">
-          <div class="section-badge" data-i18n="guide_badge">📖 Hướng dẫn khách hàng</div>
-          <h2 class="section-title" data-i18n="guide_title">Đặt dịch vụ dễ dàng chỉ với vài bước</h2>
-          <p class="section-subtitle" data-i18n="guide_subtitle">Quy trình 6 bước rõ ràng từ đầu đến cuối, giúp bạn dễ dàng đặt lịch và an tâm theo dõi dịch vụ.</p>
+          <div class="section-badge" data-i18n="workflow_badge">⚡ Quy trình đặt dịch vụ</div>
+          <h2 class="section-title" data-i18n="workflow_title">4 bước đặt lịch dịch vụ tại CleanNova</h2>
+          <p class="section-subtitle" data-i18n="workflow_subtitle">Từ đặt lịch đến khi hoàn thành, mọi công đoạn diễn ra minh bạch, an tâm và thuận tiện.</p>
         </div>
 
-        <!-- Grid 6 Bước -->
-        <div class="guide-steps-grid">
+        <!-- Grid 4 Bước chuẩn -->
+        <div class="workflow-process-grid">
 
           <!-- Bước 1 -->
-          <div class="guide-step-card reveal reveal-up stagger-1">
-            <div class="guide-step-header">
-              <span class="guide-step-badge">Bước 01</span>
-              <div class="guide-step-icon" aria-hidden="true">🧹</div>
+          <div class="workflow-step-card reveal reveal-up stagger-1">
+            <div class="workflow-step-header">
+              <span class="workflow-step-num">Bước 01</span>
+              <div class="workflow-step-icon" aria-hidden="true">🧹</div>
             </div>
-            <h3 data-i18n="guide_step_1_title">Chọn dịch vụ</h3>
-            <p data-i18n="guide_step_1_desc">Khách hàng chọn dịch vụ vệ sinh phù hợp với nhu cầu, quy mô không gian và thời gian dự kiến thực hiện.</p>
+            <h3 class="workflow-step-title" data-i18n="workflow_step_1_title">Chọn dịch vụ phù hợp</h3>
+            <p class="workflow-step-desc" data-i18n="workflow_step_1_desc">Duyệt danh mục dịch vụ vệ sinh hoặc chăm sóc tại nhà để chọn gói giải pháp phù hợp với nhu cầu gia đình.</p>
           </div>
 
           <!-- Bước 2 -->
-          <div class="guide-step-card reveal reveal-up stagger-2">
-            <div class="guide-step-header">
-              <span class="guide-step-badge">Bước 02</span>
-              <div class="guide-step-icon" aria-hidden="true">📅</div>
+          <div class="workflow-step-card reveal reveal-up stagger-2">
+            <div class="workflow-step-header">
+              <span class="workflow-step-num">Bước 02</span>
+              <div class="workflow-step-icon" aria-hidden="true">📅</div>
             </div>
-            <h3 data-i18n="guide_step_2_title">Chọn lịch và địa điểm</h3>
-            <p data-i18n="guide_step_2_desc">Khách hàng nhập địa chỉ thực hiện, ngày, khung giờ mong muốn và các yêu cầu cần thiết cho chuyên viên.</p>
+            <h3 class="workflow-step-title" data-i18n="workflow_step_2_title">Chọn ngày, giờ và thời lượng</h3>
+            <p class="workflow-step-desc" data-i18n="workflow_step_2_desc">Linh hoạt chọn khung giờ thuận tiện và thời lượng thực hiện dịch vụ (tối thiểu 2 giờ cho dịch vụ chăm sóc).</p>
           </div>
 
           <!-- Bước 3 -->
-          <div class="guide-step-card reveal reveal-up stagger-3">
-            <div class="guide-step-header">
-              <span class="guide-step-badge">Bước 03</span>
-              <div class="guide-step-icon" aria-hidden="true">💰</div>
+          <div class="workflow-step-card reveal reveal-up stagger-3">
+            <div class="workflow-step-header">
+              <span class="workflow-step-num">Bước 03</span>
+              <div class="workflow-step-icon" aria-hidden="true">💰</div>
             </div>
-            <h3 data-i18n="guide_step_3_title">Kiểm tra chi phí</h3>
-            <p data-i18n="guide_step_3_desc">Website hiển thị bảng tóm tắt dịch vụ, các khoản phí áp dụng, ưu đãi hợp lệ và tổng số tiền dự kiến thanh toán.</p>
+            <h3 class="workflow-step-title" data-i18n="workflow_step_3_title">Xem báo giá và xác nhận đặt lịch</h3>
+            <p class="workflow-step-desc" data-i18n="workflow_step_3_desc">Hệ thống tự động tính toán chi phí minh bạch; bạn kiểm tra thông tin chi tiết và gửi đơn đặt lịch an tâm.</p>
           </div>
 
           <!-- Bước 4 -->
-          <div class="guide-step-card reveal reveal-up stagger-4">
-            <div class="guide-step-header">
-              <span class="guide-step-badge">Bước 04</span>
-              <div class="guide-step-icon" aria-hidden="true">✅</div>
+          <div class="workflow-step-card reveal reveal-up stagger-4">
+            <div class="workflow-step-header">
+              <span class="workflow-step-num">Bước 04</span>
+              <div class="workflow-step-icon" aria-hidden="true">📱</div>
             </div>
-            <h3 data-i18n="guide_step_4_title">Xác nhận đặt lịch</h3>
-            <p data-i18n="guide_step_4_desc">Khách hàng kiểm tra lại toàn bộ thông tin đơn hàng và gửi yêu cầu đặt dịch vụ lên hệ thống Cleanova.</p>
-          </div>
-
-          <!-- Bước 5 -->
-          <div class="guide-step-card reveal reveal-up stagger-5">
-            <div class="guide-step-header">
-              <span class="guide-step-badge">Bước 05</span>
-              <div class="guide-step-icon" aria-hidden="true">📱</div>
-            </div>
-            <h3 data-i18n="guide_step_5_title">Theo dõi đơn hàng</h3>
-            <p data-i18n="guide_step_5_desc">Khách hàng theo dõi trạng thái đơn hàng, thông tin nhân viên được phân công khi có và những cập nhật liên quan.</p>
-          </div>
-
-          <!-- Bước 6 -->
-          <div class="guide-step-card reveal reveal-up stagger-6">
-            <div class="guide-step-header">
-              <span class="guide-step-badge">Bước 06</span>
-              <div class="guide-step-icon" aria-hidden="true">⭐</div>
-            </div>
-            <h3 data-i18n="guide_step_6_title">Nghiệm thu và đánh giá</h3>
-            <p data-i18n="guide_step_6_desc">Sau khi dịch vụ hoàn thành, khách hàng kiểm tra kết quả làm sạch thực tế và gửi đánh giá nếu muốn.</p>
+            <h3 class="workflow-step-title" data-i18n="workflow_step_4_title">Theo dõi booking và thanh toán</h3>
+            <p class="workflow-step-desc" data-i18n="workflow_step_4_desc">Nắm bắt tiến độ đơn hàng theo thời gian thực và thanh toán thuận tiện qua nhiều phương thức an toàn.</p>
           </div>
 
         </div>
 
-        <!-- Thanh CTA cuối Guide -->
-        <div class="guide-bottom-bar reveal reveal-up">
+        <!-- Thanh CTA dưới Workflow -->
+        <div class="guide-bottom-bar reveal reveal-up" style="margin-top: var(--space-2xl);">
           <div class="guide-bottom-bar-text">
-            <strong>Sẵn sàng trải nghiệm dịch vụ dọn dẹp chuyên nghiệp?</strong>
-            <span>Đặt lịch ngay hôm nay để tận hưởng không gian sống thoáng đãng, sạch sẽ.</span>
+            <strong>Sẵn sàng trải nghiệm dịch vụ tiện lợi?</strong>
+            <span>Chọn gói dịch vụ phù hợp ngay hôm nay để nhận được sự phục vụ tận tâm.</span>
           </div>
           <div class="guide-bottom-bar-actions">
             <a href="booking.html" class="btn btn-primary" data-action="book">Đặt dịch vụ ngay</a>
-            <a href="#faq" class="btn btn-outline">Xem câu hỏi thường gặp</a>
+            <a href="#pricing-table" class="btn btn-outline">Xem bảng giá chi tiết</a>
           </div>
         </div>
 
@@ -597,149 +643,301 @@
     </section>
 
     <!-- ============================================================
-         06. MỘT BUỔI DỌN VỆ SINH DIỄN RA NHƯ THẾ NÀO? (Timeline)
+         05. BẢNG GIÁ DỊCH VỤ (Section 5: Phân loại & đồng bộ API)
          ============================================================ -->
-    <section class="section cleaning-timeline-section" id="cleaning-timeline" aria-label="Quy trình một buổi dọn dẹp">
+    <section class="section pricing-table-section" id="pricing-table" aria-label="Bảng giá dịch vụ CleanNova">
       <div class="container">
         <div class="section-header reveal reveal-up">
-          <div class="section-badge" data-i18n="timeline_badge">🕒 Minh họa ca làm việc</div>
-          <h2 class="section-title" data-i18n="timeline_title">Một buổi dọn dẹp – Không gian sạch sẽ hơn từng bước</h2>
-          <p class="section-subtitle" data-i18n="timeline_subtitle">Bạn có thắc mắc nhân viên CleanNova sẽ thực hiện những công việc gì trong một buổi? Hãy tham khảo quy trình minh họa dưới đây.</p>
+          <div class="section-badge" data-i18n="pricing_badge">💰 Bảng giá minh bạch</div>
+          <h2 class="section-title" data-i18n="pricing_title">Bảng giá dịch vụ CleanNova</h2>
+          <p class="section-subtitle" data-i18n="pricing_subtitle">Bảng giá niêm yết công khai, đồng bộ trực tiếp từ hệ thống, không phụ phí phát sinh ngoài thỏa thuận.</p>
         </div>
 
-        <!-- Timeline 6 Giai đoạn -->
-        <div class="cleaning-timeline">
+        <!-- Tabs phân loại bảng giá -->
+        <div class="service-category-tabs reveal reveal-up" id="pricing-category-tabs" role="tablist">
+          <button class="category-tab-btn active" data-pricing-filter="all" role="tab" aria-selected="true">
+            <span>✨</span> Tất cả gói
+          </button>
+          <button class="category-tab-btn" data-pricing-filter="cleaning" role="tab" aria-selected="false">
+            <span>🧹</span> Dịch vụ vệ sinh
+          </button>
+          <button class="category-tab-btn" data-pricing-filter="care" role="tab" aria-selected="false">
+            <span>🏡</span> Dịch vụ chăm sóc
+          </button>
+          <button class="category-tab-btn" data-pricing-filter="cham-soc-tre-em" role="tab" aria-selected="false">
+            <span>👶</span> Chăm sóc trẻ em
+          </button>
+          <button class="category-tab-btn" data-pricing-filter="cham-soc-nguoi-cao-tuoi" role="tab" aria-selected="false">
+            <span>👵</span> Chăm sóc người cao tuổi
+          </button>
+          <button class="category-tab-btn" data-pricing-filter="cham-soc-nguoi-benh" role="tab" aria-selected="false">
+            <span>🩺</span> Chăm sóc người bệnh
+          </button>
+        </div>
 
-          <!-- Giai đoạn 1 -->
-          <div class="timeline-phase-item stagger-1">
-            <div class="timeline-phase-node" aria-hidden="true">1</div>
-            <div class="timeline-phase-card">
-              <div class="timeline-phase-top">
-                <span class="timeline-phase-badge">Giai đoạn 1</span>
-                <span class="timeline-duration-chip">⏱️ Khoảng 10 phút</span>
-              </div>
-              <h3 class="timeline-phase-title">
-                <span>🤝</span> Tiếp nhận và khảo sát
-              </h3>
-              <ul class="timeline-tasks-list">
-                <li>Trao đổi với khách hàng về những khu vực cần ưu tiên làm sạch trước.</li>
-                <li>Xác nhận phạm vi công việc của gói dịch vụ đã đặt.</li>
-                <li>Ghi nhận các yêu cầu đặc biệt đã được hai bên thống nhất.</li>
-                <li>Kiểm tra các vật dụng nội thất hoặc bề mặt cần lưu ý kỹ thuật.</li>
-              </ul>
+        <!-- Cards container: Đầy đủ 8 dịch vụ của hệ thống CleanNova -->
+        <div class="pricing-cards-grid" id="pricing-cards-container">
+
+          <!-- 1. Dọn dẹp nhà cửa theo giờ -->
+          <div class="pricing-plan-card highlight reveal reveal-up stagger-1" data-pricing-category="cleaning" data-service-id="1">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
+              <h3 class="pricing-plan-title">Dọn dẹp nhà cửa theo giờ</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Dọn dẹp linh hoạt các phòng khách, phòng ngủ, bếp và toilet theo nhu cầu.</p>
             </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">150.000</span>
+              <span class="pricing-plan-unit">VNĐ / giờ</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 1 giờ</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Lau chùi, hút bụi sàn nhà và nội thất</li>
+              <li><span class="check-icon">✓</span> Cọ rửa nhà tắm, bồn cầu sáng bóng</li>
+              <li><span class="check-icon">✓</span> Lau khu vực bồn rửa bát và đổ rác</li>
+              <li><span class="check-icon">✓</span> Mang đầy đủ dụng cụ vệ sinh cơ bản</li>
+            </ul>
+            <a href="booking.html?service_id=1" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
           </div>
 
-          <!-- Giai đoạn 2 -->
-          <div class="timeline-phase-item stagger-2">
-            <div class="timeline-phase-node" aria-hidden="true">2</div>
-            <div class="timeline-phase-card">
-              <div class="timeline-phase-top">
-                <span class="timeline-phase-badge">Giai đoạn 2</span>
-                <span class="timeline-duration-chip">⏱️ Khoảng 10–15 phút</span>
-              </div>
-              <h3 class="timeline-phase-title">
-                <span>📦</span> Thu gom và sắp xếp sơ bộ
-              </h3>
-              <ul class="timeline-tasks-list">
-                <li>Thu gom rác thông thường theo thỏa thuận của gói dịch vụ.</li>
-                <li>Sắp xếp gọn gàng các vật dụng nhỏ ở khu vực cần làm sạch.</li>
-                <li>Chuẩn bị dụng cụ chuyên dụng và hóa chất sinh học phù hợp bề mặt.</li>
-                <li>Tránh di chuyển đồ có giá trị hoặc đồ dễ vỡ khi chưa được khách đồng ý.</li>
-              </ul>
+          <!-- 2. Tổng vệ sinh Deep Cleaning -->
+          <div class="pricing-plan-card reveal reveal-up stagger-2" data-pricing-category="cleaning" data-service-id="2">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
+              <h3 class="pricing-plan-title">Tổng vệ sinh Deep Cleaning</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Làm sạch sâu toàn diện từng ngóc ngách, trần tường và xử lý vết ố lâu ngày.</p>
             </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">500.000</span>
+              <span class="pricing-plan-unit">VNĐ / lần</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 4 giờ</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Vệ sinh toàn diện trần, tường, khe cửa, ban công</li>
+              <li><span class="check-icon">✓</span> Đánh bóng sàn gạch/gỗ bằng máy chuyên dụng</li>
+              <li><span class="check-icon">✓</span> Tẩy cặn canxi vách kính tắm và thiết bị sứ</li>
+              <li><span class="check-icon">✓</span> Tẩy sạch dầu mỡ máy hút mùi và khu bếp</li>
+            </ul>
+            <a href="booking.html?service_id=2" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
           </div>
 
-          <!-- Giai đoạn 3 -->
-          <div class="timeline-phase-item stagger-3">
-            <div class="timeline-phase-node" aria-hidden="true">3</div>
-            <div class="timeline-phase-card">
-              <div class="timeline-phase-top">
-                <span class="timeline-phase-badge">Giai đoạn 3</span>
-                <span class="timeline-duration-chip">⏱️ Khoảng 20–30 phút</span>
-              </div>
-              <h3 class="timeline-phase-title">
-                <span>🛋️</span> Vệ sinh phòng khách & phòng ngủ
-              </h3>
-              <ul class="timeline-tasks-list">
-                <li>Lau bụi các bề mặt nội thất, kệ tủ trong tầm với an toàn.</li>
-                <li>Lau những khu vực có thể tiếp cận an toàn mà không trèo cao.</li>
-                <li>Làm sạch mặt bàn và các bề mặt vật dụng thông thường.</li>
-                <li>Hút bụi thảm hoặc quét dọn sàn nhà sạch sẽ.</li>
-                <li>Lau sàn kỹ lưỡng theo điều kiện vật liệu sàn (gỗ, gạch men).</li>
-              </ul>
+          <!-- 3. Vệ sinh văn phòng & Workspace -->
+          <div class="pricing-plan-card reveal reveal-up stagger-3" data-pricing-category="cleaning" data-service-id="3">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
+              <h3 class="pricing-plan-title">Vệ sinh văn phòng & Workspace</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Giải pháp dọn dẹp chuyên nghiệp cho công ty, phòng họp và showroom kinh doanh.</p>
             </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">300.000</span>
+              <span class="pricing-plan-unit">VNĐ / lần</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 2 giờ</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Lau dọn bàn làm việc, màn hình và thiết bị văn phòng</li>
+              <li><span class="check-icon">✓</span> Hút bụi sàn thảm và khử khuẩn khu vực pantry</li>
+              <li><span class="check-icon">✓</span> Cọ rửa toilet văn phòng, bổ sung vật tư tiêu hao</li>
+              <li><span class="check-icon">✓</span> Thu gom rác thải và giữ không gian thơm mát</li>
+            </ul>
+            <a href="booking.html?service_id=3" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
           </div>
 
-          <!-- Giai đoạn 4 -->
-          <div class="timeline-phase-item stagger-4">
-            <div class="timeline-phase-node" aria-hidden="true">4</div>
-            <div class="timeline-phase-card">
-              <div class="timeline-phase-top">
-                <span class="timeline-phase-badge">Giai đoạn 4</span>
-                <span class="timeline-duration-chip">⏱️ Khoảng 20–30 phút</span>
-              </div>
-              <h3 class="timeline-phase-title">
-                <span>🍳</span> Vệ sinh khu vực bếp
-              </h3>
-              <ul class="timeline-tasks-list">
-                <li>Lau các mặt bàn bếp và khu vực sơ chế thực phẩm.</li>
-                <li>Làm sạch bề mặt bên ngoài của các thiết bị bếp thông dụng.</li>
-                <li>Lau khu vực bồn rửa chén và các vị trí phù hợp trong gói.</li>
-                <li>Thu gom và thay túi rác nhà bếp theo yêu cầu.</li>
-                <li>Không xử lý các khu vực đặc biệt nguy hiểm hoặc vượt ngoài gói dịch vụ.</li>
-              </ul>
+          <!-- 4. Giặt Sofa, Nệm & Rèm cửa -->
+          <div class="pricing-plan-card reveal reveal-up stagger-4" data-pricing-category="cleaning" data-service-id="4">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
+              <h3 class="pricing-plan-title">Giặt Sofa, Nệm & Rèm cửa</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Công nghệ phun hơi nước nóng 140°C diệt 99.9% vi khuẩn, mạt bụi và nấm mốc.</p>
             </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">400.000</span>
+              <span class="pricing-plan-unit">VNĐ / món</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 1 giờ</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Hút bụi mịn công nghiệp sâu trong đệm mút</li>
+              <li><span class="check-icon">✓</span> Tẩy điểm các vết ố trà, cà phê và dầu mỡ</li>
+              <li><span class="check-icon">✓</span> Khử khuẩn nhiệt hơi nước nóng 140°C an toàn</li>
+              <li><span class="check-icon">✓</span> Hút khô nhanh chóng, sử dụng lại sau 2 - 3 giờ</li>
+            </ul>
+            <a href="booking.html?service_id=4" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
           </div>
 
-          <!-- Giai đoạn 5 -->
-          <div class="timeline-phase-item stagger-5">
-            <div class="timeline-phase-node" aria-hidden="true">5</div>
-            <div class="timeline-phase-card">
-              <div class="timeline-phase-top">
-                <span class="timeline-phase-badge">Giai đoạn 5</span>
-                <span class="timeline-duration-chip">⏱️ Khoảng 15–25 phút</span>
-              </div>
-              <h3 class="timeline-phase-title">
-                <span>🚿</span> Vệ sinh phòng tắm & nhà vệ sinh
-              </h3>
-              <ul class="timeline-tasks-list">
-                <li>Làm sạch bồn rửa tay (lavabo) và lau gương soi sáng bóng.</li>
-                <li>Làm sạch bề mặt thiết bị vệ sinh theo đúng phạm vi công việc.</li>
-                <li>Lau chùi các khu vực sàn phòng tắm và thoát sàn phù hợp.</li>
-                <li>Kiểm tra lại những góc khuất hoặc vị trí ẩm dễ bị bỏ sót.</li>
-              </ul>
+          <!-- 5. Vệ sinh sau xây dựng -->
+          <div class="pricing-plan-card reveal reveal-up stagger-1" data-pricing-category="cleaning" data-service-id="5">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-cleaning">🧹 Vệ sinh</span>
+              <h3 class="pricing-plan-title">Vệ sinh sau xây dựng</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Thu gom rác thô, cạo sạch sơn xi măng bám dính và hút sạch bụi mịn công trình.</p>
             </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">8.000</span>
+              <span class="pricing-plan-unit">VNĐ / m²</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 1 ngày</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Thu gom xà bần, phế thải xây dựng thô còn đọng</li>
+              <li><span class="check-icon">✓</span> Tẩy sạch vết sơn, xi măng bám trên kính và sàn</li>
+              <li><span class="check-icon">✓</span> Hút bụi mịn công nghiệp toàn bộ ngóc ngách</li>
+              <li><span class="check-icon">✓</span> Nghiệm thu sẵn sàng bàn giao dọn vào ở ngay</li>
+            </ul>
+            <a href="booking.html?service_id=5" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
           </div>
 
-          <!-- Giai đoạn 6 -->
-          <div class="timeline-phase-item stagger-6">
-            <div class="timeline-phase-node" aria-hidden="true">6</div>
-            <div class="timeline-phase-card">
-              <div class="timeline-phase-top">
-                <span class="timeline-phase-badge">Giai đoạn 6</span>
-                <span class="timeline-duration-chip">⏱️ Khoảng 10 phút</span>
-              </div>
-              <h3 class="timeline-phase-title">
-                <span>📋</span> Kiểm tra và bàn giao
-              </h3>
-              <ul class="timeline-tasks-list">
-                <li>Kiểm tra tổng thể các khu vực vừa hoàn thành làm sạch.</li>
-                <li>Hoàn trả đồ vật dụng cụ về vị trí đã được khách thống nhất.</li>
-                <li>Trao đổi trực tiếp với khách hàng về những công việc đã hoàn thành.</li>
-                <li>Ghi nhận các vấn đề hoặc hạng mục chưa thể thực hiện (nếu có).</li>
-                <li>Kết thúc dịch vụ và cập nhật trạng thái đơn theo quy trình thật của Cleanova.</li>
-              </ul>
+          <!-- 6. Chăm sóc trẻ em -->
+          <div class="pricing-plan-card reveal reveal-up stagger-2" data-pricing-category="care cham-soc-tre-em" data-service-id="6">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-care">🏡 Chăm sóc tại nhà</span>
+              <h3 class="pricing-plan-title">Chăm sóc trẻ em tại nhà</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Bảo mẫu đồng hành chu đáo, hỗ trợ sinh hoạt và vui chơi lành mạnh.</p>
             </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">80.000</span>
+              <span class="pricing-plan-unit">VNĐ / giờ</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 2 giờ</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Đón bé và hỗ trợ vệ sinh cá nhân</li>
+              <li><span class="check-icon">✓</span> Chuẩn bị bữa ăn nhẹ dinh dưỡng theo dặn dò</li>
+              <li><span class="check-icon">✓</span> Kèm bé đọc sách, học bài và vui chơi theo tuổi</li>
+              <li><span class="check-icon">✓</span> Nhân viên chu đáo, hòa nhã và kiên nhẫn</li>
+            </ul>
+            <a href="booking-care.html?service=6" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
+          </div>
+
+          <!-- 7. Chăm sóc người cao tuổi -->
+          <div class="pricing-plan-card reveal reveal-up stagger-3" data-pricing-category="care cham-soc-nguoi-cao-tuoi" data-service-id="7">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-care">🏡 Chăm sóc tại nhà</span>
+              <h3 class="pricing-plan-title">Chăm sóc người cao tuổi</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Điều dưỡng viên đồng hành tâm tình, hỗ trợ sinh hoạt và chăm sóc tận tâm.</p>
+            </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">90.000</span>
+              <span class="pricing-plan-unit">VNĐ / giờ</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 2 giờ</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Hỗ trợ sinh hoạt và vận động nhẹ an toàn</li>
+              <li><span class="check-icon">✓</span> Chuẩn bị bữa ăn ấm nóng hợp khẩu vị người già</li>
+              <li><span class="check-icon">✓</span> Nhắc nhở uống thuốc đúng giờ theo đơn bác sĩ</li>
+              <li><span class="check-icon">✓</span> Trò chuyện tâm tình, giảm cảm giác cô đơn</li>
+            </ul>
+            <a href="booking-care.html?service=7" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
+          </div>
+
+          <!-- 8. Chăm sóc người bệnh -->
+          <div class="pricing-plan-card reveal reveal-up stagger-4" data-pricing-category="care cham-soc-nguoi-benh" data-service-id="8">
+            <div class="pricing-plan-header">
+              <span class="badge-category badge-category-care">🏡 Chăm sóc tại nhà</span>
+              <h3 class="pricing-plan-title">Chăm sóc người bệnh tại nhà</h3>
+              <p class="service-desc" style="margin: 0; font-size: 13px;">Hỗ trợ sinh hoạt và phục hồi thể chất thông thường theo kế hoạch.</p>
+            </div>
+            <div class="pricing-plan-price-wrap">
+              <span class="pricing-plan-amount">120.000</span>
+              <span class="pricing-plan-unit">VNĐ / giờ</span>
+            </div>
+            <div class="pricing-plan-min">⏱️ Tối thiểu: 2 giờ</div>
+            <ul class="pricing-features-list">
+              <li><span class="check-icon">✓</span> Hỗ trợ sinh hoạt cá nhân, thay ga trải giường</li>
+              <li><span class="check-icon">✓</span> Theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ)</li>
+              <li><span class="check-icon">✓</span> Hỗ trợ dinh dưỡng nhẹ theo chế độ thống nhất</li>
+              <li><span class="check-icon">✓</span> Hỗ trợ đời sống thông thường (không can thiệp y tế chuyên sâu)</li>
+            </ul>
+            <a href="booking-care.html?service=8" class="btn btn-primary" style="margin-top: auto;">Đặt dịch vụ này</a>
           </div>
 
         </div>
 
-        <!-- Hộp Lưu ý thời lượng & phạm vi ở cuối section -->
-        <div class="timeline-disclaimer-box reveal reveal-up">
-          <div class="disclaimer-icon">📌</div>
-          <div>
-            <strong>Lưu ý quan trọng về thời lượng & phạm vi dịch vụ:</strong> Các mốc thời gian trên mang tính chất minh họa cho một ca làm việc tiêu chuẩn và không phải cam kết thời lượng cố định cho mọi không gian. Thời gian thực tế có thể điều chỉnh linh hoạt tùy thuộc vào diện tích căn hộ, mức độ bám bẩn và gói dịch vụ cụ thể khách hàng lựa chọn.
+        <!-- Error state container nếu tải API thất bại -->
+        <div class="pricing-error-state" id="pricing-error-state" style="display: none;">
+          <div style="font-size: 32px; margin-bottom: 8px;">⚠️</div>
+          <h4>Không thể tải bảng giá dịch vụ</h4>
+          <p>Hệ thống tạm thời không thể kết nối tới máy chủ dữ liệu bảng giá. Vui lòng thử lại sau.</p>
+          <button class="btn btn-outline btn-sm" id="btn-retry-pricing">Thử lại</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         06. CAM KẾT VÀ PHẠM VI DỊCH VỤ (Section 6)
+         ============================================================ -->
+    <section class="section commitments-section" id="commitments" aria-label="Cam kết và phạm vi dịch vụ CleanNova">
+      <div class="container">
+        <div class="section-header reveal reveal-up">
+          <div class="section-badge" data-i18n="commitments_badge">🛡️ Cam kết & Quy định</div>
+          <h2 class="section-title" data-i18n="commitments_title">Cam kết & Phạm vi dịch vụ</h2>
+          <p class="section-subtitle" data-i18n="commitments_subtitle">Rõ ràng trong từng quy định để bảo vệ quyền lợi và sự an tâm tuyệt đối của quý khách hàng.</p>
+        </div>
+
+        <!-- Grid 5 Thẻ Cam kết & Phạm vi -->
+        <div class="scope-grid">
+
+          <!-- 1. Phạm vi vệ sinh -->
+          <div class="scope-card reveal reveal-up stagger-1">
+            <div class="scope-card-icon" aria-hidden="true">🧹</div>
+            <h3 class="scope-card-title">Phạm vi dịch vụ vệ sinh</h3>
+            <ul>
+              <li>Lau dọn, hút bụi phòng khách, phòng ngủ và hành lang trong tầm với an toàn.</li>
+              <li>Vệ sinh sàn nhà, ban công nội bộ và các khu vực sinh hoạt chung.</li>
+              <li>Cọ rửa bồn cầu, lavabo, gương soi và tẩy cặn canxi vách kính tắm.</li>
+              <li>Lau khu vực bồn rửa bát và bề mặt ngoài của thiết bị gia dụng.</li>
+            </ul>
+          </div>
+
+          <!-- 2. Phạm vi chăm sóc tại nhà -->
+          <div class="scope-card reveal reveal-up stagger-2">
+            <div class="scope-card-icon" aria-hidden="true">🏡</div>
+            <h3 class="scope-card-title">Phạm vi chăm sóc tại nhà</h3>
+            <ul>
+              <li>Hỗ trợ các nhu cầu sinh hoạt hàng ngày theo thỏa thuận giữa hai bên.</li>
+              <li>Hỗ trợ ăn uống, chuẩn bị bữa ăn nhẹ dinh dưỡng hợp khẩu vị.</li>
+              <li>Nhắc nhở uống thuốc đúng giờ theo đúng chỉ định của bác sĩ điều trị.</li>
+              <li>Hỗ trợ đi dạo, trò chuyện tâm tình và vận động nhẹ nhàng an toàn.</li>
+            </ul>
+          </div>
+
+          <!-- 3. Công việc không bao gồm -->
+          <div class="scope-card reveal reveal-up stagger-3">
+            <div class="scope-card-icon" aria-hidden="true">⚠️</div>
+            <h3 class="scope-card-title">Không bao gồm trong giá cơ sở</h3>
+            <ul>
+              <li>Không lau kính hoặc dọn dẹp ở khu vực ngoài ban công cao nguy hiểm không có rào chắn.</li>
+              <li>Không tháo dỡ thiết bị cơ điện, điện tử tinh vi hoặc hệ thống ống ngầm.</li>
+              <li>Không bưng vác vật nặng quá định mức an toàn hoặc thu gom rác công nghiệp độc hại.</li>
+            </ul>
+          </div>
+
+          <!-- 4. Chính sách hủy / đổi lịch -->
+          <div class="scope-card reveal reveal-up stagger-4">
+            <div class="scope-card-icon" aria-hidden="true">🔄</div>
+            <h3 class="scope-card-title">Chính sách đổi hoặc hủy lịch</h3>
+            <ul>
+              <li>Khách hàng được đổi lịch hoặc hủy lịch trực tuyến tại trang "Đơn của tôi".</li>
+              <li>Miễn phí khi đơn hàng đang ở trạng thái Chờ xử lý hoặc Đã xác nhận trước thời điểm hẹn.</li>
+              <li>Trạng thái đơn được cập nhật tự động và minh bạch ngay trên hệ thống.</li>
+            </ul>
+          </div>
+
+          <!-- 5. Kênh hỗ trợ -->
+          <div class="scope-card reveal reveal-up stagger-5">
+            <div class="scope-card-icon" aria-hidden="true">📞</div>
+            <h3 class="scope-card-title">Cách thức liên hệ hỗ trợ</h3>
+            <ul>
+              <li>Tổng đài hỗ trợ khách hàng: <strong>1900-8888</strong> (Hoạt động từ 8:00 - 20:00 hàng ngày).</li>
+              <li>Hộp thư điện tử tiếp nhận: <strong>contact@cleanova.vn</strong>.</li>
+              <li>Gửi yêu cầu hỗ trợ trực tiếp từ giao diện tài khoản cá nhân.</li>
+            </ul>
+          </div>
+
+        </div>
+
+        <!-- Hộp Disclaimer đặc biệt về Chăm sóc người bệnh -->
+        <div class="scope-disclaimer-callout reveal reveal-up">
+          <div class="scope-disclaimer-icon" aria-hidden="true">⚠️</div>
+          <div class="scope-disclaimer-content">
+            <strong>LƯU Ý QUAN TRỌNG VỀ DỊCH VỤ CHĂM SÓC NGƯỜI BỆNH:</strong>
+            <p>Dịch vụ chăm sóc người bệnh tại nhà của CleanNova là dịch vụ hỗ trợ sinh hoạt đời sống và thể chất thông thường, <strong>KHÔNG PHẢI</strong> dịch vụ điều trị y tế. Nhân viên CleanNova tuyệt đối không thực hiện các thủ thuật can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn thuốc, thay băng vết mổ phức tạp). Các nghiệp vụ chuyên môn y khoa chỉ được phép thực hiện khi có nhân sự có chứng chỉ hành nghề y tế hợp lệ theo quy định pháp luật và quy trình chuyên trách.</p>
           </div>
         </div>
 
@@ -768,19 +966,22 @@
             <div class="form-group">
               <label for="calc-service" data-i18n="calc_label_service">Loại dịch vụ</label>
               <select id="calc-service" aria-label="Chọn loại dịch vụ">
-                <option value="hourly" data-i18n-option="calc_option_hourly">Dọn dẹp theo giờ</option>
-                <option value="deep" data-i18n-option="calc_option_deep">Tổng vệ sinh Deep Cleaning</option>
-                <option value="sofa" data-i18n-option="calc_option_sofa">Giặt Sofa / Nệm</option>
+                <option value="hourly" data-i18n-option="calc_option_hourly">Dọn dẹp theo giờ (150.000 VNĐ/h)</option>
+                <option value="deep" data-i18n-option="calc_option_deep">Tổng vệ sinh Deep Cleaning (500.000 VNĐ)</option>
+                <option value="sofa" data-i18n-option="calc_option_sofa">Giặt Sofa / Nệm (400.000 VNĐ)</option>
+                <option value="child_care" data-i18n-option="calc_option_child_care">Chăm sóc trẻ em tại nhà (80.000 VNĐ/h)</option>
+                <option value="elderly_care" data-i18n-option="calc_option_elderly_care">Chăm sóc người cao tuổi (90.000 VNĐ/h)</option>
+                <option value="patient_care" data-i18n-option="calc_option_patient_care">Chăm sóc người bệnh tại nhà (120.000 VNĐ/h)</option>
               </select>
             </div>
 
-            <!-- Diện tích / Quy mô -->
+            <!-- Diện tích / Quy mô / Thời lượng -->
             <div class="form-group">
-              <label for="calc-area" data-i18n="calc_label_area">Diện tích / Quy mô</label>
-              <select id="calc-area" aria-label="Chọn diện tích">
-                <option value="small" data-i18n-option="calc_option_small">Nhỏ (&lt; 50m² / 1-2 phòng)</option>
-                <option value="medium" data-i18n-option="calc_option_medium">Vừa (50-100m² / 3-4 phòng)</option>
-                <option value="large" data-i18n-option="calc_option_large">Lớn (&gt; 100m² / 5+ phòng)</option>
+              <label for="calc-area" id="calc-area-label" data-i18n="calc_label_area">Quy mô / Thời lượng</label>
+              <select id="calc-area" aria-label="Chọn quy mô hoặc thời lượng">
+                <option value="small" data-i18n-option="calc_option_small">Tiêu chuẩn: Nhỏ (&lt; 50m² / 2 giờ)</option>
+                <option value="medium" data-i18n-option="calc_option_medium">Phổ biến: Vừa (50-100m² / 4 giờ)</option>
+                <option value="large" data-i18n-option="calc_option_large">Lớn: Toàn diện (&gt; 100m² / 8 giờ)</option>
               </select>
             </div>
 
@@ -1012,60 +1213,71 @@
           <p class="section-subtitle" data-i18n="faq_subtitle">Tìm câu trả lời cho những câu hỏi phổ biến về dịch vụ của Cleanova.</p>
         </div>
 
-        <!-- Danh sách FAQ Accordion -->
+        <!-- Danh sách FAQ Accordion (6 câu hỏi chuẩn theo chính sách) -->
         <div class="faq-list">
-          <!-- FAQ 1 -->
+          <!-- FAQ 1: Giá dịch vụ được tính như thế nào? -->
           <div class="faq-item reveal reveal-up stagger-1">
             <button class="faq-question" aria-expanded="false">
-              <span data-i18n="faq_1_q">Làm thế nào để đặt dịch vụ vệ sinh?</span>
+              <span data-i18n="faq_1_q">Giá dịch vụ được tính như thế nào?</span>
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_1_a">Bạn chỉ cần chọn loại dịch vụ, thời gian mong muốn, xác nhận đơn hàng và thanh toán. Toàn bộ quy trình chỉ mất khoảng 60 giây. Bạn cũng có thể gọi hotline 1900-xxxx để được hỗ trợ trực tiếp.</p>
+              <p data-i18n="faq_1_a">Giá dịch vụ tại CleanNova được tính toán tự động và thống nhất từ backend theo loại hình dịch vụ: theo giờ (dọn dẹp cơ bản, chăm sóc trẻ em, người cao tuổi, người bệnh) hoặc theo khối lượng/diện tích (giặt sofa, vệ sinh sâu, sau xây dựng). Hệ thống áp dụng chính sách ưu đãi tần suất (giảm 15% khi đặt hàng tuần, giảm 10% khi đặt hàng tháng) và mã khuyến mãi hợp lệ mà không có chi phí ẩn.</p>
             </div>
           </div>
 
-          <!-- FAQ 2 -->
+          <!-- FAQ 2: Có thể đặt dịch vụ tối thiểu bao nhiêu giờ? -->
           <div class="faq-item reveal reveal-up stagger-2">
             <button class="faq-question" aria-expanded="false">
-              <span data-i18n="faq_2_q">Nhân viên vệ sinh có được đào tạo không?</span>
+              <span data-i18n="faq_2_q">Có thể đặt dịch vụ tối thiểu bao nhiêu giờ?</span>
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_2_a">Tất cả nhân viên của Cleanova đều được xác minh lý lịch, đào tạo chuyên nghiệp và kiểm tra kỹ năng định kỳ. Chúng tôi đảm bảo chất lượng dịch vụ ở mức cao nhất.</p>
+              <p data-i18n="faq_2_a">Đối với dịch vụ dọn dẹp vệ sinh nhà cửa theo giờ, thời lượng đặt tối thiểu là 1 giờ. Đối với các dịch vụ chăm sóc tại nhà (chăm sóc trẻ em, người cao tuổi và người bệnh), thời lượng đặt tối thiểu quy định là 2 giờ mỗi ca làm việc để đảm bảo nhân sự có đủ thời gian hoàn thành chu đáo các công việc hỗ trợ sinh hoạt.</p>
             </div>
           </div>
 
-          <!-- FAQ 3 -->
+          <!-- FAQ 3: Có thể đổi hoặc hủy lịch không? -->
           <div class="faq-item reveal reveal-up stagger-3">
             <button class="faq-question" aria-expanded="false">
-              <span data-i18n="faq_3_q">Tôi có thể hủy hoặc đổi lịch không?</span>
+              <span data-i18n="faq_3_q">Có thể đổi hoặc hủy lịch không?</span>
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_3_a">Hoàn toàn có thể! Bạn được hủy hoặc đổi lịch miễn phí trước 24 giờ so với giờ hẹn. Sau thời gian này, phí hủy sẽ là 50% giá dịch vụ.</p>
+              <p data-i18n="faq_3_a">Có. Quý khách có thể trực tiếp đổi lịch hoặc yêu cầu hủy lịch trên hệ thống trong mục "Đơn của tôi" khi đơn hàng đang ở trạng thái Chờ xử lý hoặc Đã xác nhận trước thời điểm thực hiện dịch vụ. Đơn hàng đang trong trạng thái "Đang thực hiện" hoặc đã hoàn tất sẽ không thể hủy tự do theo quy định trạng thái booking.</p>
             </div>
           </div>
 
-          <!-- FAQ 4 -->
+          <!-- FAQ 4: Làm thế nào để theo dõi lịch đặt? -->
           <div class="faq-item reveal reveal-up stagger-4">
             <button class="faq-question" aria-expanded="false">
-              <span data-i18n="faq_4_q">Cleanova có cung cấp dụng cụ và hóa chất không?</span>
+              <span data-i18n="faq_4_q">Làm thế nào để theo dõi lịch đặt?</span>
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_4_a">Có, đội ngũ của chúng tôi mang đầy đủ dụng cụ chuyên dụng và dung dịch tẩy rửa thân thiện môi trường. Bạn không cần chuẩn bị gì thêm.</p>
+              <p data-i18n="faq_4_a">Sau khi đặt lịch thành công, bạn chỉ cần đăng nhập tài khoản và chọn "Đơn của tôi" trên menu điều hướng. Tại đây, bạn có thể xem chi tiết mã đơn, thời gian thực hiện, trạng thái xử lý theo thời gian thực (Chờ xử lý, Đã xác nhận, Đang thực hiện, Hoàn thành) và thông tin nhân viên phụ trách khi được hệ thống điều phối.</p>
             </div>
           </div>
 
-          <!-- FAQ 5 -->
+          <!-- FAQ 5: Tiền dịch vụ được thanh toán như thế nào? -->
           <div class="faq-item reveal reveal-up stagger-5">
             <button class="faq-question" aria-expanded="false">
-              <span data-i18n="faq_5_q">Phương thức thanh toán nào được hỗ trợ?</span>
+              <span data-i18n="faq_5_q">Tiền dịch vụ được thanh toán như thế nào?</span>
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_5_a">Cleanova hỗ trợ thanh toán qua thẻ ngân hàng (Visa/Mastercard), ví điện tử (MoMo, ZaloPay, VNPay), chuyển khoản ngân hàng hoặc tiền mặt khi hoàn thành dịch vụ.</p>
+              <p data-i18n="faq_5_a">CleanNova hỗ trợ nhiều hình thức thanh toán an toàn và tiện lợi: thanh toán tiền mặt trực tiếp cho nhân viên sau khi hoàn thành dịch vụ, chuyển khoản ngân hàng hoặc thanh toán trực tuyến qua các ví điện tử được tích hợp sẵn. Mọi đơn thanh toán đều có biên lai xác nhận điện tử minh bạch trong tài khoản của bạn.</p>
+            </div>
+          </div>
+
+          <!-- FAQ 6: Nhân viên chăm sóc có thể thực hiện những công việc gì? -->
+          <div class="faq-item reveal reveal-up stagger-6">
+            <button class="faq-question" aria-expanded="false">
+              <span data-i18n="faq_6_q">Nhân viên chăm sóc có thể thực hiện những công việc gì?</span>
+              <span class="faq-icon" aria-hidden="true">▼</span>
+            </button>
+            <div class="faq-answer">
+              <p data-i18n="faq_6_a">Nhân viên chăm sóc tại nhà hỗ trợ các công việc sinh hoạt đời sống hàng ngày: hỗ trợ ăn uống, chuẩn bị thức ăn nhẹ, vệ sinh cá nhân, hỗ trợ di chuyển an toàn, nhắc uống thuốc đúng giờ theo đơn bác sĩ và trò chuyện tâm lý. CleanNova KHÔNG cung cấp các can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn, điều trị chuyên khoa) vì đây là dịch vụ hỗ trợ sinh hoạt đời sống.</p>
             </div>
           </div>
         </div>
@@ -1093,7 +1305,7 @@
             </svg>
             <span class="logo-text">Cleanova</span>
           </a>
-          <p data-i18n="footer_slogan">Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ dọn vệ sinh thông minh & tin cậy hàng đầu.</p>
+          <p data-i18n="footer_slogan">Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ vệ sinh &amp; chăm sóc gia đình tiện lợi, tin cậy.</p>
           <div class="footer-contact">
             <a href="tel:19008888" aria-label="Gọi điện">📞 <span data-i18n="footer_phone">1900-8888 (8:00 - 20:00)</span></a>
             <a href="mailto:contact@cleanova.vn" aria-label="Gửi email">📧 <span data-i18n="footer_email">contact@cleanova.vn</span></a>
@@ -1108,9 +1320,10 @@
             <a href="services.html?category=gio" data-i18n="footer_link_hourly">Dọn dẹp theo giờ</a>
             <a href="services.html?category=tong-ve-sinh" data-i18n="footer_link_deep">Tổng vệ sinh Deep Cleaning</a>
             <a href="services.html?category=van-phong" data-i18n="footer_link_office">Vệ sinh văn phòng</a>
-            <a href="services.html?category=sofa" data-i18n="footer_link_sofa">Giặt sofa & nệm hơi nóng</a>
-            <a href="services.html?category=xay-dung" data-i18n="footer_link_construction">Vệ sinh sau xây dựng</a>
-            <a href="#calculator">Bảng tính giá ước tính</a>
+            <a href="booking.html?service_id=6">Chăm sóc trẻ em tại nhà</a>
+            <a href="booking.html?service_id=7">Chăm sóc người cao tuổi</a>
+            <a href="booking.html?service_id=8">Chăm sóc người bệnh tại nhà</a>
+            <a href="#pricing-table">Bảng giá dịch vụ</a>
           </div>
         </div>
 
@@ -1156,6 +1369,50 @@
       </div>
     </div>
   </footer>
+
+  <!-- ============================================================
+       SERVICE DETAILS MODAL DIALOG
+       ============================================================ -->
+  <div class="service-modal-overlay" id="service-modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="service-modal-title">
+    <div class="service-modal-dialog">
+      <div class="service-modal-header">
+        <div class="service-modal-header-text">
+          <span class="badge-category" id="modal-category-badge">🧹 Vệ sinh</span>
+          <h3 class="service-modal-title" id="service-modal-title">Chi tiết dịch vụ</h3>
+        </div>
+        <button type="button" class="service-modal-close" id="service-modal-close" aria-label="Đóng">&times;</button>
+      </div>
+      <div class="service-modal-body">
+        <p class="service-modal-desc" id="service-modal-desc"></p>
+        
+        <div class="service-modal-meta-grid">
+          <div class="modal-meta-item">
+            <span class="modal-meta-label">Đơn giá niêm yết</span>
+            <span class="modal-meta-val" id="modal-service-price">---</span>
+          </div>
+          <div class="modal-meta-item">
+            <span class="modal-meta-label">Thời lượng tối thiểu</span>
+            <span class="modal-meta-val" id="modal-service-min">---</span>
+          </div>
+          <div class="modal-meta-item">
+            <span class="modal-meta-label">Quy mô đề xuất</span>
+            <span class="modal-meta-val" id="modal-service-duration">---</span>
+          </div>
+        </div>
+
+        <div class="service-modal-features">
+          <h4>Phạm vi thực hiện tiêu chuẩn:</h4>
+          <ul id="modal-service-features">
+            <!-- Dynamic features list -->
+          </ul>
+        </div>
+      </div>
+      <div class="service-modal-footer">
+        <button type="button" class="btn btn-outline" id="service-modal-cancel">Đóng</button>
+        <a href="booking.html" class="btn btn-primary" id="service-modal-book-cta">Đặt dịch vụ này ngay</a>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================================
        TOAST NOTIFICATION CONTAINER

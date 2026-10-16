@@ -105,6 +105,9 @@ const inMemoryData = {
       base_price: 150000,
       price_unit: 'giờ',
       duration_estimate: '2 - 4 giờ',
+      category: 'cleaning',
+      min_duration_hours: 1,
+      staff_wage_rate: 105000,
       icon: '⏱️',
       is_active: 1
     },
@@ -117,6 +120,9 @@ const inMemoryData = {
       base_price: 500000,
       price_unit: 'lần',
       duration_estimate: '4 - 6 giờ',
+      category: 'cleaning',
+      min_duration_hours: 1,
+      staff_wage_rate: 350000,
       icon: '✨',
       is_active: 1
     },
@@ -129,6 +135,9 @@ const inMemoryData = {
       base_price: 300000,
       price_unit: 'lần',
       duration_estimate: '2 - 3 giờ',
+      category: 'cleaning',
+      min_duration_hours: 1,
+      staff_wage_rate: 210000,
       icon: '🏢',
       is_active: 1
     },
@@ -141,6 +150,9 @@ const inMemoryData = {
       base_price: 400000,
       price_unit: 'món',
       duration_estimate: '1 - 2 giờ',
+      category: 'cleaning',
+      min_duration_hours: 1,
+      staff_wage_rate: 280000,
       icon: '🛋️',
       is_active: 1
     },
@@ -153,7 +165,91 @@ const inMemoryData = {
       base_price: 8000,
       price_unit: 'm²',
       duration_estimate: '1 - 2 ngày',
+      category: 'cleaning',
+      min_duration_hours: 1,
+      staff_wage_rate: 5600,
       icon: '🏗️',
+      is_active: 1
+    },
+    {
+      id: 6,
+      name: 'Chăm sóc trẻ em tại nhà',
+      slug: 'cham-soc-tre-em',
+      description: 'Dịch vụ bảo mẫu chăm sóc trẻ chuyên nghiệp tại nhà: đón bé, chuẩn bị bữa ăn nhẹ dinh dưỡng, hỗ trợ bé vệ sinh cá nhân, kèm bé học bài, đọc sách và tổ chức trò chơi phát triển tư duy lành mạnh theo độ tuổi. Nhân viên lý lịch minh bạch, chu đáo và kiên nhẫn.',
+      short_description: 'Chăm sóc trẻ, hỗ trợ sinh hoạt, ăn uống và vui chơi lành mạnh theo độ tuổi.',
+      base_price: 80000,
+      price_unit: 'giờ',
+      duration_estimate: 'Tối thiểu 2 giờ',
+      category: 'care',
+      min_duration_hours: 2,
+      staff_wage_rate: 60000,
+      shift_price: 300000,
+      daily_price: 580000,
+      monthly_price: 14000000,
+      shift_hours: 4,
+      daily_hours: 8,
+      monthly_days: 26,
+      is_shift_active: 1,
+      is_daily_active: 1,
+      is_monthly_active: 1,
+      staff_shift_wage: 220000,
+      staff_daily_wage: 430000,
+      staff_monthly_wage: 10500000,
+      icon: '👶',
+      is_active: 1
+    },
+    {
+      id: 7,
+      name: 'Chăm sóc người cao tuổi tại nhà',
+      slug: 'cham-soc-nguoi-cao-tuoi',
+      description: 'Dịch vụ điều dưỡng viên đồng hành cùng người cao tuổi: hỗ trợ người lớn tuổi sinh hoạt, chuẩn bị bữa ăn hợp khẩu vị, nhắc nhở uống thuốc đúng giờ theo chỉ định của bác sĩ, hỗ trợ đi dạo, trò chuyện tâm tình và giúp người cao tuổi vận động nhẹ nhàng an toàn.',
+      short_description: 'Hỗ trợ sinh hoạt, ăn uống, nhắc thuốc và đồng hành cùng người cao tuổi.',
+      base_price: 90000,
+      price_unit: 'giờ',
+      duration_estimate: 'Tối thiểu 2 giờ',
+      category: 'care',
+      min_duration_hours: 2,
+      staff_wage_rate: 70000,
+      shift_price: 340000,
+      daily_price: 650000,
+      monthly_price: 15500000,
+      shift_hours: 4,
+      daily_hours: 8,
+      monthly_days: 26,
+      is_shift_active: 1,
+      is_daily_active: 1,
+      is_monthly_active: 1,
+      staff_shift_wage: 250000,
+      staff_daily_wage: 480000,
+      staff_monthly_wage: 11500000,
+      icon: '👵',
+      is_active: 1
+    },
+    {
+      id: 8,
+      name: 'Chăm sóc người bệnh tại nhà',
+      slug: 'cham-soc-nguoi-benh',
+      description: 'Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người ốm, người sau phẫu thuật hoặc đang hồi phục sức khỏe: hỗ trợ vệ sinh cá nhân, thay ga giường, theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ) và hỗ trợ dinh dưỡng theo chế độ ăn uống đã thống nhất. LƯU Ý: Dịch vụ hỗ trợ đời sống, nhân viên Cleanova không thực hiện các thủ thuật can thiệp y tế chuyên sâu.',
+      short_description: 'Hỗ trợ sinh hoạt và chăm sóc thông thường theo kế hoạch đã thống nhất.',
+      base_price: 120000,
+      price_unit: 'giờ',
+      duration_estimate: 'Tối thiểu 2 giờ',
+      category: 'care',
+      min_duration_hours: 2,
+      staff_wage_rate: 90000,
+      shift_price: 450000,
+      daily_price: 860000,
+      monthly_price: 20500000,
+      shift_hours: 4,
+      daily_hours: 8,
+      monthly_days: 26,
+      is_shift_active: 1,
+      is_daily_active: 1,
+      is_monthly_active: 1,
+      staff_shift_wage: 330000,
+      staff_daily_wage: 630000,
+      staff_monthly_wage: 15000000,
+      icon: '🩺',
       is_active: 1
     }
   ],
@@ -456,13 +552,227 @@ async function initDatabase() {
       await connection.query("DELETE FROM users WHERE email = 'quocanh.partner@gmail.com' AND role = 'user'");
     }
 
+    // ------------------------------------------------------------
+    // Migration: Mở rộng Dịch vụ chăm sóc tại nhà & Quản lý tiền công nhân viên
+    // ------------------------------------------------------------
+    const [serviceColumns] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'services'`
+    );
+    const existingServiceColumns = new Set(serviceColumns.map(c => c.COLUMN_NAME));
+    if (!existingServiceColumns.has('category')) {
+      await connection.query("ALTER TABLE services ADD COLUMN category VARCHAR(50) NOT NULL DEFAULT 'cleaning' COMMENT 'Phân loại: cleaning hoặc care'");
+    }
+    if (!existingServiceColumns.has('min_duration_hours')) {
+      await connection.query("ALTER TABLE services ADD COLUMN min_duration_hours INT NOT NULL DEFAULT 1 COMMENT 'Thời lượng tối thiểu theo giờ'");
+    }
+    if (!existingServiceColumns.has('staff_wage_rate')) {
+      await connection.query("ALTER TABLE services ADD COLUMN staff_wage_rate DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Mức tiền công chi trả nhân viên'");
+    }
+    if (!existingServiceColumns.has('shift_price')) {
+      await connection.query("ALTER TABLE services ADD COLUMN shift_price DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Giá trọn gói theo buổi (4h)'");
+    }
+    if (!existingServiceColumns.has('daily_price')) {
+      await connection.query("ALTER TABLE services ADD COLUMN daily_price DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Giá trọn gói theo ngày (8h)'");
+    }
+    if (!existingServiceColumns.has('monthly_price')) {
+      await connection.query("ALTER TABLE services ADD COLUMN monthly_price DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Giá trọn gói theo tháng (26 ngày)'");
+    }
+    if (!existingServiceColumns.has('shift_hours')) {
+      await connection.query("ALTER TABLE services ADD COLUMN shift_hours INT NOT NULL DEFAULT 4 COMMENT 'Số giờ quy định 1 buổi'");
+    }
+    if (!existingServiceColumns.has('daily_hours')) {
+      await connection.query("ALTER TABLE services ADD COLUMN daily_hours INT NOT NULL DEFAULT 8 COMMENT 'Số giờ quy định 1 ngày'");
+    }
+    if (!existingServiceColumns.has('monthly_days')) {
+      await connection.query("ALTER TABLE services ADD COLUMN monthly_days INT NOT NULL DEFAULT 26 COMMENT 'Số ngày quy định 1 tháng'");
+    }
+    if (!existingServiceColumns.has('is_shift_active')) {
+      await connection.query("ALTER TABLE services ADD COLUMN is_shift_active TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Kích hoạt gói theo buổi'");
+    }
+    if (!existingServiceColumns.has('is_daily_active')) {
+      await connection.query("ALTER TABLE services ADD COLUMN is_daily_active TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Kích hoạt gói theo ngày'");
+    }
+    if (!existingServiceColumns.has('is_monthly_active')) {
+      await connection.query("ALTER TABLE services ADD COLUMN is_monthly_active TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Kích hoạt gói theo tháng'");
+    }
+    if (!existingServiceColumns.has('staff_shift_wage')) {
+      await connection.query("ALTER TABLE services ADD COLUMN staff_shift_wage DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Tiền công nhân viên theo buổi'");
+    }
+    if (!existingServiceColumns.has('staff_daily_wage')) {
+      await connection.query("ALTER TABLE services ADD COLUMN staff_daily_wage DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Tiền công nhân viên theo ngày'");
+    }
+    if (!existingServiceColumns.has('staff_monthly_wage')) {
+      await connection.query("ALTER TABLE services ADD COLUMN staff_monthly_wage DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Tiền công nhân viên theo tháng'");
+    }
+
+    // Cập nhật dịch vụ vệ sinh hiện có
+    await connection.query("UPDATE services SET category = 'cleaning' WHERE category IS NULL OR category = ''");
+    await connection.query("UPDATE services SET min_duration_hours = 1 WHERE min_duration_hours IS NULL OR min_duration_hours < 1");
+
+    // Thêm 3 dịch vụ chăm sóc tại nhà nếu chưa có
+    const careServicesToSeed = [
+      {
+        id: 6,
+        name: 'Chăm sóc trẻ em tại nhà',
+        slug: 'cham-soc-tre-em',
+        description: 'Dịch vụ bảo mẫu chăm sóc trẻ chuyên nghiệp tại nhà: đón bé, chuẩn bị bữa ăn nhẹ dinh dưỡng, hỗ trợ bé vệ sinh cá nhân, kèm bé học bài, đọc sách và tổ chức trò chơi phát triển tư duy lành mạnh theo độ tuổi. Nhân viên lý lịch minh bạch, chu đáo và kiên nhẫn.',
+        short_description: 'Chăm sóc trẻ, hỗ trợ sinh hoạt, ăn uống và vui chơi lành mạnh theo độ tuổi.',
+        base_price: 80000.00,
+        price_unit: 'giờ',
+        duration_estimate: 'Tối thiểu 2 giờ',
+        category: 'care',
+        min_duration_hours: 2,
+        staff_wage_rate: 60000.00,
+        shift_price: 300000.00,
+        daily_price: 580000.00,
+        monthly_price: 14000000.00,
+        staff_shift_wage: 220000.00,
+        staff_daily_wage: 430000.00,
+        staff_monthly_wage: 10500000.00,
+        icon: '👶'
+      },
+      {
+        id: 7,
+        name: 'Chăm sóc người cao tuổi tại nhà',
+        slug: 'cham-soc-nguoi-cao-tuoi',
+        description: 'Dịch vụ điều dưỡng viên đồng hành cùng người cao tuổi: hỗ trợ người lớn tuổi sinh hoạt, chuẩn bị bữa ăn hợp khẩu vị, nhắc nhở uống thuốc đúng giờ theo chỉ định của bác sĩ, hỗ trợ đi dạo, trò chuyện tâm tình và giúp người cao tuổi vận động nhẹ nhàng an toàn.',
+        short_description: 'Hỗ trợ sinh hoạt, ăn uống, nhắc thuốc và đồng hành cùng người cao tuổi.',
+        base_price: 90000.00,
+        price_unit: 'giờ',
+        duration_estimate: 'Tối thiểu 2 giờ',
+        category: 'care',
+        min_duration_hours: 2,
+        staff_wage_rate: 70000.00,
+        shift_price: 340000.00,
+        daily_price: 650000.00,
+        monthly_price: 15500000.00,
+        staff_shift_wage: 250000.00,
+        staff_daily_wage: 480000.00,
+        staff_monthly_wage: 11500000.00,
+        icon: '👵'
+      },
+      {
+        id: 8,
+        name: 'Chăm sóc người bệnh tại nhà',
+        slug: 'cham-soc-nguoi-benh',
+        description: 'Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người ốm, người sau phẫu thuật hoặc đang hồi phục sức khỏe: hỗ trợ vệ sinh cá nhân, thay ga giường, theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ) và hỗ trợ dinh dưỡng theo chế độ ăn uống đã thống nhất. LƯU Ý: Dịch vụ hỗ trợ đời sống, nhân viên Cleanova không thực hiện các thủ thuật can thiệp y tế chuyên sâu.',
+        short_description: 'Hỗ trợ sinh hoạt và chăm sóc thông thường theo kế hoạch đã thống nhất.',
+        base_price: 120000.00,
+        price_unit: 'giờ',
+        duration_estimate: 'Tối thiểu 2 giờ',
+        category: 'care',
+        min_duration_hours: 2,
+        staff_wage_rate: 90000.00,
+        shift_price: 450000.00,
+        daily_price: 860000.00,
+        monthly_price: 20500000.00,
+        staff_shift_wage: 330000.00,
+        staff_daily_wage: 630000.00,
+        staff_monthly_wage: 15000000.00,
+        icon: '🩺'
+      }
+    ];
+
+    for (const s of careServicesToSeed) {
+      const [existing] = await connection.query('SELECT id, shift_price FROM services WHERE slug = ? LIMIT 1', [s.slug]);
+      if (existing.length === 0) {
+        await connection.query(
+          `INSERT INTO services (id, name, slug, description, short_description, base_price, price_unit, duration_estimate, category, min_duration_hours, staff_wage_rate, shift_price, daily_price, monthly_price, staff_shift_wage, staff_daily_wage, staff_monthly_wage, icon, is_active)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+          [s.id, s.name, s.slug, s.description, s.short_description, s.base_price, s.price_unit, s.duration_estimate, s.category, s.min_duration_hours, s.staff_wage_rate, s.shift_price, s.daily_price, s.monthly_price, s.staff_shift_wage, s.staff_daily_wage, s.staff_monthly_wage, s.icon]
+        );
+      } else {
+        // Cập nhật cấu hình gói giá chăm sóc nếu chưa có giá buổi/ngày/tháng
+        await connection.query(
+          `UPDATE services SET
+            shift_price = COALESCE(shift_price, ?),
+            daily_price = COALESCE(daily_price, ?),
+            monthly_price = COALESCE(monthly_price, ?),
+            staff_shift_wage = COALESCE(staff_shift_wage, ?),
+            staff_daily_wage = COALESCE(staff_daily_wage, ?),
+            staff_monthly_wage = COALESCE(staff_monthly_wage, ?)
+           WHERE id = ?`,
+          [s.shift_price, s.daily_price, s.monthly_price, s.staff_shift_wage, s.staff_daily_wage, s.staff_monthly_wage, s.id]
+        );
+      }
+    }
+
+    // Migration bổ sung các cột quản lý tiền công & thời lượng & thông tin chăm sóc cho bảng bookings
+    const [bookingCols] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bookings'`
+    );
+    const existingBCols = new Set(bookingCols.map(c => c.COLUMN_NAME));
+    if (!existingBCols.has('duration_hours')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN duration_hours DECIMAL(4, 1) NULL DEFAULT NULL COMMENT 'Thời lượng dịch vụ theo giờ'");
+    }
+    if (!existingBCols.has('staff_wage')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN staff_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền công chi trả cho nhân viên'");
+    }
+    if (!existingBCols.has('wage_status')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN wage_status ENUM('pending', 'approved', 'paid', 'cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái tiền công'");
+    }
+    if (!existingBCols.has('wage_settled_at')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN wage_settled_at DATETIME NULL DEFAULT NULL COMMENT 'Thời điểm đối soát chi trả tiền công'");
+    }
+    if (!existingBCols.has('wage_settled_by')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN wage_settled_by INT NULL DEFAULT NULL COMMENT 'Admin ID đã duyệt chi trả'");
+    }
+    if (!existingBCols.has('package_type')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN package_type ENUM('hourly', 'shift', 'daily', 'monthly') NOT NULL DEFAULT 'hourly' COMMENT 'Gói tính giá dịch vụ chăm sóc'");
+    }
+    if (!existingBCols.has('shift_choice')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN shift_choice VARCHAR(50) NULL DEFAULT NULL COMMENT 'Ca đăng ký: morning, afternoon, evening'");
+    }
+    if (!existingBCols.has('recipient_name')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN recipient_name VARCHAR(120) NULL DEFAULT NULL COMMENT 'Tên người được chăm sóc'");
+    }
+    if (!existingBCols.has('recipient_age')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN recipient_age VARCHAR(50) NULL DEFAULT NULL COMMENT 'Độ tuổi / năm sinh'");
+    }
+    if (!existingBCols.has('recipient_gender')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN recipient_gender VARCHAR(20) NULL DEFAULT NULL COMMENT 'Giới tính người được chăm sóc'");
+    }
+    if (!existingBCols.has('care_scope_notes')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN care_scope_notes TEXT NULL DEFAULT NULL COMMENT 'Ghi chú phạm vi chăm sóc & thói quen'");
+    }
+
+    // Tự động tạo bảng staff_payout_logs nếu chưa có
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS staff_payout_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        booking_id INT NOT NULL,
+        staff_id INT NOT NULL,
+        admin_id INT NOT NULL,
+        amount DECIMAL(12, 2) NOT NULL,
+        action ENUM('approve', 'pay', 'adjust') NOT NULL DEFAULT 'pay',
+        note TEXT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_payout_booking (booking_id),
+        INDEX idx_payout_staff (staff_id),
+        CONSTRAINT fk_payout_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+        CONSTRAINT fk_payout_staff FOREIGN KEY (staff_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_payout_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
     console.log(`[Database] Đã kết nối thành công tới MySQL Server (${dbConfig.host}:${dbConfig.port}/${dbConfig.database})`);
     isConnectedToMySQL = true;
   } catch (err) {
     console.error('====================================================');
     console.error(`[DATABASE ERROR CRITICAL] Không thể kết nối tới MySQL (${err.code || err.message})!`);
     console.error(`- Host: ${dbConfig.host}:${dbConfig.port} | Database: ${dbConfig.database} | User: ${dbConfig.user}`);
-    console.error('CẢNH BÁO BẢO VỆ DỮ LIỆU: Ứng dụng đang tạm thời chuyển sang cơ chế In-Memory Database.');
+    
+    // Trong môi trường Production, không được phép âm thầm chuyển sang in-memory, từ chối khởi động
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[DATABASE ERROR FATAL] Trong môi trường Production, kết nối MySQL là BẮT BUỘC.');
+      console.error('Ứng dụng từ chối khởi động để tránh rò rỉ dữ liệu hoặc mất đồng bộ.');
+      console.error('====================================================');
+      process.exit(1);
+    }
+
+    console.error('CẢNH BÁO BẢO VỆ DỮ LIỆU: Ứng dụng đang tạm thời chuyển sang cơ chế In-Memory Database cho môi trường Dev/Test.');
     console.error('LƯU Ý: Mọi thay đổi dữ liệu (tài khoản mới, đơn đặt) sẽ BỊ MẤT khi restart máy chủ nếu không sửa kết nối MySQL!');
     console.error('====================================================');
     isConnectedToMySQL = false;
@@ -869,7 +1179,12 @@ function queryInMemory(sql, params = []) {
 
   // 8. INSERT INTO bookings
   if (normalizedSql.startsWith('insert into bookings')) {
-    const [booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method] = params;
+    const [
+      booking_code, user_id, service_id, booking_date, booking_time, area_size,
+      frequency, address, phone, notes, total_price, discount_code, payment_method,
+      duration_hours, staff_wage, wage_status, package_type, shift_choice,
+      recipient_name, recipient_age, recipient_gender, care_scope_notes
+    ] = params;
     const newId = inMemoryData.bookings.length > 0 ? Math.max(...inMemoryData.bookings.map(b => b.id)) + 1 : 1;
     const srv = inMemoryData.services.find(s => s.id === parseInt(service_id, 10));
     const newBooking = {
@@ -881,8 +1196,8 @@ function queryInMemory(sql, params = []) {
       service_icon: srv ? srv.icon : '🧹',
       booking_date,
       booking_time,
-      area_size,
-      frequency,
+      area_size: area_size || 'medium',
+      frequency: frequency || 'once',
       address,
       phone,
       notes: notes || '',
@@ -895,6 +1210,15 @@ function queryInMemory(sql, params = []) {
       staff_name: null,
       staff_notes: null,
       assigned_at: null,
+      duration_hours: duration_hours || null,
+      staff_wage: staff_wage || 0,
+      wage_status: wage_status || 'pending',
+      package_type: package_type || 'hourly',
+      shift_choice: shift_choice || null,
+      recipient_name: recipient_name || null,
+      recipient_age: recipient_age || null,
+      recipient_gender: recipient_gender || null,
+      care_scope_notes: care_scope_notes || null,
       created_at: new Date()
     };
     inMemoryData.bookings.unshift(newBooking);
