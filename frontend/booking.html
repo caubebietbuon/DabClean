@@ -677,9 +677,13 @@
   <script>
     'use strict';
     document.addEventListener('DOMContentLoaded', async function () {
-      // 1. Kiểm tra đăng nhập
+      // 1. Kiểm tra đăng nhập (Bảo vệ luồng đặt dịch vụ - Yêu cầu tài khoản khách hàng)
       if (!window.CleanovaAPI.auth.isLoggedIn()) {
-        window.location.replace('login.html?redirect=booking.html');
+        const currentSearch = window.location.search || '';
+        const currentHash = window.location.hash || '';
+        const returnUrl = encodeURIComponent('booking.html' + currentSearch + currentHash);
+        const msg = encodeURIComponent('Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova');
+        window.location.replace(`login.html?redirect=${returnUrl}&message=${msg}`);
         return;
       }
 

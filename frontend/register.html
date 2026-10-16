@@ -795,9 +795,20 @@
 
           showAlert('success', res.message || dict.successRedirect);
 
-          // Tự động chuyển hướng đến trang chủ sau 800ms
+          // Tự động chuyển hướng an toàn sau khi tạo tài khoản
           setTimeout(() => {
-            window.location.href = 'trangchu.html';
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawRedirect = urlParams.get("redirect") || urlParams.get("returnUrl");
+            let safeRedirect = null;
+            if (rawRedirect) {
+              try {
+                let decoded = decodeURIComponent(rawRedirect.trim());
+                if (!/^(https?:|\/\/|javascript:|data:)/i.test(decoded)) {
+                  safeRedirect = decoded;
+                }
+              } catch (e) {}
+            }
+            window.location.href = safeRedirect || 'trangchu.html';
           }, 800);
 
         } catch (err) {
@@ -807,6 +818,14 @@
           submitBtn.querySelector('.button-label').textContent = dict.submitRegister;
         }
       });
+
+      // Chuyển tiếp tham số redirect qua liên kết Đăng nhập
+      const urlParams = new URLSearchParams(window.location.search);
+      const linkToLogin = document.querySelector('a[href^="login.html"]');
+      if (linkToLogin && (urlParams.get("redirect") || urlParams.get("returnUrl"))) {
+        const ret = urlParams.get("redirect") || urlParams.get("returnUrl");
+        linkToLogin.href = `login.html?redirect=${encodeURIComponent(ret)}`;
+      }
 
       // Google signup demo button
       document.getElementById('google-register-btn').addEventListener('click', () => {

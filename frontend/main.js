@@ -584,9 +584,9 @@ function initAuthStatus() {
   const user = (api && api.auth) ? api.auth.getUser() : null;
   const isLoggedIn = (api && api.auth)
     ? api.auth.isLoggedIn()
-    : (sessionStorage.getItem('cleanova_logged_in') === 'true');
+    : Boolean(localStorage.getItem('cleanova_token'));
 
-  const displayName = user ? (user.name || user.email) : (sessionStorage.getItem('cleanova_user_email') || 'demo@nova.app');
+  const displayName = user ? (user.name || user.email) : 'Khách hàng';
   const isAdmin = (api && api.auth) ? api.auth.isAdmin() : (user && user.role === 'admin');
   const isStaff = (api && api.auth) ? (user && user.role === 'staff') : (user && user.role === 'staff');
 
@@ -594,6 +594,9 @@ function initAuthStatus() {
   const userEmailHeader = document.getElementById('user-email-header');
   const btnLogoutHeader = document.getElementById('btn-logout');
   const btnLoginHeader = document.getElementById('btn-login-header');
+  const btnRegisterHeader = document.getElementById('btn-register-header');
+  const notificationWrapper = document.getElementById('notification-wrapper');
+  const navLinkMyBookings = document.getElementById('nav-link-my-bookings');
   const navLinkAdmin = document.getElementById('nav-link-admin');
   const mobileLinkAdmin = document.getElementById('mobile-link-admin');
   const navLinkStaff = document.getElementById('nav-link-staff');
@@ -603,19 +606,28 @@ function initAuthStatus() {
   const userEmailMobile = document.getElementById('user-email-mobile');
   const btnLogoutMobile = document.getElementById('btn-logout-mobile');
   const btnLoginMobile = document.getElementById('btn-login-mobile');
+  const btnRegisterMobile = document.getElementById('btn-register-mobile');
+  const mobileLinkMyBookings = document.getElementById('mobile-link-my-bookings');
+  const mobileLinkProfile = document.getElementById('mobile-link-profile');
 
   if (isLoggedIn) {
-    // Hiển thị thông tin người dùng trên Header
+    // 1. ĐÃ ĐĂNG NHẬP: Hiển thị thông tin tài khoản, đơn hàng, chuông thông báo & nút đăng xuất
     if (userEmailHeader) userEmailHeader.textContent = displayName;
     if (userProfileHeader) userProfileHeader.style.display = 'inline-flex';
     if (btnLogoutHeader) btnLogoutHeader.style.display = 'inline-flex';
     if (btnLoginHeader) btnLoginHeader.style.display = 'none';
+    if (btnRegisterHeader) btnRegisterHeader.style.display = 'none';
+    if (notificationWrapper) notificationWrapper.style.display = 'inline-block';
+    if (navLinkMyBookings) navLinkMyBookings.style.display = 'inline-block';
 
-    // Hiển thị thông tin người dùng trên Mobile Drawer
+    // Mobile Drawer
     if (userEmailMobile) userEmailMobile.textContent = displayName;
     if (userProfileMobile) userProfileMobile.style.display = 'flex';
     if (btnLogoutMobile) btnLogoutMobile.style.display = 'block';
     if (btnLoginMobile) btnLoginMobile.style.display = 'none';
+    if (btnRegisterMobile) btnRegisterMobile.style.display = 'none';
+    if (mobileLinkMyBookings) mobileLinkMyBookings.style.display = 'block';
+    if (mobileLinkProfile) mobileLinkProfile.style.display = 'block';
 
     // Phân quyền: Hiển thị tab Quản trị viên nếu là admin
     if (isAdmin) {
@@ -629,14 +641,21 @@ function initAuthStatus() {
       if (mobileLinkStaff) mobileLinkStaff.style.display = 'block';
     }
   } else {
-    // Nếu chưa đăng nhập (hoặc preview)
+    // 2. KHÁCH VÃNG LAI: Ẩn thông tin cá nhân, đơn hàng, chuông thông báo; Hiện nút Đăng nhập & Đăng ký
     if (userProfileHeader) userProfileHeader.style.display = 'none';
     if (btnLogoutHeader) btnLogoutHeader.style.display = 'none';
     if (btnLoginHeader) btnLoginHeader.style.display = 'inline-flex';
+    if (btnRegisterHeader) btnRegisterHeader.style.display = 'inline-flex';
+    if (notificationWrapper) notificationWrapper.style.display = 'none';
+    if (navLinkMyBookings) navLinkMyBookings.style.display = 'none';
 
+    // Mobile Drawer
     if (userProfileMobile) userProfileMobile.style.display = 'none';
     if (btnLogoutMobile) btnLogoutMobile.style.display = 'none';
     if (btnLoginMobile) btnLoginMobile.style.display = 'block';
+    if (btnRegisterMobile) btnRegisterMobile.style.display = 'block';
+    if (mobileLinkMyBookings) mobileLinkMyBookings.style.display = 'none';
+    if (mobileLinkProfile) mobileLinkProfile.style.display = 'none';
 
     if (navLinkAdmin) navLinkAdmin.style.display = 'none';
     if (mobileLinkAdmin) mobileLinkAdmin.style.display = 'none';
@@ -644,15 +663,16 @@ function initAuthStatus() {
     if (mobileLinkStaff) mobileLinkStaff.style.display = 'none';
   }
 
-  // Xử lý sự kiện Đăng xuất
+  // Xử lý sự kiện Đăng xuất: Xóa phiên và chuyển về trang chủ công khai (trangchu.html)
   function handleLogout(e) {
     e.preventDefault();
     if (api && api.auth) {
       api.auth.logout();
     } else {
-      sessionStorage.removeItem('cleanova_logged_in');
-      sessionStorage.removeItem('cleanova_user_email');
-      window.location.href = 'login.html?logout=true';
+      localStorage.removeItem('cleanova_token');
+      localStorage.removeItem('cleanova_user');
+      sessionStorage.clear();
+      window.location.href = 'trangchu.html';
     }
   }
 
@@ -944,12 +964,18 @@ function initSmoothScroll() {
 function initCTAButtons() {
   document.querySelectorAll('[data-action="book"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
-      const href = btn.getAttribute('href');
+      const href = btn.getAttribute('href') || 'booking.html';
+      const api = window.CleanovaAPI;
+      if (api && api.auth && !api.auth.isLoggedIn()) {
+        e.preventDefault();
+        api.auth.requireAuth(href, 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova');
+        return;
+      }
       if (href && (href.startsWith('booking.html') || href.startsWith('services.html'))) {
-        return; // Cho phép trình duyệt điều hướng bình thường
+        return; // Cho phép trình duyệt điều hướng bình thường khi đã đăng nhập
       }
       e.preventDefault();
-      window.location.href = 'booking.html';
+      window.location.href = href;
     });
   });
 

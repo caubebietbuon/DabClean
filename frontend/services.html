@@ -29,13 +29,13 @@
         <a href="trangchu.html" class="nav-link">Trang chủ</a>
         <a href="services.html" class="nav-link active">Dịch vụ</a>
         <a href="khampha.html" class="nav-link">Khám phá</a>
-        <a href="booking.html" class="nav-link">Đặt lịch</a>
-        <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
+        <a href="booking.html" class="nav-link" data-action="book">Đặt lịch</a>
+        <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" style="display: none;">Đơn của tôi</a>
       </nav>
 
       <div class="header-actions">
-        <!-- Thông báo -->
-        <a href="my-bookings.html#notifications" class="btn-icon btn-ghost" title="Thông báo" style="font-size: 16px;">🔔</a>
+        <!-- Thông báo (Chỉ hiện khi đã đăng nhập) -->
+        <a href="my-bookings.html#notifications" class="btn-icon btn-ghost" id="btn-notifications-header" title="Thông báo" style="display: none; font-size: 16px;">🔔</a>
 
         <div id="auth-header-slot" style="display: flex; align-items: center; gap: 8px;">
           <a href="partner-register.html" class="btn-partner-header">
@@ -403,6 +403,39 @@
         t.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : 'ℹ️'}</span><span class="toast-message">${msg}</span>`;
         c.appendChild(t);
         setTimeout(() => t.remove(), 3200);
+      }
+
+      // Đồng bộ thanh điều hướng theo trạng thái đăng nhập
+      if (window.CleanovaAPI && window.CleanovaAPI.auth) {
+        const isLogged = window.CleanovaAPI.auth.isLoggedIn();
+        const user = window.CleanovaAPI.auth.getUser();
+        const myBookingsLink = document.getElementById('nav-link-my-bookings');
+        const notifBtn = document.getElementById('btn-notifications-header');
+        const slot = document.getElementById('auth-header-slot');
+
+        if (isLogged && user) {
+          if (myBookingsLink) myBookingsLink.style.display = 'inline-block';
+          if (notifBtn) notifBtn.style.display = 'inline-flex';
+          if (slot) {
+            slot.innerHTML = `
+              <a href="partner-register.html" class="btn-partner-header">
+                <span aria-hidden="true">🤝</span>
+                <span>Trở thành đối tác</span>
+              </a>
+              <a href="profile.html" class="user-profile-badge" style="text-decoration: none;" title="Xem hồ sơ cá nhân">
+                <span class="user-avatar-mini" aria-hidden="true">👤</span>
+                <span class="user-email-text">${user.name || user.email || 'Tài khoản'}</span>
+              </a>
+              <button class="btn btn-ghost btn-sm" id="btn-logout" title="Đăng xuất">Đăng xuất</button>
+            `;
+            document.getElementById('btn-logout')?.addEventListener('click', () => {
+              window.CleanovaAPI.auth.logout();
+            });
+          }
+        } else {
+          if (myBookingsLink) myBookingsLink.style.display = 'none';
+          if (notifBtn) notifBtn.style.display = 'none';
+        }
       }
 
       // Tải dữ liệu ban đầu

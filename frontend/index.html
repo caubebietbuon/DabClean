@@ -10,15 +10,8 @@
   <meta name="description" content="Cleanova - Dịch vụ dọn vệ sinh nhà cửa & văn phòng chuyên nghiệp.">
   <title>Cleanova — Đang tải...</title>
   <script>
-    // Kiểm tra trạng thái phiên làm việc (Session Guard)
-    // 1. Nếu đã đăng nhập thành công -> Chuyển hướng tới Trang chủ (trangchu.html)
-    // 2. Nếu chưa đăng nhập -> Chuyển hướng tới Trang đăng nhập (login.html)
-    var isLoggedIn = (sessionStorage.getItem('cleanova_logged_in') === 'true') || !!localStorage.getItem('cleanova_token');
-    if (isLoggedIn) {
-      window.location.replace('trangchu.html');
-    } else {
-      window.location.replace('login.html');
-    }
+    // Luồng khách vãng lai: Tự động điều hướng thẳng vào Trang chủ Cleanova công khai
+    window.location.replace('trangchu.html');
   </script>
   <style>
     body {

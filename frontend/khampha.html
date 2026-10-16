@@ -36,8 +36,8 @@
         <a href="trangchu.html" class="nav-link">Trang chủ</a>
         <a href="services.html" class="nav-link">Dịch vụ</a>
         <a href="khampha.html" class="nav-link active">Khám phá</a>
-        <a href="booking.html" class="nav-link">Đặt lịch</a>
-        <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
+        <a href="booking.html" class="nav-link" data-action="book">Đặt lịch</a>
+        <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" style="display: none;">Đơn của tôi</a>
       </nav>
 
       <!-- Hành động bên phải -->
@@ -584,6 +584,10 @@
         const isLogged = window.CleanovaAPI.auth.isLoggedIn();
         const user = window.CleanovaAPI.auth.getUser();
         const slot = document.getElementById('auth-header-slot');
+        const navMyBookings = document.getElementById('nav-link-my-bookings');
+        if (navMyBookings) {
+          navMyBookings.style.display = isLogged ? '' : 'none';
+        }
         if (slot && isLogged && user) {
           slot.innerHTML = `
             <a href="profile.html" class="user-profile-badge" style="text-decoration: none;" title="Xem hồ sơ cá nhân">
@@ -596,7 +600,6 @@
           if (btnLogout) {
             btnLogout.addEventListener('click', () => {
               window.CleanovaAPI.auth.logout();
-              window.location.reload();
             });
           }
         }

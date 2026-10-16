@@ -36,6 +36,21 @@
       }
 
       if (!response.ok) {
+        // Nếu phát hiện phiên đăng nhập đã hết hạn (401 Unauthorized)
+        if (response.status === 401) {
+          localStorage.removeItem('cleanova_token');
+          localStorage.removeItem('cleanova_user');
+          sessionStorage.clear();
+          const currentFile = window.location.pathname.split('/').pop() || 'trangchu.html';
+          const protectedPages = ['booking.html', 'my-bookings.html', 'profile.html', 'admin.html', 'staff.html'];
+          if (protectedPages.includes(currentFile)) {
+            const returnUrl = encodeURIComponent(currentFile + window.location.search + window.location.hash);
+            const msg = encodeURIComponent('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại để tiếp tục sử dụng dịch vụ.');
+            window.location.href = `login.html?redirect=${returnUrl}&message=${msg}`;
+            return;
+          }
+        }
+
         // Nếu phát hiện tài khoản bị vô hiệu hóa
         if (response.status === 403 && data && data.code === 'ACCOUNT_DEACTIVATED') {
           localStorage.removeItem('cleanova_token');
@@ -119,7 +134,18 @@
         localStorage.removeItem('cleanova_token');
         localStorage.removeItem('cleanova_user');
         sessionStorage.clear();
-        window.location.href = 'login.html?logout=true';
+        window.location.href = 'trangchu.html';
+      },
+
+      // Kiểm tra đăng nhập và tự động chuyển hướng kèm returnUrl nếu là khách vãng lai
+      requireAuth(targetUrl = 'booking.html', customMessage = 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova') {
+        if (this.isLoggedIn()) {
+          return true;
+        }
+        const redirectParam = encodeURIComponent(targetUrl);
+        const messageParam = encodeURIComponent(customMessage);
+        window.location.href = `login.html?redirect=${redirectParam}&message=${messageParam}`;
+        return false;
       },
 
       getUser() {
@@ -776,4 +802,59 @@
       }
     };
   }
+
+  // ============================================================
+  // GLOBAL BOOKING FLOW INTERCEPTOR CHO KHÁCH VÃNG LAI
+  // Tự động kiểm tra trạng thái đăng nhập khi khách bấm đặt dịch vụ
+  // ============================================================
+  document.addEventListener('click', function (e) {
+    const target = e.target.closest('a, button');
+    if (!target) return;
+
+    // Không can thiệp nếu đang ở trang login hoặc register
+    const currentPath = window.location.pathname.split('/').pop();
+    if (currentPath === 'login.html' || currentPath === 'register.html') return;
+
+    const href = target.getAttribute('href') || '';
+    const isBookingLink = href.includes('booking.html');
+    const isBookingAction = target.dataset.action === 'book';
+    
+    // Kiểm tra text nút
+    const text = (target.textContent || '').trim().toLowerCase();
+    const isBookingText = text.includes('đặt dịch vụ ngay') || 
+                          text.includes('sử dụng dịch vụ') || 
+                          text.includes('đặt lịch ngay') || 
+                          text.includes('đặt ngay') || 
+                          text.includes('tiến hành đặt dịch vụ') ||
+                          text.includes('tiếp tục đặt lịch');
+
+    const isExcluded = target.classList.contains('btn-service-detail') || 
+                       href.startsWith('#why') || 
+                       href.startsWith('#customer') || 
+                       href.startsWith('#cleaning') || 
+                       href.startsWith('#calculator');
+
+    if ((isBookingLink || isBookingAction || isBookingText) && !isExcluded) {
+      if (!window.CleanovaAPI.auth.isLoggedIn()) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let destination = href;
+        if (!destination || destination === '#' || destination.startsWith('javascript:')) {
+          destination = 'booking.html';
+        }
+
+        // Nếu người dùng bấm từ widget tính giá trên trang chủ, mang theo dịch vụ đã chọn
+        const calcService = document.getElementById('calc-service');
+        if (calcService && (target.dataset.i18n === 'calc_btn_continue' || text.includes('tiếp tục đặt lịch'))) {
+          const sVal = calcService.value;
+          const serviceIdMap = { regular_cleaning: 1, deep_cleaning: 2, move_in_out: 3, office_cleaning: 4, sofa_carpet: 5 };
+          const sid = serviceIdMap[sVal] || 1;
+          destination = `booking.html?service_id=${sid}`;
+        }
+
+        window.CleanovaAPI.auth.requireAuth(destination, 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova');
+      }
+    }
+  }, true);
 })();

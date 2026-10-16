@@ -266,6 +266,52 @@ function showLogin() {
   emailInput.focus();
 }
 
+// Xác thực URL chuyển hướng nội bộ an toàn (Chống Open Redirect & Phân quyền URL)
+function validateReturnUrl(rawUrl, userRole) {
+  if (!rawUrl || typeof rawUrl !== 'string') return null;
+
+  try {
+    let decoded = decodeURIComponent(rawUrl.trim());
+    
+    // Ngăn chặn Open Redirect sang domain bên ngoài
+    if (/^(https?:|\/\/|javascript:|data:)/i.test(decoded)) {
+      try {
+        const parsed = new URL(decoded, window.location.origin);
+        if (parsed.origin !== window.location.origin) {
+          return null; // Từ chối chuyển hướng ra ngoài hệ thống
+        }
+        decoded = parsed.pathname + parsed.search + parsed.hash;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    const cleanPath = decoded.replace(/^\/+/, '');
+    const baseFile = cleanPath.split('?')[0].split('#')[0];
+
+    // Không cho phép khách hàng thường truy cập vào trang Admin hoặc Staff
+    if (baseFile === 'admin.html' && userRole !== 'admin') {
+      return 'trangchu.html';
+    }
+    if (baseFile === 'staff.html' && userRole !== 'staff' && userRole !== 'admin') {
+      return 'trangchu.html';
+    }
+
+    const allowedPages = [
+      'trangchu.html', 'services.html', 'khampha.html', 'booking.html', 
+      'my-bookings.html', 'profile.html', 'partner-register.html'
+    ];
+
+    if (allowedPages.includes(baseFile) || baseFile === '') {
+      return decoded;
+    }
+
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   if (isSubmitting || !validateForm()) {
@@ -284,17 +330,28 @@ loginForm.addEventListener("submit", async (event) => {
 
       window.setTimeout(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const defaultRedirect = window.CleanovaAPI.auth.getRedirectUrlByRole();
-        const redirectTo = urlParams.get("redirect") || defaultRedirect;
-        window.location.href = redirectTo;
-      }, 750);
+        const user = window.CleanovaAPI.auth.getUser();
+        const role = user ? user.role : 'customer';
+
+        const rawRedirect = urlParams.get("redirect") || urlParams.get("returnUrl");
+        const safeRedirect = validateReturnUrl(rawRedirect, role);
+
+        if (role === 'admin') {
+          window.location.href = (safeRedirect && safeRedirect.includes('admin.html')) ? safeRedirect : 'admin.html';
+        } else if (role === 'staff') {
+          window.location.href = (safeRedirect && safeRedirect.includes('staff.html')) ? safeRedirect : 'staff.html';
+        } else {
+          // Khách hàng (Customer): Nếu có trang quay lại (như booking.html?service_id=2) thì đưa đúng vào đó
+          window.location.href = safeRedirect || 'trangchu.html';
+        }
+      }, 600);
     } else {
       // Fallback nếu api.js chưa nạp
       if (email === demoAccount.email && password === demoAccount.password) {
         setStatus("signInSuccess", "success");
         sessionStorage.setItem("cleanova_logged_in", "true");
         sessionStorage.setItem("cleanova_user_email", email);
-        window.setTimeout(() => { window.location.href = "trangchu.html"; }, 750);
+        window.setTimeout(() => { window.location.href = "trangchu.html"; }, 600);
       } else {
         setStatus("signInFailure", "error");
       }
@@ -350,15 +407,30 @@ for (const button of languageButtons) {
 
 logoutButton.addEventListener("click", showLogin);
 
-// Kiểm tra tham số URL và trạng thái phiên làm việc khi tải trang
+// Kiểm tra tham số URL và hiển thị thông báo thân thiện cho khách
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("logout") === "true") {
   sessionStorage.removeItem("cleanova_logged_in");
   sessionStorage.removeItem("cleanova_user_email");
   showLogin();
-} else if (sessionStorage.getItem("cleanova_logged_in") === "true") {
-  // Người dùng đã có phiên đăng nhập
-  showDashboard();
+} else {
+  // Hiển thị thông báo nếu được chuyển hướng từ việc đặt lịch hoặc chức năng yêu cầu tài khoản
+  const friendlyMsg = urlParams.get("message") || (urlParams.get("redirect") ? "Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova" : "");
+  if (friendlyMsg) {
+    const banner = document.getElementById("login-friendly-banner");
+    const bannerText = document.getElementById("login-friendly-banner-text");
+    if (banner && bannerText) {
+      bannerText.textContent = friendlyMsg;
+      banner.style.display = "flex";
+    }
+  }
+
+  // Chuyển tiếp tham số redirect qua liên kết Đăng ký
+  const linkToRegister = document.querySelector('a[href^="register.html"]');
+  if (linkToRegister && (urlParams.get("redirect") || urlParams.get("returnUrl"))) {
+    const ret = urlParams.get("redirect") || urlParams.get("returnUrl");
+    linkToRegister.href = `register.html?redirect=${encodeURIComponent(ret)}`;
+  }
 }
 
 setLanguage(currentLanguage);
