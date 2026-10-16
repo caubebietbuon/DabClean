@@ -114,12 +114,8 @@ ai-module/
     rat-ban/    ảnh phòng rất bẩn    (nên ≥ 30 ảnh)
 ```
 
-> Nếu chưa có ảnh thật, tạo dataset **tổng hợp** để test pipeline:
-> ```bash
-> npm run make-dataset -- --per-class 25
-> ```
-> ⚠️ Ảnh tổng hợp **chỉ để kiểm chứng code chạy đúng** — model train từ đây
-> **không dùng cho production**.
+> ⚠️ **Dataset tổng hợp đã bị gỡ bỏ.** Module này nay chỉ dùng **ảnh thật**.
+> Model hiện tại được train từ **597 ảnh thật** (sach 200 / hoi-ban 198 / rat-ban 199).
 
 ### Bước 2 — Huấn luyện
 
@@ -127,11 +123,24 @@ ai-module/
 npm run train
 # hoặc tuỳ chỉnh:
 node train.js --epochs 60 --batch 16
+
+# Chỉ định dataset ở nơi khác:
+node train.js --dataset "D:\folder anh\dataset" --out "./model-do-ban2" --epochs 40 --batch 32
 ```
 
 Kết quả: model lưu vào `model-do-ban2/` gồm `model.json`, `weights.bin`, `metadata.json`.
 
-### Bước 3 — Dự đoán
+### Bước 3 — Đánh giá chất lượng model (tuỳ chọn)
+
+```bash
+npm run evaluate
+# hoặc: node test/evaluate.js --dataset "D:\folder anh\dataset" --sample 30
+```
+
+In ra độ chính xác, ma trận nhầm lẫn, điểm trung bình mỗi lớp và danh sách ảnh đoán sai.
+⚠️ Đây là đánh giá **lạc quan** vì ảnh đã dùng để train — muốn khách quan cần bộ test riêng.
+
+### Bước 4 — Dự đoán
 
 ```bash
 node predict.js anh-phong.jpg
@@ -250,8 +259,8 @@ ai-module/
 │   ├── pricing/priceCalculator.js# Tính giá dịch vụ
 │   └── routes/aiRoutes.js        # API endpoints
 ├── public/index.html             # Giao diện demo
-├── test/make-synthetic-dataset.js# Sinh dataset test (KHÔNG phải dữ liệu thật)
-└── model-do-ban2/                # Model sau khi train (git-ignored)
+├── test/evaluate.js              # Đánh giá model (độ chính xác, ma trận nhầm lẫn)
+└── model-do-ban2/                # Model sau khi train (đã commit, 257 KB)
 ```
 
 ---
@@ -312,9 +321,11 @@ const { data } = await res.json();
 
 ## 9. Lưu ý
 
-- Model train từ **dataset tổng hợp** chỉ để test code. Muốn dùng thật phải
-  train bằng **ảnh phòng thật**, mỗi lớp ≥ 30–50 ảnh đa dạng điều kiện.
-- Backend CPU thuần JS: trích đặc trưng ~5s/ảnh, predict ~5–20s/ảnh
+- Model hiện tại train từ **597 ảnh phòng thật** (sach 200 / hoi-ban 198 / rat-ban 199).
+  Độ chính xác đo trên mẫu 90 ảnh: **96.7%** (Sạch 100%, Hơi bẩn 100%, Rất bẩn 90%).
+- Backend CPU thuần JS: trích đặc trưng ~1.8s/ảnh, predict ~5–20s/ảnh
   (lần đầu chậm hơn do nạp MobileNet).
 - Ảnh xử lý **trong RAM**, không lưu ra đĩa.
-- `dataset/` và `model-do-ban2/` đã được git-ignore (file lớn / sinh lại được).
+- **Git:** `model-do-ban2/` (257 KB) ĐƯỢC commit để ai clone cũng chạy được ngay.
+  `dataset/` KHÔNG commit vì nặng (~174 MB) — cần tự chuẩn bị ảnh rồi train.
+  (Kiểm tra bằng `git check-ignore -v <đường-dẫn>` nếu không chắc.)

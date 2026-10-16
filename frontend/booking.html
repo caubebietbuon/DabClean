@@ -204,7 +204,7 @@
 
                 <!-- 5 Chỉ số phân tích trực quan tổng hợp -->
                 <div style="font-size: 12px; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-                  📊 TỔNG HỢP 5 CHỈ SỐ THỊ GIÁC:
+                  📊 ĐỘ TIN CẬY CỦA MÔ HÌNH AI (MobileNet):
                 </div>
                 <div class="ai-signals-list" id="ai-signals-list">
                   <!-- Rendered dynamically via JS -->
@@ -1140,19 +1140,20 @@
           }
         }
 
-        // 4. Hiển thị 5 chỉ số phân tích trực quan tổng hợp
+        // 4. Hiển thị độ tin cậy của mô hình AI (MobileNet phân loại 3 lớp)
+        //    ⚠️ AI module v2.0 KHÔNG có 5 chỉ số riêng lẻ (stains/clutter/dust/...)
+        //    như bản heuristic cũ. Nó trả 3 xác suất cho 3 mức độ bẩn.
+        //    Ta hiển thị đúng những gì mô hình thực sự cho biết — không bịa số liệu.
         const signalsList = document.getElementById('ai-signals-list');
         if (signalsList) {
           const signalConfig = [
-            { key: 'stains', label: 'Vết ố / Vết dính bề mặt', icon: '🧽' },
-            { key: 'clutter', label: 'Mức độ bừa bộn đồ đạc', icon: '📦' },
-            { key: 'dust', label: 'Bụi bặm bề mặt đồ gỗ/kính', icon: '💨' },
-            { key: 'debris', label: 'Cặn bẩn / Rác nhỏ sàn nhà', icon: '🗑️' },
-            { key: 'brightness', label: 'Mức độ thiếu sáng (tối)', icon: '💡' }
+            { key: 'sach', label: 'Khả năng SẠCH', icon: '✅' },
+            { key: 'hoiBan', label: 'Khả năng HƠI BẨN', icon: '⚠️' },
+            { key: 'ratBan', label: 'Khả năng RẤT BẨN', icon: '🚨' }
           ];
 
           signalsList.innerHTML = signalConfig.map(cfg => {
-            const val = Math.min(100, Math.max(0, Math.round(signals[cfg.key] || 0)));
+            const val = Math.min(100, Math.max(0, Math.round((signals[cfg.key] || 0) * 10) / 10));
             return `
               <div class="ai-signal-item">
                 <div class="ai-signal-header">

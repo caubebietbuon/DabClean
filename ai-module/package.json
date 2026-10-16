@@ -9,7 +9,7 @@
     "dev": "node --watch server.js",
     "train": "node train.js",
     "predict": "node predict.js",
-    "make-dataset": "node test/make-synthetic-dataset.js"
+    "evaluate": "node test/evaluate.js"
   },
   "keywords": [
     "cleanova",
