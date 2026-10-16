@@ -1224,6 +1224,21 @@
           const hasStaffNotes = Boolean(task.staff_notes && task.staff_notes.trim());
 
           const isCare = task.category === 'care' || Boolean(task.package_type);
+          const isConstruction = task.service_id === 5 || Boolean(task.pricing_type);
+
+          const buildingTypeMap = {
+            apartment: 'Căn hộ chung cư',
+            townhouse: 'Nhà phố / Liền kề',
+            villa: 'Biệt thự cao cấp',
+            office: 'Văn phòng / Tòa nhà',
+            factory: 'Nhà xưởng / Kho bãi',
+            other: 'Công trình khác'
+          };
+          const dirtSeverityMap = {
+            light: 'Bụi nhẹ',
+            medium: 'Bẩn trung bình',
+            heavy: 'Bám bẩn nặng'
+          };
 
           // Action buttons theo luồng quy trình
           let quickActionsHtml = '';
@@ -1351,6 +1366,29 @@
                   <div>Gói: <strong>${task.package_type === 'shift' ? 'Theo buổi (4h)' : task.package_type === 'daily' ? 'Theo ngày (8h)' : task.package_type === 'monthly' ? 'Theo tháng (26 ngày)' : 'Theo giờ'}${task.shift_choice ? ' (' + escapeHtml(task.shift_choice) + ')' : ''}</strong></div>
                   ${task.recipient_name ? `<div>Người nhận: <strong>${escapeHtml(task.recipient_name)}</strong> (${escapeHtml(task.recipient_age || '---')} tuổi${task.recipient_gender ? ', ' + escapeHtml(task.recipient_gender) : ''})</div>` : ''}
                   ${task.care_scope_notes ? `<div style="margin-top: 4px;"><strong>Phạm vi chăm sóc:</strong> ${escapeHtml(task.care_scope_notes)}</div>` : ''}
+                </div>
+              ` : ''}
+
+              <!-- Hộp thông tin công trình sau xây dựng -->
+              ${isConstruction ? `
+                <div class="task-notes-box" style="background: #FFFBEB; border: 1px solid #FCD34D; color: #92400E; margin-top: 8px;">
+                  <div style="font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>🏗️ Hồ sơ công trình sau xây dựng:</span>
+                    <span style="font-size: 11px; background: #FEF3C7; padding: 2px 6px; border-radius: 4px; font-weight: 700;">
+                      ${task.pricing_type === 'm2' ? '📐 Theo m²' : task.pricing_type === 'package' ? '📦 Trọn gói' : '👷 Nhân công ngày'}
+                    </span>
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 12px; margin-bottom: 6px;">
+                    <div>Loại công trình: <strong>${escapeHtml(buildingTypeMap[task.building_type] || task.building_type || 'Nhà phố')}</strong></div>
+                    <div>Diện tích sàn: <strong>${task.area_m2 ? task.area_m2 + ' m²' : '---'} (${task.floors || 1} tầng)</strong></div>
+                    <div>Mức độ bám bẩn: <strong>${escapeHtml(dirtSeverityMap[task.dirt_severity] || task.dirt_severity || 'Trung bình')}</strong></div>
+                    <div>Tình trạng: <strong>${task.construction_status === 'newly_completed' ? 'Mới hoàn thiện' : task.construction_status === 'roughly_cleaned' ? 'Đã dọn sơ bộ' : 'Còn nhiều bụi & rác thô'}</strong></div>
+                  </div>
+                  <div style="font-size: 12px; padding-top: 4px; border-top: 1px dashed #FDE68A; margin-top: 4px;">
+                    <div>Hạng mục đặc biệt: <strong>Kính: ${task.glass_cleaning || 'Tiêu chuẩn'} · Vết sơn/keo: ${task.stubborn_stains || 'Không'} · Đồ đạc: ${task.furniture_status || 'Trống'}</strong></div>
+                    <div>Nhân sự dự kiến: <strong>${task.worker_count || 1} nhân công · ${task.work_days || 1} ngày thi công</strong></div>
+                    ${task.quote_notes ? `<div style="margin-top: 4px; color: #1E40AF;"><strong>Chỉ dẫn thi công:</strong> ${escapeHtml(task.quote_notes)}</div>` : ''}
+                  </div>
                 </div>
               ` : ''}
 
@@ -1524,8 +1562,27 @@
             </div>
 
             ${task.notes ? `
-              <div style="background: #FEF3C7; color: #92400E; padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px;">
+              <div style="background: #FEF3C7; color: #92400E; padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px; margin-bottom: var(--space-md);">
                 <strong>Ghi chú của khách:</strong> ${escapeHtml(task.notes)}
+              </div>
+            ` : ''}
+
+            ${(task.service_id === 5 || task.pricing_type) ? `
+              <div style="background: #FFFBEB; border: 1px solid #FCD34D; border-radius: var(--radius-lg); padding: var(--space-md); margin-bottom: var(--space-md); color: #92400E; font-size: 13px;">
+                <div style="font-weight: 800; margin-bottom: 6px;">🏗️ Chi tiết công trình & Phạm vi thi công:</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+                  <div><strong>Loại công trình:</strong> ${escapeHtml(task.building_type || 'Nhà phố')}</div>
+                  <div><strong>Diện tích sàn:</strong> ${task.area_m2 ? task.area_m2 + ' m²' : '---'} (${task.floors || 1} tầng)</div>
+                  <div><strong>Độ bám bẩn:</strong> ${escapeHtml(task.dirt_severity || 'Trung bình')}</div>
+                  <div><strong>Nhân công:</strong> ${task.worker_count || 1} thợ · ${task.work_days || 1} ngày</div>
+                  <div><strong>Vết sơn / xi măng:</strong> ${task.stubborn_stains || 'Không'}</div>
+                  <div><strong>Vệ sinh kính:</strong> ${task.glass_cleaning || 'Tiêu chuẩn'}</div>
+                </div>
+                ${task.construction_notes ? `<div style="margin-top: 4px;"><strong>Ghi chú công trình:</strong> "${escapeHtml(task.construction_notes)}"</div>` : ''}
+                ${task.quote_notes ? `<div style="margin-top: 4px; color: #1E40AF;"><strong>Thỏa thuận báo giá:</strong> ${escapeHtml(task.quote_notes)}</div>` : ''}
+                <div style="margin-top: 8px; padding: 6px 10px; background: #FEF3C7; border-radius: 6px; font-size: 12px; color: #78350F;">
+                  ⚠️ <em>Lưu ý: Nhân viên không được tự ý sửa đổi giá khách hàng. Mọi phát sinh hạng mục cần báo Admin xác nhận lại.</em>
+                </div>
               </div>
             ` : ''}
           `;

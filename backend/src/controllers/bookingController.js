@@ -49,7 +49,20 @@ const bookingController = {
         phone,
         notes = '',
         discount_code,
-        payment_method = 'cash'
+        payment_method = 'cash',
+        // Các trường dịch vụ Vệ sinh sau xây dựng:
+        pricing_type = 'm2',
+        building_type = 'apartment',
+        area_m2 = null,
+        floors = 1,
+        construction_status = 'newly_completed',
+        dirt_severity = 'medium',
+        glass_cleaning = 'standard',
+        stubborn_stains = 'none',
+        furniture_status = 'empty',
+        worker_count = null,
+        work_days = null,
+        construction_notes = null
       } = req.body;
 
       // Xác thực các trường bắt buộc
@@ -79,7 +92,8 @@ const bookingController = {
       if (!address || typeof address !== 'string' || !address.trim()) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập địa chỉ nhà thực hiện dịch vụ.' });
       }
-      if (!phone || typeof phone !== 'string' || !phone.trim()) {
+      const effectivePhone = (phone || req.body.contact_phone || '').trim();
+      if (!effectivePhone) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập số điện thoại liên hệ.' });
       }
 
@@ -104,11 +118,45 @@ const bookingController = {
       }
 
       const isCareService = service.category === 'care' || (service.min_duration_hours && service.min_duration_hours >= 2);
+      const isPostConstruction = service.slug === 've-sinh-sau-xay-dung' || service.id === 5;
 
-      // Bảo vệ Bug 6: Kiểm tra quy mô diện tích (chỉ dành cho dịch vụ vệ sinh)
+      // Bảo vệ Bug 6: Kiểm tra tần suất thực hiện
+      const validFrequencies = ['once', 'weekly', 'monthly'];
+      if (!validFrequencies.includes(frequency)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Tần suất thực hiện không hợp lệ. Cho phép: once, weekly, monthly.'
+        });
+      }
+
       const validAreaSizes = ['small', 'medium', 'large'];
       const isNumericArea = typeof area_size === 'number' && area_size > 0;
-      if (!isCareService && !validAreaSizes.includes(area_size) && !isNumericArea) {
+
+      if (isPostConstruction) {
+        const validPricingTypes = ['m2', 'package', 'labor_daily'];
+        if (pricing_type && !validPricingTypes.includes(pricing_type)) {
+          return res.status(400).json({
+            success: false,
+            message: `Hình thức tính giá '${pricing_type}' không hợp lệ. Cho phép: m2, package, labor_daily.`
+          });
+        }
+        if (pricing_type === 'm2' || pricing_type === 'package') {
+          const checkArea = area_m2 !== null && area_m2 !== undefined ? parseFloat(area_m2) : (typeof area_size === 'number' ? area_size : null);
+          if (checkArea !== null && (isNaN(checkArea) || checkArea <= 0)) {
+            return res.status(400).json({ success: false, message: 'Diện tích sàn công trình phải là số dương lớn hơn 0 m².' });
+          }
+        }
+        if (pricing_type === 'labor_daily') {
+          const w = parseInt(worker_count, 10);
+          const d = parseInt(work_days, 10);
+          if (isNaN(w) || w <= 0) {
+            return res.status(400).json({ success: false, message: 'Số lượng nhân công phải là số nguyên dương >= 1.' });
+          }
+          if (isNaN(d) || d <= 0) {
+            return res.status(400).json({ success: false, message: 'Số ngày thi công phải là số nguyên dương >= 1.' });
+          }
+        }
+      } else if (!isCareService && !validAreaSizes.includes(area_size) && !isNumericArea) {
         return res.status(400).json({
           success: false,
           message: 'Quy mô diện tích không hợp lệ. Cho phép: small, medium, large hoặc số m² dương.'
@@ -122,15 +170,6 @@ const bookingController = {
         return res.status(400).json({
           success: false,
           message: `Hình thức gói chăm sóc không hợp lệ. Cho phép: ${validPackages.join(', ')}.`
-        });
-      }
-
-      // Bảo vệ Bug 6: Kiểm tra tần suất thực hiện
-      const validFrequencies = ['once', 'weekly', 'monthly'];
-      if (!validFrequencies.includes(frequency)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Tần suất thực hiện không hợp lệ. Cho phép: once, weekly, monthly.'
         });
       }
 
@@ -162,7 +201,19 @@ const bookingController = {
           duration_hours: isCareService ? parseFloat(duration_hours) : null,
           package_type: normalizedPackage,
           discount_code: normalizedPromo,
-          hasUsedPromo: alreadyUsedPromo
+          hasUsedPromo: alreadyUsedPromo,
+          // Post construction options:
+          pricing_type: isPostConstruction ? (pricing_type || 'm2') : null,
+          building_type: isPostConstruction ? building_type : null,
+          area_m2: isPostConstruction ? area_m2 : null,
+          floors: isPostConstruction ? floors : 1,
+          construction_status: isPostConstruction ? construction_status : null,
+          dirt_severity: isPostConstruction ? dirt_severity : null,
+          glass_cleaning: isPostConstruction ? glass_cleaning : null,
+          stubborn_stains: isPostConstruction ? stubborn_stains : null,
+          furniture_status: isPostConstruction ? furniture_status : null,
+          worker_count: isPostConstruction ? worker_count : null,
+          work_days: isPostConstruction ? work_days : null
         });
       } catch (calcErr) {
         return res.status(calcErr.statusCode || 400).json({
@@ -192,10 +243,10 @@ const bookingController = {
             service_id: service.id,
             booking_date,
             booking_time,
-            area_size: isCareService ? 'care' : String(area_size),
+            area_size: isCareService ? 'care' : (isPostConstruction && calculation.areaM2 ? `${calculation.areaM2}m2` : String(area_size)),
             frequency,
             address: sanitizeInput(address),
-            phone: sanitizeInput(phone),
+            phone: sanitizeInput(effectivePhone),
             notes: notes ? sanitizeInput(notes) : '',
             total_price: totalPrice,
             discount_code: calculation.promoCode,
@@ -208,7 +259,23 @@ const bookingController = {
             recipient_name: recipient_name ? sanitizeInput(recipient_name) : null,
             recipient_age: recipient_age ? sanitizeInput(recipient_age) : null,
             recipient_gender: recipient_gender ? sanitizeInput(recipient_gender) : null,
-            care_scope_notes: care_scope_notes ? sanitizeInput(care_scope_notes) : null
+            care_scope_notes: care_scope_notes ? sanitizeInput(care_scope_notes) : null,
+            pricing_type: isPostConstruction ? (calculation.pricingType || pricing_type || 'm2') : 'm2',
+            building_type: isPostConstruction ? (calculation.buildingType || building_type) : null,
+            area_m2: isPostConstruction ? calculation.areaM2 : null,
+            floors: isPostConstruction ? calculation.floors : 1,
+            construction_status: isPostConstruction ? sanitizeInput(construction_status) : null,
+            dirt_severity: isPostConstruction ? sanitizeInput(dirt_severity) : null,
+            glass_cleaning: isPostConstruction ? sanitizeInput(glass_cleaning) : null,
+            stubborn_stains: isPostConstruction ? sanitizeInput(stubborn_stains) : null,
+            furniture_status: isPostConstruction ? sanitizeInput(furniture_status) : null,
+            worker_count: isPostConstruction ? calculation.workerCount : null,
+            work_days: isPostConstruction ? calculation.workDays : null,
+            quote_status: isPostConstruction ? calculation.quoteStatus : 'estimated',
+            quote_min_price: isPostConstruction ? calculation.quoteMinPrice : null,
+            quote_max_price: isPostConstruction ? calculation.quoteMaxPrice : null,
+            quote_notes: null,
+            construction_notes: construction_notes ? sanitizeInput(construction_notes) : null
           });
           break;
         } catch (err) {
@@ -221,9 +288,13 @@ const bookingController = {
 
       const newBooking = await BookingModel.getById(bookingId);
 
+      const successMsg = isPostConstruction && calculation.quoteStatus === 'pending_survey'
+        ? 'Gửi yêu cầu khảo sát & báo giá dịch vụ vệ sinh sau xây dựng thành công! CleanNova sẽ liên hệ khảo sát thực tế miễn phí và gửi báo giá chính thức.'
+        : 'Đặt lịch dịch vụ thành công! Đội ngũ Cleannova sẽ liên hệ xác nhận trong ít phút.';
+
       res.status(201).json({
         success: true,
-        message: 'Đặt lịch dịch vụ thành công! Đội ngũ Cleanova sẽ liên hệ xác nhận trong ít phút.',
+        message: successMsg,
         data: newBooking
       });
     } catch (err) {
@@ -240,7 +311,19 @@ const bookingController = {
         frequency = 'once',
         duration_hours = null,
         package_type = 'hourly',
-        discount_code = null
+        discount_code = null,
+        // Post-construction fields:
+        pricing_type = null,
+        building_type = null,
+        area_m2 = null,
+        floors = 1,
+        construction_status = 'newly_completed',
+        dirt_severity = 'medium',
+        glass_cleaning = 'standard',
+        stubborn_stains = 'none',
+        furniture_status = 'empty',
+        worker_count = null,
+        work_days = null
       } = req.body;
 
       if (!service_id) {
@@ -253,6 +336,7 @@ const bookingController = {
       }
 
       const isCareService = service.category === 'care' || (service.min_duration_hours && service.min_duration_hours >= 2);
+      const isPostConstruction = service.slug === 've-sinh-sau-xay-dung' || service.id === 5;
       const isNumericArea = typeof area_size === 'number' && area_size > 0;
       const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
 
@@ -267,7 +351,18 @@ const bookingController = {
         duration_hours: isCareService ? parseFloat(duration_hours) : null,
         package_type: isCareService ? (package_type || 'hourly') : 'hourly',
         discount_code: normalizedPromo,
-        hasUsedPromo: alreadyUsedPromo
+        hasUsedPromo: alreadyUsedPromo,
+        pricing_type: isPostConstruction ? (pricing_type || 'm2') : null,
+        building_type: isPostConstruction ? (building_type || 'apartment') : null,
+        area_m2: isPostConstruction ? area_m2 : null,
+        floors: isPostConstruction ? floors : 1,
+        construction_status: isPostConstruction ? construction_status : null,
+        dirt_severity: isPostConstruction ? dirt_severity : null,
+        glass_cleaning: isPostConstruction ? glass_cleaning : null,
+        stubborn_stains: isPostConstruction ? stubborn_stains : null,
+        furniture_status: isPostConstruction ? furniture_status : null,
+        worker_count: isPostConstruction ? worker_count : null,
+        work_days: isPostConstruction ? work_days : null
       });
 
       res.json({

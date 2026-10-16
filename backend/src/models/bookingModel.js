@@ -27,20 +27,36 @@ const BookingModel = {
     recipient_name,
     recipient_age,
     recipient_gender,
-    care_scope_notes
+    care_scope_notes,
+    pricing_type,
+    building_type,
+    area_m2,
+    floors,
+    construction_status,
+    dirt_severity,
+    glass_cleaning,
+    stubborn_stains,
+    furniture_status,
+    worker_count,
+    work_days,
+    quote_status,
+    quote_min_price,
+    quote_max_price,
+    quote_notes,
+    construction_notes
   }) {
     const result = await db.query(
       `INSERT INTO bookings 
-       (booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, duration_hours, staff_wage, wage_status, package_type, shift_choice, recipient_name, recipient_age, recipient_gender, care_scope_notes) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, duration_hours, staff_wage, wage_status, package_type, shift_choice, recipient_name, recipient_age, recipient_gender, care_scope_notes, pricing_type, building_type, area_m2, floors, construction_status, dirt_severity, glass_cleaning, stubborn_stains, furniture_status, worker_count, work_days, quote_status, quote_min_price, quote_max_price, quote_notes, construction_notes) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         booking_code,
         user_id,
         service_id,
         booking_date,
         booking_time,
-        area_size,
-        frequency,
+        area_size || 'medium',
+        frequency || 'once',
         address,
         phone,
         notes || '',
@@ -55,7 +71,23 @@ const BookingModel = {
         recipient_name || null,
         recipient_age || null,
         recipient_gender || null,
-        care_scope_notes || null
+        care_scope_notes || null,
+        pricing_type || 'm2',
+        building_type || null,
+        area_m2 !== null && area_m2 !== undefined ? parseFloat(area_m2) : null,
+        floors ? parseInt(floors, 10) : 1,
+        construction_status || null,
+        dirt_severity || null,
+        glass_cleaning || null,
+        stubborn_stains || null,
+        furniture_status || null,
+        worker_count ? parseInt(worker_count, 10) : null,
+        work_days ? parseInt(work_days, 10) : null,
+        quote_status || 'estimated',
+        quote_min_price !== null && quote_min_price !== undefined ? parseFloat(quote_min_price) : null,
+        quote_max_price !== null && quote_max_price !== undefined ? parseFloat(quote_max_price) : null,
+        quote_notes || null,
+        construction_notes || null
       ]
     );
     return result.insertId;
@@ -320,6 +352,41 @@ const BookingModel = {
       totalBookings: stats.totalBookings || stats.total_bookings || 0,
       totalRevenue: stats.totalRevenue || stats.total_revenue || 0
     };
+  },
+
+  // Xác nhận báo giá chính thức cho đơn dịch vụ vệ sinh sau xây dựng (Admin)
+  async confirmQuote(id, { confirmed_price, quote_notes = '', staff_wage = null }) {
+    const parsedPrice = parseFloat(confirmed_price);
+    const calculatedWage = staff_wage !== null ? parseFloat(staff_wage) : Math.round(parsedPrice * 0.70);
+    const result = await db.query(
+      `UPDATE bookings 
+       SET total_price = ?, confirmed_price = ?, quote_notes = ?, staff_wage = ?, quote_status = 'confirmed'
+       WHERE id = ?`,
+      [parsedPrice, parsedPrice, quote_notes, calculatedWage, id]
+    );
+    return result.affectedRows > 0;
+  },
+
+  // Lấy cấu hình bảng giá sau xây dựng
+  async getPostConstructionConfigs() {
+    const rows = await db.query('SELECT config_key, config_value, updated_at FROM post_construction_configs');
+    const result = {};
+    for (const row of rows) {
+      result[row.config_key] = typeof row.config_value === 'string' ? JSON.parse(row.config_value) : row.config_value;
+    }
+    return result;
+  },
+
+  // Cập nhật cấu hình bảng giá sau xây dựng
+  async updatePostConstructionConfig(key, value, adminId) {
+    const valStr = JSON.stringify(value);
+    await db.query(
+      `INSERT INTO post_construction_configs (config_key, config_value, updated_by)
+       VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE config_value = VALUES(config_value), updated_by = VALUES(updated_by)`,
+      [key, valStr, adminId]
+    );
+    return true;
   }
 };
 

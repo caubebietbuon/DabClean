@@ -101,6 +101,22 @@ CREATE TABLE bookings (
   recipient_age VARCHAR(50) DEFAULT NULL COMMENT 'Độ tuổi / năm sinh của người được chăm sóc',
   recipient_gender VARCHAR(20) DEFAULT NULL COMMENT 'Giới tính người được chăm sóc',
   care_scope_notes TEXT DEFAULT NULL COMMENT 'Ghi chú phạm vi chăm sóc & thói quen sinh hoạt',
+  pricing_type ENUM('m2', 'package', 'labor_daily') NOT NULL DEFAULT 'm2' COMMENT 'Hình thức tính giá: theo m2, trọn gói, nhân công theo ngày',
+  building_type VARCHAR(50) DEFAULT NULL COMMENT 'Loại công trình: apartment, townhouse, villa, office, factory, other',
+  area_m2 DECIMAL(10, 2) DEFAULT NULL COMMENT 'Diện tích sàn cần vệ sinh (m2)',
+  floors INT DEFAULT 1 COMMENT 'Số tầng công trình',
+  construction_status VARCHAR(50) DEFAULT NULL COMMENT 'Tình trạng công trình: newly_completed, rough_cleaned, heavy_dust',
+  dirt_severity VARCHAR(50) DEFAULT NULL COMMENT 'Mức độ bám bẩn: light, medium, heavy',
+  glass_cleaning VARCHAR(50) DEFAULT NULL COMMENT 'Vệ sinh kính: none, standard, extensive',
+  stubborn_stains VARCHAR(50) DEFAULT NULL COMMENT 'Vết bẩn khó: none, moderate, severe',
+  furniture_status VARCHAR(50) DEFAULT NULL COMMENT 'Tình trạng nội thất: empty, sparse, furnished',
+  worker_count INT DEFAULT NULL COMMENT 'Số lượng nhân công (thuê theo ngày)',
+  work_days INT DEFAULT NULL COMMENT 'Số ngày thuê (thuê theo ngày)',
+  quote_status ENUM('estimated', 'pending_survey', 'confirmed') NOT NULL DEFAULT 'estimated' COMMENT 'Trạng thái báo giá: ước tính, cần khảo sát, đã xác nhận',
+  quote_min_price DECIMAL(12, 2) DEFAULT NULL COMMENT 'Khoảng giá tham khảo tối thiểu',
+  quote_max_price DECIMAL(12, 2) DEFAULT NULL COMMENT 'Khoảng giá tham khảo tối đa',
+  quote_notes TEXT DEFAULT NULL COMMENT 'Ghi chú báo giá chính thức của admin',
+  construction_notes TEXT DEFAULT NULL COMMENT 'Ghi chú chi tiết công trình từ khách hàng',
   total_price DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tổng tiền sau giảm giá (VNĐ)',
   discount_code VARCHAR(50) DEFAULT NULL COMMENT 'Mã ưu đãi áp dụng (VD: CLEANOVA20)',
   payment_method ENUM('cash', 'bank_transfer', 'momo', 'vnpay') DEFAULT 'cash' COMMENT 'Phương thức thanh toán',
@@ -252,3 +268,16 @@ CREATE TABLE staff_payout_logs (
   CONSTRAINT fk_payout_staff FOREIGN KEY (staff_id) REFERENCES users(id) ON DELETE CASCADE,
   CONSTRAINT fk_payout_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 8: post_construction_configs (Cấu hình bảng giá dịch vụ vệ sinh sau xây dựng)
+-- ------------------------------------------------------------
+CREATE TABLE post_construction_configs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  config_key VARCHAR(100) NOT NULL UNIQUE COMMENT 'Khóa cấu hình',
+  config_value JSON NOT NULL COMMENT 'Giá trị cấu hình dạng JSON',
+  updated_by INT DEFAULT NULL COMMENT 'Admin ID đã cập nhật',
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_post_const_admin FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+

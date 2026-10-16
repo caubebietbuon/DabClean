@@ -212,6 +212,13 @@
         });
       },
 
+      async getQuote(quoteData) {
+        return await request('/bookings/quote', {
+          method: 'POST',
+          body: JSON.stringify(quoteData)
+        });
+      },
+
       async getMyBookings() {
         return await request('/bookings/my-bookings');
       },
@@ -264,6 +271,13 @@
 
       async getAllReviews(limit = 10) {
         return await request(`/bookings/reviews/all?limit=${limit}`);
+      },
+
+      async getQuote(quoteData) {
+        return await request('/bookings/quote', {
+          method: 'POST',
+          body: JSON.stringify(quoteData)
+        });
       }
     },
 
@@ -403,6 +417,24 @@
         });
       },
 
+      async confirmQuote(bookingId, quoteData) {
+        return await request(`/admin/bookings/${bookingId}/confirm-quote`, {
+          method: 'PUT',
+          body: JSON.stringify(quoteData)
+        });
+      },
+
+      async getPostConstructionConfig() {
+        return await request('/admin/post-construction/config');
+      },
+
+      async updatePostConstructionConfig(data) {
+        return await request('/admin/post-construction/config', {
+          method: 'PUT',
+          body: JSON.stringify(data)
+        });
+      },
+
       // Quản lý dịch vụ
       async createService(serviceData) {
         return await request('/admin/services', {
@@ -500,6 +532,25 @@
         return await request(`/admin/partners/${id}/reject`, {
           method: 'PATCH',
           body: JSON.stringify({ rejection_reason: reason })
+        });
+      },
+
+      // Quản lý báo giá & cấu hình Vệ sinh sau xây dựng
+      async confirmQuote(id, quoteData) {
+        return await request(`/admin/bookings/${id}/confirm-quote`, {
+          method: 'PUT',
+          body: JSON.stringify(quoteData)
+        });
+      },
+
+      async getPostConstructionConfig() {
+        return await request('/admin/post-construction/config');
+      },
+
+      async updatePostConstructionConfig(key, config_data) {
+        return await request('/admin/post-construction/config', {
+          method: 'PUT',
+          body: JSON.stringify({ key, config_data })
         });
       }
     },

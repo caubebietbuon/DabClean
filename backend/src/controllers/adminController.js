@@ -2,6 +2,7 @@
 // CLEANOVA BACKEND - Admin Controller (Quản trị viên & Phân quyền)
 // ============================================================
 const bcrypt = require('bcryptjs');
+const db = require('../config/db');
 const BookingModel = require('../models/bookingModel');
 const ServiceModel = require('../models/serviceModel');
 const UserModel = require('../models/userModel');
@@ -140,6 +141,66 @@ const adminController = {
           wage_status: 'paid',
           staff_wage: booking.staff_wage
         }
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 3c. Xác nhận báo giá chính thức cho đơn dịch vụ vệ sinh sau xây dựng (PUT /api/admin/bookings/:id/confirm-quote)
+  async confirmQuote(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const { confirmed_price, quote_notes = '', staff_wage = null } = req.body;
+
+      if (confirmed_price === undefined || confirmed_price === null) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp giá chính thức (confirmed_price).' });
+      }
+      const parsedPrice = parseFloat(confirmed_price);
+      if (isNaN(parsedPrice) || parsedPrice <= 0) {
+        return res.status(400).json({ success: false, message: 'Giá chính thức phải là số dương lớn hơn 0 VNĐ.' });
+      }
+
+      let parsedWage = null;
+      if (staff_wage !== undefined && staff_wage !== null) {
+        parsedWage = parseFloat(staff_wage);
+        if (isNaN(parsedWage) || parsedWage < 0) {
+          return res.status(400).json({ success: false, message: 'Tiền công nhân viên không được là số âm.' });
+        }
+      }
+
+      const booking = await BookingModel.getById(id);
+      if (!booking) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
+      }
+
+      if (booking.status === 'completed' || booking.status === 'cancelled') {
+        return res.status(409).json({
+          success: false,
+          message: `Không thể điều chỉnh báo giá cho đơn hàng đã ${booking.status === 'completed' ? 'hoàn thành' : 'hủy'}.`
+        });
+      }
+
+      const safeNotes = quote_notes ? sanitizeInput(quote_notes) : '';
+      await BookingModel.confirmQuote(id, {
+        confirmed_price: parsedPrice,
+        quote_notes: safeNotes,
+        staff_wage: parsedWage
+      });
+
+      const updated = await BookingModel.getById(id);
+      await UserModel.logAudit(
+        req.user.id,
+        'CONFIRM_QUOTE',
+        id,
+        'booking',
+        `Xác nhận báo giá chính thức đơn #${booking.booking_code}: ${parsedPrice.toLocaleString('vi-VN')} VNĐ (Ghi chú: ${safeNotes})`
+      );
+
+      res.json({
+        success: true,
+        message: `Đã xác nhận báo giá chính thức cho đơn #${booking.booking_code}!`,
+        data: updated
       });
     } catch (err) {
       next(err);
@@ -334,6 +395,58 @@ const adminController = {
       res.json({
         success: true,
         message: `Đã xóa dịch vụ "${service.name}".`
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 7b. Lấy cấu hình bảng giá sau xây dựng (GET /api/admin/post-construction/config)
+  async getPostConstructionConfig(req, res, next) {
+    try {
+      const configs = await BookingModel.getPostConstructionConfigs();
+      res.json({
+        success: true,
+        data: configs
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 7c. Cập nhật cấu hình bảng giá sau xây dựng (PUT /api/admin/post-construction/config)
+  async updatePostConstructionConfig(req, res, next) {
+    try {
+      const config_key = req.body.config_key || req.body.key;
+      const config_value = req.body.config_value !== undefined ? req.body.config_value : req.body.config_data;
+      const validKeys = ['m2_rates', 'package_rates', 'labor_daily_rates', 'surcharges'];
+      if (!config_key || !validKeys.includes(config_key)) {
+        return res.status(400).json({
+          success: false,
+          message: `Khóa cấu hình không hợp lệ. Cho phép: ${validKeys.join(', ')}.`
+        });
+      }
+      if (!config_value || typeof config_value !== 'object') {
+        return res.status(400).json({
+          success: false,
+          message: 'Giá trị cấu hình phải là một đối tượng JSON hợp lệ.'
+        });
+      }
+
+      await BookingModel.updatePostConstructionConfig(config_key, config_value, req.user.id);
+      await UserModel.logAudit(
+        req.user.id,
+        'UPDATE_POST_CONSTRUCTION_CONFIG',
+        req.user.id,
+        'config',
+        `Cập nhật cấu hình bảng giá sau xây dựng: ${config_key}`
+      );
+
+      const allConfigs = await BookingModel.getPostConstructionConfigs();
+      res.json({
+        success: true,
+        message: `Cập nhật cấu hình '${config_key}' thành công!`,
+        data: allConfigs
       });
     } catch (err) {
       next(err);

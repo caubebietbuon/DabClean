@@ -737,6 +737,117 @@ async function initDatabase() {
     if (!existingBCols.has('care_scope_notes')) {
       await connection.query("ALTER TABLE bookings ADD COLUMN care_scope_notes TEXT NULL DEFAULT NULL COMMENT 'Ghi chú phạm vi chăm sóc & thói quen'");
     }
+    if (!existingBCols.has('pricing_type')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN pricing_type ENUM('m2', 'package', 'labor_daily') NOT NULL DEFAULT 'm2' COMMENT 'Hình thức tính giá: theo m2, trọn gói, nhân công theo ngày'");
+    }
+    if (!existingBCols.has('building_type')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN building_type VARCHAR(50) NULL DEFAULT NULL COMMENT 'Loại công trình: apartment, townhouse, villa, office, factory, other'");
+    }
+    if (!existingBCols.has('area_m2')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN area_m2 DECIMAL(10, 2) NULL DEFAULT NULL COMMENT 'Diện tích sàn cần vệ sinh (m2)'");
+    }
+    if (!existingBCols.has('floors')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN floors INT NULL DEFAULT 1 COMMENT 'Số tầng công trình'");
+    }
+    if (!existingBCols.has('construction_status')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN construction_status VARCHAR(50) NULL DEFAULT NULL COMMENT 'Tình trạng công trình: newly_completed, rough_cleaned, heavy_dust'");
+    }
+    if (!existingBCols.has('dirt_severity')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN dirt_severity VARCHAR(50) NULL DEFAULT NULL COMMENT 'Mức độ bám bẩn: light, medium, heavy'");
+    }
+    if (!existingBCols.has('glass_cleaning')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN glass_cleaning VARCHAR(50) NULL DEFAULT NULL COMMENT 'Vệ sinh kính: none, standard, extensive'");
+    }
+    if (!existingBCols.has('stubborn_stains')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN stubborn_stains VARCHAR(50) NULL DEFAULT NULL COMMENT 'Vết bẩn khó: none, moderate, severe'");
+    }
+    if (!existingBCols.has('furniture_status')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN furniture_status VARCHAR(50) NULL DEFAULT NULL COMMENT 'Tình trạng nội thất: empty, sparse, furnished'");
+    }
+    if (!existingBCols.has('worker_count')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN worker_count INT NULL DEFAULT NULL COMMENT 'Số lượng nhân công'");
+    }
+    if (!existingBCols.has('work_days')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN work_days INT NULL DEFAULT NULL COMMENT 'Số ngày thuê'");
+    }
+    if (!existingBCols.has('quote_status')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN quote_status ENUM('estimated', 'pending_survey', 'confirmed') NOT NULL DEFAULT 'estimated' COMMENT 'Trạng thái báo giá'");
+    }
+    if (!existingBCols.has('quote_min_price')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN quote_min_price DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Khoảng giá tham khảo tối thiểu'");
+    }
+    if (!existingBCols.has('quote_max_price')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN quote_max_price DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Khoảng giá tham khảo tối đa'");
+    }
+    if (!existingBCols.has('quote_notes')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN quote_notes TEXT NULL DEFAULT NULL COMMENT 'Ghi chú báo giá chính thức của admin'");
+    }
+    if (!existingBCols.has('construction_notes')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN construction_notes TEXT NULL DEFAULT NULL COMMENT 'Ghi chú chi tiết công trình'");
+    }
+    if (!existingBCols.has('confirmed_price')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN confirmed_price DECIMAL(12, 2) NULL DEFAULT NULL COMMENT 'Giá chính thức chốt bởi admin'");
+    }
+
+    // Tự động tạo bảng post_construction_configs nếu chưa có
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS post_construction_configs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        config_key VARCHAR(100) NOT NULL UNIQUE COMMENT 'Khóa cấu hình',
+        config_value JSON NOT NULL COMMENT 'Giá trị cấu hình dạng JSON',
+        updated_by INT DEFAULT NULL COMMENT 'Admin ID đã cập nhật',
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_post_const_admin FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // Khởi tạo các mức cấu hình mặc định cho dịch vụ vệ sinh sau xây dựng
+    const [existingConfigs] = await connection.query('SELECT config_key FROM post_construction_configs');
+    const existingKeys = new Set(existingConfigs.map(c => c.config_key));
+
+    if (!existingKeys.has('m2_rates')) {
+      await connection.query(
+        'INSERT INTO post_construction_configs (config_key, config_value) VALUES (?, ?)',
+        ['m2_rates', JSON.stringify({
+          factory: { name: 'Công trình lớn, mặt bằng thoáng, nhà xưởng', min: 7000, max: 12000, light: 8000, medium: 10000, heavy: 12000 },
+          standard: { name: 'Nhà phố, căn hộ chung cư thông thường', min: 12000, max: 20000, light: 13000, medium: 15000, heavy: 18000 },
+          luxury: { name: 'Biệt thự, công trình phức tạp, vết bẩn nặng', min: 20000, max: 35000, light: 22000, medium: 26000, heavy: 32000 }
+        })]
+      );
+    }
+    if (!existingKeys.has('package_rates')) {
+      await connection.query(
+        'INSERT INTO post_construction_configs (config_key, config_value) VALUES (?, ?)',
+        ['package_rates', JSON.stringify({
+          apartment: { name: 'Căn hộ chung cư 60–100 m²', min_area: 60, max_area: 100, min_price: 1500000, max_price: 3000000, standard_price: 2200000 },
+          townhouse: { name: 'Nhà phố 2–4 tầng (150–300 m²)', min_area: 150, max_area: 300, min_floors: 2, max_floors: 4, min_price: 3000000, max_price: 6000000, standard_price: 4500000 },
+          luxury: { name: 'Biệt thự hoặc căn hộ cao cấp trên 300 m²', min_area: 300, min_price: 6000000, max_price: 12000000, standard_price: 8500000 }
+        })]
+      );
+    }
+    if (!existingKeys.has('labor_daily_rates')) {
+      await connection.query(
+        'INSERT INTO post_construction_configs (config_key, config_value) VALUES (?, ?)',
+        ['labor_daily_rates', JSON.stringify({
+          min_price: 400000,
+          max_price: 500000,
+          standard_price: 450000,
+          staff_wage_daily: 320000,
+          includes_equipment: true,
+          description: 'Mức giá tham khảo bao gồm máy móc và hóa chất cơ bản theo chính sách CleanNova'
+        })]
+      );
+    }
+    if (!existingKeys.has('surcharges')) {
+      await connection.query(
+        'INSERT INTO post_construction_configs (config_key, config_value) VALUES (?, ?)',
+        ['surcharges', JSON.stringify({
+          severe_stains: { rate: 0.10, label: 'Vết sơn, xi măng, keo bám nặng (+10%)' },
+          extensive_glass: { rate: 0.10, label: 'Vệ sinh nhiều kính / vách kính lớn (+10%)' },
+          furnished: { rate: 0.10, label: 'Công trình nhiều đồ đạc cần bảo quản (+10%)' }
+        })]
+      );
+    }
 
     // Tự động tạo bảng staff_payout_logs nếu chưa có
     await connection.query(`
@@ -1183,7 +1294,11 @@ function queryInMemory(sql, params = []) {
       booking_code, user_id, service_id, booking_date, booking_time, area_size,
       frequency, address, phone, notes, total_price, discount_code, payment_method,
       duration_hours, staff_wage, wage_status, package_type, shift_choice,
-      recipient_name, recipient_age, recipient_gender, care_scope_notes
+      recipient_name, recipient_age, recipient_gender, care_scope_notes,
+      pricing_type, building_type, area_m2, floors, construction_status,
+      dirt_severity, glass_cleaning, stubborn_stains, furniture_status,
+      worker_count, work_days, quote_status, quote_min_price, quote_max_price,
+      quote_notes, construction_notes
     ] = params;
     const newId = inMemoryData.bookings.length > 0 ? Math.max(...inMemoryData.bookings.map(b => b.id)) + 1 : 1;
     const srv = inMemoryData.services.find(s => s.id === parseInt(service_id, 10));
@@ -1219,6 +1334,22 @@ function queryInMemory(sql, params = []) {
       recipient_age: recipient_age || null,
       recipient_gender: recipient_gender || null,
       care_scope_notes: care_scope_notes || null,
+      pricing_type: pricing_type || 'm2',
+      building_type: building_type || null,
+      area_m2: area_m2 !== null && area_m2 !== undefined ? parseFloat(area_m2) : null,
+      floors: floors ? parseInt(floors, 10) : 1,
+      construction_status: construction_status || null,
+      dirt_severity: dirt_severity || null,
+      glass_cleaning: glass_cleaning || null,
+      stubborn_stains: stubborn_stains || null,
+      furniture_status: furniture_status || null,
+      worker_count: worker_count ? parseInt(worker_count, 10) : null,
+      work_days: work_days ? parseInt(work_days, 10) : null,
+      quote_status: quote_status || 'estimated',
+      quote_min_price: quote_min_price !== null && quote_min_price !== undefined ? parseFloat(quote_min_price) : null,
+      quote_max_price: quote_max_price !== null && quote_max_price !== undefined ? parseFloat(quote_max_price) : null,
+      quote_notes: quote_notes || null,
+      construction_notes: construction_notes || null,
       created_at: new Date()
     };
     inMemoryData.bookings.unshift(newBooking);
@@ -1306,12 +1437,91 @@ function queryInMemory(sql, params = []) {
         const reasonIndex = normalizedSql.includes('staff_notes = ?') ? 2 : 1;
         booking.cancel_reason = params[reasonIndex] || null;
       }
+      if (normalizedSql.includes("quote_status = 'confirmed'")) {
+        booking.total_price = parseFloat(params[0]);
+        booking.quote_notes = params[1] || '';
+        booking.staff_wage = parseFloat(params[2]);
+        booking.quote_status = 'confirmed';
+        return { affectedRows: 1 };
+      }
       if (normalizedSql.includes('staff_notes = ?')) {
         booking.staff_notes = params[1] || booking.staff_notes;
       }
       return { affectedRows: 1 };
     }
     return { affectedRows: 0 };
+  }
+
+  // Cấu hình bảng giá Vệ sinh sau xây dựng (post_construction_configs)
+  if (normalizedSql.includes('from post_construction_configs')) {
+    if (!inMemoryData.post_construction_configs) {
+      inMemoryData.post_construction_configs = [
+        {
+          id: 1,
+          config_key: 'm2_rates',
+          config_value: JSON.stringify({
+            factory: { name: 'Công trình lớn, mặt bằng thoáng, nhà xưởng', min: 7000, max: 12000, light: 8000, medium: 10000, heavy: 12000 },
+            standard: { name: 'Nhà phố, căn hộ chung cư thông thường', min: 12000, max: 20000, light: 13000, medium: 15000, heavy: 18000 },
+            luxury: { name: 'Biệt thự, công trình phức tạp, vết bẩn nặng', min: 20000, max: 35000, light: 22000, medium: 26000, heavy: 32000 }
+          }),
+          updated_at: new Date()
+        },
+        {
+          id: 2,
+          config_key: 'package_rates',
+          config_value: JSON.stringify({
+            apartment: { name: 'Căn hộ chung cư 60–100 m²', min_area: 60, max_area: 100, min_price: 1500000, max_price: 3000000, standard_price: 2200000 },
+            townhouse: { name: 'Nhà phố 2–4 tầng (150–300 m²)', min_area: 150, max_area: 300, min_floors: 2, max_floors: 4, min_price: 3000000, max_price: 6000000, standard_price: 4500000 },
+            luxury: { name: 'Biệt thự hoặc căn hộ cao cấp trên 300 m²', min_area: 300, min_price: 6000000, max_price: 12000000, standard_price: 8500000 }
+          }),
+          updated_at: new Date()
+        },
+        {
+          id: 3,
+          config_key: 'labor_daily_rates',
+          config_value: JSON.stringify({
+            min_price: 400000,
+            max_price: 500000,
+            standard_price: 450000,
+            staff_daily_wage: 320000,
+            includes_equipment: true,
+            description: 'Mức giá tham khảo bao gồm máy móc và hóa chất cơ bản theo chính sách CleanNova'
+          }),
+          updated_at: new Date()
+        },
+        {
+          id: 4,
+          config_key: 'surcharges',
+          config_value: JSON.stringify({
+            severe_stains: { rate: 0.10, label: 'Vết sơn, xi măng, keo bám nặng (+10%)' },
+            extensive_glass: { rate: 0.10, label: 'Vệ sinh nhiều kính / vách kính lớn (+10%)' },
+            furnished: { rate: 0.10, label: 'Công trình nhiều đồ đạc cần bảo quản (+10%)' }
+          }),
+          updated_at: new Date()
+        }
+      ];
+    }
+    return inMemoryData.post_construction_configs.map(c => ({ ...c }));
+  }
+
+  if (normalizedSql.startsWith('insert into post_construction_configs')) {
+    if (!inMemoryData.post_construction_configs) inMemoryData.post_construction_configs = [];
+    const [key, val, adminId] = params;
+    const existing = inMemoryData.post_construction_configs.find(c => c.config_key === key);
+    if (existing) {
+      existing.config_value = val;
+      existing.updated_by = adminId;
+      existing.updated_at = new Date();
+    } else {
+      inMemoryData.post_construction_configs.push({
+        id: inMemoryData.post_construction_configs.length + 1,
+        config_key: key,
+        config_value: val,
+        updated_by: adminId,
+        updated_at: new Date()
+      });
+    }
+    return { affectedRows: 1 };
   }
 
   // 10. INSERT INTO audit_logs (Lưu nhật ký hành động)

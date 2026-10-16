@@ -455,6 +455,9 @@
         <button class="admin-tab-btn" data-tab="tab-partners" role="tab">
           <span>🤝</span> Hồ sơ Đối tác / Tuyển dụng (<span id="tab-count-partners">0</span>)
         </button>
+        <button class="admin-tab-btn" data-tab="tab-post-construction" role="tab">
+          <span>🏗️</span> Cấu hình Báo giá Sau XD
+        </button>
       </nav>
 
       <!-- TAB 1: QUẢN LÝ ĐƠN ĐẶT LỊCH & PHÂN CÔNG NHÂN VIÊN -->
@@ -477,6 +480,7 @@
               <option value="all">Tất cả danh mục</option>
               <option value="cleaning">Dịch vụ vệ sinh</option>
               <option value="care">Dịch vụ chăm sóc tại nhà</option>
+              <option value="construction">🏗️ Vệ sinh sau xây dựng</option>
             </select>
           </div>
           <button id="btn-refresh-bookings" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách</button>
@@ -659,6 +663,157 @@
               </tr>
             </tbody>
           </table>
+        </div>
+      </section>
+
+      <!-- TAB 6: CẤU HÌNH BÁO GIÁ VỆ SINH SAU XÂY DỰNG -->
+      <section id="tab-post-construction" class="tab-pane" style="display: none;" role="tabpanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg); flex-wrap: wrap; gap: var(--space-md);">
+          <div>
+            <h2 style="font-size: 18px; font-weight: 800; margin: 0 0 4px; color: var(--color-text-main);">
+              🏗️ Cấu hình Báo giá Vệ sinh Sau Xây Dựng
+            </h2>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin: 0;">
+              Thiết lập khung giá tham khảo, đơn giá áp dụng và điều kiện tính giá tự động cho dịch vụ sau xây dựng.
+            </p>
+          </div>
+          <button id="btn-refresh-pc-config" class="btn btn-ghost btn-sm">🔄 Tải lại cấu hình</button>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: var(--space-xl);">
+          
+          <!-- Nhóm 1: Đơn giá theo m² -->
+          <div class="card" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-xl);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md);">
+              <h3 style="font-size: 15px; font-weight: 800; margin: 0; color: #1E40AF;">📐 1. Bảng giá theo Diện tích (VNĐ/m²)</h3>
+              <span class="badge" style="background: #EFF6FF; color: #1D4ED8; font-size: 11px;">Mô hình m²</span>
+            </div>
+            <form id="form-pc-m2-rates">
+              <!-- Nhà xưởng -->
+              <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 12px;">
+                <div style="font-weight: 700; font-size: 13px; color: #374151; margin-bottom: 6px;">🏭 Mặt bằng lớn / Nhà xưởng (Tham khảo: 7.000 - 12.000 đ)</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--color-text-secondary);">Min (đ)</label>
+                    <input type="number" id="pc-m2-factory-min" class="form-control" style="padding: 4px 8px; font-size: 12px;" value="7000">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--color-text-secondary);">Max (đ)</label>
+                    <input type="number" id="pc-m2-factory-max" class="form-control" style="padding: 4px 8px; font-size: 12px;" value="12000">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: #1D4ED8; font-weight: 700;">Áp dụng (đ)</label>
+                    <input type="number" id="pc-m2-factory-applied" class="form-control" style="padding: 4px 8px; font-size: 12px; font-weight: 700; border-color: #93C5FD;" value="9000">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nhà phố, chung cư -->
+              <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 12px;">
+                <div style="font-weight: 700; font-size: 13px; color: #374151; margin-bottom: 6px;">🏢 Nhà phố / Căn hộ chung cư (Tham khảo: 12.000 - 20.000 đ)</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--color-text-secondary);">Min (đ)</label>
+                    <input type="number" id="pc-m2-townhouse-min" class="form-control" style="padding: 4px 8px; font-size: 12px;" value="12000">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--color-text-secondary);">Max (đ)</label>
+                    <input type="number" id="pc-m2-townhouse-max" class="form-control" style="padding: 4px 8px; font-size: 12px;" value="20000">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: #1D4ED8; font-weight: 700;">Áp dụng (đ)</label>
+                    <input type="number" id="pc-m2-townhouse-applied" class="form-control" style="padding: 4px 8px; font-size: 12px; font-weight: 700; border-color: #93C5FD;" value="15000">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Biệt thự, công trình phức tạp -->
+              <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 12px; margin-bottom: 14px;">
+                <div style="font-weight: 700; font-size: 13px; color: #374151; margin-bottom: 6px;">🏰 Biệt thự / Bẩn nặng / Phức tạp (Tham khảo: 20.000 - 35.000 đ)</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                  <div>
+                    <label style="font-size: 11px; color: var(--color-text-secondary);">Min (đ)</label>
+                    <input type="number" id="pc-m2-villa-min" class="form-control" style="padding: 4px 8px; font-size: 12px;" value="20000">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: var(--color-text-secondary);">Max (đ)</label>
+                    <input type="number" id="pc-m2-villa-max" class="form-control" style="padding: 4px 8px; font-size: 12px;" value="35000">
+                  </div>
+                  <div>
+                    <label style="font-size: 11px; color: #1D4ED8; font-weight: 700;">Áp dụng (đ)</label>
+                    <input type="number" id="pc-m2-villa-applied" class="form-control" style="padding: 4px 8px; font-size: 12px; font-weight: 700; border-color: #93C5FD;" value="25000">
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" id="btn-save-pc-m2" class="btn btn-primary btn-sm" style="width: 100%;">
+                💾 Lưu Bảng Giá Theo Diện Tích (m²)
+              </button>
+            </form>
+          </div>
+
+          <!-- Nhóm 2: Báo giá Trọn Gói & Nhân công theo ngày -->
+          <div class="card" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-xl);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md);">
+              <h3 style="font-size: 15px; font-weight: 800; margin: 0; color: #047857;">📦 2. Giá Trọn Gói & 👷 Nhân Công Ngày</h3>
+              <span class="badge" style="background: #ECFDF5; color: #047857; font-size: 11px;">Trọn gói & Ngày</span>
+            </div>
+
+            <!-- Trọn gói -->
+            <div style="margin-bottom: var(--space-lg);">
+              <div style="font-weight: 700; font-size: 13px; color: #374151; margin-bottom: 8px;">Gói chuẩn công trình (Khoảng tham khảo & Mức áp dụng):</div>
+              
+              <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-md); padding: 10px; margin-bottom: 8px; font-size: 12px;">
+                <div style="font-weight: 700;">Căn hộ 60 - 100 m² (1.5 - 3.0 tr đ)</div>
+                <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                  <span>Giá chuẩn:</span>
+                  <input type="number" id="pc-pkg-apt-std" class="form-control" style="padding: 2px 8px; font-size: 12px; width: 120px;" value="2200000">
+                  <span style="color: var(--color-text-secondary); font-size: 11px;">(Ngoài 60-100m² chuyển khảo sát)</span>
+                </div>
+              </div>
+
+              <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-md); padding: 10px; margin-bottom: 8px; font-size: 12px;">
+                <div style="font-weight: 700;">Nhà phố 150 - 300 m² (3.0 - 6.0 tr đ)</div>
+                <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                  <span>Giá chuẩn:</span>
+                  <input type="number" id="pc-pkg-house-std" class="form-control" style="padding: 2px 8px; font-size: 12px; width: 120px;" value="4500000">
+                  <span style="color: var(--color-text-secondary); font-size: 11px;">(Ngoài 150-300m² chuyển khảo sát)</span>
+                </div>
+              </div>
+
+              <div style="background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: var(--radius-md); padding: 10px; margin-bottom: 12px; font-size: 12px;">
+                <div style="font-weight: 700;">Biệt thự / Căn hộ >300 m² (6.0 - 12.0 tr đ)</div>
+                <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                  <span>Giá chuẩn:</span>
+                  <input type="number" id="pc-pkg-villa-std" class="form-control" style="padding: 2px 8px; font-size: 12px; width: 120px;" value="8500000">
+                </div>
+              </div>
+
+              <button type="button" id="btn-save-pc-pkg" class="btn btn-outline btn-sm" style="width: 100%; margin-bottom: var(--space-lg);">
+                💾 Lưu Bảng Giá Trọn Gói
+              </button>
+            </div>
+
+            <!-- Nhân công ngày -->
+            <div style="border-top: 1px dashed var(--color-border); padding-top: var(--space-md);">
+              <div style="font-weight: 700; font-size: 13px; color: #374151; margin-bottom: 8px;">👷 Thuê nhân công theo ngày (400.000 - 500.000 đ/người/ngày):</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+                <div>
+                  <label style="font-size: 11px; color: var(--color-text-secondary);">Đơn giá khách (đ/ngày)</label>
+                  <input type="number" id="pc-labor-applied" class="form-control" style="padding: 4px 8px; font-size: 12px; font-weight: 700;" value="450000">
+                </div>
+                <div>
+                  <label style="font-size: 11px; color: #047857; font-weight: 700;">Tiền công thợ (đ/ngày)</label>
+                  <input type="number" id="pc-labor-wage" class="form-control" style="padding: 4px 8px; font-size: 12px; font-weight: 700;" value="320000">
+                </div>
+              </div>
+              <button type="button" id="btn-save-pc-labor" class="btn btn-primary btn-sm" style="width: 100%;">
+                💾 Lưu Bảng Giá Nhân Công Ngày
+              </button>
+            </div>
+
+          </div>
+
         </div>
       </section>
 
@@ -993,6 +1148,59 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       MODAL 7: XÁC NHẬN BÁO GIÁ VỆ SINH SAU XÂY DỰNG
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-confirm-quote" style="display: none;">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header" style="border-bottom: 2px solid #bfdbfe; background: #eff6ff;">
+        <h3 class="modal-title" style="color: #1e40af; display: flex; align-items: center; gap: 8px;">
+          <span>🏗️</span> Xác Nhận Báo Giá Sau Xây Dựng
+        </h3>
+        <button class="modal-close" data-close="modal-confirm-quote">&times;</button>
+      </div>
+      <form id="form-confirm-quote" style="padding: var(--space-xl);">
+        <input type="hidden" id="confirm-quote-booking-id">
+
+        <!-- Thông tin công trình tóm tắt -->
+        <div id="confirm-quote-summary-box" style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 14px; margin-bottom: var(--space-lg); font-size: 13px; line-height: 1.6;">
+          <!-- Loaded by JS -->
+        </div>
+
+        <div style="background: #FFFBEB; border: 1px solid #FCD34D; border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: var(--space-lg); font-size: 13px; color: #92400E;">
+          <div style="font-weight: 700; margin-bottom: 4px;">📊 Khoảng giá tham khảo / ước tính hệ thống:</div>
+          <div id="confirm-quote-price-range">---</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-md);">
+          <label class="form-label" style="font-weight: 700; color: #1E40AF;">
+            Giá chính thức xác nhận (VNĐ) <span style="color: red;">*</span>
+          </label>
+          <input type="number" id="confirm-quote-price-input" class="form-control" required min="10000" step="10000"
+            placeholder="Nhập số tiền chính thức sau khảo sát hoặc thẩm định...">
+          <div style="font-size: 11px; color: var(--color-text-secondary); margin-top: 4px;">
+            Số tiền này sẽ được lưu thành <strong>báo giá chính thức</strong> (snapshot cố định), hiển thị tới khách hàng và nhân viên.
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-lg);">
+          <label class="form-label" style="font-weight: 700; color: #374151;">
+            Ghi chú báo giá & Phạm vi thi công thống nhất
+          </label>
+          <textarea id="confirm-quote-notes-input" class="form-control" rows="3"
+            placeholder="VD: Đã khảo sát thực tế, mặt bằng cần 2 thợ kèm máy hút bụi công nghiệp và máy chà sàn. Vết sơn phòng khách xử lý cẩn thận..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
+          <button type="button" class="btn btn-ghost" data-close="modal-confirm-quote">Đóng</button>
+          <button type="submit" id="btn-submit-confirm-quote" class="btn btn-primary" style="font-weight: 700; padding: 10px 24px;">
+            ✅ Xác nhận & Lưu Báo Giá
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- JavaScript xử lý Bảng điều khiển Admin -->
   <script>
     'use strict';
@@ -1126,10 +1334,28 @@
         const catVal = document.getElementById('filter-booking-category') ? document.getElementById('filter-booking-category').value : 'all';
         const tbody = document.getElementById('bookings-table-body');
 
+        const buildingTypeMap = {
+          apartment: 'Căn hộ chung cư',
+          townhouse: 'Nhà phố / Liền kề',
+          villa: 'Biệt thự cao cấp',
+          office: 'Văn phòng / Tòa nhà',
+          factory: 'Nhà xưởng / Kho bãi',
+          other: 'Công trình khác'
+        };
+        const dirtSeverityMap = {
+          light: 'Bụi nhẹ',
+          medium: 'Bẩn trung bình',
+          heavy: 'Bám bẩn nặng'
+        };
+
         const filtered = allBookings.filter(b => {
           const matchStatus = (statusVal === 'all') || (b.status === statusVal);
           const isCare = b.category === 'care' || Boolean(b.package_type);
-          const matchCat = (catVal === 'all') || (catVal === 'care' ? isCare : !isCare);
+          const isConstruction = b.service_id === 5 || Boolean(b.pricing_type);
+          let matchCat = true;
+          if (catVal === 'care') matchCat = isCare;
+          else if (catVal === 'construction') matchCat = isConstruction;
+          else if (catVal === 'cleaning') matchCat = !isCare && !isConstruction;
           return matchStatus && matchCat;
         });
 
@@ -1140,8 +1366,19 @@
 
         tbody.innerHTML = filtered.map(b => {
           const dateStr = b.booking_date ? new Date(b.booking_date).toLocaleDateString('vi-VN') : '---';
-          const priceStr = Number(b.total_price || 0).toLocaleString('vi-VN') + ' đ';
           const isCare = b.category === 'care' || Boolean(b.package_type);
+          const isConstruction = b.service_id === 5 || Boolean(b.pricing_type);
+
+          let priceStr = Number(b.total_price || 0).toLocaleString('vi-VN') + ' đ';
+          if (isConstruction) {
+            if (b.confirmed_price) {
+              priceStr = `<span style="color: #047857; font-weight: 800;">${Number(b.confirmed_price).toLocaleString('vi-VN')} đ</span><div style="font-size: 10px; color: #047857;">(Đã chốt giá)</div>`;
+            } else if (b.quote_status === 'pending_survey') {
+              priceStr = `<span style="color: #B45309; font-weight: 700;">🔍 Chờ khảo sát</span><div style="font-size: 11px; color: var(--color-text-secondary);">Ước tính: ${Number(b.total_price || 0).toLocaleString('vi-VN')} đ</div>`;
+            } else {
+              priceStr = `<span style="color: #1D4ED8; font-weight: 700;">${Number(b.total_price || 0).toLocaleString('vi-VN')} đ</span><div style="font-size: 10px; color: #1D4ED8;">(Dự kiến)</div>`;
+            }
+          }
 
           // Options nhân viên để phân công
           const staffOptions = allStaff.map(st => `
@@ -1174,6 +1411,45 @@
             `;
           }
 
+          let constructionInfoHtml = '';
+          if (isConstruction) {
+            const pricingModelText = b.pricing_type === 'm2'
+              ? `📐 Theo m² (${b.area_m2 || 0} m²${b.floors ? ', ' + b.floors + ' tầng' : ''})`
+              : b.pricing_type === 'package'
+                ? `📦 Trọn gói (${b.area_m2 || '---'} m²)`
+                : `👷 Nhân công (${b.worker_count || 1} thợ x ${b.work_days || 1} ngày)`;
+            
+            const bldName = buildingTypeMap[b.building_type] || b.building_type || 'Công trình';
+            const dirtName = dirtSeverityMap[b.dirt_severity] || b.dirt_severity || 'Trung bình';
+
+            const quoteBadge = b.quote_status === 'pending_survey'
+              ? '<span style="background: #FEF3C7; color: #92400E; font-weight: 700; padding: 1px 6px; border-radius: 4px;">🔍 Cần khảo sát</span>'
+              : b.quote_status === 'confirmed'
+                ? '<span style="background: #ECFDF5; color: #047857; font-weight: 700; padding: 1px 6px; border-radius: 4px;">✅ Đã chốt</span>'
+                : '<span style="background: #EFF6FF; color: #1D4ED8; font-weight: 700; padding: 1px 6px; border-radius: 4px;">📊 Dự kiến</span>';
+
+            constructionInfoHtml = `
+              <div style="margin-top: 4px; font-size: 11px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                <span style="background: #FEF3C7; color: #92400E; font-weight: 700; padding: 1px 6px; border-radius: 4px;">🏗️ Sau xây dựng</span>
+                ${quoteBadge}
+              </div>
+              <div style="font-size: 11px; color: #374151; margin-top: 2px;">
+                <strong>${pricingModelText}</strong>
+              </div>
+              <div style="font-size: 11px; color: #4B5563;">
+                ${escapeHtml(bldName)} · ${escapeHtml(dirtName)}
+              </div>
+              ${b.quote_notes ? `
+                <div style="font-size: 11px; color: #059669; margin-top: 2px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(b.quote_notes)}">
+                  📝 ${escapeHtml(b.quote_notes)}
+                </div>
+              ` : ''}
+              <button type="button" class="btn btn-xs btn-outline btn-open-confirm-quote" data-id="${b.id}" style="margin-top: 4px; font-size: 11px; padding: 2px 8px; border-radius: 4px; color: #1D4ED8; border-color: #93C5FD; background: #EFF6FF;">
+                📝 Xác nhận báo giá
+              </button>
+            `;
+          }
+
           let wageHtml = '';
           if (Number(b.staff_wage || 0) > 0) {
             wageHtml = `<div style="font-size: 11px; color: #059669; margin-top: 2px;">Công NV: ${Number(b.staff_wage).toLocaleString('vi-VN')} đ</div>`;
@@ -1190,6 +1466,7 @@
                 <span>${escapeHtml(b.service_icon || '✨')}</span>
                 <strong>${escapeHtml(b.service_name || 'Dịch vụ')}</strong>
                 ${careInfoHtml}
+                ${constructionInfoHtml}
               </td>
               <td>${dateStr} (${escapeHtml(b.booking_time || '08:00')})</td>
               <td style="max-width: 200px; font-size: 13px;">${escapeHtml(b.address || '---')}</td>
@@ -1217,6 +1494,49 @@
             </tr>
           `;
         }).join('');
+
+        // Gắn sự kiện nút mở Modal Xác nhận báo giá
+        tbody.querySelectorAll('.btn-open-confirm-quote').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const bookingId = parseInt(this.dataset.id, 10);
+            const booking = allBookings.find(item => item.id === bookingId);
+            if (!booking) return;
+
+            document.getElementById('confirm-quote-booking-id').value = booking.id;
+            
+            const bldName = buildingTypeMap[booking.building_type] || booking.building_type || 'Công trình';
+            const dirtName = dirtSeverityMap[booking.dirt_severity] || booking.dirt_severity || 'Trung bình';
+
+            document.getElementById('confirm-quote-summary-box').innerHTML = `
+              <div><strong>Đơn hàng:</strong> #${escapeHtml(booking.booking_code || ('CLN-' + booking.id))}</div>
+              <div><strong>Khách hàng:</strong> ${escapeHtml(booking.customer_name || 'Khách')} (📞 ${escapeHtml(booking.customer_phone || booking.phone || '---')})</div>
+              <div><strong>Địa chỉ thi công:</strong> 📍 ${escapeHtml(booking.address || '---')}</div>
+              <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--color-border);">
+                <strong>Loại công trình:</strong> ${escapeHtml(bldName)} · 
+                <strong>Diện tích:</strong> ${booking.area_m2 ? booking.area_m2 + ' m²' : '---'} · 
+                <strong>Số tầng:</strong> ${booking.floors || 1}
+              </div>
+              <div><strong>Tình trạng bẩn:</strong> ${escapeHtml(dirtName)} · <strong>Vết sơn xi măng:</strong> ${booking.stubborn_stains || 'Không'}</div>
+              <div><strong>Vệ sinh kính:</strong> ${booking.glass_cleaning || 'Tiêu chuẩn'} · <strong>Đồ đạc:</strong> ${booking.furniture_status || 'Trống'}</div>
+              ${booking.construction_notes || booking.notes ? `
+                <div style="margin-top: 6px; color: #1E40AF;"><strong>Ghi chú từ khách:</strong> "${escapeHtml(booking.construction_notes || booking.notes)}"</div>
+              ` : ''}
+            `;
+
+            const minP = Number(booking.quote_min_price || booking.total_price || 0).toLocaleString('vi-VN') + ' đ';
+            const maxP = Number(booking.quote_max_price || booking.total_price || 0).toLocaleString('vi-VN') + ' đ';
+            const curP = Number(booking.total_price || 0).toLocaleString('vi-VN') + ' đ';
+            document.getElementById('confirm-quote-price-range').innerHTML = `
+              Tham khảo: <strong>${minP}</strong> — <strong>${maxP}</strong> | Giá dự kiến: <strong>${curP}</strong>
+              ${booking.quote_status === 'pending_survey' ? '<span style="color:#DC2626; margin-left:8px;">⚠️ Công trình cần khảo sát thực tế</span>' : ''}
+            `;
+
+            document.getElementById('confirm-quote-price-input').value = booking.confirmed_price || booking.total_price || '';
+            document.getElementById('confirm-quote-notes-input').value = booking.quote_notes || '';
+
+            document.getElementById('modal-confirm-quote').style.display = 'flex';
+          });
+        });
 
         // Gắn sự kiện đổi trạng thái đơn
         tbody.querySelectorAll('.status-select').forEach(sel => {
@@ -1264,6 +1584,151 @@
       const catFilterEl = document.getElementById('filter-booking-category');
       if (catFilterEl) catFilterEl.addEventListener('change', renderBookingsTable);
       document.getElementById('btn-refresh-bookings').addEventListener('click', loadBookings);
+
+      // Xử lý gửi Form Xác nhận báo giá chính thức
+      document.getElementById('form-confirm-quote').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const bookingId = parseInt(document.getElementById('confirm-quote-booking-id').value, 10);
+        const confirmed_price = parseInt(document.getElementById('confirm-quote-price-input').value, 10);
+        const quote_notes = document.getElementById('confirm-quote-notes-input').value.trim();
+
+        if (isNaN(confirmed_price) || confirmed_price <= 0) {
+          alert('Vui lòng nhập giá chính thức hợp lệ lớn hơn 0.');
+          return;
+        }
+
+        const btn = document.getElementById('btn-submit-confirm-quote');
+        btn.disabled = true;
+        btn.textContent = 'Đang lưu...';
+
+        try {
+          await CleanovaAPI.admin.confirmQuote(bookingId, { confirmed_price, quote_notes });
+          showAlert('success', `Đã xác nhận báo giá chính thức (${confirmed_price.toLocaleString('vi-VN')} đ) cho đơn #${bookingId}!`);
+          document.getElementById('modal-confirm-quote').style.display = 'none';
+          await loadBookings();
+        } catch (err) {
+          alert('Lỗi xác nhận báo giá: ' + err.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = '✅ Xác nhận & Lưu Báo Giá';
+        }
+      });
+
+      // ------------------------------------------------------------
+      // TAB 6: CẤU HÌNH BÁO GIÁ VỆ SINH SAU XÂY DỰNG
+      // ------------------------------------------------------------
+      async function loadPostConstructionConfig() {
+        try {
+          const res = await CleanovaAPI.admin.getPostConstructionConfig();
+          const configs = res.data || {};
+
+          // 1. m2_rates
+          if (configs.m2_rates) {
+            const m2 = configs.m2_rates;
+            if (m2.factory) {
+              document.getElementById('pc-m2-factory-min').value = m2.factory.min || 7000;
+              document.getElementById('pc-m2-factory-max').value = m2.factory.max || 12000;
+              document.getElementById('pc-m2-factory-applied').value = m2.factory.applied || 9000;
+            }
+            if (m2.townhouse) {
+              document.getElementById('pc-m2-townhouse-min').value = m2.townhouse.min || 12000;
+              document.getElementById('pc-m2-townhouse-max').value = m2.townhouse.max || 20000;
+              document.getElementById('pc-m2-townhouse-applied').value = m2.townhouse.applied || 15000;
+            }
+            if (m2.villa) {
+              document.getElementById('pc-m2-villa-min').value = m2.villa.min || 20000;
+              document.getElementById('pc-m2-villa-max').value = m2.villa.max || 35000;
+              document.getElementById('pc-m2-villa-applied').value = m2.villa.applied || 25000;
+            }
+          }
+
+          // 2. package_rates
+          if (configs.package_rates) {
+            const pkg = configs.package_rates;
+            if (pkg.apartment_60_100) document.getElementById('pc-pkg-apt-std').value = pkg.apartment_60_100.standard || 2200000;
+            if (pkg.townhouse_150_300) document.getElementById('pc-pkg-house-std').value = pkg.townhouse_150_300.standard || 4500000;
+            if (pkg.villa_above_300) document.getElementById('pc-pkg-villa-std').value = pkg.villa_above_300.standard || 8500000;
+          }
+
+          // 3. labor_daily_rates
+          if (configs.labor_daily_rates) {
+            const lbr = configs.labor_daily_rates;
+            document.getElementById('pc-labor-applied').value = lbr.applied || 450000;
+            document.getElementById('pc-labor-wage').value = lbr.worker_wage || 320000;
+          }
+        } catch (err) {
+          console.warn('Lỗi tải cấu hình vệ sinh sau XD:', err.message);
+        }
+      }
+
+      document.getElementById('btn-save-pc-m2').addEventListener('click', async () => {
+        try {
+          const config_data = {
+            factory: {
+              min: parseInt(document.getElementById('pc-m2-factory-min').value, 10),
+              max: parseInt(document.getElementById('pc-m2-factory-max').value, 10),
+              applied: parseInt(document.getElementById('pc-m2-factory-applied').value, 10)
+            },
+            townhouse: {
+              min: parseInt(document.getElementById('pc-m2-townhouse-min').value, 10),
+              max: parseInt(document.getElementById('pc-m2-townhouse-max').value, 10),
+              applied: parseInt(document.getElementById('pc-m2-townhouse-applied').value, 10)
+            },
+            villa: {
+              min: parseInt(document.getElementById('pc-m2-villa-min').value, 10),
+              max: parseInt(document.getElementById('pc-m2-villa-max').value, 10),
+              applied: parseInt(document.getElementById('pc-m2-villa-applied').value, 10)
+            }
+          };
+          await CleanovaAPI.admin.updatePostConstructionConfig('m2_rates', config_data);
+          showAlert('success', 'Đã cập nhật bảng giá theo m² thành công!');
+        } catch (err) {
+          showAlert('danger', 'Lỗi lưu bảng giá m²: ' + err.message);
+        }
+      });
+
+      document.getElementById('btn-save-pc-pkg').addEventListener('click', async () => {
+        try {
+          const config_data = {
+            apartment_60_100: {
+              min: 1500000,
+              max: 3000000,
+              standard: parseInt(document.getElementById('pc-pkg-apt-std').value, 10)
+            },
+            townhouse_150_300: {
+              min: 3000000,
+              max: 6000000,
+              standard: parseInt(document.getElementById('pc-pkg-house-std').value, 10)
+            },
+            villa_above_300: {
+              min: 6000000,
+              max: 12000000,
+              standard: parseInt(document.getElementById('pc-pkg-villa-std').value, 10)
+            }
+          };
+          await CleanovaAPI.admin.updatePostConstructionConfig('package_rates', config_data);
+          showAlert('success', 'Đã cập nhật bảng giá trọn gói thành công!');
+        } catch (err) {
+          showAlert('danger', 'Lỗi lưu bảng giá trọn gói: ' + err.message);
+        }
+      });
+
+      document.getElementById('btn-save-pc-labor').addEventListener('click', async () => {
+        try {
+          const config_data = {
+            min: 400000,
+            max: 500000,
+            applied: parseInt(document.getElementById('pc-labor-applied').value, 10),
+            worker_wage: parseInt(document.getElementById('pc-labor-wage').value, 10)
+          };
+          await CleanovaAPI.admin.updatePostConstructionConfig('labor_daily_rates', config_data);
+          showAlert('success', 'Đã cập nhật bảng giá nhân công ngày thành công!');
+        } catch (err) {
+          showAlert('danger', 'Lỗi lưu giá nhân công: ' + err.message);
+        }
+      });
+
+      document.getElementById('btn-refresh-pc-config').addEventListener('click', loadPostConstructionConfig);
 
       // ------------------------------------------------------------
       // 3. TAB 2: QUẢN LÝ TÀI KHOẢN & PHÂN QUYỀN (RBAC)
@@ -2112,6 +2577,7 @@
       await loadUsers();
       await loadServices();
       await loadPartners();
+      await loadPostConstructionConfig();
     });
   </script>
 </body>
