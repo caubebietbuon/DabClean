@@ -9,6 +9,7 @@ package-lock.json
 # Environment variables (chứa mật khẩu, secret key)
 .env
 backend/.env
+backend/uploads/
 
 # Logs
 *.log

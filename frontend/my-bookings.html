@@ -121,6 +121,16 @@
         </a>
       </div>
 
+      <section id="notifications-section" aria-labelledby="notifications-title" style="margin: 24px 0;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <h2 id="notifications-title" style="margin:0;font-size:20px;">🔔 Thông báo đơn hàng</h2>
+          <span id="notifications-unread-count" class="tab-badge" aria-live="polite">0</span>
+        </div>
+        <div id="notifications-list" aria-live="polite" style="display:grid;gap:10px;">
+          <p id="notifications-status" style="color:var(--color-text-muted);margin:0;">Đang tải thông báo...</p>
+        </div>
+      </section>
+
       <!-- 4. Filter Tabs -->
       <div class="orders-filter-container">
         <div class="tabs-nav" role="tablist">
@@ -130,8 +140,14 @@
           <button class="tab-btn" data-filter="pending">
             Chờ xác nhận <span class="tab-badge" id="badge-pending">0</span>
           </button>
+          <button class="tab-btn" data-filter="assigned">
+            Đã giao nhân viên <span class="tab-badge" id="badge-assigned">0</span>
+          </button>
           <button class="tab-btn" data-filter="confirmed">
-            Đã phân công <span class="tab-badge" id="badge-confirmed">0</span>
+            Đã xác nhận <span class="tab-badge" id="badge-confirmed">0</span>
+          </button>
+          <button class="tab-btn" data-filter="arrived">
+            Nhân viên đã đến <span class="tab-badge" id="badge-arrived">0</span>
           </button>
           <button class="tab-btn" data-filter="in_progress">
             Đang làm <span class="tab-badge" id="badge-in_progress">0</span>
@@ -269,6 +285,21 @@
           <input type="hidden" id="review-rating-value" value="5">
         </div>
 
+        <div style="text-align: center; margin-bottom: var(--space-lg);">
+          <div style="font-size: var(--font-size-sm); color: var(--color-text-secondary); margin-bottom: 8px;">
+            Bạn đánh giá nhân viên phục vụ thế nào?
+          </div>
+          <div class="star-rating-picker" id="staff-star-rating-picker">
+            <span class="star-item selected" data-star="1">★</span>
+            <span class="star-item selected" data-star="2">★</span>
+            <span class="star-item selected" data-star="3">★</span>
+            <span class="star-item selected" data-star="4">★</span>
+            <span class="star-item selected" data-star="5">★</span>
+            <span class="rating-score-hint" id="staff-rating-score-text">5 / 5 - Rất tuyệt vời</span>
+          </div>
+          <input type="hidden" id="staff-rating-value" value="5">
+        </div>
+
         <div class="form-group">
           <label class="form-label" for="review-comment">Nhận xét chi tiết của bạn:</label>
           <textarea id="review-comment" class="form-control" rows="3" placeholder="Chia sẻ cảm nhận về sự sạch sẽ, thái độ và tay nghề của chuyên viên..."></textarea>
@@ -277,6 +308,28 @@
         <div class="modal-footer" style="padding-top: var(--space-md); margin-top: var(--space-md);">
           <button type="button" class="btn btn-secondary" id="review-cancel-btn">Hủy</button>
           <button type="submit" class="btn btn-primary" id="review-submit-btn">Gửi đánh giá</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="tip-modal" role="dialog" aria-modal="true">
+    <div class="modal" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title">💝 Gửi tip tự nguyện cho nhân viên</h3>
+        <button class="modal-close" id="tip-close-btn" type="button">&times;</button>
+      </div>
+      <form id="tip-form">
+        <input type="hidden" id="tip-booking-id">
+        <p style="margin-bottom: 14px;">Đơn <strong id="tip-booking-code"></strong>. Tip là tùy chọn và được ghi nhận cho nhân viên đã phục vụ bạn.</p>
+        <div class="form-group">
+          <label class="form-label" for="tip-amount">Số tiền tip (VNĐ)</label>
+          <input type="number" id="tip-amount" class="form-control" min="1000" max="1000000" step="1000" required placeholder="Ví dụ: 20000">
+        </div>
+        <p style="font-size: 12px; color: var(--color-text-secondary);">Tính năng hiện ghi nhận khoản tip; thanh toán khoản này thực hiện trực tiếp với nhân viên.</p>
+        <div class="modal-footer" style="padding-top: var(--space-md); margin-top: var(--space-md);">
+          <button type="button" class="btn btn-secondary" id="tip-cancel-btn">Để sau</button>
+          <button type="submit" class="btn btn-primary" id="tip-submit-btn">Gửi tip</button>
         </div>
       </form>
     </div>
@@ -398,11 +451,15 @@
       document.getElementById('btn-logout').addEventListener('click', () => CleanovaAPI.auth.logout());
 
       let myBookings = [];
+      let myNotifications = [];
       let currentFilter = 'all';
+      let hasLoadedNotifications = false;
 
       const statusLabels = {
         pending: 'Chờ xác nhận',
+        assigned: 'Đã giao cho nhân viên',
         confirmed: 'Đã xác nhận',
+        arrived: 'Nhân viên đã đến',
         in_progress: 'Đang thực hiện',
         completed: 'Hoàn thành',
         cancelled: 'Đã hủy'
@@ -414,6 +471,16 @@
         momo: 'Ví MoMo',
         vnpay: 'VNPAY'
       };
+
+      function escapeText(value) {
+        return String(value || '').replace(/[&<>"']/g, character => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[character]);
+      }
 
       // 2. Tải danh sách đơn đặt từ Backend
       async function loadBookings() {
@@ -434,10 +501,55 @@
         }
       }
 
+      async function loadNotifications() {
+        try {
+          const res = await CleanovaAPI.bookings.getMyNotifications();
+          const incoming = res.data || [];
+          if (hasLoadedNotifications) {
+            const knownIds = new Set(myNotifications.map(notification => notification.id));
+            const newUnread = incoming.filter(notification => !knownIds.has(notification.id) && !notification.is_read);
+            newUnread.forEach(notification => showToast('success', escapeText(notification.title)));
+          }
+          myNotifications = incoming;
+          hasLoadedNotifications = true;
+          renderNotifications();
+        } catch (err) {
+          const status = document.getElementById('notifications-status');
+          if (status) status.textContent = `Không thể tải thông báo: ${err.message}`;
+        }
+      }
+
+      function renderNotifications() {
+        const list = document.getElementById('notifications-list');
+        const unreadCount = myNotifications.filter(notification => !notification.is_read).length;
+        document.getElementById('notifications-unread-count').textContent = unreadCount;
+        if (myNotifications.length === 0) {
+          list.innerHTML = '<p id="notifications-status" style="color:var(--color-text-muted);margin:0;">Bạn chưa có thông báo mới.</p>';
+          return;
+        }
+        list.innerHTML = myNotifications.map(notification => {
+          const createdAt = new Date(notification.created_at);
+          const dateText = Number.isNaN(createdAt.getTime())
+            ? ''
+            : createdAt.toLocaleString('vi-VN', { dateStyle: 'short', timeStyle: 'short' });
+          return `
+            <button type="button" class="booking-notification" data-notification-id="${notification.id}" data-booking-id="${notification.booking_id}"
+              style="display:block;width:100%;text-align:left;padding:14px 16px;border:1px solid ${notification.is_read ? '#e2e8f0' : '#93c5fd'};border-radius:12px;background:${notification.is_read ? '#fff' : '#eff6ff'};cursor:pointer;">
+              <span style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
+                <strong>${escapeText(notification.title)}</strong>
+                ${notification.is_read ? '' : '<span aria-label="Chưa đọc" style="color:#2563eb;font-size:12px;font-weight:700;">MỚI</span>'}
+              </span>
+              <span style="display:block;margin-top:5px;color:#475569;">${escapeText(notification.message)}</span>
+              <span style="display:block;margin-top:7px;color:#64748b;font-size:12px;">${escapeText(dateText)} · Bấm để xem đơn hàng</span>
+            </button>
+          `;
+        }).join('');
+      }
+
       // 3. Cập nhật các thẻ KPI Counters
       function updateKPIs() {
         const pending = myBookings.filter(b => b.status === 'pending').length;
-        const inProgress = myBookings.filter(b => b.status === 'confirmed' || b.status === 'in_progress').length;
+        const inProgress = myBookings.filter(b => ['assigned', 'confirmed', 'arrived', 'in_progress'].includes(b.status)).length;
         const completed = myBookings.filter(b => b.status === 'completed').length;
         const cancelled = myBookings.filter(b => b.status === 'cancelled').length;
 
@@ -452,7 +564,9 @@
 
         document.getElementById('badge-all').textContent = myBookings.length;
         document.getElementById('badge-pending').textContent = pending;
+        document.getElementById('badge-assigned').textContent = myBookings.filter(b => b.status === 'assigned').length;
         document.getElementById('badge-confirmed').textContent = myBookings.filter(b => b.status === 'confirmed').length;
+        document.getElementById('badge-arrived').textContent = myBookings.filter(b => b.status === 'arrived').length;
         document.getElementById('badge-in_progress').textContent = myBookings.filter(b => b.status === 'in_progress').length;
         document.getElementById('badge-completed').textContent = completed;
         document.getElementById('badge-cancelled').textContent = cancelled;
@@ -483,11 +597,11 @@
           const statusText = statusLabels[b.status] || b.status;
           const price = parseFloat(b.total_price || 0);
           const paymentText = paymentLabels[b.payment_method] || b.payment_method || 'Tiền mặt';
-          const canModify = (b.status === 'pending' || b.status === 'confirmed');
+          const canModify = (b.status === 'pending' || b.status === 'assigned' || b.status === 'confirmed');
           const isDone = (b.status === 'completed');
 
           return `
-            <div class="order-item-card">
+            <div class="order-item-card" data-booking-id="${b.id}">
               <!-- Thông tin đơn -->
               <div>
                 <div class="order-header-meta">
@@ -539,6 +653,11 @@
                     Ghi chú: "${b.notes}"
                   </div>
                 ` : ''}
+                ${b.cancel_reason ? `
+                  <div style="font-size:12px;color:#991B1B;margin-top:6px;">
+                    Lý do hủy: ${escapeText(b.cancel_reason)}
+                  </div>
+                ` : ''}
               </div>
 
               <!-- Cột giá và các hành động -->
@@ -563,6 +682,13 @@
                     <button class="btn btn-outline btn-sm btn-review-order" data-id="${b.id}" data-code="${b.booking_code}">
                       ⭐ Đánh giá
                     </button>
+                    ${Number(b.tip_amount || 0) > 0 ? `
+                      <button class="btn btn-outline btn-sm" disabled>💝 Đã tip ${Number(b.tip_amount).toLocaleString('vi-VN')} đ</button>
+                    ` : `
+                      <button class="btn btn-outline btn-sm btn-tip-order" data-id="${b.id}" data-code="${b.booking_code}">
+                        💝 Tip nhân viên
+                      </button>
+                    `}
                     <a href="booking.html?service_id=${b.service_id}" class="btn btn-primary btn-sm">
                       Đặt lại đơn này
                     </a>
@@ -639,6 +765,10 @@
                   <div class="timeline-step-title">Tiếp nhận & Phân công nhân viên</div>
                   <div class="timeline-step-time">${b.staff_id ? 'Đã phân công chuyên viên' : 'Đang xử lý'}</div>
                 </div>
+                <div class="timeline-step ${['arrived', 'in_progress', 'completed'].includes(b.status) ? 'completed' : (b.status === 'confirmed' ? 'active' : '')}">
+                  <div class="timeline-step-title">Nhân viên xác nhận và đến địa chỉ</div>
+                  <div class="timeline-step-time">${b.arrived_at ? new Date(b.arrived_at).toLocaleString('vi-VN') : (b.status === 'arrived' || b.status === 'in_progress' || b.status === 'completed' ? 'Đã xác nhận đến' : 'Chờ nhân viên đến')}</div>
+                </div>
                 <div class="timeline-step ${b.status === 'in_progress' ? 'active' : (b.status === 'completed' ? 'completed' : '')}">
                   <div class="timeline-step-title">Chuyên viên thực hiện dọn dẹp</div>
                   <div class="timeline-step-time">Theo giờ hẹn: ${b.booking_date}</div>
@@ -651,6 +781,7 @@
             `;
             document.getElementById('detail-modal').classList.add('active');
           });
+
         });
 
         // Đổi lịch (Reschedule)
@@ -696,12 +827,14 @@
             document.getElementById('review-booking-code').textContent = code;
             document.getElementById('review-comment').value = '';
             setStarRating(5);
+            setStaffStarRating(5);
 
             // Kiểm tra xem đã có review chưa
             try {
               const res = await CleanovaAPI.bookings.getReview(id);
               if (res.data) {
                 setStarRating(res.data.rating);
+                if (res.data.staff_rating) setStaffStarRating(res.data.staff_rating);
                 document.getElementById('review-comment').value = res.data.comment || '';
                 document.getElementById('review-submit-btn').textContent = 'Đã gửi đánh giá';
                 document.getElementById('review-submit-btn').disabled = true;
@@ -715,6 +848,15 @@
             }
 
             document.getElementById('review-modal').classList.add('active');
+          });
+        });
+
+        document.querySelectorAll('.btn-tip-order').forEach(btn => {
+          btn.addEventListener('click', function () {
+            document.getElementById('tip-booking-id').value = this.dataset.id;
+            document.getElementById('tip-booking-code').textContent = this.dataset.code;
+            document.getElementById('tip-amount').value = '';
+            document.getElementById('tip-modal').classList.add('active');
           });
         });
       }
@@ -751,7 +893,8 @@
         this.textContent = 'Đang hủy...';
 
         try {
-          await CleanovaAPI.bookings.cancel(id);
+          const reason = document.getElementById('cancel-reason-select').value;
+          await CleanovaAPI.bookings.cancel(id, reason);
           document.getElementById('cancel-modal').classList.remove('active');
           showToast('success', 'Đã hủy đơn đặt dịch vụ thành công.');
           await loadBookings();
@@ -781,10 +924,22 @@
         document.getElementById('rating-score-text').textContent = scoreHints[num] || `${num} / 5`;
       }
 
+      function setStaffStarRating(num) {
+        document.getElementById('staff-rating-value').value = num;
+        document.querySelectorAll('#staff-star-rating-picker .star-item').forEach(star => {
+          star.classList.toggle('selected', parseInt(star.dataset.star, 10) <= num);
+        });
+        document.getElementById('staff-rating-score-text').textContent = scoreHints[num];
+      }
+
       document.querySelectorAll('#star-rating-picker .star-item').forEach(star => {
         star.addEventListener('click', function () {
           setStarRating(parseInt(this.dataset.star, 10));
         });
+      });
+
+      document.querySelectorAll('#staff-star-rating-picker .star-item').forEach(star => {
+        star.addEventListener('click', () => setStaffStarRating(parseInt(star.dataset.star, 10)));
       });
 
       // Gửi Đánh giá
@@ -799,14 +954,36 @@
         btn.textContent = 'Đang gửi đánh giá...';
 
         try {
-          await CleanovaAPI.bookings.addReview(id, { rating, comment });
+          const staff_rating = document.getElementById('staff-rating-value').value;
+          await CleanovaAPI.bookings.addReview(id, { rating, staff_rating, comment });
           document.getElementById('review-modal').classList.remove('active');
           showToast('success', 'Cảm ơn bạn đã đánh giá dịch vụ của Cleanova!');
+          await loadBookings();
         } catch (err) {
           alert(err.message || 'Không thể gửi đánh giá.');
         } finally {
           btn.disabled = false;
           btn.textContent = 'Gửi đánh giá';
+        }
+      });
+
+      document.getElementById('tip-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = document.getElementById('tip-booking-id').value;
+        const amount = Number(document.getElementById('tip-amount').value);
+        const button = document.getElementById('tip-submit-btn');
+        button.disabled = true;
+        button.textContent = 'Đang gửi...';
+        try {
+          await CleanovaAPI.bookings.addTip(id, amount);
+          document.getElementById('tip-modal').classList.remove('active');
+          showToast('success', 'Cảm ơn bạn! Khoản tip đã được ghi nhận cho nhân viên.');
+          await loadBookings();
+        } catch (err) {
+          alert(err.message || 'Không thể gửi tip.');
+        } finally {
+          button.disabled = false;
+          button.textContent = 'Gửi tip';
         }
       });
 
@@ -835,6 +1012,9 @@
       const closeReview = () => document.getElementById('review-modal').classList.remove('active');
       document.getElementById('review-close-btn').addEventListener('click', closeReview);
       document.getElementById('review-cancel-btn').addEventListener('click', closeReview);
+      const closeTip = () => document.getElementById('tip-modal').classList.remove('active');
+      document.getElementById('tip-close-btn').addEventListener('click', closeTip);
+      document.getElementById('tip-cancel-btn').addEventListener('click', closeTip);
 
       // Coupons modal events
       const openCoupons = () => document.getElementById('coupons-modal').classList.add('active');
@@ -870,8 +1050,35 @@
         setTimeout(() => t.remove(), 3200);
       }
 
+      document.getElementById('notifications-list').addEventListener('click', async event => {
+        const button = event.target.closest('.booking-notification');
+        if (!button) return;
+        const notificationId = Number(button.dataset.notificationId);
+        const bookingId = Number(button.dataset.bookingId);
+        const notification = myNotifications.find(item => item.id === notificationId);
+        if (!notification) return;
+
+        try {
+          if (!notification.is_read) {
+            await CleanovaAPI.bookings.markNotificationRead(notificationId);
+            notification.is_read = 1;
+            renderNotifications();
+          }
+          currentFilter = 'all';
+          document.querySelectorAll('.tab-btn').forEach(tab => tab.classList.toggle('active', tab.dataset.filter === 'all'));
+          await loadBookings();
+          const bookingCard = document.querySelector('.order-item-card[data-booking-id="' + bookingId + '"]');
+          if (bookingCard) bookingCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          else showToast('info', 'Không tìm thấy đơn hàng tương ứng trong danh sách.');
+        } catch (err) {
+          showToast('error', `Không thể mở thông báo: ${escapeText(err.message)}`);
+        }
+      });
+
       // Khởi tạo tải đơn ban đầu
-      await loadBookings();
+      await Promise.all([loadBookings(), loadNotifications()]);
+      window.setInterval(loadNotifications, 20000);
+      window.addEventListener('focus', loadNotifications);
     });
   </script>
 </body>

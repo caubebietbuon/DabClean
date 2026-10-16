@@ -14,6 +14,8 @@ USE cleanova_db;
 DROP TABLE IF EXISTS audit_logs;
 DROP TABLE IF EXISTS partner_applications;
 DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS booking_notifications;
+DROP TABLE IF EXISTS booking_job_photos;
 DROP TABLE IF EXISTS bookings;
 DROP TABLE IF EXISTS services;
 DROP TABLE IF EXISTS users;
@@ -82,10 +84,15 @@ CREATE TABLE bookings (
   discount_code VARCHAR(50) DEFAULT NULL COMMENT 'Mã ưu đãi áp dụng (VD: CLEANOVA20)',
   payment_method ENUM('cash', 'bank_transfer', 'momo', 'vnpay') DEFAULT 'cash' COMMENT 'Phương thức thanh toán',
   payment_status ENUM('unpaid', 'paid', 'refunded') DEFAULT 'unpaid' COMMENT 'Trạng thái thanh toán',
-  status ENUM('pending', 'confirmed', 'in_progress', 'completed', 'cancelled') DEFAULT 'pending' COMMENT 'Trạng thái đơn: pending (chờ duyệt), confirmed (đã nhận), in_progress (đang làm), completed (hoàn thành), cancelled (đã hủy)',
+  status ENUM('pending', 'assigned', 'confirmed', 'arrived', 'in_progress', 'completed', 'cancelled') DEFAULT 'pending' COMMENT 'Trạng thái đơn: pending, assigned, confirmed, arrived, in_progress, completed, cancelled',
   staff_id INT DEFAULT NULL COMMENT 'Khóa ngoại liên kết tới nhân viên được phân công làm việc',
   assigned_at TIMESTAMP NULL DEFAULT NULL COMMENT 'Thời điểm phân công nhân viên',
   staff_notes TEXT DEFAULT NULL COMMENT 'Ghi chú công việc của nhân viên thực hiện',
+  cancel_reason TEXT DEFAULT NULL COMMENT 'Lý do nhân viên hoặc khách hàng hủy đơn',
+  arrived_at DATETIME DEFAULT NULL COMMENT 'Thời điểm nhân viên xác nhận đã đến địa chỉ',
+  paid_at DATETIME DEFAULT NULL COMMENT 'Thời điểm xác nhận đã thu tiền mặt',
+  tip_amount DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền tip tự nguyện do khách ghi nhận',
+  tip_created_at DATETIME DEFAULT NULL COMMENT 'Thời điểm khách ghi nhận tiền tip',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
@@ -100,6 +107,47 @@ CREATE INDEX idx_bookings_status ON bookings(status);
 CREATE INDEX idx_bookings_code ON bookings(booking_code);
 
 -- ------------------------------------------------------------
+-- BẢNG 3a: booking_job_photos (Ảnh Before / After theo từng góc)
+-- ------------------------------------------------------------
+CREATE TABLE booking_job_photos (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  booking_id INT NOT NULL,
+  area_name VARCHAR(120) NOT NULL,
+  angle_id VARCHAR(64) NOT NULL,
+  stage ENUM('before', 'after') NOT NULL,
+  image_url VARCHAR(255) NOT NULL,
+  captured_at DATETIME NOT NULL,
+  latitude DECIMAL(10, 7) NOT NULL,
+  longitude DECIMAL(10, 7) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_booking_job_photos_booking
+    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_booking_job_photo_stage (booking_id, area_name, angle_id, stage),
+  INDEX idx_booking_job_photos_booking (booking_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 3b: booking_notifications (Thông báo trong ứng dụng)
+-- ------------------------------------------------------------
+CREATE TABLE booking_notifications (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  booking_id INT NOT NULL,
+  notification_type VARCHAR(50) NOT NULL,
+  title VARCHAR(160) NOT NULL,
+  message TEXT NOT NULL,
+  data JSON NULL,
+  is_read TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_booking_notifications_user
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_booking_notifications_booking
+    FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+  UNIQUE KEY uq_booking_notification_type (booking_id, notification_type),
+  INDEX idx_booking_notifications_user (user_id, is_read, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
 -- BẢNG 4: reviews (Đánh giá chất lượng dịch vụ từ khách hàng)
 -- ------------------------------------------------------------
 CREATE TABLE reviews (
@@ -108,6 +156,7 @@ CREATE TABLE reviews (
   user_id INT NOT NULL COMMENT 'Người đánh giá',
   service_id INT NOT NULL COMMENT 'Dịch vụ được đánh giá',
   rating TINYINT UNSIGNED NOT NULL DEFAULT 5 COMMENT 'Số sao từ 1 đến 5',
+  staff_rating TINYINT UNSIGNED DEFAULT NULL COMMENT 'Số sao khách hàng đánh giá nhân viên',
   comment TEXT DEFAULT NULL COMMENT 'Nhận xét chi tiết',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_reviews_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,

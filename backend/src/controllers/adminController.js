@@ -6,6 +6,7 @@ const BookingModel = require('../models/bookingModel');
 const ServiceModel = require('../models/serviceModel');
 const UserModel = require('../models/userModel');
 const PartnerModel = require('../models/partnerModel');
+const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
 
 const adminController = {
   // 1. Thống kê tổng quan Dashboard (GET /api/admin/stats)
@@ -40,8 +41,9 @@ const adminController = {
     try {
       const id = parseInt(req.params.id, 10);
       const { status } = req.body;
+      const reason = typeof req.body.reason === 'string' ? req.body.reason.trim() : '';
 
-      const validStatuses = ['pending', 'confirmed', 'in_progress', 'completed', 'cancelled'];
+      const validStatuses = ['pending', 'assigned', 'confirmed', 'arrived', 'in_progress', 'completed', 'cancelled'];
       if (!status || !validStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
@@ -54,7 +56,23 @@ const adminController = {
         return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
       }
 
-      await BookingModel.updateStatus(id, status);
+      if (status === 'cancelled' && (reason.length < 5 || reason.length > 500)) {
+        return res.status(400).json({ success: false, message: 'Lý do hủy phải dài từ 5 đến 500 ký tự.' });
+      }
+      if (status === 'in_progress' || status === 'completed') {
+        const photos = await BookingModel.getJobPhotos(id);
+        const progress = getPhotoProgress(getRequiredAreas(booking.service_name), photos);
+        if (status === 'in_progress' && !progress.canStart) {
+          return res.status(409).json({ success: false, message: 'Không thể bắt đầu: còn thiếu ảnh Before ở các khu vực bắt buộc.' });
+        }
+        if (status === 'completed' && !progress.canComplete) {
+          return res.status(409).json({ success: false, message: 'Không thể hoàn thành khi còn thiếu ảnh After tương ứng.' });
+        }
+        if (status === 'completed' && booking.payment_method === 'cash' && booking.payment_status !== 'paid') {
+          return res.status(409).json({ success: false, message: 'Đơn tiền mặt cần được xác nhận thanh toán trước khi hoàn thành.' });
+        }
+      }
+      await BookingModel.updateStatus(id, status, status === 'cancelled' ? reason : '');
 
       // Ghi nhật ký thao tác
       await UserModel.logAudit(req.user.id, 'UPDATE_BOOKING_STATUS', id, 'booking', `Cập nhật trạng thái đơn #${booking.booking_code} thành ${status}`);
@@ -77,6 +95,9 @@ const adminController = {
       const booking = await BookingModel.getById(bookingId);
       if (!booking) {
         return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
+      }
+      if (!['pending', 'assigned'].includes(booking.status)) {
+        return res.status(409).json({ success: false, message: 'Không thể thay đổi nhân viên sau khi công việc đã được tiếp nhận hoặc bắt đầu.' });
       }
 
       let staffName = 'Chưa phân công';

@@ -18,6 +18,8 @@ router.post('/', bookingController.createBooking);
 // Lấy danh sách đơn của người dùng hiện tại (hỗ trợ cả /my và /my-bookings)
 router.get('/my-bookings', bookingController.getMyBookings);
 router.get('/my', bookingController.getMyBookings);
+router.get('/notifications', bookingController.getMyNotifications);
+router.patch('/notifications/:notificationId/read', bookingController.markNotificationRead);
 
 // Xem chi tiết một đơn
 router.get('/:id', bookingController.getBookingDetail);
@@ -30,6 +32,7 @@ router.put('/:id/reschedule', bookingController.rescheduleBooking);
 
 // Gửi đánh giá cho đơn hoàn thành
 router.post('/:id/review', bookingController.createReview);
+router.post('/:id/tip', bookingController.addTip);
 
 // Xem đánh giá của một đơn
 router.get('/:id/review', bookingController.getBookingReview);

@@ -15,6 +15,9 @@
       'Content-Type': 'application/json',
       ...(options.headers || {})
     };
+    if (options.body instanceof FormData) {
+      delete headers['Content-Type'];
+    }
 
     const token = localStorage.getItem('cleanova_token') || sessionStorage.getItem('cleanova_token');
     if (token) {
@@ -213,13 +216,24 @@
         return await request('/bookings/my-bookings');
       },
 
+      async getMyNotifications() {
+        return await request('/bookings/notifications');
+      },
+
+      async markNotificationRead(notificationId) {
+        return await request(`/bookings/notifications/${notificationId}/read`, {
+          method: 'PATCH'
+        });
+      },
+
       async getDetail(id) {
         return await request(`/bookings/${id}`);
       },
 
-      async cancel(id) {
+      async cancel(id, reason) {
         return await request(`/bookings/${id}/cancel`, {
-          method: 'PUT'
+          method: 'PUT',
+          body: JSON.stringify({ reason })
         });
       },
 
@@ -234,6 +248,13 @@
         return await request(`/bookings/${id}/review`, {
           method: 'POST',
           body: JSON.stringify(reviewData)
+        });
+      },
+
+      async addTip(id, amount) {
+        return await request(`/bookings/${id}/tip`, {
+          method: 'POST',
+          body: JSON.stringify({ amount })
         });
       },
 
@@ -362,10 +383,10 @@
         return await request('/admin/bookings');
       },
 
-      async updateBookingStatus(id, status) {
+      async updateBookingStatus(id, status, reason = '') {
         return await request(`/admin/bookings/${id}/status`, {
           method: 'PUT',
-          body: JSON.stringify({ status })
+          body: JSON.stringify({ status, reason })
         });
       },
 
@@ -488,11 +509,47 @@
         return await request(`/staff/tasks/${id}`);
       },
 
-      async updateTaskStatus(id, status, staff_notes = '') {
+      async updateTaskStatus(id, status, staff_notes = '', cancel_reason = '') {
         return await request(`/staff/tasks/${id}/status`, {
           method: 'PATCH',
-          body: JSON.stringify({ status, staff_notes })
+          body: JSON.stringify({ status, staff_notes, cancel_reason })
         });
+      },
+
+      async confirmCashPayment(id) {
+        return await request(`/staff/tasks/${id}/cash-payment`, {
+          method: 'POST'
+        });
+      },
+
+      async getTaskChecklist(id) {
+        return await request(`/staff/tasks/${id}/checklist`);
+      },
+
+      async uploadTaskPhoto(id, photoData) {
+        const formData = new FormData();
+        formData.append('photo', photoData.file, 'job-photo.jpg');
+        formData.append('areaName', photoData.areaName);
+        formData.append('angleId', photoData.angleId);
+        formData.append('stage', photoData.stage);
+        formData.append('capturedAt', photoData.capturedAt);
+        formData.append('latitude', String(photoData.latitude));
+        formData.append('longitude', String(photoData.longitude));
+        return await request(`/staff/tasks/${id}/photos`, {
+          method: 'POST',
+          body: formData
+        });
+      },
+
+      async getTaskPhoto(imagePath) {
+        const token = window.CleanovaAPI.auth.getToken();
+        const response = await fetch(`${API_BASE_URL}${imagePath}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (!response.ok) {
+          throw new Error(`Không thể tải ảnh công việc (${response.status}).`);
+        }
+        return await response.blob();
       },
 
       async getProfile() {

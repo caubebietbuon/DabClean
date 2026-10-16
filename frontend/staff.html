@@ -38,6 +38,60 @@
       align-items: center;
       gap: 4px;
     }
+    .photo-checklist-area {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      background: #fff;
+    }
+    .photo-checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .photo-pair-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      min-width: 0;
+    }
+    .photo-pair-card img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #F1F5F9;
+    }
+    .photo-pair-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .photo-upload-control {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 8px 12px;
+      border: 1px dashed #2563EB;
+      border-radius: var(--radius-md);
+      color: #1D4ED8;
+      background: #EFF6FF;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .photo-upload-control input { display: none; }
+    @media (max-width: 576px) {
+      .photo-checklist-area { padding: 12px; }
+      .photo-checklist-grid { grid-template-columns: 1fr; }
+    }
 
     /* Stats Grid */
     .staff-stats-grid {
@@ -484,7 +538,9 @@
             <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <span style="font-size: 13px; font-weight: 700; color: var(--color-text-secondary);">Lọc theo trạng thái:</span>
               <button type="button" class="btn btn-sm btn-filter-status active" data-status="all" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Tất cả</button>
-              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="confirmed" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Chờ làm</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="assigned" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Chờ xác nhận</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="confirmed" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Đã nhận việc</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="arrived" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Đã đến</button>
               <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="in_progress" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Đang làm</button>
               <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="completed" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Đã xong</button>
               <button type="button" class="btn btn-ghost btn-sm btn-filter-status" data-status="cancelled" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Sự cố/Hủy</button>
@@ -639,7 +695,9 @@
           <div class="form-group" style="margin-bottom: var(--space-md);">
             <label class="form-label" style="font-weight: 700;">Cập nhật trạng thái công việc:</label>
             <select id="task-modal-status-select" class="form-control" style="font-weight: 600;">
+              <option value="assigned">📩 Chờ xác nhận</option>
               <option value="confirmed">⏳ Chờ làm việc (Đã tiếp nhận đơn)</option>
+              <option value="arrived">📍 Đã đến nhà khách hàng</option>
               <option value="in_progress">🧹 Đang thực hiện vệ sinh</option>
               <option value="completed">✅ Đã hoàn thành công việc</option>
               <option value="cancelled">⚠️ Báo sự cố / Không thể thực hiện</option>
@@ -658,6 +716,29 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checklist ảnh Before / After của từng công việc -->
+  <div class="modal-backdrop" id="modal-photo-checklist" style="display: none;">
+    <div class="modal-box" style="width: min(980px, calc(100% - 24px)); max-height: 92vh; overflow: auto;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="photo-checklist-title">Ảnh kiểm tra công việc</h3>
+        <button type="button" class="modal-close" data-close="modal-photo-checklist" aria-label="Đóng">&times;</button>
+      </div>
+      <div style="padding: var(--space-lg);">
+        <p id="photo-checklist-instructions" style="margin-bottom: 12px; color: var(--color-text-secondary);"></p>
+        <div id="photo-checklist-summary" role="status" style="margin-bottom: 12px;"></div>
+        <div id="photo-checklist-areas" class="photo-checklist-grid"></div>
+        <div id="cash-payment-control" style="display: none; margin-top: 16px;"></div>
+        <p style="margin-top: 14px; color: var(--color-text-tertiary); font-size: 12px;">
+          Ảnh được nén trên thiết bị. Thời điểm chụp do thiết bị ghi nhận, thời điểm máy chủ nhận ảnh và GPS do thiết bị cung cấp được lưu cùng ảnh; trình duyệt không thể xác minh tuyệt đối tính xác thực của GPS.
+        </p>
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-sm); margin-top: var(--space-lg);">
+          <button type="button" class="btn btn-ghost" data-close="modal-photo-checklist">Đóng</button>
+          <button type="button" class="btn btn-primary" id="btn-submit-photo-checklist" disabled></button>
+        </div>
       </div>
     </div>
   </div>
@@ -735,6 +816,323 @@
       // Trạng thái cục bộ
       let myTasksList = [];
       let currentFilterStatus = 'all';
+      let activePhotoTask = null;
+      let activePhotoChecklist = null;
+      let activePhotoStage = 'before';
+      let photoUploadInProgress = false;
+      let photoPreviewUrls = [];
+
+      function escapePhotoText(value) {
+        return String(value).replace(/[&<>"']/g, character => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[character]);
+      }
+
+      function revokePhotoPreviews() {
+        photoPreviewUrls.forEach(url => URL.revokeObjectURL(url));
+        photoPreviewUrls = [];
+      }
+
+      function getPhotoUrl(photo) {
+        return photo.previewUrl;
+      }
+
+      function getPhotoPairs(areaName) {
+        const photos = activePhotoChecklist.photos.filter(photo => photo.area_name === areaName);
+        const beforePhotos = photos.filter(photo => photo.stage === 'before');
+        return beforePhotos.map(before => ({
+          before,
+          after: photos.find(photo => photo.stage === 'after' && photo.angle_id === before.angle_id)
+        }));
+      }
+
+      function renderPhotoChecklist() {
+        if (!activePhotoChecklist) return;
+        const checklist = activePhotoChecklist;
+        const progress = checklist.progress;
+        const areaContainer = document.getElementById('photo-checklist-areas');
+        const submitButton = document.getElementById('btn-submit-photo-checklist');
+
+        document.getElementById('photo-checklist-title').textContent =
+          `${activePhotoTask.booking_code || `Đơn #${activePhotoTask.id}`} · Ảnh ${activePhotoStage === 'before' ? 'Before' : 'After'}`;
+        document.getElementById('photo-checklist-instructions').textContent = activePhotoStage === 'before'
+          ? 'Chụp ít nhất 1 ảnh Before ở mỗi khu vực. Có thể thêm nhiều góc; mỗi góc Before cần một ảnh After tương ứng.'
+          : 'Chụp ảnh After cho từng góc Before đã lưu. Hai ảnh được hiển thị cạnh nhau để đối chiếu.';
+        document.getElementById('photo-checklist-summary').innerHTML = activePhotoStage === 'before'
+          ? `<strong>${checklist.areas.length - progress.missingBeforeAreas.length}/${checklist.areas.length}</strong> khu vực đã có ảnh Before.`
+          : progress.canComplete && (activePhotoTask.payment_method !== 'cash' || activePhotoTask.payment_status === 'paid')
+            ? '<strong>Đã đủ tất cả cặp ảnh.</strong> Bạn có thể gửi báo cáo hoàn thành.'
+          : progress.canComplete
+            ? '<strong>Đã đủ ảnh After.</strong> Vuốt xác nhận đã nhận tiền mặt để gửi báo cáo.'
+            : `<strong>Còn ${progress.missingAfterAngles.length} góc</strong> cần ảnh After.`;
+
+        areaContainer.innerHTML = checklist.areas.map(areaName => {
+          const pairs = getPhotoPairs(areaName);
+          const escapedArea = escapePhotoText(areaName);
+          let controls = '';
+          let cards = '';
+
+          if (activePhotoStage === 'before') {
+            cards = pairs.map(({ before }) => `
+              <div class="photo-pair-card">
+                <img src="${escapePhotoText(getPhotoUrl(before))}" alt="Ảnh Before ${escapedArea}">
+                <div class="photo-pair-labels"><span>Before · ${escapePhotoText(new Date(before.captured_at).toLocaleString('vi-VN'))}</span><span>Góc ${escapePhotoText(before.angle_id.slice(0, 8))}</span></div>
+              </div>
+            `).join('');
+            controls = `
+              <label class="photo-upload-control">
+                📷 Chụp / chọn ảnh Before
+                <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-stage="before" ${photoUploadInProgress ? 'disabled' : ''}>
+              </label>
+            `;
+          } else {
+            cards = pairs.map(({ before, after }) => `
+              <div class="photo-pair-card">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                  <img src="${escapePhotoText(getPhotoUrl(before))}" alt="Before ${escapedArea}">
+                  ${after
+                    ? `<img src="${escapePhotoText(getPhotoUrl(after))}" alt="After ${escapedArea}">`
+                    : '<div style="display:grid;place-items:center;aspect-ratio:4/3;border-radius:8px;background:#F1F5F9;color:#64748B;font-size:12px;text-align:center;">Chưa có ảnh After</div>'}
+                </div>
+                <div class="photo-pair-labels"><span>Before</span><span>After ${after ? `· ${escapePhotoText(new Date(after.captured_at).toLocaleString('vi-VN'))}` : ''}</span></div>
+                ${after ? '' : `
+                  <label class="photo-upload-control" style="margin-top:8px;">
+                    📷 Chụp ảnh After góc này
+                    <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="after" ${photoUploadInProgress ? 'disabled' : ''}>
+                  </label>
+                `}
+              </div>
+            `).join('');
+            if (pairs.length === 0) {
+              cards = '<div style="color:#B45309;font-size:13px;">Khu vực này chưa có ảnh Before.</div>';
+            }
+          }
+
+          return `
+            <section class="photo-checklist-area" aria-label="${escapedArea}">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <strong>${escapedArea}</strong>
+                <span style="font-size:12px;color:${pairs.length ? '#047857' : '#B45309'};">${pairs.length} góc</span>
+              </div>
+              ${controls}
+              ${cards ? `<div class="photo-checklist-grid">${cards}</div>` : ''}
+            </section>
+          `;
+        }).join('');
+
+        const isReadOnly = activePhotoTask.status === 'completed' || activePhotoTask.status === 'cancelled';
+        const cashPaymentRequired = activePhotoStage === 'after' &&
+          activePhotoTask.payment_method === 'cash' && activePhotoTask.payment_status !== 'paid';
+        submitButton.disabled = isReadOnly || photoUploadInProgress ||
+          (activePhotoStage === 'before' ? !progress.canStart : (!progress.canComplete || cashPaymentRequired));
+        submitButton.textContent = photoUploadInProgress
+          ? 'Đang tải ảnh...'
+          : isReadOnly
+            ? 'Đơn hàng đã kết thúc'
+          : activePhotoStage === 'before'
+            ? '▶️ Bắt đầu làm việc'
+            : '📨 Gửi báo cáo & Hoàn thành đơn hàng';
+
+        const paymentControl = document.getElementById('cash-payment-control');
+        paymentControl.style.display = cashPaymentRequired && progress.canComplete && !isReadOnly ? 'block' : 'none';
+        paymentControl.innerHTML = cashPaymentRequired && progress.canComplete
+          ? `<div style="padding:14px;border:1px solid #FCD34D;border-radius:12px;background:#FFFBEB;">
+              <strong>💵 Xác nhận thanh toán tiền mặt</strong>
+              <div style="font-size:13px;margin:6px 0 10px;">Khách thanh toán ${formatPriceVND(activePhotoTask.total_price)}? Vuốt thanh trượt sang phải sau khi đã nhận đủ tiền.</div>
+              <input id="cash-payment-slider" type="range" min="0" max="100" value="0" aria-label="Vuốt để xác nhận đã nhận tiền mặt" style="width:100%;accent-color:#059669;">
+              <div id="cash-payment-slider-label" style="font-size:12px;color:#92400E;text-align:center;">Vuốt sang phải để xác nhận đã nhận tiền</div>
+            </div>`
+          : '';
+        const paymentSlider = document.getElementById('cash-payment-slider');
+        if (paymentSlider) {
+          paymentSlider.addEventListener('input', () => {
+            const label = document.getElementById('cash-payment-slider-label');
+            label.textContent = Number(paymentSlider.value) >= 95
+              ? 'Thả để ghi nhận đã thu đủ tiền'
+              : 'Vuốt sang phải để xác nhận đã nhận tiền';
+          });
+          paymentSlider.addEventListener('change', async () => {
+            if (Number(paymentSlider.value) < 95 || !activePhotoTask) return;
+            paymentSlider.disabled = true;
+            try {
+              const result = await CleanovaAPI.staff.confirmCashPayment(activePhotoTask.id);
+              activePhotoTask.payment_status = 'paid';
+              renderPhotoChecklist();
+              showAlert('success', result.message || 'Đã xác nhận nhận tiền mặt.');
+            } catch (err) {
+              alert(`Không thể xác nhận thanh toán: ${err.message}`);
+              paymentSlider.value = '0';
+              paymentSlider.disabled = false;
+            }
+          });
+        }
+
+        areaContainer.querySelectorAll('input[type="file"]').forEach(input => {
+          input.addEventListener('change', () => uploadChecklistPhoto(input));
+        });
+      }
+
+      function compressJobPhoto(file) {
+        return new Promise((resolve, reject) => {
+          if (!file || !file.type.startsWith('image/')) {
+            reject(new Error('Vui lòng chọn một tệp ảnh hợp lệ.'));
+            return;
+          }
+          if (file.size > 25 * 1024 * 1024) {
+            reject(new Error('Ảnh gốc vượt quá giới hạn 25 MB.'));
+            return;
+          }
+
+          const imageUrl = URL.createObjectURL(file);
+          const image = new Image();
+          image.onload = () => {
+            URL.revokeObjectURL(imageUrl);
+            const maxDimension = 1600;
+            const scale = Math.min(1, maxDimension / Math.max(image.width, image.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(image.width * scale));
+            canvas.height = Math.max(1, Math.round(image.height * scale));
+            const context = canvas.getContext('2d');
+            if (!context) {
+              reject(new Error('Thiết bị không hỗ trợ xử lý ảnh.'));
+              return;
+            }
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            canvas.toBlob(blob => {
+              if (!blob) {
+                reject(new Error('Không thể nén ảnh trên thiết bị.'));
+                return;
+              }
+              if (blob.size > 8 * 1024 * 1024) {
+                reject(new Error('Ảnh sau khi nén vẫn lớn hơn giới hạn 8 MB.'));
+                return;
+              }
+              resolve(blob);
+            }, 'image/jpeg', 0.78);
+          };
+          image.onerror = () => {
+            URL.revokeObjectURL(imageUrl);
+            reject(new Error('Không thể đọc ảnh đã chọn.'));
+          };
+          image.src = imageUrl;
+        });
+      }
+
+      function getCurrentGpsPosition() {
+        return new Promise((resolve, reject) => {
+          if (!navigator.geolocation) {
+            reject(new Error('Trình duyệt không hỗ trợ GPS. Vui lòng mở trang bằng HTTPS hoặc localhost.'));
+            return;
+          }
+          navigator.geolocation.getCurrentPosition(
+            position => resolve({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude
+            }),
+            error => reject(new Error(error.code === error.PERMISSION_DENIED
+              ? 'Cần cho phép quyền định vị để tải ảnh kiểm tra.'
+              : 'Không lấy được GPS. Hãy bật định vị và thử lại.')),
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+          );
+        });
+      }
+
+      async function uploadChecklistPhoto(input) {
+        const file = input.files && input.files[0];
+        if (!file || !activePhotoTask) return;
+        const stage = input.dataset.stage;
+        const capturedAt = new Date().toISOString();
+        photoUploadInProgress = true;
+        renderPhotoChecklist();
+        try {
+          const [compressedFile, gps] = await Promise.all([
+            compressJobPhoto(file),
+            getCurrentGpsPosition()
+          ]);
+          const angleId = stage === 'before'
+            ? (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function'
+              ? globalThis.crypto.randomUUID()
+              : `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`)
+            : input.dataset.angle;
+          await CleanovaAPI.staff.uploadTaskPhoto(activePhotoTask.id, {
+            file: compressedFile,
+            areaName: input.dataset.area,
+            angleId,
+            stage,
+            capturedAt,
+            latitude: gps.latitude,
+            longitude: gps.longitude
+          });
+          await refreshPhotoChecklist();
+          showAlert('success', `Đã lưu ảnh ${stage === 'before' ? 'Before' : 'After'} cùng GPS.`);
+        } catch (err) {
+          alert(`Không thể tải ảnh: ${err.message}`);
+        } finally {
+          photoUploadInProgress = false;
+          renderPhotoChecklist();
+        }
+      }
+
+      async function refreshPhotoChecklist() {
+        const response = await CleanovaAPI.staff.getTaskChecklist(activePhotoTask.id);
+        revokePhotoPreviews();
+        activePhotoChecklist = response.data;
+        await Promise.all(activePhotoChecklist.photos.map(async photo => {
+          const blob = await CleanovaAPI.staff.getTaskPhoto(photo.image_url);
+          photo.previewUrl = URL.createObjectURL(blob);
+          photoPreviewUrls.push(photo.previewUrl);
+        }));
+        renderPhotoChecklist();
+      }
+
+      async function openPhotoChecklist(taskId, stage) {
+        try {
+          const [taskResponse, checklistResponse] = await Promise.all([
+            CleanovaAPI.staff.getTaskDetail(taskId),
+            CleanovaAPI.staff.getTaskChecklist(taskId)
+          ]);
+          revokePhotoPreviews();
+          activePhotoTask = taskResponse.data;
+          activePhotoChecklist = checklistResponse.data;
+          await Promise.all(activePhotoChecklist.photos.map(async photo => {
+            const blob = await CleanovaAPI.staff.getTaskPhoto(photo.image_url);
+            photo.previewUrl = URL.createObjectURL(blob);
+            photoPreviewUrls.push(photo.previewUrl);
+          }));
+          activePhotoStage = stage;
+          photoUploadInProgress = false;
+          renderPhotoChecklist();
+          document.getElementById('modal-photo-checklist').style.display = 'flex';
+        } catch (err) {
+          showAlert('danger', `Không thể tải checklist ảnh: ${err.message}`);
+        }
+      }
+
+      document.getElementById('btn-submit-photo-checklist').addEventListener('click', async function () {
+        if (!activePhotoTask || !activePhotoChecklist) return;
+        const targetStatus = activePhotoStage === 'before' ? 'in_progress' : 'completed';
+        this.disabled = true;
+        try {
+          const result = await CleanovaAPI.staff.updateTaskStatus(activePhotoTask.id, targetStatus, activePhotoTask.staff_notes || '');
+          document.getElementById('modal-photo-checklist').style.display = 'none';
+          revokePhotoPreviews();
+          showAlert('success', result.message || (targetStatus === 'completed'
+            ? 'Đã gửi báo cáo và hoàn thành đơn hàng.'
+            : 'Đã bắt đầu công việc.'));
+          await loadStaffTasks();
+        } catch (err) {
+          alert(`Không thể cập nhật công việc: ${err.message}`);
+          this.disabled = false;
+          renderPhotoChecklist();
+        }
+      });
+      document.querySelectorAll('[data-close="modal-photo-checklist"]').forEach(button => {
+        button.addEventListener('click', revokePhotoPreviews);
+      });
 
       // ------------------------------------------------------------
       // 2. TẢI DANH SÁCH CÔNG VIỆC CỦA NHÂN VIÊN
@@ -771,8 +1169,12 @@
 
       function getStatusBadge(status) {
         switch (status) {
+          case 'assigned':
+            return '<span class="status-badge status-confirmed">📩 Chờ nhân viên xác nhận</span>';
           case 'confirmed':
-            return '<span class="status-badge status-confirmed">⏳ Chờ làm việc</span>';
+            return '<span class="status-badge status-confirmed">✅ Đã xác nhận công việc</span>';
+          case 'arrived':
+            return '<span class="status-badge status-confirmed">📍 Đã đến nhà khách</span>';
           case 'in_progress':
             return '<span class="status-badge status-in_progress">🧹 Đang thực hiện</span>';
           case 'completed':
@@ -821,19 +1223,38 @@
 
           // Action buttons theo luồng quy trình
           let quickActionsHtml = '';
-          if (task.status === 'confirmed') {
+          if (task.status === 'assigned') {
             quickActionsHtml = `
-              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="in_progress" style="background: #7C3AED; border-color: #7C3AED;">
-                ▶️ Bắt đầu làm việc
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="confirmed">
+                ✅ Xác nhận công việc
+              </button>
+            `;
+          } else if (task.status === 'confirmed') {
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="arrived" style="background:#2563EB;border-color:#2563EB;">
+                📍 Đã đến nhà khách hàng
+              </button>
+            `;
+          } else if (task.status === 'arrived') {
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="before" style="background: #7C3AED; border-color: #7C3AED;">
+                📷 Chụp ảnh Before & bắt đầu
               </button>
             `;
           } else if (task.status === 'in_progress') {
             quickActionsHtml = `
-              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="completed" style="background: #059669; border-color: #059669;">
-                ✅ Nghiệm thu & Hoàn thành
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="after" style="background: #059669; border-color: #059669;">
+                📷 Chụp ảnh After & hoàn thành
+              </button>
+            `;
+          } else if (task.status === 'completed') {
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-view-photo-report" data-id="${task.id}" style="background: #0F766E; border-color: #0F766E;">
+                🖼️ Xem ảnh Before / After
               </button>
             `;
           }
+          const canCancel = ['assigned', 'confirmed', 'arrived', 'in_progress'].includes(task.status);
 
           return `
             <div class="task-card" id="task-card-${task.id}">
@@ -868,7 +1289,7 @@
                 </div>
                 <div class="task-info-item">
                   <span class="task-info-label">💵 Giá trị đơn</span>
-                  <span class="task-info-val" style="color: #059669;">${price} (${task.payment_status === 'paid' ? 'Đã thanh toán' : 'Thu tiền mặt'})</span>
+                  <span class="task-info-val" style="color: #059669;">${price} (${task.payment_status === 'paid' ? 'Đã thanh toán' : task.payment_method === 'cash' ? 'Thu tiền mặt' : 'Chờ thanh toán'})</span>
                 </div>
               </div>
 
@@ -902,6 +1323,16 @@
                   <strong>📝 Ghi chú ca trực của bạn:</strong> "${task.staff_notes}"
                 </div>
               ` : ''}
+              ${task.cancel_reason ? `
+                <div class="task-notes-box" style="background:#FEF2F2;color:#991B1B;">
+                  <strong>Lý do hủy:</strong> ${escapePhotoText(task.cancel_reason)}
+                </div>
+              ` : ''}
+              ${Number(task.tip_amount || 0) > 0 ? `
+                <div class="task-notes-box" style="background:#ECFDF5;color:#065F46;">
+                  <strong>💝 Khách đã tip:</strong> ${formatPriceVND(task.tip_amount)}
+                </div>
+              ` : ''}
 
               <!-- Thanh hành động -->
               <div class="task-actions-bar">
@@ -909,6 +1340,7 @@
                   📄 Chi tiết & Báo cáo
                 </button>
                 ${quickActionsHtml}
+                ${canCancel ? `<button type="button" class="btn btn-danger btn-sm btn-cancel-task" data-id="${task.id}">✖ Hủy công việc</button>` : ''}
               </div>
             </div>
           `;
@@ -922,22 +1354,46 @@
           });
         });
 
-        // Gắn sự kiện nút Thao tác nhanh (Bắt đầu làm / Hoàn thành)
+        // Thao tác nhanh theo từng bước nhận việc, đến nhà và chụp ảnh.
         container.querySelectorAll('.btn-quick-action').forEach(btn => {
-          btn.addEventListener('click', async function () {
+          btn.addEventListener('click', function () {
             const taskId = parseInt(this.dataset.id, 10);
-            const targetStatus = this.dataset.action;
-            const actionText = targetStatus === 'in_progress' ? 'Bắt đầu làm việc' : 'Xác nhận hoàn thành';
-
-            if (confirm(`Bạn có chắc chắn muốn chuyển trạng thái công việc này thành "${actionText}"?`)) {
-              try {
-                await CleanovaAPI.staff.updateTaskStatus(taskId, targetStatus);
-                showAlert('success', `Đã cập nhật trạng thái công việc thành công!`);
-                await loadStaffTasks();
-              } catch (err) {
-                showAlert('danger', 'Lỗi: ' + err.message);
-              }
+            const action = this.dataset.action;
+            if (action === 'before' || action === 'after') {
+              openPhotoChecklist(taskId, action);
+              return;
             }
+            this.disabled = true;
+            CleanovaAPI.staff.updateTaskStatus(taskId, action)
+              .then(async result => {
+                showAlert('success', result.message || 'Đã cập nhật công việc.');
+                await loadStaffTasks();
+              })
+              .catch(err => {
+                alert(`Không thể cập nhật công việc: ${err.message}`);
+                this.disabled = false;
+              });
+          });
+        });
+        container.querySelectorAll('.btn-cancel-task').forEach(btn => {
+          btn.addEventListener('click', async function () {
+            const reason = window.prompt('Nhập lý do hủy công việc (bắt buộc, ít nhất 5 ký tự):');
+            if (!reason || reason.trim().length < 5) {
+              if (reason !== null) alert('Lý do hủy cần có ít nhất 5 ký tự.');
+              return;
+            }
+            try {
+              await CleanovaAPI.staff.updateTaskStatus(parseInt(this.dataset.id, 10), 'cancelled', '', reason.trim());
+              showAlert('success', 'Đã hủy công việc và lưu lý do.');
+              await loadStaffTasks();
+            } catch (err) {
+              alert(`Không thể hủy công việc: ${err.message}`);
+            }
+          });
+        });
+        container.querySelectorAll('.btn-view-photo-report').forEach(btn => {
+          btn.addEventListener('click', function () {
+            openPhotoChecklist(parseInt(this.dataset.id, 10), 'after');
           });
         });
       }
@@ -978,6 +1434,7 @@
           document.getElementById('task-modal-id').value = task.id;
           document.getElementById('modal-task-title').textContent = `Công Việc #${task.booking_code}`;
           document.getElementById('task-modal-status-select').value = task.status;
+          document.getElementById('task-modal-status-select').dataset.originalStatus = task.status;
           document.getElementById('task-modal-staff-notes').value = task.staff_notes || '';
 
           const content = document.getElementById('modal-task-content');
@@ -1024,13 +1481,28 @@
         const taskId = parseInt(document.getElementById('task-modal-id').value, 10);
         const newStatus = document.getElementById('task-modal-status-select').value;
         const staffNotes = document.getElementById('task-modal-staff-notes').value.trim();
+        const originalStatus = document.getElementById('task-modal-status-select').dataset.originalStatus;
+        if ((newStatus === 'in_progress' && originalStatus !== 'in_progress') ||
+            (newStatus === 'completed' && originalStatus !== 'completed')) {
+          document.getElementById('modal-task-detail').style.display = 'none';
+          await openPhotoChecklist(taskId, newStatus === 'in_progress' ? 'before' : 'after');
+          return;
+        }
+        let cancellationReason = '';
+        if (newStatus === 'cancelled') {
+          cancellationReason = window.prompt('Nhập lý do hủy công việc (bắt buộc, tối thiểu 5 ký tự):') || '';
+          if (cancellationReason.trim().length < 5) {
+            alert('Lý do hủy cần có ít nhất 5 ký tự.');
+            return;
+          }
+        }
 
         const submitBtn = document.getElementById('btn-submit-task-status');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Đang lưu...';
 
         try {
-          await CleanovaAPI.staff.updateTaskStatus(taskId, newStatus, staffNotes);
+          await CleanovaAPI.staff.updateTaskStatus(taskId, newStatus, staffNotes, cancellationReason.trim());
           showAlert('success', 'Đã cập nhật tiến độ công việc thành công!');
           document.getElementById('modal-task-detail').style.display = 'none';
           await loadStaffTasks();

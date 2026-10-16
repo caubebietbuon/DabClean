@@ -201,8 +201,19 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 ### Đơn đặt lịch (`/api/bookings`)
 - `POST /api/bookings` : Tạo yêu cầu đặt lịch dọn dẹp mới (*Yêu cầu Token*).
 - `GET /api/bookings/my` : Lấy danh sách đơn đặt của người dùng hiện tại (*Yêu cầu Token*).
+- `GET /api/bookings/notifications` : Lấy tối đa 50 thông báo trong ứng dụng của khách hàng đang đăng nhập (*Yêu cầu Token*).
+- `PATCH /api/bookings/notifications/:notificationId/read` : Đánh dấu thông báo của chính khách hàng đã đọc (*Yêu cầu Token*).
 - `GET /api/bookings/:id` : Lấy chi tiết đơn đặt cụ thể (*Yêu cầu Token*).
-- `PUT /api/bookings/:id/cancel` : Hủy đơn đặt lịch (*Yêu cầu Token*).
+- `PUT /api/bookings/:id/cancel` : Hủy đơn trước khi nhân viên đến, gửi lý do trong JSON `reason` (*Yêu cầu Token*).
+- `POST /api/bookings/:id/review` : Gửi đánh giá dịch vụ và nhân viên (`rating`, `staff_rating`, `comment`) sau khi hoàn thành.
+- `POST /api/bookings/:id/tip` : Ghi nhận tip tự nguyện từ 1.000 đến 1.000.000 VNĐ cho nhân viên được giao; khoản tip được thanh toán trực tiếp với nhân viên.
+
+### Nhân viên & Đối tác (`/api/staff`) - *Yêu cầu Token Staff/Admin*
+- `PATCH /api/staff/tasks/:id/status` : Nhân viên xác nhận nhận việc (`confirmed`), báo đã đến (`arrived`) hoặc hủy với `cancel_reason` bắt buộc.
+- `GET /api/staff/tasks/:id/checklist` : Lấy danh sách khu vực, ảnh Before/After và tiến độ từng góc chụp.
+- `POST /api/staff/tasks/:id/photos` : Tải ảnh JPEG lên dạng `multipart/form-data` (tối đa 8 MB sau nén), kèm `areaName`, `angleId`, `stage`, `capturedAt`, `latitude`, `longitude`.
+- `PATCH /api/staff/tasks/:id/status` : Chỉ cho chuyển sang `in_progress` sau khi đã báo đến và mọi khu vực có ảnh Before; chỉ cho chuyển sang `completed` khi mọi góc có ảnh After và đơn tiền mặt đã được xác nhận thu.
+- `POST /api/staff/tasks/:id/cash-payment` : Ghi nhận thu tiền mặt sau khi hoàn tất ảnh After; giao diện yêu cầu nhân viên vuốt thanh xác nhận.
 
 ### Quản trị viên (`/api/admin`) - *Yêu cầu Token có quyền Admin*
 - `GET /api/admin/stats` : Lấy số liệu thống kê tổng thể cho Dashboard.
@@ -220,6 +231,12 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 - **Mật khẩu an toàn:** Mật khẩu được băm 10 vòng muối (salt rounds) bằng thư viện `bcryptjs`. Không lưu mật khẩu thô trong cơ sở dữ liệu.
 - **Xác thực JWT:** Token có thời hạn sử dụng được mã hóa bằng Secret Key cấu hình trong file `.env`.
 - **Bảo vệ Endpoint:** Middleware kiểm tra token trước khi cho phép gọi các API cần quyền hạn; phân quyền chặt chẽ giữa `customer` và `admin`.
+- **Quy trình công việc:** Admin phân công đơn ở trạng thái `assigned`; nhân viên xác nhận, báo đã đến, tải ảnh Before/After, xác nhận tiền mặt bằng thao tác vuốt rồi gửi hoàn tất. Lý do hủy của nhân viên là bắt buộc và được lưu cùng đơn.
+- **Báo cáo ảnh công việc:** Cổng nhân viên yêu cầu ảnh Before cho mỗi khu vực trước khi bắt đầu và ảnh After khớp từng góc trước khi hoàn thành. Ảnh được nén JPEG trên trình duyệt, lưu dưới `backend/uploads/job-photos/` và chỉ nhân viên được phân công (hoặc Admin) mới tải xem được qua API; metadata thời gian chụp, thời gian nhận trên máy chủ và GPS được lưu trong bảng `booking_job_photos`.
+- **Đánh giá & tip:** Khách hàng có thể chấm sao dịch vụ và nhân viên sau khi đơn hoàn tất, đồng thời gửi tip tùy chọn. Ứng dụng chỉ ghi nhận số tiền tip; chưa tích hợp cổng thanh toán tip trực tuyến.
+- **Thông báo trong ứng dụng:** Khi nhân viên xác nhận nhận đơn, khách hàng nhận được thông báo kèm mã đơn, dịch vụ, lịch hẹn, địa chỉ và thông tin nhân viên. Thông báo được lưu idempotent, hiển thị trong trang `my-bookings.html`, cập nhật định kỳ và chỉ chủ tài khoản mới được đọc/đánh dấu đã đọc.
+- **MySQL:** Khi khởi động, ứng dụng mở rộng enum trạng thái đơn và bổ sung các cột lý do hủy, thời điểm đến/thu tiền, tiền tip và đánh giá nhân viên cho schema hiện có.
+- **Giới hạn xác minh:** GPS và thời điểm chụp lấy từ trình duyệt/thiết bị, không phải bằng chứng chống giả mạo tuyệt đối. Trong môi trường triển khai thực tế cần HTTPS, quyền riêng tư phù hợp và dịch vụ lưu trữ ảnh có kiểm soát truy cập/sao lưu.
 - **CORS & HTTP Headers:** Cấu hình bảo mật chia sẻ tài nguyên nguồn gốc chéo giúp frontend kết nối an toàn.
 - **Cơ chế dự phòng sự cố:** Nếu MySQL ngắt kết nối đột ngột, server không bị crash mà tự động chuyển tiếp dữ liệu an toàn.
 

@@ -465,7 +465,9 @@
             <select id="filter-booking-status" class="form-control" style="width: auto; padding: 6px 12px;">
               <option value="all">Tất cả đơn hàng</option>
               <option value="pending">Chờ xác nhận</option>
+              <option value="assigned">Đã giao nhân viên</option>
               <option value="confirmed">Đã xác nhận</option>
+              <option value="arrived">Nhân viên đã đến</option>
               <option value="in_progress">Đang thực hiện</option>
               <option value="completed">Đã hoàn thành</option>
               <option value="cancelled">Đã hủy bỏ</option>
@@ -1092,7 +1094,9 @@
               <td>
                 <select class="status-select" data-id="${b.id}">
                   <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Chờ xác nhận</option>
+                  <option value="assigned" ${b.status === 'assigned' ? 'selected' : ''}>Đã giao nhân viên</option>
                   <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Đã xác nhận</option>
+                  <option value="arrived" ${b.status === 'arrived' ? 'selected' : ''}>Nhân viên đã đến</option>
                   <option value="in_progress" ${b.status === 'in_progress' ? 'selected' : ''}>Đang làm</option>
                   <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Hoàn thành</option>
                   <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Hủy bỏ</option>
@@ -1106,8 +1110,17 @@
         tbody.querySelectorAll('.status-select').forEach(sel => {
           sel.addEventListener('change', async function () {
             const id = parseInt(this.dataset.id, 10);
+            let reason = '';
+            if (this.value === 'cancelled') {
+              reason = window.prompt('Nhập lý do hủy đơn (tối thiểu 5 ký tự):') || '';
+              if (reason.trim().length < 5) {
+                showAlert('warning', 'Cần nhập lý do hủy hợp lệ. Trạng thái đơn chưa thay đổi.');
+                await loadBookings();
+                return;
+              }
+            }
             try {
-              await CleanovaAPI.admin.updateBookingStatus(id, this.value);
+              await CleanovaAPI.admin.updateBookingStatus(id, this.value, reason.trim());
               showAlert('success', `Cập nhật trạng thái đơn #${id} thành '${this.value}'!`);
               await loadStats();
               await loadBookings();

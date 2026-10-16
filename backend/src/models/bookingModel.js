@@ -29,6 +29,39 @@ const BookingModel = {
     );
   },
 
+  async createBookingNotification({ user_id, booking_id, notification_type, title, message, data }) {
+    return await db.query(
+      `INSERT IGNORE INTO booking_notifications
+       (user_id, booking_id, notification_type, title, message, data)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [user_id, booking_id, notification_type, title, message, JSON.stringify(data)]
+    );
+  },
+
+  async getNotificationsByUserId(userId) {
+    return await db.query(
+      `SELECT id, booking_id, notification_type, title, message, data, is_read, created_at
+       FROM booking_notifications
+       WHERE user_id = ?
+       ORDER BY created_at DESC
+       LIMIT 50`,
+      [userId]
+    );
+  },
+
+  async markNotificationRead(notificationId, userId) {
+    const result = await db.query(
+      'UPDATE booking_notifications SET is_read = 1 WHERE user_id = ? AND id = ?',
+      [userId, notificationId]
+    );
+    if (result.affectedRows > 0) return true;
+    const rows = await db.query(
+      'SELECT id FROM booking_notifications WHERE user_id = ? AND id = ? LIMIT 1',
+      [userId, notificationId]
+    );
+    return rows.length > 0;
+  },
+
   // Lấy danh sách công việc được phân công cho một nhân viên (Staff Portal)
   async getByStaffId(staffId) {
     return await db.query(
@@ -62,26 +95,74 @@ const BookingModel = {
   // Phân công nhân viên thực hiện đơn đặt lịch (Admin)
   async assignStaff(bookingId, staffId) {
     const result = await db.query(
-      'UPDATE bookings SET staff_id = ?, assigned_at = NOW() WHERE id = ?',
-      [staffId, bookingId]
+      `UPDATE bookings
+       SET staff_id = ?, assigned_at = NOW(), status = ?
+       WHERE id = ?`,
+      [staffId, staffId ? 'assigned' : 'pending', bookingId]
     );
     return result.affectedRows > 0;
   },
 
   // Nhân viên cập nhật trạng thái công việc được giao
-  async updateStaffTaskStatus(bookingId, staffId, status, staff_notes = '') {
+  async updateStaffTaskStatus(bookingId, staffId, status, staff_notes = '', cancel_reason = '') {
     const result = await db.query(
-      'UPDATE bookings SET status = ?, staff_notes = ? WHERE id = ? AND staff_id = ?',
-      [status, staff_notes, bookingId, staffId]
+      `UPDATE bookings
+       SET status = ?, staff_notes = ?, cancel_reason = ?,
+           arrived_at = IF(? = 'arrived', COALESCE(arrived_at, NOW()), arrived_at)
+       WHERE id = ? AND staff_id = ?`,
+      [status, staff_notes, cancel_reason || null, status, bookingId, staffId]
     );
     return result.affectedRows > 0;
   },
 
-  // Cập nhật trạng thái đơn (User hủy đơn hoặc Admin đổi trạng thái)
-  async updateStatus(id, status) {
+  async markCashPaymentReceived(bookingId, staffId) {
     const result = await db.query(
-      'UPDATE bookings SET status = ? WHERE id = ?',
-      [status, id]
+      `UPDATE bookings SET payment_status = 'paid', paid_at = NOW()
+       WHERE id = ? AND staff_id = ? AND status = 'in_progress'
+         AND payment_method = 'cash' AND payment_status = 'unpaid'`,
+      [bookingId, staffId]
+    );
+    return result.affectedRows > 0;
+  },
+
+  async getJobPhotos(bookingId) {
+    return await db.query(
+      'SELECT * FROM booking_job_photos WHERE booking_id = ? ORDER BY created_at ASC, id ASC',
+      [bookingId]
+    );
+  },
+
+  async getJobPhotoByUrl(imageUrl) {
+    const rows = await db.query(
+      'SELECT * FROM booking_job_photos WHERE image_url = ? LIMIT 1',
+      [imageUrl]
+    );
+    return rows[0] || null;
+  },
+
+  async addJobPhoto({ booking_id, area_name, angle_id, stage, image_url, captured_at, latitude, longitude }) {
+    return await db.query(
+      `INSERT INTO booking_job_photos
+       (booking_id, area_name, angle_id, stage, image_url, captured_at, latitude, longitude)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [booking_id, area_name, angle_id, stage, image_url, captured_at, latitude, longitude]
+    );
+  },
+
+  // Cập nhật trạng thái đơn (User hủy đơn hoặc Admin đổi trạng thái)
+  async updateStatus(id, status, cancel_reason = '') {
+    const result = await db.query(
+      'UPDATE bookings SET status = ?, cancel_reason = ? WHERE id = ?',
+      [status, cancel_reason || null, id]
+    );
+    return result.affectedRows > 0;
+  },
+
+  async addTip({ booking_id, user_id, amount }) {
+    const result = await db.query(
+      `UPDATE bookings SET tip_amount = ?, tip_created_at = NOW()
+       WHERE id = ? AND user_id = ? AND status = 'completed' AND tip_amount = 0`,
+      [amount, booking_id, user_id]
     );
     return result.affectedRows > 0;
   },
@@ -96,10 +177,10 @@ const BookingModel = {
   },
 
   // Tạo đánh giá chất lượng dịch vụ cho đơn đã hoàn thành
-  async createReview({ booking_id, user_id, service_id, rating, comment }) {
+  async createReview({ booking_id, user_id, service_id, rating, staff_rating, comment }) {
     const result = await db.query(
-      'INSERT INTO reviews (booking_id, user_id, service_id, rating, comment) VALUES (?, ?, ?, ?, ?)',
-      [booking_id, user_id, service_id, rating, comment || '']
+      'INSERT INTO reviews (booking_id, user_id, service_id, rating, staff_rating, comment) VALUES (?, ?, ?, ?, ?, ?)',
+      [booking_id, user_id, service_id, rating, staff_rating, comment || '']
     );
     return result.insertId;
   },

@@ -487,6 +487,29 @@ input:focus-visible {
   line-height: 1.6;
 }
 
+.home-link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin: -8px 0 22px;
+  padding: 9px 14px;
+  border: 1px solid #d8e5dc;
+  border-radius: 9px;
+  color: #447b60;
+  background: #f7fbf8;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+  transition: background-color .18s ease, border-color .18s ease, transform .16s ease;
+}
+
+.home-link-button:hover {
+  border-color: #b8d2c1;
+  background: #edf6f0;
+  transform: translateY(-1px);
+}
+
 .field+.field {
   margin-top: 17px;
 }

@@ -180,6 +180,11 @@ const inMemoryData = {
       staff_id: 3,
       staff_name: 'Trần Văn Bảo',
       staff_notes: 'Đã liên hệ khách, chuẩn bị bộ lau đa năng và dung dịch hữu cơ.',
+      cancel_reason: null,
+      arrived_at: null,
+      paid_at: null,
+      tip_amount: 0,
+      tip_created_at: null,
       assigned_at: new Date('2026-10-14T10:00:00Z'),
       created_at: new Date('2026-10-14T10:00:00Z')
     },
@@ -205,6 +210,11 @@ const inMemoryData = {
       staff_id: 3,
       staff_name: 'Trần Văn Bảo',
       staff_notes: 'Đã giặt xong, khách nghiệm thu hài lòng 100%.',
+      cancel_reason: null,
+      arrived_at: new Date('2026-10-22T13:50:00Z'),
+      paid_at: new Date('2026-10-22T16:00:00Z'),
+      tip_amount: 0,
+      tip_created_at: null,
       assigned_at: new Date('2026-10-12T15:30:00Z'),
       created_at: new Date('2026-10-12T15:20:00Z')
     },
@@ -255,6 +265,11 @@ const inMemoryData = {
       staff_id: null,
       staff_name: null,
       staff_notes: null,
+      cancel_reason: null,
+      arrived_at: null,
+      paid_at: null,
+      tip_amount: 0,
+      tip_created_at: null,
       assigned_at: null,
       created_at: new Date('2026-10-15T01:00:00Z')
     }
@@ -313,19 +328,88 @@ const inMemoryData = {
   ]
 };
 
+inMemoryData.jobPhotos = [];
+inMemoryData.bookingNotifications = [];
+
 // Khởi tạo và kiểm tra kết nối MySQL
 async function initDatabase() {
+  let connection;
   try {
     pool = mysql.createPool(dbConfig);
-    const connection = await pool.getConnection();
+    connection = await pool.getConnection();
+    const [bookingColumns] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bookings'`
+    );
+    const existingBookingColumns = new Set(bookingColumns.map(column => column.COLUMN_NAME));
+    await connection.query(`
+      ALTER TABLE bookings
+      MODIFY status ENUM('pending', 'assigned', 'confirmed', 'arrived', 'in_progress', 'completed', 'cancelled')
+      NOT NULL DEFAULT 'pending'
+    `);
+    const bookingColumnDefinitions = {
+      cancel_reason: 'TEXT NULL',
+      arrived_at: 'DATETIME NULL',
+      paid_at: 'DATETIME NULL',
+      tip_amount: 'DECIMAL(12, 2) NOT NULL DEFAULT 0.00',
+      tip_created_at: 'DATETIME NULL'
+    };
+    for (const [column, definition] of Object.entries(bookingColumnDefinitions)) {
+      if (!existingBookingColumns.has(column)) {
+        await connection.query(`ALTER TABLE bookings ADD COLUMN ${column} ${definition}`);
+      }
+    }
+    const [reviewColumns] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'reviews'`
+    );
+    if (!reviewColumns.some(column => column.COLUMN_NAME === 'staff_rating')) {
+      await connection.query('ALTER TABLE reviews ADD COLUMN staff_rating TINYINT UNSIGNED NULL AFTER rating');
+    }
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS booking_job_photos (
+        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        booking_id INT NOT NULL,
+        area_name VARCHAR(120) NOT NULL,
+        angle_id VARCHAR(64) NOT NULL,
+        stage ENUM('before', 'after') NOT NULL,
+        image_url VARCHAR(255) NOT NULL,
+        captured_at DATETIME NOT NULL,
+        latitude DECIMAL(10, 7) NOT NULL,
+        longitude DECIMAL(10, 7) NOT NULL,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_booking_job_photos_booking
+          FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+        UNIQUE KEY uq_booking_job_photo_stage (booking_id, area_name, angle_id, stage),
+        INDEX idx_booking_job_photos_booking (booking_id)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS booking_notifications (
+        id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        booking_id INT NOT NULL,
+        notification_type VARCHAR(50) NOT NULL,
+        title VARCHAR(160) NOT NULL,
+        message TEXT NOT NULL,
+        data JSON NULL,
+        is_read TINYINT(1) NOT NULL DEFAULT 0,
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uq_booking_notification_type (booking_id, notification_type),
+        INDEX idx_booking_notifications_user (user_id, is_read, created_at),
+        CONSTRAINT fk_booking_notifications_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_booking_notifications_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
     console.log(`[Database] Đã kết nối thành công tới MySQL Server (${dbConfig.host}:${dbConfig.port}/${dbConfig.database})`);
     isConnectedToMySQL = true;
-    connection.release();
   } catch (err) {
     console.warn(`[Database] Lưu ý: Chưa thể kết nối MySQL (${err.code || err.message}).`);
     console.warn(`[Database] Hệ thống tự động chuyển sang chế độ an toàn (In-Memory Database) để ứng dụng hoạt động ngay.`);
     console.warn(`[Database] Khi bạn khởi động MySQL/XAMPP và tạo cleanova_db, hãy khởi động lại server để kết nối trực tiếp.`);
     isConnectedToMySQL = false;
+  } finally {
+    if (connection) connection.release();
   }
 }
 
@@ -348,6 +432,91 @@ async function query(sql, params = []) {
 // Xử lý truy vấn mô phỏng khi chưa kết nối MySQL
 function queryInMemory(sql, params = []) {
   const normalizedSql = sql.trim().toLowerCase();
+
+  if (normalizedSql.includes('from booking_notifications')) {
+    const userId = parseInt(params[0], 10);
+    let notifications = inMemoryData.bookingNotifications
+      .filter(notification => notification.user_id === userId);
+    if (normalizedSql.includes('where user_id = ? and id = ?')) {
+      const notificationId = parseInt(params[1], 10);
+      notifications = notifications.filter(notification => notification.id === notificationId);
+    }
+    return notifications
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 50)
+      .map(notification => ({ ...notification }));
+  }
+
+  if (normalizedSql.startsWith('insert ignore into booking_notifications')) {
+    const [userId, bookingId, type, title, message, data] = params;
+    const duplicate = inMemoryData.bookingNotifications.some(notification =>
+      notification.booking_id === parseInt(bookingId, 10) &&
+      notification.notification_type === type
+    );
+    if (duplicate) return { insertId: 0, affectedRows: 0 };
+    const id = inMemoryData.bookingNotifications.length
+      ? Math.max(...inMemoryData.bookingNotifications.map(notification => notification.id)) + 1
+      : 1;
+    inMemoryData.bookingNotifications.push({
+      id,
+      user_id: parseInt(userId, 10),
+      booking_id: parseInt(bookingId, 10),
+      notification_type: type,
+      title,
+      message,
+      data: data ? JSON.parse(data) : null,
+      is_read: 0,
+      created_at: new Date()
+    });
+    return { insertId: id, affectedRows: 1 };
+  }
+
+  if (normalizedSql.startsWith('update booking_notifications')) {
+    const [userId, notificationId] = params;
+    const notification = inMemoryData.bookingNotifications.find(item =>
+      item.user_id === parseInt(userId, 10) && item.id === parseInt(notificationId, 10)
+    );
+    if (!notification) return { affectedRows: 0 };
+    notification.is_read = 1;
+    return { affectedRows: 1 };
+  }
+
+  if (normalizedSql.includes('from booking_job_photos')) {
+    if (normalizedSql.includes('where image_url = ?')) {
+      const photo = inMemoryData.jobPhotos.find(item => item.image_url === params[0]);
+      return photo ? [{ ...photo }] : [];
+    }
+    const bookingId = parseInt(params[0], 10);
+    return inMemoryData.jobPhotos.filter(photo => photo.booking_id === bookingId).map(photo => ({ ...photo }));
+  }
+
+  if (normalizedSql.startsWith('insert into booking_job_photos')) {
+    const [booking_id, area_name, angle_id, stage, image_url, captured_at, latitude, longitude] = params;
+    const duplicate = inMemoryData.jobPhotos.some(photo =>
+      photo.booking_id === parseInt(booking_id, 10) &&
+      photo.area_name === area_name &&
+      photo.angle_id === angle_id &&
+      photo.stage === stage
+    );
+    if (duplicate) return { insertId: 0, affectedRows: 0 };
+
+    const id = inMemoryData.jobPhotos.length
+      ? Math.max(...inMemoryData.jobPhotos.map(photo => photo.id)) + 1
+      : 1;
+    inMemoryData.jobPhotos.push({
+      id,
+      booking_id: parseInt(booking_id, 10),
+      area_name,
+      angle_id,
+      stage,
+      image_url,
+      captured_at,
+      latitude: Number(latitude),
+      longitude: Number(longitude),
+      created_at: new Date()
+    });
+    return { insertId: id, affectedRows: 1 };
+  }
 
   // 0. Thống kê & Đếm (COUNT)
   if (normalizedSql.includes('count(')) {
@@ -661,15 +830,44 @@ function queryInMemory(sql, params = []) {
 
   // 9. UPDATE bookings (Trạng thái / Phân công nhân viên / Ghi chú công việc)
   if (normalizedSql.startsWith('update bookings')) {
+    if (normalizedSql.includes("payment_status = 'paid'")) {
+      const bookingId = parseInt(params[0], 10);
+      const staffId = parseInt(params[1], 10);
+      const booking = inMemoryData.bookings.find(item =>
+        item.id === bookingId && item.staff_id === staffId &&
+        item.status === 'in_progress' && item.payment_method === 'cash' &&
+        item.payment_status === 'unpaid'
+      );
+      if (!booking) return { affectedRows: 0 };
+      booking.payment_status = 'paid';
+      booking.paid_at = new Date();
+      return { affectedRows: 1 };
+    }
+
+    if (normalizedSql.includes('tip_amount = ?')) {
+      const [amount, bookingId, userId] = params;
+      const booking = inMemoryData.bookings.find(item =>
+        item.id === parseInt(bookingId, 10) &&
+        item.user_id === parseInt(userId, 10) &&
+        item.status === 'completed' && Number(item.tip_amount || 0) === 0
+      );
+      if (!booking) return { affectedRows: 0 };
+      booking.tip_amount = Number(amount);
+      booking.tip_created_at = new Date();
+      return { affectedRows: 1 };
+    }
+
     if (normalizedSql.includes('where id = ? and staff_id = ?')) {
       const status = params[0];
       const staff_notes = params[1];
-      const id = parseInt(params[2], 10);
-      const staffId = parseInt(params[3], 10);
+      const id = parseInt(params[4], 10);
+      const staffId = parseInt(params[5], 10);
       const booking = inMemoryData.bookings.find(b => b.id === id && b.staff_id === staffId);
       if (booking) {
         booking.status = status;
         if (staff_notes !== undefined) booking.staff_notes = staff_notes;
+        booking.cancel_reason = params[2] || null;
+        if (status === 'arrived' && !booking.arrived_at) booking.arrived_at = new Date();
         return { affectedRows: 1 };
       }
       return { affectedRows: 0 };
@@ -680,12 +878,10 @@ function queryInMemory(sql, params = []) {
     if (booking) {
       if (normalizedSql.includes('staff_id = ?')) {
         booking.staff_id = params[0] ? parseInt(params[0], 10) : null;
-        booking.assigned_at = new Date();
+        booking.assigned_at = booking.staff_id ? new Date() : null;
         const staff = inMemoryData.users.find(u => u.id === booking.staff_id);
         booking.staff_name = staff ? staff.name : null;
-        if (booking.status === 'pending' && booking.staff_id) {
-          booking.status = 'confirmed';
-        }
+        booking.status = params[1] || 'pending';
       }
       if (normalizedSql.includes('booking_date = ?')) {
         booking.booking_date = params[0];
@@ -693,8 +889,12 @@ function queryInMemory(sql, params = []) {
         if (params[2] !== undefined) booking.notes = params[2];
         return { affectedRows: 1 };
       }
-      if (normalizedSql.includes('status = ?')) {
+      if (normalizedSql.includes('status = ?') && !normalizedSql.includes('staff_id = ?')) {
         booking.status = params[0];
+      }
+      if (normalizedSql.includes('cancel_reason = ?')) {
+        const reasonIndex = normalizedSql.includes('staff_notes = ?') ? 2 : 1;
+        booking.cancel_reason = params[reasonIndex] || null;
       }
       if (normalizedSql.includes('staff_notes = ?')) {
         booking.staff_notes = params[1] || booking.staff_notes;
@@ -744,7 +944,7 @@ function queryInMemory(sql, params = []) {
 
   // 12. INSERT INTO reviews
   if (normalizedSql.startsWith('insert into reviews')) {
-    const [booking_id, user_id, service_id, rating, comment] = params;
+    const [booking_id, user_id, service_id, rating, staff_rating, comment] = params;
     const newId = (inMemoryData.reviews || []).length + 1;
     if (!inMemoryData.reviews) inMemoryData.reviews = [];
     inMemoryData.reviews.unshift({
@@ -753,6 +953,7 @@ function queryInMemory(sql, params = []) {
       user_id: parseInt(user_id, 10),
       service_id: parseInt(service_id, 10),
       rating: parseInt(rating, 10) || 5,
+      staff_rating: parseInt(staff_rating, 10) || null,
       comment: comment || '',
       created_at: new Date()
     });

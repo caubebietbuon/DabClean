@@ -116,6 +116,31 @@ const bookingController = {
     }
   },
 
+  async getMyNotifications(req, res, next) {
+    try {
+      const notifications = await BookingModel.getNotificationsByUserId(req.user.id);
+      res.json({ success: true, data: notifications });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async markNotificationRead(req, res, next) {
+    try {
+      const notificationId = Number(req.params.notificationId);
+      if (!Number.isSafeInteger(notificationId) || notificationId < 1) {
+        return res.status(400).json({ success: false, message: 'Mã thông báo không hợp lệ.' });
+      }
+      const updated = await BookingModel.markNotificationRead(notificationId, req.user.id);
+      if (!updated) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy thông báo của tài khoản này.' });
+      }
+      res.json({ success: true, message: 'Đã đánh dấu thông báo đã đọc.' });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   // 3. Xem chi tiết đơn đặt (GET /api/bookings/:id)
   async getBookingDetail(req, res, next) {
     try {
@@ -144,6 +169,7 @@ const bookingController = {
   async cancelBooking(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
+      const reason = typeof req.body.reason === 'string' ? req.body.reason.trim() : '';
       const booking = await BookingModel.getById(id);
 
       if (!booking) {
@@ -155,15 +181,15 @@ const bookingController = {
         return res.status(403).json({ success: false, message: 'Bạn không có quyền thao tác trên đơn này.' });
       }
 
-      // Chỉ cho phép hủy khi đơn còn ở trạng thái chờ duyệt (pending) hoặc đã nhận (confirmed)
-      if (booking.status === 'completed') {
-        return res.status(400).json({ success: false, message: 'Đơn dịch vụ đã hoàn thành, không thể hủy.' });
-      }
-      if (booking.status === 'cancelled') {
-        return res.status(400).json({ success: false, message: 'Đơn này đã được hủy trước đó.' });
+      if (!['pending', 'assigned', 'confirmed'].includes(booking.status)) {
+        return res.status(400).json({ success: false, message: 'Chỉ có thể hủy đơn trước khi nhân viên đến và bắt đầu công việc.' });
       }
 
-      await BookingModel.updateStatus(id, 'cancelled');
+      if (reason.length < 5 || reason.length > 500) {
+        return res.status(400).json({ success: false, message: 'Lý do hủy đơn phải dài từ 5 đến 500 ký tự.' });
+      }
+
+      await BookingModel.updateStatus(id, 'cancelled', reason);
 
       res.json({
         success: true,
@@ -214,7 +240,7 @@ const bookingController = {
   async createReview(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
-      const { rating = 5, comment = '' } = req.body;
+      const { rating = 5, staff_rating = 5, comment = '' } = req.body;
 
       const booking = await BookingModel.getById(id);
       if (!booking) {
@@ -239,6 +265,9 @@ const bookingController = {
         user_id: req.user.id,
         service_id: booking.service_id,
         rating: Math.min(5, Math.max(1, parseInt(rating, 10) || 5)),
+        staff_rating: booking.staff_id
+          ? Math.min(5, Math.max(1, parseInt(staff_rating, 10) || 5))
+          : null,
         comment
       });
 
@@ -256,10 +285,52 @@ const bookingController = {
   async getBookingReview(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
+      const booking = await BookingModel.getById(id);
+      if (!booking) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
+      }
+      if (booking.user_id !== req.user.id && req.user.role !== 'admin') {
+        return res.status(403).json({ success: false, message: 'Bạn không có quyền xem đánh giá của đơn này.' });
+      }
       const review = await BookingModel.getReviewByBookingId(id);
       res.json({
         success: true,
         data: review
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async addTip(req, res, next) {
+    try {
+      const id = parseInt(req.params.id, 10);
+      const amount = Number(req.body.amount);
+      const booking = await BookingModel.getById(id);
+      if (!booking) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
+      }
+      if (booking.user_id !== req.user.id) {
+        return res.status(403).json({ success: false, message: 'Bạn không có quyền gửi tip cho đơn này.' });
+      }
+      if (booking.status !== 'completed' || !booking.staff_id) {
+        return res.status(409).json({ success: false, message: 'Chỉ có thể tip cho nhân viên sau khi hoàn thành đơn.' });
+      }
+      if (!Number.isSafeInteger(amount) || amount < 1000 || amount > 1000000) {
+        return res.status(400).json({ success: false, message: 'Tiền tip phải từ 1.000 đến 1.000.000 đồng.' });
+      }
+      if (Number(booking.tip_amount || 0) > 0) {
+        return res.status(409).json({ success: false, message: 'Bạn đã gửi tip cho nhân viên của đơn này.' });
+      }
+
+      const saved = await BookingModel.addTip({ booking_id: id, user_id: req.user.id, amount });
+      if (!saved) {
+        return res.status(409).json({ success: false, message: 'Không thể lưu tip; đơn có thể vừa được cập nhật.' });
+      }
+      res.status(201).json({
+        success: true,
+        message: 'Đã ghi nhận tip tự nguyện của bạn dành cho nhân viên.',
+        data: { amount }
       });
     } catch (err) {
       next(err);
