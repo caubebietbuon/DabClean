@@ -5,6 +5,9 @@
 # và thư mục upload tạm. Mọi thứ khác đều được push.
 # ============================================================
 
+# Dependencies — KHÔNG commit (nặng ~280MB, cài lại bằng: npm install)
+node_modules/
+
 # Environment variables (chứa mật khẩu MySQL, JWT secret)
 .env
 backend/.env
