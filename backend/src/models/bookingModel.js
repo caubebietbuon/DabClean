@@ -43,12 +43,14 @@ const BookingModel = {
     quote_min_price,
     quote_max_price,
     quote_notes,
-    construction_notes
+    construction_notes,
+    addons,
+    addon_amount
   }) {
     const result = await db.query(
       `INSERT INTO bookings 
-       (booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, duration_hours, staff_wage, wage_status, package_type, shift_choice, recipient_name, recipient_age, recipient_gender, care_scope_notes, pricing_type, building_type, area_m2, floors, construction_status, dirt_severity, glass_cleaning, stubborn_stains, furniture_status, worker_count, work_days, quote_status, quote_min_price, quote_max_price, quote_notes, construction_notes) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, duration_hours, staff_wage, wage_status, package_type, shift_choice, recipient_name, recipient_age, recipient_gender, care_scope_notes, pricing_type, building_type, area_m2, floors, construction_status, dirt_severity, glass_cleaning, stubborn_stains, furniture_status, worker_count, work_days, quote_status, quote_min_price, quote_max_price, quote_notes, construction_notes, addons, addon_amount) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         booking_code,
         user_id,
@@ -87,7 +89,9 @@ const BookingModel = {
         quote_min_price !== null && quote_min_price !== undefined ? parseFloat(quote_min_price) : null,
         quote_max_price !== null && quote_max_price !== undefined ? parseFloat(quote_max_price) : null,
         quote_notes || null,
-        construction_notes || null
+        construction_notes || null,
+        addons ? JSON.stringify(addons) : null,
+        addon_amount ? parseFloat(addon_amount) : 0.00
       ]
     );
     return result.insertId;
@@ -327,7 +331,7 @@ const BookingModel = {
     );
   },
 
-  // Lấy thống kê tổng quan (Dashboard Admin)
+  // Lấy thống kê tổng quan và tài chính chi tiết (Dashboard Admin)
   async getStats() {
     const rows = await db.query(
       `SELECT 
@@ -336,21 +340,52 @@ const BookingModel = {
         (SELECT COUNT(*) FROM services WHERE is_active = 1) AS total_services,
         (SELECT COUNT(*) FROM bookings) AS total_bookings,
         (SELECT COUNT(*) FROM bookings WHERE status = 'pending') AS pending_bookings,
-        (SELECT IFNULL(SUM(total_price), 0) FROM bookings WHERE status = 'completed') AS total_revenue`
+        (SELECT COUNT(*) FROM bookings WHERE status = 'in_progress') AS in_progress_bookings,
+        (SELECT COUNT(*) FROM bookings WHERE status = 'completed') AS completed_bookings,
+        (SELECT COUNT(*) FROM bookings WHERE status = 'cancelled') AS cancelled_bookings,
+        (SELECT IFNULL(SUM(total_price), 0) FROM bookings) AS gross_booking_value,
+        (SELECT IFNULL(SUM(total_price), 0) FROM bookings WHERE payment_status = 'paid') AS collected_revenue,
+        (SELECT IFNULL(SUM(total_price), 0) FROM bookings WHERE status = 'completed') AS total_revenue,
+        (SELECT IFNULL(SUM(staff_wage), 0) FROM bookings WHERE wage_status = 'paid') AS settled_staff_wages,
+        (SELECT IFNULL(SUM(staff_wage), 0) FROM bookings WHERE status = 'completed') AS total_staff_wages,
+        (SELECT IFNULL(SUM(total_price), 0) FROM bookings WHERE payment_status = 'refunded') AS refunded_amount,
+        (SELECT IFNULL(SUM(balance), 0) FROM wallets) AS total_wallet_balance,
+        (SELECT COUNT(*) FROM wallet_transactions) AS total_wallet_transactions,
+        (SELECT COUNT(*) FROM vouchers WHERE is_active = 1) AS active_vouchers,
+        (SELECT COUNT(*) FROM voucher_usages) AS total_voucher_usages`
     );
     const stats = rows[0] || {};
+    const totalRev = parseFloat(stats.total_revenue) || 0;
+    const staffWages = parseFloat(stats.total_staff_wages) || 0;
+    const refunded = parseFloat(stats.refunded_amount) || 0;
+    const estimatedNetProfit = Math.max(0, totalRev - staffWages - refunded);
+
     return {
-      total_users: stats.total_users || 0,
-      total_staff: stats.total_staff || 0,
-      total_services: stats.total_services || 0,
-      total_bookings: stats.total_bookings || 0,
-      pending_bookings: stats.pending_bookings || 0,
-      total_revenue: stats.total_revenue || 0,
-      totalUsers: stats.totalUsers || stats.total_users || 0,
-      totalStaff: stats.totalStaff || stats.total_staff || 0,
-      activeServices: stats.activeServices || stats.total_services || 0,
-      totalBookings: stats.totalBookings || stats.total_bookings || 0,
-      totalRevenue: stats.totalRevenue || stats.total_revenue || 0
+      total_users: parseInt(stats.total_users, 10) || 0,
+      total_staff: parseInt(stats.total_staff, 10) || 0,
+      total_services: parseInt(stats.total_services, 10) || 0,
+      total_bookings: parseInt(stats.total_bookings, 10) || 0,
+      pending_bookings: parseInt(stats.pending_bookings, 10) || 0,
+      in_progress_bookings: parseInt(stats.in_progress_bookings, 10) || 0,
+      completed_bookings: parseInt(stats.completed_bookings, 10) || 0,
+      cancelled_bookings: parseInt(stats.cancelled_bookings, 10) || 0,
+      gross_booking_value: parseFloat(stats.gross_booking_value) || 0,
+      collected_revenue: parseFloat(stats.collected_revenue) || 0,
+      total_revenue: totalRev,
+      total_staff_wages: staffWages,
+      settled_staff_wages: parseFloat(stats.settled_staff_wages) || 0,
+      refunded_amount: refunded,
+      estimated_net_profit: estimatedNetProfit,
+      total_wallet_balance: parseFloat(stats.total_wallet_balance) || 0,
+      total_wallet_transactions: parseInt(stats.total_wallet_transactions, 10) || 0,
+      active_vouchers: parseInt(stats.active_vouchers, 10) || 0,
+      total_voucher_usages: parseInt(stats.total_voucher_usages, 10) || 0,
+      // Backward compatibility aliases
+      totalUsers: parseInt(stats.total_users, 10) || 0,
+      totalStaff: parseInt(stats.total_staff, 10) || 0,
+      activeServices: parseInt(stats.total_services, 10) || 0,
+      totalBookings: parseInt(stats.total_bookings, 10) || 0,
+      totalRevenue: totalRev
     };
   },
 

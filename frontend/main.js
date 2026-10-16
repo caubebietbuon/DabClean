@@ -629,6 +629,7 @@ function initAuthStatus() {
   const btnRegisterHeader = document.getElementById('btn-register-header');
   const notificationWrapper = document.getElementById('notification-wrapper');
   const navLinkMyBookings = document.getElementById('nav-link-my-bookings');
+  const navLinkWallet = document.getElementById('nav-link-wallet');
   const navLinkAdmin = document.getElementById('nav-link-admin');
   const mobileLinkAdmin = document.getElementById('mobile-link-admin');
   const navLinkStaff = document.getElementById('nav-link-staff');
@@ -640,6 +641,7 @@ function initAuthStatus() {
   const btnLoginMobile = document.getElementById('btn-login-mobile');
   const btnRegisterMobile = document.getElementById('btn-register-mobile');
   const mobileLinkMyBookings = document.getElementById('mobile-link-my-bookings');
+  const mobileLinkWallet = document.getElementById('mobile-link-wallet');
   const mobileLinkProfile = document.getElementById('mobile-link-profile');
 
   if (isLoggedIn) {
@@ -651,6 +653,7 @@ function initAuthStatus() {
     if (btnRegisterHeader) btnRegisterHeader.style.display = 'none';
     if (notificationWrapper) notificationWrapper.style.display = 'inline-block';
     if (navLinkMyBookings) navLinkMyBookings.style.display = 'inline-block';
+    if (navLinkWallet) navLinkWallet.style.display = 'inline-block';
 
     // Mobile Drawer
     if (userEmailMobile) userEmailMobile.textContent = displayName;
@@ -659,6 +662,7 @@ function initAuthStatus() {
     if (btnLoginMobile) btnLoginMobile.style.display = 'none';
     if (btnRegisterMobile) btnRegisterMobile.style.display = 'none';
     if (mobileLinkMyBookings) mobileLinkMyBookings.style.display = 'block';
+    if (mobileLinkWallet) mobileLinkWallet.style.display = 'block';
     if (mobileLinkProfile) mobileLinkProfile.style.display = 'block';
 
     // Phân quyền: Hiển thị tab Quản trị viên nếu là admin

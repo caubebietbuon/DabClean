@@ -868,6 +868,170 @@ async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
 
+    // ------------------------------------------------------------
+    // Migration: Mở rộng Phương thức thanh toán Wallet & Addons cho bảng bookings
+    // ------------------------------------------------------------
+    await connection.query(`
+      ALTER TABLE bookings
+      MODIFY payment_method ENUM('cash', 'bank_transfer', 'momo', 'vnpay', 'wallet') NOT NULL DEFAULT 'cash'
+    `);
+
+    const [bAddonCols] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bookings'`
+    );
+    const existingBAddonCols = new Set(bAddonCols.map(c => c.COLUMN_NAME));
+    if (!existingBAddonCols.has('addons')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN addons JSON NULL DEFAULT NULL COMMENT 'Danh sách tiện ích bổ sung'");
+    }
+    if (!existingBAddonCols.has('addon_amount')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN addon_amount DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tổng tiền phụ phí tiện ích'");
+    }
+
+    // ------------------------------------------------------------
+    // Migration: Hệ thống Ví điện tử CleanNova (Wallets & Immutable Ledger)
+    // ------------------------------------------------------------
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS wallets (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL UNIQUE,
+        balance DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+        currency VARCHAR(10) NOT NULL DEFAULT 'VND',
+        status ENUM('active', 'locked', 'suspended') NOT NULL DEFAULT 'active',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_wallet_user (user_id),
+        CONSTRAINT fk_wallet_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS wallet_transactions (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        transaction_code VARCHAR(50) NOT NULL UNIQUE,
+        wallet_id INT NOT NULL,
+        user_id INT NOT NULL,
+        type ENUM('topup', 'payment', 'refund', 'adjustment') NOT NULL,
+        amount DECIMAL(15, 2) NOT NULL,
+        balance_before DECIMAL(15, 2) NOT NULL,
+        balance_after DECIMAL(15, 2) NOT NULL,
+        status ENUM('pending', 'completed', 'failed', 'cancelled') NOT NULL DEFAULT 'completed',
+        description VARCHAR(255) DEFAULT NULL,
+        reference_type VARCHAR(50) DEFAULT NULL,
+        reference_id VARCHAR(100) DEFAULT NULL,
+        idempotency_key VARCHAR(100) UNIQUE DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_wallet_txn_wallet (wallet_id),
+        INDEX idx_wallet_txn_user (user_id),
+        INDEX idx_wallet_txn_code (transaction_code),
+        INDEX idx_wallet_txn_ref (reference_type, reference_id),
+        CONSTRAINT fk_wallet_txn_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE,
+        CONSTRAINT fk_wallet_txn_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS wallet_ledger_entries (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        transaction_id INT NOT NULL,
+        wallet_id INT NOT NULL,
+        entry_type ENUM('credit', 'debit') NOT NULL,
+        amount DECIMAL(15, 2) NOT NULL,
+        running_balance DECIMAL(15, 2) NOT NULL,
+        notes VARCHAR(255) DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_ledger_wallet (wallet_id),
+        INDEX idx_ledger_transaction (transaction_id),
+        CONSTRAINT fk_ledger_txn FOREIGN KEY (transaction_id) REFERENCES wallet_transactions(id) ON DELETE CASCADE,
+        CONSTRAINT fk_ledger_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // ------------------------------------------------------------
+    // Migration: Hệ thống Voucher & Khuyến mãi động (Vouchers Engine)
+    // ------------------------------------------------------------
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS vouchers (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        code VARCHAR(50) NOT NULL UNIQUE,
+        discount_type ENUM('percentage', 'fixed') NOT NULL DEFAULT 'percentage',
+        discount_value DECIMAL(12, 2) NOT NULL,
+        max_discount_amount DECIMAL(12, 2) NULL DEFAULT NULL,
+        min_order_amount DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+        applicable_services JSON NULL DEFAULT NULL,
+        start_date DATETIME NOT NULL,
+        end_date DATETIME NOT NULL,
+        usage_limit INT NOT NULL DEFAULT 100,
+        used_count INT NOT NULL DEFAULT 0,
+        per_user_limit INT NOT NULL DEFAULT 1,
+        is_active TINYINT(1) NOT NULL DEFAULT 1,
+        description VARCHAR(255) NULL DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_voucher_code (code),
+        INDEX idx_voucher_active (is_active)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS voucher_usages (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        voucher_id INT NOT NULL,
+        user_id INT NOT NULL,
+        booking_id INT NOT NULL,
+        discount_applied DECIMAL(12, 2) NOT NULL,
+        used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_voucher_usage_user (user_id),
+        INDEX idx_voucher_usage_booking (booking_id),
+        CONSTRAINT fk_voucher_usage_voucher FOREIGN KEY (voucher_id) REFERENCES vouchers(id) ON DELETE CASCADE,
+        CONSTRAINT fk_voucher_usage_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_voucher_usage_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // Khởi tạo các mã voucher mặc định nếu chưa có
+    const [existingVouchers] = await connection.query('SELECT code FROM vouchers');
+    const existingVoucherCodes = new Set(existingVouchers.map(v => v.code));
+    if (!existingVoucherCodes.has('CLEANOVA20')) {
+      await connection.query(`
+        INSERT INTO vouchers (code, discount_type, discount_value, max_discount_amount, min_order_amount, applicable_services, start_date, end_date, usage_limit, used_count, per_user_limit, is_active, description)
+        VALUES ('CLEANOVA20', 'percentage', 20.00, 500000.00, 0.00, NULL, '2026-01-01 00:00:00', '2027-12-31 23:59:59', 1000, 0, 1, 1, 'Giảm 20% tối đa 500.000đ cho đơn đặt dịch vụ 1 lần')
+      `);
+    }
+    if (!existingVoucherCodes.has('CLEAN50K')) {
+      await connection.query(`
+        INSERT INTO vouchers (code, discount_type, discount_value, max_discount_amount, min_order_amount, applicable_services, start_date, end_date, usage_limit, used_count, per_user_limit, is_active, description)
+        VALUES ('CLEAN50K', 'fixed', 50000.00, NULL, 200000.00, NULL, '2026-01-01 00:00:00', '2027-12-31 23:59:59', 500, 0, 2, 1, 'Giảm 50.000đ trực tiếp cho đơn từ 200.000đ trở lên')
+      `);
+    }
+
+    // Tự động khởi tạo ví cho toàn bộ người dùng hiện có nếu chưa có ví
+    await connection.query(`
+      INSERT IGNORE INTO wallets (user_id, balance, currency, status)
+      SELECT id, 0.00, 'VND', 'active' FROM users
+    `);
+
+    // Khởi tạo số dư trải nghiệm 1.000.000 VND cho tài khoản demo (user_id = 2) nếu ví đang có số dư 0
+    const [demoWallet] = await connection.query('SELECT id, balance FROM wallets WHERE user_id = 2 LIMIT 1');
+    if (demoWallet && demoWallet[0] && parseFloat(demoWallet[0].balance) === 0) {
+      const demoWalletId = demoWallet[0].id;
+      const initialAmt = 1000000.00;
+      const txnCode = 'WTX-DEMO-INIT-001';
+      await connection.query('UPDATE wallets SET balance = ? WHERE id = ?', [initialAmt, demoWalletId]);
+      await connection.query(`
+        INSERT IGNORE INTO wallet_transactions 
+        (transaction_code, wallet_id, user_id, type, amount, balance_before, balance_after, status, description, reference_type, reference_id)
+        VALUES (?, ?, 2, 'topup', ?, 0.00, ?, 'completed', 'Số dư trải nghiệm Ví CleanNova sandbox ban đầu', 'system_grant', 'demo_init')
+      `, [txnCode, demoWalletId, initialAmt, initialAmt]);
+      const [insertedTxn] = await connection.query('SELECT id FROM wallet_transactions WHERE transaction_code = ? LIMIT 1', [txnCode]);
+      if (insertedTxn && insertedTxn[0]) {
+        await connection.query(`
+          INSERT INTO wallet_ledger_entries (transaction_id, wallet_id, entry_type, amount, running_balance, notes)
+          VALUES (?, ?, 'credit', ?, ?, 'Nạp tiền trải nghiệm ban đầu')
+        `, [insertedTxn[0].id, demoWalletId, initialAmt, initialAmt]);
+      }
+    }
+
     console.log(`[Database] Đã kết nối thành công tới MySQL Server (${dbConfig.host}:${dbConfig.port}/${dbConfig.database})`);
     isConnectedToMySQL = true;
   } catch (err) {

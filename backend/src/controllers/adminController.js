@@ -127,8 +127,8 @@ const adminController = {
       );
 
       await db.query(
-        `INSERT INTO staff_payout_logs (booking_id, staff_id, amount, settled_by, notes) VALUES (?, ?, ?, ?, ?)`,
-        [id, booking.staff_id, booking.staff_wage || 0, req.user.id, `Quyết toán thù lao cho đơn #${booking.booking_code}`]
+        `INSERT INTO staff_payout_logs (booking_id, staff_id, admin_id, amount, action, note) VALUES (?, ?, ?, ?, 'pay', ?)`,
+        [id, booking.staff_id, req.user.id, booking.staff_wage || 0, `Quyết toán thù lao cho đơn #${booking.booking_code}`]
       );
 
       await UserModel.logAudit(req.user.id, 'PAYOUT_STAFF_WAGE', id, 'booking', `Quyết toán ${booking.staff_wage} VND cho nhân viên ID ${booking.staff_id}`);

@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ví Điện Tử CleanNova · Thanh Toán Tiện Lợi & Hoàn Tiền Tức Thì</title>
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="app.css">
+  <style>
+    /* Styling chuyên biệt cho Trang Ví CleanNova */
+    .wallet-hero-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 900px) {
+      .wallet-hero-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .wallet-card-main {
+      background: linear-gradient(135deg, #042f2e 0%, #0f766e 60%, #14b8a6 100%);
+      color: #ffffff;
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 16px 36px -10px rgba(15, 118, 110, 0.35);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 240px;
+    }
+    .wallet-card-main::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .wallet-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .wallet-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(8px);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .wallet-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+    }
+    .wallet-chip {
+      font-size: 1.8rem;
+    }
+    .wallet-balance-wrap {
+      margin: 20px 0;
+    }
+    .wallet-balance-label {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .wallet-balance-value {
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .wallet-currency {
+      font-size: 1.35rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    .wallet-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+    }
+    .wallet-owner {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    .wallet-id-code {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      font-family: monospace;
+    }
+
+    /* Thẻ hành động nhanh */
+    .wallet-side-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .side-card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .side-card-desc {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+    .wallet-btn-topup {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0d9488, #0f766e);
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+    }
+    .wallet-btn-topup:hover {
+      background: linear-gradient(135deg, #0f766e, #115e59);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
+    }
+    .wallet-stats-mini {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .stat-mini-item {
+      background: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+    .stat-mini-num {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f766e;
+    }
+    .stat-mini-lbl {
+      font-size: 0.78rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* Bảng giao dịch */
+    .transactions-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+    .transactions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .transactions-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .filter-pills {
+      display: flex;
+      gap: 8px;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 12px;
+    }
+    .filter-pill {
+      padding: 8px 16px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-pill.active {
+      background: #ffffff;
+      color: #0f766e;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .wallet-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    .wallet-table th {
+      background: #f8fafc;
+      padding: 14px 16px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .wallet-table td {
+      padding: 16px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 0.92rem;
+      color: #1e293b;
+      vertical-align: middle;
+    }
+    .wallet-table tr:hover td {
+      background: #f8fafc;
+    }
+    .tx-code {
+      font-family: monospace;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #334155;
+    }
+    .tx-amount-plus {
+      color: #16a34a;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .tx-amount-minus {
+      color: #dc2626;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .badge-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .badge-completed {
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .badge-pending {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .badge-refund {
+      background: #e0e7ff;
+      color: #4338ca;
+    }
+
+    /* Modal Nạp tiền */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-dialog {
+      background: #ffffff;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      margin: 16px;
+      padding: 32px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      transform: translateY(20px);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.active .modal-dialog {
+      transform: translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .btn-close-modal {
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      color: #94a3b8;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .topup-presets {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .btn-preset {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-preset:hover, .btn-preset.active {
+      background: #f0fdfa;
+      border-color: #0d9488;
+      color: #0f766e;
+    }
+    .custom-amount-group {
+      margin-bottom: 24px;
+    }
+    .custom-amount-group label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 8px;
+    }
+    .input-amount-wrap {
+      position: relative;
+    }
+    .input-amount {
+      width: 100%;
+      padding: 14px 44px 14px 16px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      color: #0f172a;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-amount:focus {
+      border-color: #0d9488;
+    }
+    .currency-suffix {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-weight: 700;
+      color: #64748b;
+    }
+    .sandbox-notice {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.82rem;
+      color: #1e40af;
+      margin-bottom: 24px;
+      line-height: 1.4;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-modal-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-modal-submit {
+      flex: 2;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background: #0d9488;
+      color: #ffffff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+    }
+    .btn-modal-submit:hover {
+      background: #0f766e;
+    }
+  </style>
+  <script src="api.js"></script>
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER CLEANNOVA
+       ============================================================ -->
+  <header class="header scrolled" role="banner">
+    <div class="container">
+      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
+          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
+          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
+          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span class="logo-text">Cleanova</span>
+      </a>
+
+      <nav class="nav">
+        <a href="trangchu.html" class="nav-link">Trang chủ</a>
+        <a href="services.html" class="nav-link">Dịch vụ</a>
+        <a href="booking.html" class="nav-link">Đặt lịch</a>
+        <a href="my-bookings.html" class="nav-link">Đơn của tôi</a>
+        <a href="wallet.html" class="nav-link active" style="color: #0f766e; font-weight: 700;">Ví CleanNova</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="profile.html" class="user-profile-badge" id="nav-user-badge" style="text-decoration: none;">
+          <span class="user-avatar-mini">👤</span>
+          <span class="user-email-text" id="nav-user-name">Đang tải...</span>
+        </a>
+        <button id="btn-logout" class="btn btn-ghost btn-sm">Đăng xuất</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       NỘI DUNG CHÍNH: VÍ CLEANNOVA
+       ============================================================ -->
+  <main class="page-wrapper">
+    <div class="container">
+
+      <!-- Breadcrumbs & Tiêu đề -->
+      <div style="margin-bottom: 24px;">
+        <span style="font-size: 0.85rem; color: #64748b;">Khách hàng / Tài khoản</span>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: #0f172a; margin-top: 4px;">Ví Điện Tử CleanNova</h1>
+      </div>
+
+      <!-- Hero Grid: Thẻ ví chính & Hành động nhanh -->
+      <div class="wallet-hero-grid">
+        
+        <!-- Thẻ ví CleanNova Card -->
+        <div class="wallet-card-main">
+          <div class="wallet-card-header">
+            <div class="wallet-badge">
+              <span class="dot"></span>
+              <span id="wallet-status-label">Đang hoạt động</span>
+            </div>
+            <div class="wallet-chip">💳</div>
+          </div>
+
+          <div class="wallet-balance-wrap">
+            <div class="wallet-balance-label">Số dư khả dụng</div>
+            <div class="wallet-balance-value">
+              <span id="wallet-balance-display">0</span>
+              <span class="wallet-currency">VNĐ</span>
+            </div>
+          </div>
+
+          <div class="wallet-card-footer">
+            <div>
+              <div class="wallet-owner" id="wallet-owner-name">Khách hàng CleanNova</div>
+              <div class="wallet-id-code" id="wallet-id-code">VÍ ID: #CNV-W0000</div>
+            </div>
+            <div style="font-size: 1.2rem; font-weight: 800; letter-spacing: 1px; opacity: 0.9;">
+              CleanNova Pay
+            </div>
+          </div>
+        </div>
+
+        <!-- Thẻ hành động nạp tiền & tóm tắt -->
+        <div class="wallet-side-card">
+          <div>
+            <div class="side-card-title">
+              <span>⚡</span> Nạp tiền nhanh
+            </div>
+            <p class="side-card-desc">
+              Nạp tiền trực tiếp vào ví để thanh toán đơn đặt dịch vụ nhanh chóng và nhận hoàn tiền 100% tự động khi đổi lịch hoặc hủy ca.
+            </p>
+            <button id="btn-open-topup" class="wallet-btn-topup">
+              <span>➕</span> Nạp tiền vào ví (Sandbox)
+            </button>
+          </div>
+
+          <div class="wallet-stats-mini">
+            <div class="stat-mini-item">
+              <div class="stat-mini-num" id="stat-total-tx">0</div>
+              <div class="stat-mini-lbl">Tổng giao dịch</div>
+            </div>
+            <div class="stat-mini-item">
+              <div class="stat-mini-num" id="stat-refund-count">0</div>
+              <div class="stat-mini-lbl">Đơn được hoàn tiền</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Lịch sử giao dịch sổ cái -->
+      <div class="transactions-card">
+        <div class="transactions-header">
+          <div class="transactions-title">
+            <span>📜</span> Lịch sử giao dịch & Đối soát sổ cái
+          </div>
+          <div class="filter-pills" id="tx-filter-group">
+            <button class="filter-pill active" data-type="all">Tất cả</button>
+            <button class="filter-pill" data-type="topup">Nạp tiền</button>
+            <button class="filter-pill" data-type="payment">Thanh toán</button>
+            <button class="filter-pill" data-type="refund">Hoàn tiền</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="wallet-table">
+            <thead>
+              <tr>
+                <th>Mã Giao Dịch</th>
+                <th>Thời Gian</th>
+                <th>Loại Giao Dịch</th>
+                <th>Số Tiền</th>
+                <th>Số Dư Sau GD</th>
+                <th>Nội Dung / Tham Chiếu</th>
+                <th>Trạng Thái</th>
+              </tr>
+            </thead>
+            <tbody id="tx-table-body">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 32px; color: #94a3b8;">
+                  Đang tải lịch sử giao dịch...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Phân trang -->
+        <div id="tx-pagination" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ============================================================
+       MODAL NẠP TIỀN SANDBOX
+       ============================================================ -->
+  <div class="modal-overlay" id="topup-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">Nạp tiền vào Ví CleanNova</div>
+        <button class="btn-close-modal" id="btn-close-topup">&times;</button>
+      </div>
+
+      <div class="topup-presets" id="topup-preset-group">
+        <button class="btn-preset" data-amount="100000">+100.000 đ</button>
+        <button class="btn-preset active" data-amount="200000">+200.000 đ</button>
+        <button class="btn-preset" data-amount="500000">+500.000 đ</button>
+        <button class="btn-preset" data-amount="1000000">+1.000.000 đ</button>
+        <button class="btn-preset" data-amount="2000000">+2.000.000 đ</button>
+        <button class="btn-preset" data-amount="5000000">+5.000.000 đ</button>
+      </div>
+
+      <div class="custom-amount-group">
+        <label for="topup-input">Số tiền muốn nạp (VNĐ)</label>
+        <div class="input-amount-wrap">
+          <input type="number" id="topup-input" class="input-amount" value="200000" min="10000" step="10000">
+          <span class="currency-suffix">VNĐ</span>
+        </div>
+      </div>
+
+      <div class="sandbox-notice">
+        ℹ️ <strong>Môi trường phát triển Sandbox:</strong> Giao dịch sẽ được kiểm toán và cộng số dư tức thời vào ví người dùng mà không trừ thẻ ngân hàng thật.
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" id="btn-cancel-topup">Hủy</button>
+        <button class="btn-modal-submit" id="btn-submit-topup">Xác nhận nạp tiền</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT XỬ LÝ GIAO DIỆN VÍ CLEANNOVA -->
+  <script>
+    (function () {
+      'use strict';
+
+      // 1. Kiểm tra xác thực khách hàng
+      if (!window.CleanovaAPI.auth.isLoggedIn()) {
+        window.CleanovaAPI.auth.requireAuth('wallet.html', 'Vui lòng đăng nhập để truy cập Ví CleanNova.');
+        return;
+      }
+
+      const currentUser = window.CleanovaAPI.auth.getUser();
+      if (currentUser) {
+        const nameEl = document.getElementById('nav-user-name');
+        if (nameEl) nameEl.textContent = currentUser.name || currentUser.email;
+        const ownerEl = document.getElementById('wallet-owner-name');
+        if (ownerEl) ownerEl.textContent = currentUser.name || 'Khách hàng CleanNova';
+      }
+
+      // Nút đăng xuất
+      const logoutBtn = document.getElementById('btn-logout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => window.CleanovaAPI.auth.logout());
+      }
+
+      let currentFilterType = 'all';
+      let currentOffset = 0;
+      const PAGE_LIMIT = 15;
+
+      // 2. Tải số dư ví
+      async function loadWalletBalance() {
+        try {
+          const res = await window.CleanovaAPI.wallet.getMyWallet();
+          if (res.success && res.data) {
+            const bal = res.data.balance || 0;
+            document.getElementById('wallet-balance-display').textContent = Math.round(bal).toLocaleString('vi-VN');
+            document.getElementById('wallet-id-code').textContent = `VÍ ID: #CNV-W${String(res.data.walletId).padStart(4, '0')}`;
+            const statusLabel = document.getElementById('wallet-status-label');
+            if (res.data.status === 'active') {
+              statusLabel.textContent = 'Đang hoạt động';
+            } else {
+              statusLabel.textContent = 'Đang khóa';
+              statusLabel.parentElement.style.background = 'rgba(239, 68, 68, 0.2)';
+            }
+          }
+        } catch (err) {
+          console.error('Lỗi tải số dư ví:', err);
+        }
+      }
+
+      // 3. Tải danh sách giao dịch
+      async function loadTransactions() {
+        const tbody = document.getElementById('tx-table-body');
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: #64748b;">Đang tải dữ liệu giao dịch...</td></tr>`;
+
+        try {
+          const params = {
+            limit: PAGE_LIMIT,
+            offset: currentOffset
+          };
+          if (currentFilterType !== 'all') {
+            params.type = currentFilterType;
+          }
+
+          const res = await window.CleanovaAPI.wallet.getTransactions(params);
+          if (!res.success || !res.data || res.data.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 48px; color: #94a3b8;">
+                  <div style="font-size: 2rem; margin-bottom: 8px;">📭</div>
+                  <div>Chưa có giao dịch nào phù hợp với bộ lọc.</div>
+                </td>
+              </tr>
+            `;
+            document.getElementById('stat-total-tx').textContent = '0';
+            return;
+          }
+
+          const txList = res.data;
+          document.getElementById('stat-total-tx').textContent = res.pagination ? res.pagination.total : txList.length;
+
+          // Đếm đơn hoàn tiền
+          const refundCount = txList.filter(t => t.type === 'refund').length;
+          document.getElementById('stat-refund-count').textContent = refundCount;
+
+          tbody.innerHTML = txList.map(tx => {
+            const isPlus = tx.type === 'topup' || tx.type === 'refund';
+            const amountClass = isPlus ? 'tx-amount-plus' : 'tx-amount-minus';
+            const sign = isPlus ? '+' : '-';
+            const dateStr = new Date(tx.created_at).toLocaleString('vi-VN', {
+              year: 'numeric', month: '2-digit', day: '2-digit',
+              hour: '2-digit', minute: '2-digit'
+            });
+
+            let typeLabel = 'Giao dịch';
+            let typeBadge = 'badge-completed';
+            if (tx.type === 'topup') {
+              typeLabel = 'Nạp tiền';
+              typeBadge = 'badge-completed';
+            } else if (tx.type === 'payment') {
+              typeLabel = 'Thanh toán đơn';
+              typeBadge = 'badge-pending';
+            } else if (tx.type === 'refund') {
+              typeLabel = 'Hoàn tiền';
+              typeBadge = 'badge-refund';
+            }
+
+            return `
+              <tr>
+                <td><span class="tx-code">${escapeHtml(tx.transaction_code)}</span></td>
+                <td style="color: #64748b; font-size: 0.85rem;">${dateStr}</td>
+                <td><span class="badge-status ${typeBadge}">${typeLabel}</span></td>
+                <td><span class="${amountClass}">${sign}${Math.round(tx.amount).toLocaleString('vi-VN')} đ</span></td>
+                <td style="font-weight: 600; color: #334155;">${Math.round(tx.balance_after).toLocaleString('vi-VN')} đ</td>
+                <td style="max-width: 260px;">${escapeHtml(tx.description || 'Không có mô tả')}</td>
+                <td><span class="badge-status badge-completed">Thành công</span></td>
+              </tr>
+            `;
+          }).join('');
+
+        } catch (err) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: #ef4444;">Không thể tải dữ liệu: ${escapeHtml(err.message)}</td></tr>`;
+        }
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      // 4. Lọc giao dịch theo tabs
+      document.querySelectorAll('#tx-filter-group .filter-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#tx-filter-group .filter-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilterType = btn.dataset.type;
+          currentOffset = 0;
+          loadTransactions();
+        });
+      });
+
+      // 5. Modal Nạp tiền
+      const modal = document.getElementById('topup-modal');
+      const inputAmount = document.getElementById('topup-input');
+      const btnOpenTopup = document.getElementById('btn-open-topup');
+      const btnCloseTopup = document.getElementById('btn-close-topup');
+      const btnCancelTopup = document.getElementById('btn-cancel-topup');
+      const btnSubmitTopup = document.getElementById('btn-submit-topup');
+
+      function openModal() {
+        modal.classList.add('active');
+        inputAmount.focus();
+      }
+      function closeModal() {
+        modal.classList.remove('active');
+      }
+
+      if (btnOpenTopup) btnOpenTopup.addEventListener('click', openModal);
+      if (btnCloseTopup) btnCloseTopup.addEventListener('click', closeModal);
+      if (btnCancelTopup) btnCancelTopup.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+
+      // Chọn số tiền preset
+      document.querySelectorAll('#topup-preset-group .btn-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('#topup-preset-group .btn-preset').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          inputAmount.value = btn.dataset.amount;
+        });
+      });
+
+      // Gửi yêu cầu nạp tiền
+      btnSubmitTopup.addEventListener('click', async () => {
+        const val = parseFloat(inputAmount.value);
+        if (isNaN(val) || val < 10000) {
+          alert('Số tiền nạp tối thiểu là 10.000 VNĐ.');
+          return;
+        }
+
+        btnSubmitTopup.disabled = true;
+        btnSubmitTopup.textContent = 'Đang xử lý giao dịch...';
+
+        try {
+          const idempotencyKey = `topup_${currentUser.id}_${Date.now()}`;
+          const res = await window.CleanovaAPI.wallet.topup(val, idempotencyKey, 'Nạp tiền vào ví CleanNova (Sandbox)');
+          if (res.success) {
+            closeModal();
+            await loadWalletBalance();
+            await loadTransactions();
+            alert(`Nạp thành công ${Math.round(val).toLocaleString('vi-VN')} đ vào Ví CleanNova!`);
+          } else {
+            alert(res.message || 'Nạp tiền không thành công.');
+          }
+        } catch (err) {
+          alert(`Lỗi nạp tiền: ${err.message}`);
+        } finally {
+          btnSubmitTopup.disabled = false;
+          btnSubmitTopup.textContent = 'Xác nhận nạp tiền';
+        }
+      });
+
+      // Khởi động trang
+      loadWalletBalance();
+      loadTransactions();
+    })();
+  </script>
+</body>
+</html>

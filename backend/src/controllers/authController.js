@@ -52,10 +52,69 @@ function recordSuccess(key) {
   failedLoginAttempts.delete(key);
 }
 
+// Bộ nhớ hạn chế tần suất đăng ký tài khoản (Tối đa 10 tài khoản / IP / giờ)
+const registrationAttempts = new Map();
+const MAX_REGISTRATIONS_PER_IP = 10;
+const REGISTRATION_WINDOW_MS = 60 * 60 * 1000;
+
+function checkRegisterRateLimit(ip) {
+  const now = Date.now();
+  const entry = registrationAttempts.get(ip);
+  if (!entry || now > entry.resetTime) {
+    registrationAttempts.set(ip, { count: 1, resetTime: now + REGISTRATION_WINDOW_MS });
+    return { blocked: false };
+  }
+  if (entry.count >= MAX_REGISTRATIONS_PER_IP) {
+    const remainingMins = Math.ceil((entry.resetTime - now) / 60000);
+    return { blocked: true, remainingMins };
+  }
+  entry.count += 1;
+  return { blocked: false };
+}
+
+// Bộ nhớ chống brute-force đổi mật khẩu (Tối đa 5 lần sai trong 15 phút)
+const failedPasswordChangeAttempts = new Map();
+function checkPasswordChangeRateLimit(userId) {
+  const now = Date.now();
+  const entry = failedPasswordChangeAttempts.get(userId);
+  if (!entry) return { blocked: false };
+  if (now > entry.resetTime) {
+    failedPasswordChangeAttempts.delete(userId);
+    return { blocked: false };
+  }
+  if (entry.count >= 5) {
+    const remainingMins = Math.ceil((entry.resetTime - now) / 60000);
+    return { blocked: true, remainingMins };
+  }
+  return { blocked: false };
+}
+function recordPasswordChangeFailure(userId) {
+  const now = Date.now();
+  const entry = failedPasswordChangeAttempts.get(userId);
+  if (!entry || now > entry.resetTime) {
+    failedPasswordChangeAttempts.set(userId, { count: 1, resetTime: now + (15 * 60 * 1000) });
+  } else {
+    entry.count += 1;
+  }
+}
+function recordPasswordChangeSuccess(userId) {
+  failedPasswordChangeAttempts.delete(userId);
+}
+
 const authController = {
   // 1. Đăng ký tài khoản mới (POST /api/auth/register)
   async register(req, res, next) {
     try {
+      const clientIp = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+      const regRateCheck = checkRegisterRateLimit(clientIp);
+      if (regRateCheck.blocked) {
+        return res.status(429).json({
+          success: false,
+          code: 'TOO_MANY_REGISTRATIONS',
+          message: `IP của bạn đã đăng ký quá nhiều tài khoản. Vui lòng thử lại sau ${regRateCheck.remainingMins} phút.`
+        });
+      }
+
       const { name, email, password, phone, address } = req.body;
 
       // Kiểm tra dữ liệu đầu vào (kiểu dữ liệu và định dạng)
@@ -265,6 +324,15 @@ const authController = {
   // 5. Đổi mật khẩu (PUT /api/auth/change-password)
   async changePassword(req, res, next) {
     try {
+      const pwdRateCheck = checkPasswordChangeRateLimit(req.user.id);
+      if (pwdRateCheck.blocked) {
+        return res.status(429).json({
+          success: false,
+          code: 'TOO_MANY_ATTEMPTS',
+          message: `Bạn đã thử đổi mật khẩu sai quá nhiều lần. Vui lòng thử lại sau ${pwdRateCheck.remainingMins} phút.`
+        });
+      }
+
       const { currentPassword, newPassword } = req.body;
       if (!currentPassword || !newPassword) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập mật khẩu hiện tại và mật khẩu mới.' });
@@ -276,9 +344,11 @@ const authController = {
       const user = await UserModel.findByEmail(req.user.email);
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) {
+        recordPasswordChangeFailure(req.user.id);
         return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không đúng.' });
       }
 
+      recordPasswordChangeSuccess(req.user.id);
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(newPassword, salt);
       await UserModel.updatePassword(req.user.id, hashedPassword);

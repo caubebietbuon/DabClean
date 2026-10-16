@@ -51,11 +51,20 @@ const defaultPostConstructionRates = {
   }
 };
 
+// Danh mục tiện ích gia tăng (Add-ons) cho dịch vụ dọn dẹp
+const standardAddons = {
+  disinfect: { id: 'disinfect', name: 'Khử khuẩn Nano Bạc', price: 100000 },
+  sofa_steam: { id: 'sofa_steam', name: 'Giặt đệm / Sofa hơi nóng', price: 200000 },
+  calcium_remove: { id: 'calcium_remove', name: 'Tẩy cặn canxi kính & vách tắm', price: 120000 },
+  fridge_deep: { id: 'fridge_deep', name: 'Vệ sinh tủ lạnh / Lò vi sóng', price: 80000 }
+};
+
 const pricingService = {
   areaMultipliers,
   areaM2Mapping,
   frequencyDiscounts,
   defaultPostConstructionRates,
+  standardAddons,
 
   /**
    * Tính toán báo giá dịch vụ vệ sinh sau xây dựng
@@ -408,13 +417,31 @@ const pricingService = {
       staffWage = Math.round(wageRate * multiplier);
     }
 
+    // Tính phụ phí tiện ích gia tăng (Add-ons) nếu khách hàng chọn
+    let addonAmount = 0;
+    const appliedAddons = [];
+    const rawAddons = options.addons || options.extras || [];
+    const addonList = Array.isArray(rawAddons)
+      ? rawAddons
+      : (typeof rawAddons === 'string' && rawAddons.trim() ? rawAddons.split(',').map(s => s.trim()) : []);
+
+    for (const aKey of addonList) {
+      if (standardAddons[aKey]) {
+        addonAmount += standardAddons[aKey].price;
+        appliedAddons.push(standardAddons[aKey]);
+      }
+    }
+    subtotal += addonAmount;
+
     // Chiết khấu theo tần suất
     const freqDiscount = frequencyDiscounts[frequency] || 0.0;
     let discountAmount = subtotal * freqDiscount;
 
-    // Ưu đãi mã CLEANOVA20
+    // Ưu đãi mã giảm giá voucher
     const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
-    if (normalizedPromo === 'CLEANOVA20') {
+    if (options.voucher_discount !== undefined && options.voucher_discount !== null) {
+      discountAmount = Math.max(discountAmount, parseFloat(options.voucher_discount) || 0);
+    } else if (normalizedPromo === 'CLEANOVA20') {
       if (freqDiscount > 0) {
         const error = new Error('Mã ưu đãi CLEANOVA20 chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.');
         error.statusCode = 400;
@@ -426,6 +453,13 @@ const pricingService = {
         throw error;
       }
       discountAmount = subtotal * 0.20;
+    } else if (normalizedPromo === 'CLEAN50K') {
+      if (subtotal < 200000) {
+        const error = new Error('Mã ưu đãi CLEAN50K chỉ áp dụng cho đơn từ 200.000 đ trở lên.');
+        error.statusCode = 400;
+        throw error;
+      }
+      discountAmount = Math.max(discountAmount, 50000);
     } else if (normalizedPromo) {
       const error = new Error('Mã ưu đãi không hợp lệ hoặc đã hết hạn.');
       error.statusCode = 400;
@@ -437,6 +471,8 @@ const pricingService = {
 
     return {
       subtotal: Math.round(subtotal),
+      addonAmount: Math.round(addonAmount),
+      addons: appliedAddons,
       discountAmount: Math.round(discountAmount),
       totalPrice: Math.round(totalPrice),
       staffWage: Math.round(staffWage),

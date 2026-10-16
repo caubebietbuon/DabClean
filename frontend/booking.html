@@ -448,6 +448,24 @@
                       <small>Thẻ ATM / Visa / Mastercard</small>
                     </div>
                   </div>
+                  <div class="payment-card" data-val="wallet" id="payment-card-wallet">
+                    <span class="payment-icon">👛</span>
+                    <div class="payment-info">
+                      <strong>Ví CleanNova</strong>
+                      <small id="wallet-balance-hint">Khuyên dùng · Hoàn tiền tức thì</small>
+                    </div>
+                  </div>
+                </div>
+                <div id="wallet-balance-banner" style="display: none; margin-top: 14px; padding: 12px 16px; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 12px; font-size: 0.88rem; color: #0f766e;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: gap: 8px;">
+                    <div>
+                      <span>Số dư ví hiện tại: <strong id="wallet-current-balance-text">0 đ</strong></span>
+                      <div id="wallet-status-msg" style="font-size: 0.8rem; margin-top: 2px; color: #0d9488;">Đủ số dư để thanh toán đơn hàng này.</div>
+                    </div>
+                    <a href="wallet.html" target="_blank" class="btn btn-sm btn-outline" style="border-color: #0d9488; color: #0f766e; text-decoration: none; padding: 6px 12px; font-size: 0.82rem; font-weight: 700; border-radius: 8px;">
+                      Nạp thêm ↗
+                    </a>
+                  </div>
                 </div>
                 <input type="hidden" id="booking-payment" value="cash">
               </div>
@@ -1375,15 +1393,65 @@
       });
 
       // Xử lý Thẻ Phương thức thanh toán
+      let customerWalletBalance = 0;
+      async function checkCustomerWallet() {
+        if (!window.CleanovaAPI.auth.isLoggedIn()) return;
+        try {
+          const res = await window.CleanovaAPI.wallet.getMyWallet();
+          if (res.success && res.data) {
+            customerWalletBalance = res.data.balance || 0;
+            const hint = document.getElementById('wallet-balance-hint');
+            if (hint) {
+              hint.textContent = `Số dư: ${Math.round(customerWalletBalance).toLocaleString('vi-VN')} đ`;
+            }
+            const bannerBal = document.getElementById('wallet-current-balance-text');
+            if (bannerBal) {
+              bannerBal.textContent = `${Math.round(customerWalletBalance).toLocaleString('vi-VN')} đ`;
+            }
+          }
+        } catch (err) {
+          console.warn('[Cleanova Wallet] Không thể tải số dư ví:', err.message);
+        }
+      }
+      checkCustomerWallet();
+
       document.querySelectorAll('#payment-methods-group .payment-card').forEach(card => {
         card.addEventListener('click', function () {
           document.querySelectorAll('#payment-methods-group .payment-card').forEach(c => c.classList.remove('active'));
           this.classList.add('active');
-          document.getElementById('booking-payment').value = this.dataset.val;
+          const val = this.dataset.val;
+          document.getElementById('booking-payment').value = val;
+
+          const walletBanner = document.getElementById('wallet-balance-banner');
+          if (walletBanner) {
+            if (val === 'wallet') {
+              walletBanner.style.display = 'block';
+              updateWalletStatusMsg();
+            } else {
+              walletBanner.style.display = 'none';
+            }
+          }
         });
       });
 
-      // Xử lý Mã ưu đãi
+      function updateWalletStatusMsg() {
+        const totalText = document.getElementById('summary-total')?.textContent || '0';
+        const totalNum = parseInt(totalText.replace(/[^\d]/g, ''), 10) || 0;
+        const msgEl = document.getElementById('wallet-status-msg');
+        if (!msgEl) return;
+        if (customerWalletBalance >= totalNum) {
+          msgEl.textContent = '✅ Đủ số dư Ví CleanNova để thanh toán tức thì.';
+          msgEl.style.color = '#0d9488';
+        } else {
+          const missing = totalNum - customerWalletBalance;
+          msgEl.textContent = `⚠️ Thiếu ${Math.round(missing).toLocaleString('vi-VN')} đ. Vui lòng bấm "Nạp thêm" trước khi đặt lịch.`;
+          msgEl.style.color = '#dc2626';
+        }
+      }
+
+      // Xử lý Mã ưu đãi động (gọi backend check)
+      let promoCode = null;
+      let promoDiscountAmount = 0;
       const btnApplyPromo = document.getElementById('btn-apply-promo');
       const promoInput = document.getElementById('booking-promo');
       const promoBox = document.getElementById('promo-applied-box');
@@ -1391,37 +1459,62 @@
       const btnRemovePromo = document.getElementById('btn-remove-promo');
 
       if (btnApplyPromo) {
-        btnApplyPromo.addEventListener('click', () => {
+        btnApplyPromo.addEventListener('click', async () => {
           const code = promoInput.value.trim().toUpperCase();
-          if (code === 'CLEANOVA20') {
-            if (selectedFrequency !== 'once') {
-              promoApplied = false;
-              promoBox.style.display = 'none';
-              promoMsg.textContent = 'Mã CLEANOVA20 chỉ áp dụng cho đơn đặt 1 lần (không áp dụng cùng gói định kỳ).';
+          if (!code) {
+            if (promoMsg) {
+              promoMsg.textContent = 'Vui lòng nhập mã ưu đãi.';
               promoMsg.style.color = 'var(--color-error)';
-              return;
             }
-            promoApplied = true;
-            promoBox.style.display = 'flex';
-            document.getElementById('promo-applied-code').textContent = code;
-            promoMsg.textContent = '';
-            promoInput.value = '';
-            showToast('success', 'Đã áp dụng mã CLEANOVA20 giảm 20%!');
-          } else {
-            promoApplied = false;
-            promoBox.style.display = 'none';
-            promoMsg.textContent = 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.';
-            promoMsg.style.color = 'var(--color-error)';
+            return;
           }
-          updateSummary();
+
+          btnApplyPromo.disabled = true;
+          btnApplyPromo.textContent = 'Kiểm tra...';
+
+          try {
+            const currentSubtotal = parseInt((document.getElementById('summary-subtotal')?.textContent || '0').replace(/[^\d]/g, ''), 10) || 0;
+            const currentServiceId = document.getElementById('booking-service')?.value || 1;
+
+            const res = await window.CleanovaAPI.vouchers.check(code, currentServiceId, currentSubtotal, selectedFrequency);
+            if (res.success && res.data) {
+              promoApplied = true;
+              promoCode = res.data.code;
+              promoDiscountAmount = res.data.discount_amount || 0;
+
+              if (promoBox) promoBox.style.display = 'flex';
+              const appliedCodeEl = document.getElementById('promo-applied-code');
+              if (appliedCodeEl) appliedCodeEl.textContent = `${res.data.code} (-${Math.round(promoDiscountAmount).toLocaleString('vi-VN')} đ)`;
+              if (promoMsg) promoMsg.textContent = '';
+              promoInput.value = '';
+              showToast('success', `Áp dụng thành công mã ${res.data.code}: ${res.data.description || ''}`);
+            } else {
+              throw new Error(res.message || 'Mã ưu đãi không hợp lệ.');
+            }
+          } catch (err) {
+            promoApplied = false;
+            promoCode = null;
+            promoDiscountAmount = 0;
+            if (promoBox) promoBox.style.display = 'none';
+            if (promoMsg) {
+              promoMsg.textContent = err.message || 'Mã ưu đãi không hợp lệ hoặc đã hết hạn.';
+              promoMsg.style.color = 'var(--color-error)';
+            }
+          } finally {
+            btnApplyPromo.disabled = false;
+            btnApplyPromo.textContent = 'Áp dụng';
+            updateSummary();
+          }
         });
       }
 
       if (btnRemovePromo) {
         btnRemovePromo.addEventListener('click', () => {
           promoApplied = false;
-          promoBox.style.display = 'none';
-          promoMsg.textContent = '';
+          promoCode = null;
+          promoDiscountAmount = 0;
+          if (promoBox) promoBox.style.display = 'none';
+          if (promoMsg) promoMsg.textContent = '';
           updateSummary();
         });
       }
@@ -1487,24 +1580,14 @@
           freqRow.style.display = 'none';
         }
 
-        // Voucher giảm giá 20% (Chỉ áp dụng khi không có chiết khấu tần suất)
+        // Voucher giảm giá (áp dụng động từ backend)
         let voucherDiscountVal = 0;
         const voucherRow = document.getElementById('summary-voucher-discount-row');
-        if (promoApplied) {
-          if (freqDiscountVal > 0) {
-            promoApplied = false;
-            if (promoBox) promoBox.style.display = 'none';
-            if (promoMsg) {
-              promoMsg.textContent = 'Mã CLEANOVA20 không áp dụng cùng gói định kỳ.';
-              promoMsg.style.color = 'var(--color-error)';
-            }
-            if (voucherRow) voucherRow.style.display = 'none';
-          } else {
-            voucherDiscountVal = subtotal * 0.20;
-            if (voucherRow) {
-              voucherRow.style.display = 'flex';
-              document.getElementById('summary-voucher-discount').textContent = `-${Math.round(voucherDiscountVal).toLocaleString('vi-VN')} đ (20%)`;
-            }
+        if (promoApplied && promoDiscountAmount > 0) {
+          voucherDiscountVal = promoDiscountAmount;
+          if (voucherRow) {
+            voucherRow.style.display = 'flex';
+            document.getElementById('summary-voucher-discount').textContent = `-${Math.round(voucherDiscountVal).toLocaleString('vi-VN')} đ`;
           }
         } else {
           if (voucherRow) voucherRow.style.display = 'none';
@@ -1512,6 +1595,9 @@
 
         const finalTotal = Math.max(subtotal - freqDiscountVal - voucherDiscountVal, 50000);
         document.getElementById('summary-total').textContent = `${Math.round(finalTotal).toLocaleString('vi-VN')} đ`;
+        if (typeof updateWalletStatusMsg === 'function') {
+          updateWalletStatusMsg();
+        }
 
         const d = document.getElementById('booking-date').value;
         const t = document.getElementById('booking-time').value;
@@ -1545,6 +1631,8 @@
         btn.disabled = true;
 
         // Thu thập danh sách addon đã chọn
+        const activeAddonKeys = Array.from(document.querySelectorAll('#addons-group .addon-card.active'))
+          .map(card => card.dataset.addon);
         const activeAddonNames = Array.from(document.querySelectorAll('#addons-group .addon-card.active'))
           .map(card => card.querySelector('.addon-name')?.textContent || card.dataset.addon);
 
@@ -1559,6 +1647,18 @@
           finalNotes += `${finalNotes ? '\n' : ''}[Dịch vụ bổ sung: ${activeAddonNames.join(', ')}]`;
         }
 
+        const paymentMethodChosen = document.getElementById('booking-payment').value;
+        const totalText = document.getElementById('summary-total')?.textContent || '0';
+        const totalNum = parseInt(totalText.replace(/[^\d]/g, ''), 10) || 0;
+
+        // Nếu thanh toán bằng ví, kiểm tra số dư tại frontend trước
+        if (paymentMethodChosen === 'wallet' && customerWalletBalance < totalNum) {
+          alert(`Số dư Ví CleanNova của bạn (${Math.round(customerWalletBalance).toLocaleString('vi-VN')} đ) không đủ để thanh toán ${Math.round(totalNum).toLocaleString('vi-VN')} đ. Vui lòng bấm "Nạp thêm" hoặc chọn phương thức thanh toán khác.`);
+          btn.classList.remove('btn-loading');
+          btn.disabled = false;
+          return;
+        }
+
         const bookingData = {
           service_id: document.getElementById('booking-service').value,
           booking_date: document.getElementById('booking-date').value,
@@ -1568,8 +1668,9 @@
           address,
           phone,
           notes: finalNotes,
-          discount_code: promoApplied ? 'CLEANOVA20' : null,
-          payment_method: document.getElementById('booking-payment').value,
+          addons: activeAddonKeys,
+          discount_code: promoCode || (promoApplied ? 'CLEANOVA20' : null),
+          payment_method: paymentMethodChosen,
           ai_analysis: currentAiData ? {
             score: currentAiData.score,
             rating_1to5: currentAiData.rating1to5 || Math.min(5, Math.max(1, Math.ceil(currentAiData.score / 20))),

@@ -31,6 +31,7 @@
         <a href="khampha.html" class="nav-link">Khám phá</a>
         <a href="booking.html" class="nav-link" data-action="book">Đặt lịch</a>
         <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" style="display: none;">Đơn của tôi</a>
+        <a href="wallet.html" class="nav-link" id="nav-link-wallet" style="display: none; color: #0f766e; font-weight: 700;">Ví CleanNova</a>
       </nav>
 
       <div class="header-actions">
@@ -408,13 +409,14 @@
       // Đồng bộ thanh điều hướng theo trạng thái đăng nhập
       if (window.CleanovaAPI && window.CleanovaAPI.auth) {
         const isLogged = window.CleanovaAPI.auth.isLoggedIn();
-        const user = window.CleanovaAPI.auth.getUser();
         const myBookingsLink = document.getElementById('nav-link-my-bookings');
+        const walletLink = document.getElementById('nav-link-wallet');
         const notifBtn = document.getElementById('btn-notifications-header');
         const slot = document.getElementById('auth-header-slot');
 
         if (isLogged && user) {
           if (myBookingsLink) myBookingsLink.style.display = 'inline-block';
+          if (walletLink) walletLink.style.display = 'inline-block';
           if (notifBtn) notifBtn.style.display = 'inline-flex';
           if (slot) {
             slot.innerHTML = `

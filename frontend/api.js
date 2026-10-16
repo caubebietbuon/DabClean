@@ -281,6 +281,73 @@
       }
     },
 
+    // Module Ví CleanNova (Ví điện tử & Lịch sử giao dịch sổ cái)
+    wallet: {
+      async getMyWallet() {
+        return await request('/wallet/my');
+      },
+
+      async getTransactions(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await request(`/wallet/transactions${query ? '?' + query : ''}`);
+      },
+
+      async topup(amount, idempotency_key = null, description = '') {
+        return await request('/wallet/topup', {
+          method: 'POST',
+          body: JSON.stringify({ amount, idempotency_key, description })
+        });
+      },
+
+      async payBooking(booking_id, idempotency_key = null) {
+        return await request('/wallet/pay-booking', {
+          method: 'POST',
+          body: JSON.stringify({ booking_id, idempotency_key })
+        });
+      },
+
+      async getAdminWallets() {
+        return await request('/wallet/admin/wallets');
+      },
+
+      async getAdminTransactions(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await request(`/wallet/admin/transactions${query ? '?' + query : ''}`);
+      },
+
+      async adminRefund(booking_id, reason = '') {
+        return await request('/wallet/admin/refund', {
+          method: 'POST',
+          body: JSON.stringify({ booking_id, reason })
+        });
+      }
+    },
+
+    // Module Mã giảm giá Voucher & Khuyến mãi động
+    vouchers: {
+      async getActive() {
+        return await request('/vouchers/active');
+      },
+
+      async check(code, service_id = null, subtotal = 0, frequency = 'once') {
+        return await request('/vouchers/check', {
+          method: 'POST',
+          body: JSON.stringify({ code, service_id, subtotal, frequency })
+        });
+      },
+
+      async getAllAdmin() {
+        return await request('/vouchers/admin/all');
+      },
+
+      async createAdmin(voucherData) {
+        return await request('/vouchers/admin/create', {
+          method: 'POST',
+          body: JSON.stringify(voucherData)
+        });
+      }
+    },
+
     // Module Sổ địa chỉ khách hàng (Address Book)
     addresses: {
       getStorageKey() {

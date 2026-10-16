@@ -436,6 +436,26 @@
           <div class="stat-value" id="stat-partners">0</div>
           <div class="stat-desc">Đơn ứng tuyển chờ duyệt</div>
         </div>
+        <div class="stat-card" style="border-left: 4px solid #0d9488;">
+          <div class="stat-title">Số tiền đã thu</div>
+          <div class="stat-value" id="stat-collected" style="color: #0f766e;">0 đ</div>
+          <div class="stat-desc">Khách đã trả (Ví/Thẻ/CK)</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+          <div class="stat-title">Tiền công nhân viên</div>
+          <div class="stat-value" id="stat-staff-wages" style="color: #b45309;">0 đ</div>
+          <div class="stat-desc">Thù lao hoàn tất & đã duyệt</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #6366f1;">
+          <div class="stat-title">Số dư Ví CleanNova</div>
+          <div class="stat-value" id="stat-wallet-bal" style="color: #4338ca;">0 đ</div>
+          <div class="stat-desc">Tổng số dư người dùng</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #10b981;">
+          <div class="stat-title">Lợi nhuận gộp ước tính</div>
+          <div class="stat-value" id="stat-net-profit" style="color: #047857;">0 đ</div>
+          <div class="stat-desc">Doanh thu - Lương - Hoàn tiền</div>
+        </div>
       </section>
 
       <!-- Tabs điều hướng quản trị -->
@@ -457,6 +477,12 @@
         </button>
         <button class="admin-tab-btn" data-tab="tab-post-construction" role="tab">
           <span>🏗️</span> Cấu hình Báo giá Sau XD
+        </button>
+        <button class="admin-tab-btn" data-tab="tab-wallets" role="tab">
+          <span>👛</span> Ví & Giao dịch (<span id="tab-count-wallets">0</span>)
+        </button>
+        <button class="admin-tab-btn" data-tab="tab-vouchers" role="tab">
+          <span>🏷️</span> Quản lý Voucher (<span id="tab-count-vouchers">0</span>)
         </button>
       </nav>
 
@@ -814,6 +840,82 @@
 
           </div>
 
+        </div>
+      </section>
+
+      <!-- TAB 7: QUẢN LÝ VÍ & GIAO DỊCH SỔ CÁI -->
+      <section id="tab-wallets" class="tab-pane" style="display: none;" role="tabpanel">
+        <div class="table-controls">
+          <div style="font-weight: 700; font-size: 15px; color: #0f766e;">👛 Quản lý Ví CleanNova & Đối soát sổ cái người dùng</div>
+          <button id="btn-refresh-wallets" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách ví</button>
+        </div>
+
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 24px;">
+          <table class="table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>ID Ví</th>
+                <th>Chủ tài khoản</th>
+                <th>Email / SĐT</th>
+                <th>Vai trò</th>
+                <th>Số dư khả dụng</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="wallets-table-body">
+              <tr><td colspan="6" style="text-align: center; padding: 24px;">Đang tải danh sách ví...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <span>📜</span> Nhật ký giao dịch sổ cái (Audit Log)
+        </h3>
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+          <table class="table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>Mã Giao Dịch</th>
+                <th>Thời Gian</th>
+                <th>Người Dùng</th>
+                <th>Loại GD</th>
+                <th>Số Tiền</th>
+                <th>Số Dư Sau GD</th>
+                <th>Mô Tả / Tham Chiếu</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tx-table-body">
+              <tr><td colspan="7" style="text-align: center; padding: 24px;">Đang tải lịch sử giao dịch...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 8: QUẢN LÝ VOUCHER & KHUYẾN MÃI -->
+      <section id="tab-vouchers" class="tab-pane" style="display: none;" role="tabpanel">
+        <div class="table-controls">
+          <div style="font-weight: 700; font-size: 15px; color: #0f766e;">🏷️ Quản lý Mã giảm giá & Ưu đãi chiến dịch</div>
+          <button id="btn-open-create-voucher" class="btn btn-primary btn-sm">➕ Tạo Voucher mới</button>
+        </div>
+
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+          <table class="table" style="margin: 0;">
+            <thead>
+              <tr>
+                <th>Mã Voucher</th>
+                <th>Loại giảm</th>
+                <th>Giá trị giảm</th>
+                <th>Đơn tối thiểu</th>
+                <th>Giảm tối đa</th>
+                <th>Lượt dùng / Hạn mức</th>
+                <th>Hạn sử dụng</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody id="vouchers-table-body">
+              <tr><td colspan="8" style="text-align: center; padding: 24px;">Đang tải danh sách voucher...</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -1310,6 +1412,19 @@
           document.getElementById('stat-staff').textContent = s.activeStaff || s.total_staff || 0;
           const pendingPartners = (s.pendingPartners !== undefined ? s.pendingPartners : (s.pending_partners !== undefined ? s.pending_partners : 0));
           document.getElementById('stat-partners').textContent = pendingPartners;
+
+          if (document.getElementById('stat-collected')) {
+            document.getElementById('stat-collected').textContent = Number(s.collected_revenue || 0).toLocaleString('vi-VN') + ' đ';
+          }
+          if (document.getElementById('stat-staff-wages')) {
+            document.getElementById('stat-staff-wages').textContent = Number(s.total_staff_wages || s.settled_staff_wages || 0).toLocaleString('vi-VN') + ' đ';
+          }
+          if (document.getElementById('stat-wallet-bal')) {
+            document.getElementById('stat-wallet-bal').textContent = Number(s.total_wallet_balance || 0).toLocaleString('vi-VN') + ' đ';
+          }
+          if (document.getElementById('stat-net-profit')) {
+            document.getElementById('stat-net-profit').textContent = Number(s.estimated_net_profit || 0).toLocaleString('vi-VN') + ' đ';
+          }
         } catch (err) {
           console.warn('Lỗi tải thống kê:', err);
         }
@@ -2569,6 +2684,103 @@
       });
 
       // ------------------------------------------------------------
+      // 8. TAB 7: QUẢN LÝ VÍ & GIAO DỊCH SỔ CÁI
+      // ------------------------------------------------------------
+      async function loadWallets() {
+        const tbody = document.getElementById('wallets-table-body');
+        try {
+          const res = await CleanovaAPI.wallet.getAdminWallets();
+          const wallets = res.data || [];
+          document.getElementById('tab-count-wallets').textContent = wallets.length;
+
+          if (wallets.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px;">Không có ví người dùng nào.</td></tr>`;
+          } else {
+            tbody.innerHTML = wallets.map(w => `
+              <tr>
+                <td><strong>#CNV-W${String(w.id).padStart(4, '0')}</strong></td>
+                <td><strong>${escapeHtml(w.user_name || 'Khách hàng')}</strong></td>
+                <td>${escapeHtml(w.user_email || '---')}<br><small style="color: #64748b;">${escapeHtml(w.user_phone || '')}</small></td>
+                <td><span class="badge" style="background: #f1f5f9; color: #475569;">${escapeHtml(w.user_role || 'customer')}</span></td>
+                <td><strong style="color: #0f766e; font-size: 1rem;">${Number(w.balance || 0).toLocaleString('vi-VN')} đ</strong></td>
+                <td><span class="badge" style="background: ${w.status === 'active' ? '#dcfce7' : '#fee2e2'}; color: ${w.status === 'active' ? '#15803d' : '#b91c1c'};">${w.status === 'active' ? 'Hoạt động' : 'Đã khóa'}</span></td>
+              </tr>
+            `).join('');
+          }
+
+          // Tải danh sách giao dịch
+          const txRes = await CleanovaAPI.wallet.getAdminTransactions({ limit: 50 });
+          const txList = txRes.data || [];
+          const txBody = document.getElementById('admin-tx-table-body');
+          if (txList.length === 0) {
+            txBody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px;">Chưa có giao dịch nào trên hệ thống.</td></tr>`;
+          } else {
+            txBody.innerHTML = txList.map(tx => {
+              const isPlus = tx.type === 'topup' || tx.type === 'refund';
+              const color = isPlus ? '#16a34a' : '#dc2626';
+              const sign = isPlus ? '+' : '-';
+              const dateStr = new Date(tx.created_at).toLocaleString('vi-VN');
+              return `
+                <tr>
+                  <td><code style="font-weight: 700;">${escapeHtml(tx.transaction_code)}</code></td>
+                  <td style="color: #64748b; font-size: 12px;">${dateStr}</td>
+                  <td><strong>${escapeHtml(tx.user_name || '---')}</strong><br><small style="color: #64748b;">${escapeHtml(tx.user_email || '')}</small></td>
+                  <td><span class="badge" style="background: #f8fafc; font-weight: 700;">${tx.type.toUpperCase()}</span></td>
+                  <td><strong style="color: ${color};">${sign}${Number(tx.amount || 0).toLocaleString('vi-VN')} đ</strong></td>
+                  <td>${Number(tx.balance_after || 0).toLocaleString('vi-VN')} đ</td>
+                  <td style="max-width: 250px;">${escapeHtml(tx.description || '---')}</td>
+                </tr>
+              `;
+            }).join('');
+          }
+        } catch (err) {
+          console.warn('Lỗi tải danh sách ví:', err);
+        }
+      }
+
+      const btnRefreshWallets = document.getElementById('btn-refresh-wallets');
+      if (btnRefreshWallets) btnRefreshWallets.addEventListener('click', loadWallets);
+
+      // ------------------------------------------------------------
+      // 9. TAB 8: QUẢN LÝ VOUCHER & KHUYẾN MÃI
+      // ------------------------------------------------------------
+      async function loadVouchers() {
+        const tbody = document.getElementById('vouchers-table-body');
+        try {
+          const res = await CleanovaAPI.vouchers.getAllAdmin();
+          const vouchers = res.data || [];
+          document.getElementById('tab-count-vouchers').textContent = vouchers.length;
+
+          if (vouchers.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 24px;">Chưa có voucher nào.</td></tr>`;
+          } else {
+            tbody.innerHTML = vouchers.map(v => {
+              const isPercent = v.discount_type === 'percentage';
+              const valText = isPercent ? `${v.discount_value}%` : `${Number(v.discount_value).toLocaleString('vi-VN')} đ`;
+              const maxText = v.max_discount_amount ? `${Number(v.max_discount_amount).toLocaleString('vi-VN')} đ` : 'Không giới hạn';
+              const minText = Number(v.min_order_amount || 0) > 0 ? `${Number(v.min_order_amount).toLocaleString('vi-VN')} đ` : '0 đ';
+              const endStr = new Date(v.end_date).toLocaleDateString('vi-VN');
+              const isExpired = new Date(v.end_date) < new Date();
+              return `
+                <tr>
+                  <td><strong style="color: #0f766e; font-size: 1rem;">${escapeHtml(v.code)}</strong></td>
+                  <td>${isPercent ? 'Phần trăm' : 'Cố định'}</td>
+                  <td><strong style="color: #047857;">${valText}</strong></td>
+                  <td>${minText}</td>
+                  <td>${maxText}</td>
+                  <td><strong>${v.used_count || 0}</strong> / ${v.usage_limit || 100}</td>
+                  <td>${endStr}</td>
+                  <td><span class="badge" style="background: ${v.is_active && !isExpired ? '#dcfce7' : '#fee2e2'}; color: ${v.is_active && !isExpired ? '#15803d' : '#b91c1c'};">${v.is_active && !isExpired ? 'Đang áp dụng' : (isExpired ? 'Hết hạn' : 'Tạm dừng')}</span></td>
+                </tr>
+              `;
+            }).join('');
+          }
+        } catch (err) {
+          console.warn('Lỗi tải danh sách voucher:', err);
+        }
+      }
+
+      // ------------------------------------------------------------
       // KHỞI CHẠY TẢI TOÀN BỘ DỮ LIỆU
       // ------------------------------------------------------------
       await loadStats();
@@ -2578,6 +2790,8 @@
       await loadServices();
       await loadPartners();
       await loadPostConstructionConfig();
+      await loadWallets();
+      await loadVouchers();
     });
   </script>
 </body>

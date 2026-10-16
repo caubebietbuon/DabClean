@@ -11,6 +11,13 @@ CREATE DATABASE IF NOT EXISTS cleanova_db
 USE cleanova_db;
 
 -- 2. Xóa bảng cũ nếu tồn tại (theo thứ tự khóa ngoại)
+DROP TABLE IF EXISTS voucher_usages;
+DROP TABLE IF EXISTS vouchers;
+DROP TABLE IF EXISTS wallet_ledger_entries;
+DROP TABLE IF EXISTS wallet_transactions;
+DROP TABLE IF EXISTS wallets;
+DROP TABLE IF EXISTS staff_payout_logs;
+DROP TABLE IF EXISTS post_construction_configs;
 DROP TABLE IF EXISTS audit_logs;
 DROP TABLE IF EXISTS partner_applications;
 DROP TABLE IF EXISTS reviews;
@@ -119,8 +126,10 @@ CREATE TABLE bookings (
   construction_notes TEXT DEFAULT NULL COMMENT 'Ghi chú chi tiết công trình từ khách hàng',
   total_price DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tổng tiền sau giảm giá (VNĐ)',
   discount_code VARCHAR(50) DEFAULT NULL COMMENT 'Mã ưu đãi áp dụng (VD: CLEANOVA20)',
-  payment_method ENUM('cash', 'bank_transfer', 'momo', 'vnpay') DEFAULT 'cash' COMMENT 'Phương thức thanh toán',
+  payment_method ENUM('cash', 'bank_transfer', 'momo', 'vnpay', 'wallet') DEFAULT 'cash' COMMENT 'Phương thức thanh toán',
   payment_status ENUM('unpaid', 'paid', 'refunded') DEFAULT 'unpaid' COMMENT 'Trạng thái thanh toán',
+  addons JSON DEFAULT NULL COMMENT 'Danh sách addon đã chọn [{ id, name, price }]',
+  addon_amount DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tổng tiền dịch vụ bổ sung (VNĐ)',
   status ENUM('pending', 'assigned', 'confirmed', 'arrived', 'in_progress', 'completed', 'cancelled') DEFAULT 'pending' COMMENT 'Trạng thái đơn: pending, assigned, confirmed, arrived, in_progress, completed, cancelled',
   staff_id INT DEFAULT NULL COMMENT 'Khóa ngoại liên kết tới nhân viên được phân công làm việc',
   assigned_at TIMESTAMP NULL DEFAULT NULL COMMENT 'Thời điểm phân công nhân viên',
@@ -280,4 +289,105 @@ CREATE TABLE post_construction_configs (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_post_const_admin FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 9: wallets (Ví điện tử CleanNova của khách hàng)
+-- ------------------------------------------------------------
+CREATE TABLE wallets (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL UNIQUE COMMENT 'Khóa ngoại duy nhất liên kết 1-1 với bảng users',
+  balance DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Số dư khả dụng hiện tại (VNĐ)',
+  currency VARCHAR(10) NOT NULL DEFAULT 'VND' COMMENT 'Đơn vị tiền tệ (mặc định VND)',
+  status ENUM('active', 'locked') NOT NULL DEFAULT 'active' COMMENT 'Trạng thái ví: active (hoạt động), locked (khóa)',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_wallets_user (user_id),
+  CONSTRAINT fk_wallets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 10: wallet_transactions (Lịch sử giao dịch ví CleanNova)
+-- ------------------------------------------------------------
+CREATE TABLE wallet_transactions (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  wallet_id INT NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng wallets',
+  transaction_code VARCHAR(32) NOT NULL UNIQUE COMMENT 'Mã giao dịch duy nhất (VD: WTX-202610-8A9F1B)',
+  type ENUM('topup', 'payment', 'refund', 'adjustment') NOT NULL COMMENT 'Loại giao dịch: topup (nạp tiền), payment (thanh toán đơn), refund (hoàn tiền), adjustment (điều chỉnh kiểm toán)',
+  amount DECIMAL(12, 2) NOT NULL COMMENT 'Số tiền giao dịch (luôn là số dương)',
+  status ENUM('pending', 'completed', 'failed', 'cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái: pending, completed, failed, cancelled',
+  description VARCHAR(255) NOT NULL COMMENT 'Mô tả nội dung giao dịch',
+  reference_type VARCHAR(50) DEFAULT NULL COMMENT 'Loại tham chiếu: booking, sandbox_topup, bank_transfer, admin_adjustment',
+  reference_id VARCHAR(50) DEFAULT NULL COMMENT 'Mã tham chiếu (booking_id, mã đơn hàng, hoặc mã ngân hàng)',
+  idempotency_key VARCHAR(100) DEFAULT NULL UNIQUE COMMENT 'Khóa chống lặp giao dịch (Idempotency Key)',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  completed_at DATETIME DEFAULT NULL,
+  INDEX idx_wallet_tx_wallet (wallet_id),
+  INDEX idx_wallet_tx_code (transaction_code),
+  INDEX idx_wallet_tx_ref (reference_type, reference_id),
+  CONSTRAINT fk_wallet_tx_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 11: wallet_ledger_entries (Sổ cái kế toán bất biến - Immutable Ledger)
+-- ------------------------------------------------------------
+CREATE TABLE wallet_ledger_entries (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  transaction_id BIGINT NOT NULL COMMENT 'Khóa ngoại liên kết tới giao dịch hoàn tất',
+  wallet_id INT NOT NULL COMMENT 'Khóa ngoại liên kết tới ví',
+  entry_type ENUM('credit', 'debit') NOT NULL COMMENT 'credit (+ cộng tiền), debit (- trừ tiền)',
+  amount DECIMAL(12, 2) NOT NULL COMMENT 'Số tiền biến động (VNĐ)',
+  balance_before DECIMAL(12, 2) NOT NULL COMMENT 'Số dư trước khi ghi nhận',
+  balance_after DECIMAL(12, 2) NOT NULL COMMENT 'Số dư sau khi ghi nhận',
+  note VARCHAR(255) DEFAULT NULL COMMENT 'Diễn giải bút toán',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_ledger_wallet (wallet_id),
+  INDEX idx_ledger_tx (transaction_id),
+  CONSTRAINT fk_ledger_tx FOREIGN KEY (transaction_id) REFERENCES wallet_transactions(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_ledger_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 12: vouchers (Mã khuyến mãi & Ưu đãi CleanNova)
+-- ------------------------------------------------------------
+CREATE TABLE vouchers (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(50) NOT NULL UNIQUE COMMENT 'Mã voucher (VD: CLEANOVA20, CLEAN50K)',
+  title VARCHAR(150) NOT NULL COMMENT 'Tên hiển thị của voucher',
+  description TEXT DEFAULT NULL COMMENT 'Chi tiết điều kiện áp dụng',
+  discount_type ENUM('percent', 'fixed') NOT NULL DEFAULT 'percent' COMMENT 'Loại giảm giá: percent (phần trăm) hoặc fixed (số tiền cố định)',
+  discount_value DECIMAL(12, 2) NOT NULL COMMENT 'Giá trị giảm (% hoặc VNĐ)',
+  max_discount_amount DECIMAL(12, 2) DEFAULT NULL COMMENT 'Mức giảm tối đa nếu tính theo % (VNĐ)',
+  min_order_value DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Giá trị đơn tối thiểu để áp dụng (VNĐ)',
+  usage_limit INT DEFAULT NULL COMMENT 'Tổng số lượt sử dụng tối đa toàn hệ thống (NULL: không giới hạn)',
+  used_count INT NOT NULL DEFAULT 0 COMMENT 'Số lượt đã sử dụng thực tế',
+  user_limit INT NOT NULL DEFAULT 1 COMMENT 'Số lượt dùng tối đa / 1 tài khoản khách hàng',
+  applicable_service_id INT DEFAULT NULL COMMENT 'Dịch vụ áp dụng (NULL: tất cả dịch vụ)',
+  allow_periodic TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Cho phép dùng với gói định kỳ: 1 (có), 0 (chỉ đơn 1 lần)',
+  start_date DATETIME DEFAULT NULL COMMENT 'Thời điểm bắt đầu hiệu lực',
+  end_date DATETIME DEFAULT NULL COMMENT 'Thời điểm hết hạn',
+  is_active TINYINT(1) NOT NULL DEFAULT 1 COMMENT 'Trạng thái: 1 (kích hoạt), 0 (tạm ngưng)',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_vouchers_code (code),
+  INDEX idx_vouchers_active (is_active),
+  CONSTRAINT fk_vouchers_service FOREIGN KEY (applicable_service_id) REFERENCES services(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 13: voucher_usages (Lịch sử sử dụng voucher theo từng đơn hàng)
+-- ------------------------------------------------------------
+CREATE TABLE voucher_usages (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  voucher_id INT NOT NULL,
+  user_id INT NOT NULL,
+  booking_id INT NOT NULL,
+  discount_amount DECIMAL(12, 2) NOT NULL,
+  used_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_voucher_user_booking (voucher_id, user_id, booking_id),
+  INDEX idx_voucher_user (voucher_id, user_id),
+  CONSTRAINT fk_vu_voucher FOREIGN KEY (voucher_id) REFERENCES vouchers(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_vu_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_vu_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 

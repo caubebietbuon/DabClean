@@ -75,6 +75,20 @@ const authMiddleware = {
       });
     }
     next();
+  },
+
+  // Kiểm tra danh sách quyền được phép (requireRole)
+  requireRole(roles = []) {
+    return (req, res, next) => {
+      const allowedRoles = Array.isArray(roles) ? roles : [roles];
+      if (!req.user || !allowedRoles.includes(req.user.role)) {
+        return res.status(403).json({
+          success: false,
+          message: 'Truy cập bị từ chối: Bạn không có quyền hạn truy cập khu vực này.'
+        });
+      }
+      next();
+    };
   }
 };
 

@@ -26,6 +26,8 @@ const adminRoutes = require('./routes/adminRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const partnerRoutes = require('./routes/partnerRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const walletRoutes = require('./routes/walletRoutes');
+const voucherRoutes = require('./routes/voucherRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 // Đảm bảo xử lý CORS preflight OPTIONS cho mọi routes
@@ -39,6 +41,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/partner', partnerRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/wallet', walletRoutes);
+app.use('/api/vouchers', voucherRoutes);
 
 // Endpoint kiểm tra sức khỏe hệ thống (Health Check)
 app.get('/api/health', (req, res) => {

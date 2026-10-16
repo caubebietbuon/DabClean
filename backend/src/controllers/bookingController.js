@@ -4,6 +4,8 @@
 const crypto = require('crypto');
 const BookingModel = require('../models/bookingModel');
 const ServiceModel = require('../models/serviceModel');
+const WalletModel = require('../models/walletModel');
+const VoucherModel = require('../models/voucherModel');
 const pricingService = require('../services/pricingService');
 const { sanitizeInput } = require('../utils/sanitize');
 
@@ -50,6 +52,8 @@ const bookingController = {
         notes = '',
         discount_code,
         payment_method = 'cash',
+        addons = null,
+        extras = null,
         // Các trường dịch vụ Vệ sinh sau xây dựng:
         pricing_type = 'm2',
         building_type = 'apartment',
@@ -97,8 +101,8 @@ const bookingController = {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập số điện thoại liên hệ.' });
       }
 
-      // Bảo vệ Bug 6: Kiểm tra payment_method trước khi ghi vào MySQL ENUM
-      const validPaymentMethods = ['cash', 'bank_transfer', 'momo', 'vnpay'];
+      // Bảo vệ Bug 6: Kiểm tra payment_method trước khi ghi vào MySQL ENUM (hỗ trợ ví CleanNova)
+      const validPaymentMethods = ['cash', 'bank_transfer', 'momo', 'vnpay', 'wallet'];
       if (!validPaymentMethods.includes(payment_method)) {
         return res.status(400).json({
           success: false,
@@ -185,14 +189,29 @@ const bookingController = {
         }
       }
 
-      // Kiểm tra mã ưu đãi CLEANOVA20 đã dùng chưa
+      // Kiểm tra mã ưu đãi voucher động
       const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
-      let alreadyUsedPromo = false;
-      if (normalizedPromo === 'CLEANOVA20') {
-        alreadyUsedPromo = await BookingModel.hasUsedPromoCode(req.user.id, 'CLEANOVA20');
+      let appliedVoucher = null;
+      let voucherDiscountAmount = null;
+
+      if (normalizedPromo) {
+        const vCheck = await VoucherModel.validateAndCalculateDiscount({
+          code: normalizedPromo,
+          userId: req.user.id,
+          serviceId: service.id,
+          subtotal: 0,
+          frequency
+        });
+        if (!vCheck.valid && !vCheck.reason.includes('từ')) {
+          return res.status(400).json({ success: false, message: vCheck.reason });
+        }
+        if (vCheck.valid) {
+          appliedVoucher = vCheck.voucher;
+          voucherDiscountAmount = vCheck.discountAmount;
+        }
       }
 
-      // Tính giá & tiền công thống nhất qua Pricing Service
+      // Tính giá & tiền công thống nhất qua Pricing Service (kèm phụ phí Add-ons)
       let calculation;
       try {
         calculation = pricingService.calculatePrice(service, {
@@ -201,7 +220,9 @@ const bookingController = {
           duration_hours: isCareService ? parseFloat(duration_hours) : null,
           package_type: normalizedPackage,
           discount_code: normalizedPromo,
-          hasUsedPromo: alreadyUsedPromo,
+          voucher_discount: voucherDiscountAmount,
+          hasUsedPromo: false,
+          addons: addons || extras || null,
           // Post construction options:
           pricing_type: isPostConstruction ? (pricing_type || 'm2') : null,
           building_type: isPostConstruction ? building_type : null,
@@ -225,6 +246,18 @@ const bookingController = {
       const totalPrice = calculation.totalPrice;
       const staffWage = calculation.staffWage;
       const finalDurationHours = calculation.durationHours;
+
+      // Nếu thanh toán bằng Ví CleanNova, kiểm tra số dư trước khi tạo đơn
+      if (payment_method === 'wallet') {
+        const walletInfo = await WalletModel.getBalance(req.user.id);
+        if (walletInfo.balance < totalPrice) {
+          return res.status(400).json({
+            success: false,
+            code: 'INSUFFICIENT_WALLET_BALANCE',
+            message: `Số dư Ví CleanNova (${Math.round(walletInfo.balance).toLocaleString('vi-VN')} đ) không đủ để thanh toán ${Math.round(totalPrice).toLocaleString('vi-VN')} đ. Vui lòng nạp thêm tiền hoặc chọn phương thức khác.`
+          });
+        }
+      }
 
       // Bảo vệ Bug 8: Sinh mã đơn động theo Năm-Tháng hiện tại + 6 ký tự hex ngẫu nhiên (16.7 triệu mã/tháng)
       const now = new Date();
@@ -275,7 +308,9 @@ const bookingController = {
             quote_min_price: isPostConstruction ? calculation.quoteMinPrice : null,
             quote_max_price: isPostConstruction ? calculation.quoteMaxPrice : null,
             quote_notes: null,
-            construction_notes: construction_notes ? sanitizeInput(construction_notes) : null
+            construction_notes: construction_notes ? sanitizeInput(construction_notes) : null,
+            addons: calculation.addons || null,
+            addon_amount: calculation.addonAmount || 0.00
           });
           break;
         } catch (err) {
@@ -286,11 +321,26 @@ const bookingController = {
         }
       }
 
+      // Nếu thanh toán bằng Ví CleanNova, tiến hành trừ tiền nguyên tử
+      if (payment_method === 'wallet' && bookingId) {
+        await WalletModel.payBooking({
+          userId: req.user.id,
+          bookingId
+        });
+      }
+
+      // Ghi nhận lượt sử dụng voucher nếu có áp dụng
+      if (appliedVoucher && calculation.discountAmount > 0 && bookingId) {
+        await VoucherModel.recordUsage(appliedVoucher.id, req.user.id, bookingId, calculation.discountAmount);
+      }
+
       const newBooking = await BookingModel.getById(bookingId);
 
       const successMsg = isPostConstruction && calculation.quoteStatus === 'pending_survey'
         ? 'Gửi yêu cầu khảo sát & báo giá dịch vụ vệ sinh sau xây dựng thành công! CleanNova sẽ liên hệ khảo sát thực tế miễn phí và gửi báo giá chính thức.'
-        : 'Đặt lịch dịch vụ thành công! Đội ngũ Cleannova sẽ liên hệ xác nhận trong ít phút.';
+        : (payment_method === 'wallet'
+            ? 'Đặt lịch & thanh toán bằng Ví CleanNova thành công! Đội ngũ CleanNova sẽ liên hệ xác nhận.'
+            : 'Đặt lịch dịch vụ thành công! Đội ngũ CleanNova sẽ liên hệ xác nhận trong ít phút.');
 
       res.status(201).json({
         success: true,
@@ -312,6 +362,8 @@ const bookingController = {
         duration_hours = null,
         package_type = 'hourly',
         discount_code = null,
+        addons = null,
+        extras = null,
         // Post-construction fields:
         pricing_type = null,
         building_type = null,
@@ -352,6 +404,7 @@ const bookingController = {
         package_type: isCareService ? (package_type || 'hourly') : 'hourly',
         discount_code: normalizedPromo,
         hasUsedPromo: alreadyUsedPromo,
+        addons: addons || extras || null,
         pricing_type: isPostConstruction ? (pricing_type || 'm2') : null,
         building_type: isPostConstruction ? (building_type || 'apartment') : null,
         area_m2: isPostConstruction ? area_m2 : null,
@@ -469,16 +522,26 @@ const bookingController = {
         return res.status(400).json({ success: false, message: 'Lý do hủy đơn phải dài từ 5 đến 500 ký tự.' });
       }
 
-      // Bảo vệ Bug 7: Cập nhật nguyên tử có kiểm tra status hiện tại (chống race condition)
+      // Bảo vệ Bug 7 & Phase 4: Nếu đơn đã thanh toán qua Ví CleanNova, tự động hoàn tiền 100% vào Ví người dùng
       const sanitizedReason = sanitizeInput(reason);
-      const cancelled = await BookingModel.updateStatus(id, 'cancelled', sanitizedReason, booking.status);
-      if (!cancelled) {
-        return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi. Vui lòng tải lại trang.' });
+      if (booking.payment_method === 'wallet' && booking.payment_status === 'paid') {
+        await WalletModel.refundBooking({
+          bookingId: id,
+          reason: `Khách hàng hủy đơn: ${sanitizedReason}`,
+          adminId: req.user.id
+        });
+      } else {
+        const cancelled = await BookingModel.updateStatus(id, 'cancelled', sanitizedReason, booking.status);
+        if (!cancelled) {
+          return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi. Vui lòng tải lại trang.' });
+        }
       }
 
       res.json({
         success: true,
-        message: 'Hủy đơn đặt lịch thành công.'
+        message: (booking.payment_method === 'wallet' && booking.payment_status === 'paid')
+          ? 'Hủy đơn đặt lịch thành công và đã hoàn tiền 100% vào Ví CleanNova của bạn!'
+          : 'Hủy đơn đặt lịch thành công.'
       });
     } catch (err) {
       next(err);
