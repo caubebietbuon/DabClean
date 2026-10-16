@@ -87,7 +87,7 @@ async function predictFile(filePath, opts = {}) {
     throw new Error(`Không tìm thấy file ảnh: ${filePath}`);
   }
 
-  const tensor = loadImageAsTensor(filePath, IMAGE_SIZE);
+  const tensor = await loadImageAsTensor(filePath, IMAGE_SIZE);
   try {
     const probs = await predictTensor(tensor);
     return formatResult(probs);
@@ -106,7 +106,7 @@ async function predictFile(filePath, opts = {}) {
 async function predictBuffer(buffer, ext = '.jpg', opts = {}) {
   if (opts.modelDir) await loadModel(opts.modelDir);
 
-  const tensor = bufferToTensor(buffer, ext, IMAGE_SIZE);
+  const tensor = await bufferToTensor(buffer, ext, IMAGE_SIZE);
   try {
     const probs = await predictTensor(tensor);
     return formatResult(probs);

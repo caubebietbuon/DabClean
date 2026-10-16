@@ -29,15 +29,33 @@ const router = express.Router();
 // ------------------------------------------------------------
 // Cấu hình multer: giữ ảnh trong RAM
 // ------------------------------------------------------------
+// Đây chỉ là lớp LỌC THÔ. MIME type do trình duyệt gửi KHÔNG đáng tin:
+//   - Ảnh .webp đổi tên thành .jpg vẫn được gửi là image/jpeg
+//   - Ảnh tải từ một số nguồn bị gửi là application/octet-stream
+//   - Một số trình duyệt/OS không gán MIME (chuỗi rỗng)
+// Nên ta chấp nhận nếu MIME là ảnh HOẶC đuôi file trông như ảnh.
+//
+// Lớp kiểm tra THẬT SỰ nằm ở `sniffFormat()` trong imageUtils.js — đọc MAGIC
+// BYTES. Nếu file không phải ảnh, nó sẽ báo lỗi tiếng Việt rõ ràng (HTTP 415).
+const IMAGE_EXT_RE = /\.(jpe?g|png|webp|gif|bmp|tiff?|avif|heic|heif|jfif)$/i;
+const ALLOWED_IMAGE_MIME = /^image\//i;
+
 const maxBytes = parseInt(process.env.MAX_UPLOAD_BYTES, 10) || 10 * 1024 * 1024;
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: maxBytes, files: 10 },
   fileFilter(req, file, cb) {
-    if (/^image\/(jpeg|png|webp|bmp|gif)$/.test(file.mimetype)) {
+    const mimeOk = ALLOWED_IMAGE_MIME.test(file.mimetype || '');
+    const extOk = IMAGE_EXT_RE.test(file.originalname || '');
+
+    if (mimeOk || extOk) {
       cb(null, true);
     } else {
-      cb(new Error('Chỉ chấp nhận file ảnh (jpeg, png, webp, bmp, gif).'));
+      cb(new Error(
+        `File "${file.originalname}" không phải ảnh `
+        + `(MIME: ${file.mimetype || 'không rõ'}). `
+        + 'Chỉ chấp nhận ảnh JPEG, PNG, WebP, GIF, BMP, TIFF.'
+      ));
     }
   }
 });
@@ -65,6 +83,19 @@ function handleUpload(req, res, next) {
       if (req.files.images) files = files.concat(req.files.images);
       if (req.files.image) files = files.concat(req.files.image);
     }
+
+    // Khử TRÙNG LẶP.
+    // Vì sao cần: client cũ gửi mỗi ảnh vào CẢ hai field "images" và "image"
+    // để "tương thích ngược", nên cùng một file xuất hiện 2 lần -> server
+    // phân tích 2 lần (soAnh=2), tốn gấp đôi thời gian mà kết quả không đổi.
+    // Nhận diện trùng bằng tên file + kích thước (multer không cho hash).
+    const seen = new Set();
+    files = files.filter(f => {
+      const key = `${f.originalname}::${f.size}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 
     if (files.length === 0) {
       return res.status(400).json({

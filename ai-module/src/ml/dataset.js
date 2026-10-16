@@ -108,7 +108,8 @@ async function buildEmbeddingDataset(items, opts = {}) {
     const slice = items.slice(start, start + batchSize);
 
     // Nạp từng ảnh -> tensor [224,224,3], gom thành lô [n,224,224,3]
-    const tensors = slice.map(it => loadImageAsTensor(it.file));
+    // loadImageAsTensor là async (dùng sharp để hỗ trợ WebP/GIF/BMP...)
+    const tensors = await Promise.all(slice.map(it => loadImageAsTensor(it.file)));
     const batch = tf.stack(tensors);
     tensors.forEach(t => t.dispose());
 

@@ -861,7 +861,14 @@
       // Xử lý nạp và cộng dồn nhiều tệp ảnh vào mảng selectedFiles
       function handleSelectedFiles(filesList) {
         hideAiError();
-        const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'];
+        // Danh sách này khớp với khả năng giải mã THẬT của module AI
+        // (sharp hỗ trợ JPEG/PNG/WebP/GIF/BMP/TIFF/HEIC/AVIF).
+        // Lưu ý: MIME do trình duyệt đoán theo đuôi file, nên có thể sai —
+        // server còn kiểm tra lại bằng magic bytes.
+        const validTypes = [
+          'image/jpeg', 'image/jpg', 'image/png', 'image/webp',
+          'image/gif', 'image/bmp', 'image/tiff', 'image/avif', 'image/heic', 'image/heif'
+        ];
         const maxSizeBytes = 10 * 1024 * 1024; // 10MB
         let addedCount = 0;
 
@@ -874,8 +881,11 @@
             break;
           }
 
-          if (!validTypes.includes(file.type)) {
-            showAiError(`File "${file.name}" không đúng định dạng ảnh (chỉ chấp nhận JPG, PNG, WEBP, BMP).`);
+          // Chấp nhận cả file có MIME rỗng (một số trình duyệt/OS không gán MIME)
+          // nếu đuôi file là ảnh — server sẽ là nơi kiểm tra cuối cùng.
+          const extOk = /\.(jpe?g|png|webp|gif|bmp|tiff?|avif|heic|heif)$/i.test(file.name || '');
+          if (!validTypes.includes(file.type) && !(file.type === '' && extOk)) {
+            showAiError(`File "${file.name}" không đúng định dạng ảnh (chỉ chấp nhận JPG, PNG, WEBP, GIF, BMP, TIFF).`);
             continue;
           }
 
@@ -1005,8 +1015,8 @@
             progressVal += 12;
             if (aiProgressBar) aiProgressBar.style.width = `${progressVal}%`;
             if (progressVal > 40 && aiLoadingStatus) {
-              aiLoadingStatus.textContent = `Đang phân tích 5 chỉ số độ bẩn cho ${selectedFiles.length} không gian...`;
-              aiLoadingSubstatus.textContent = 'Nhận diện vết ố, độ bừa bộn, lớp bụi bặm và cặn bẩn sàn nhà';
+              aiLoadingStatus.textContent = `Đang phân tích độ bẩn cho ${selectedFiles.length} không gian...`;
+              aiLoadingSubstatus.textContent = 'Mô hình MobileNet đang phân loại: Sạch / Hơi bẩn / Rất bẩn';
             }
             if (progressVal > 70 && aiLoadingStatus) {
               aiLoadingStatus.textContent = 'Đang tổng hợp đánh giá 1-5 sao và tính toán gói dịch vụ tối ưu...';
@@ -1017,10 +1027,15 @@
 
         // Chuẩn bị FormData đa ảnh
         // TUYỆT ĐỐI KHÔNG set Content-Type: application/json thủ công!
+        //
+        // ⚠️ CHỈ gửi vào field "images". Trước đây code gửi mỗi ảnh vào CẢ
+        // "images" lẫn "image" để "tương thích ngược" — nhưng server cộng dồn
+        // cả hai field, nên 1 ảnh bị xử lý 2 LẦN (soAnh=2). Điều này làm thời
+        // gian chờ gấp đôi mà kết quả không đổi. Server hiện chấp nhận cả hai
+        // tên field nên không cần gửi trùng.
         const formData = new FormData();
         selectedFiles.forEach(file => {
           formData.append('images', file);
-          formData.append('image', file); // Hỗ trợ tương thích ngược
         });
         formData.append('areaSize', areaM2Map[selectedArea] || 75);
 
