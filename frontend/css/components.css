@@ -401,7 +401,8 @@ textarea.form-control {
 /* ------------------------------------------------------------
    6. MODAL DIALOGS (Cửa sổ nổi hiện đại, scale-in & blur)
    ------------------------------------------------------------ */
-.modal-overlay {
+.modal-overlay,
+.modal-backdrop {
   position: fixed;
   inset: 0;
   background: rgba(15, 23, 42, 0.6);
@@ -417,12 +418,16 @@ textarea.form-control {
   transition: opacity var(--transition-normal);
 }
 
-.modal-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+.modal-overlay.active,
+.modal-backdrop.active,
+.modal-backdrop[style*="display: flex"],
+.modal-backdrop[style*="display:flex"] {
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
-.modal {
+.modal,
+.modal-box {
   background: var(--color-white);
   border-radius: var(--radius-2xl);
   max-width: 580px;
@@ -436,7 +441,10 @@ textarea.form-control {
   position: relative;
 }
 
-.modal-overlay.active .modal {
+.modal-overlay.active .modal,
+.modal-backdrop.active .modal-box,
+.modal-backdrop[style*="display: flex"] .modal-box,
+.modal-backdrop[style*="display:flex"] .modal-box {
   transform: scale(1) translateY(0);
 }
 

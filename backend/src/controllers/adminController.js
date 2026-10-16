@@ -298,7 +298,7 @@ const adminController = {
         return res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản để chỉnh sửa.' });
       }
 
-      const { name, phone, address, role, status } = req.body;
+      const { name, phone, address, role, status, lock_reason } = req.body;
 
       // Quy tắc an toàn: Nếu hạ quyền tài khoản Admin hiện tại xuống vai trò khác,
       // phải kiểm tra xem có còn ít nhất 1 Admin khác đang hoạt động không!
@@ -318,15 +318,27 @@ const adminController = {
       const validStatuses = ['active', 'inactive'];
       const updatedStatus = status && validStatuses.includes(status) ? status : (targetUser.status || 'active');
 
+      if (updatedStatus === 'inactive' && (!lock_reason || !lock_reason.trim()) && !targetUser.lock_reason) {
+        return res.status(400).json({
+          success: false,
+          message: 'Vui lòng cung cấp lý do khi khóa tài khoản khách hàng hoặc nhân viên!'
+        });
+      }
+
+      const finalLockReason = updatedStatus === 'inactive' 
+        ? (lock_reason !== undefined ? lock_reason.trim() : targetUser.lock_reason) 
+        : null;
+
       await UserModel.updateAdminUser(id, {
         name: name !== undefined ? name : targetUser.name,
         phone: phone !== undefined ? phone : targetUser.phone,
         address: address !== undefined ? address : targetUser.address,
         role: updatedRole,
-        status: updatedStatus
+        status: updatedStatus,
+        lock_reason: finalLockReason
       });
 
-      await UserModel.logAudit(req.user.id, 'UPDATE_USER_INFO', id, 'user', `Cập nhật thông tin tài khoản ${targetUser.email} (Role: ${updatedRole}, Status: ${updatedStatus})`);
+      await UserModel.logAudit(req.user.id, 'UPDATE_USER_INFO', id, 'user', `Cập nhật thông tin tài khoản ${targetUser.email} (Role: ${updatedRole}, Status: ${updatedStatus}${finalLockReason ? `, Lý do khóa: ${finalLockReason}` : ''})`);
 
       const updated = await UserModel.findById(id);
       res.json({
@@ -340,7 +352,7 @@ const adminController = {
   },
 
   // 11. Bật/Tắt trạng thái tài khoản (PATCH /api/admin/users/:id/status)
-  // Ưu tiên vô hiệu hóa (Soft-deactivate) an toàn
+  // Khóa tài khoản khách hàng / nhân viên BẮT BUỘC có lý do
   async toggleUserStatus(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
@@ -349,9 +361,17 @@ const adminController = {
         return res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản này.' });
       }
 
-      const { status } = req.body;
+      const { status, reason } = req.body;
       if (!status || !['active', 'inactive'].includes(status)) {
         return res.status(400).json({ success: false, message: "Trạng thái phải là 'active' hoặc 'inactive'." });
+      }
+
+      // Khóa tài khoản bắt buộc phải có lý do
+      if (status === 'inactive' && (!reason || !reason.trim())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Vui lòng cung cấp lý do khi khóa tài khoản khách hàng hoặc nhân viên!'
+        });
       }
 
       // Quy tắc bảo mật bắt buộc:
@@ -374,14 +394,23 @@ const adminController = {
         }
       }
 
-      await UserModel.updateStatus(id, status);
+      const finalReason = status === 'inactive' ? reason.trim() : null;
+      await UserModel.updateStatus(id, status, finalReason);
 
-      const actionText = status === 'active' ? 'Kích hoạt lại' : 'Vô hiệu hóa';
-      await UserModel.logAudit(req.user.id, status === 'active' ? 'ACTIVATE_USER' : 'DEACTIVATE_USER', id, 'user', `${actionText} tài khoản ${targetUser.email}`);
+      const actionText = status === 'active' ? 'Kích hoạt lại' : 'Khóa';
+      const auditDetails = status === 'inactive' 
+        ? `Khóa tài khoản ${targetUser.email} (Lý do: ${finalReason})`
+        : `Kích hoạt lại tài khoản ${targetUser.email}`;
+      await UserModel.logAudit(req.user.id, status === 'active' ? 'ACTIVATE_USER' : 'DEACTIVATE_USER', id, 'user', auditDetails);
 
       res.json({
         success: true,
-        message: `${actionText} tài khoản "${targetUser.name || targetUser.email}" thành công!`
+        message: `${actionText} tài khoản "${targetUser.name || targetUser.email}" thành công!`,
+        data: {
+          id,
+          status,
+          lock_reason: finalReason
+        }
       });
     } catch (err) {
       next(err);

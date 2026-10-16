@@ -281,6 +281,95 @@
       font-size: var(--font-size-sm);
       color: var(--color-text-secondary);
     }
+
+    /* Modal Backdrop & Popup System */
+    .modal-backdrop {
+      position: fixed !important;
+      inset: 0 !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      background: rgba(15, 23, 42, 0.65) !important;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      z-index: 2000 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+      box-sizing: border-box;
+      animation: fadeInModal 0.18s ease-out;
+    }
+
+    .modal-box {
+      background: var(--color-white);
+      border-radius: var(--radius-2xl);
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 60px rgba(15, 23, 42, 0.3);
+      border: 1px solid var(--color-border);
+      position: relative;
+      animation: slideUpModal 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-header {
+      padding: var(--space-lg) var(--space-xl);
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--color-white);
+      border-top-left-radius: var(--radius-2xl);
+      border-top-right-radius: var(--radius-2xl);
+    }
+
+    .modal-title {
+      font-size: var(--font-size-xl);
+      font-weight: 800;
+      color: var(--color-text-main);
+      margin: 0;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 26px;
+      line-height: 1;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-close:hover {
+      color: var(--color-danger);
+      background: #fee2e2;
+    }
+
+    .btn-xs {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: var(--radius-sm);
+      line-height: 1.2;
+      cursor: pointer;
+    }
+
+    @keyframes fadeInModal {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUpModal {
+      from { transform: scale(0.96) translateY(12px); opacity: 0; }
+      to { transform: scale(1) translateY(0); opacity: 1; }
+    }
   </style>
 </head>
 
@@ -731,6 +820,11 @@
             </div>
           </div>
 
+          <div id="wrap-edit-user-lock-reason" class="form-group" style="margin-bottom: var(--space-md); display: none;">
+            <label class="form-label" style="color: #dc2626; font-weight: 700;">Lý do khóa tài khoản <span style="color: red;">*</span></label>
+            <textarea id="edit-user-lock-reason-input" class="form-control" rows="2" placeholder="Nhập lý do cụ thể khi vô hiệu hóa tài khoản (bắt buộc)"></textarea>
+          </div>
+
           <div id="modal-user-orders-summary"
             style="background: var(--color-bg-alt); padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: var(--space-xl); font-size: 13px;">
             Số đơn đặt dịch vụ liên kết: <strong id="modal-user-order-count">0</strong> đơn.
@@ -790,6 +884,49 @@
         </div>
       </div>
     </div>
+  <!-- ============================================================
+       MODAL 6: XÁC NHẬN KHÓA TÀI KHOẢN KÈM LÝ DO (LOCK USER/STAFF)
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-lock-user" style="display: none;">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header" style="border-bottom: 2px solid #fee2e2; background: #fff5f5;">
+        <h3 class="modal-title" style="color: #b91c1c; display: flex; align-items: center; gap: 8px;">
+          <span>🔒</span> Khóa Tài Khoản
+        </h3>
+        <button class="modal-close" data-close="modal-lock-user">&times;</button>
+      </div>
+      <form id="form-lock-user" style="padding: var(--space-xl);">
+        <input type="hidden" id="lock-target-user-id">
+        <input type="hidden" id="lock-target-type" value="user">
+
+        <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: var(--space-lg); font-size: 13px; color: #991b1b; line-height: 1.5;">
+          ⚠️ Bạn đang khóa tài khoản của <strong><span id="lock-target-user-name">Người dùng</span></strong> (<span id="lock-target-user-email">email</span>). Khi bị khóa, tài khoản sẽ <strong>không thể đăng nhập</strong> vào hệ thống Cleanova.
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-lg);">
+          <label class="form-label" style="font-weight: 700; color: #374151;">
+            Lý do khóa tài khoản <span style="color: red;">*</span>
+          </label>
+          <textarea id="lock-reason-input" class="form-control" rows="3" required
+            placeholder="Nhập lý do cụ thể (Bắt buộc. Lý do này sẽ được thông báo rõ khi tài khoản cố gắng đăng nhập)..."></textarea>
+          <div style="margin-top: 8px; font-size: 12px; color: var(--color-text-secondary); margin-bottom: 6px;">Gợi ý lý do nhanh:</div>
+          <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="quick-reasons-wrap">
+            <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Vi phạm chính sách đặt lịch / hủy lịch nhiều lần không báo trước">Hủy lịch nhiều lần</button>
+            <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Thông tin liên hệ hoặc địa chỉ không chính xác / số điện thoại ảo">SĐT / Thông tin ảo</button>
+            <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Tạm ngừng hoạt động theo yêu cầu của chủ tài khoản">Theo yêu cầu</button>
+            <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Vi phạm quy tắc ứng xử / chất lượng phục vụ không đạt tiêu chuẩn">Vi phạm ứng xử</button>
+            <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Nghỉ việc / Chấm dứt hợp đồng lao động với Cleanova">Nghỉ việc</button>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
+          <button type="button" class="btn btn-ghost" data-close="modal-lock-user">Hủy bỏ</button>
+          <button type="submit" id="btn-confirm-lock-user" class="btn btn-danger" style="background: #dc2626; color: white; border: none; padding: 9px 20px; font-weight: 700; border-radius: var(--radius-md); cursor: pointer;">
+            🔒 Xác nhận khóa
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- JavaScript xử lý Bảng điều khiển Admin -->
@@ -847,6 +984,24 @@
           const m = document.getElementById(this.dataset.close);
           if (m) m.style.display = 'none';
         });
+      });
+
+      // Đóng modal khi bấm ra ngoài vùng tối (backdrop)
+      document.querySelectorAll('.modal-backdrop').forEach(modal => {
+        modal.addEventListener('click', function (e) {
+          if (e.target === this) {
+            this.style.display = 'none';
+          }
+        });
+      });
+
+      // Đóng modal khi nhấn phím Escape (ESC)
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-backdrop').forEach(m => {
+            m.style.display = 'none';
+          });
+        }
       });
 
       // State lưu trữ dữ liệu
@@ -1041,11 +1196,12 @@
                 <span class="user-status-badge ${isAct ? 'status-active' : 'status-inactive'}">
                   ${isAct ? '● Hoạt động' : '● Đã khóa'}
                 </span>
+                ${!isAct && u.lock_reason ? `<div style="font-size: 11px; color: #dc2626; margin-top: 3px; font-weight: 500; max-width: 170px;" title="${u.lock_reason}">🔒 <em>${u.lock_reason}</em></div>` : ''}
               </td>
               <td>${dateStr}</td>
               <td style="text-align: right; white-space: nowrap;">
-                <button class="btn btn-ghost btn-xs btn-view-user" data-id="${u.id}" title="Xem & Chỉnh sửa phân quyền">✏️ Sửa</button>
-                <button class="btn btn-ghost btn-xs btn-toggle-user" data-id="${u.id}" data-status="${isAct ? 'inactive' : 'active'}" title="${isAct ? 'Vô hiệu hóa tài khoản' : 'Kích hoạt lại'}">
+                <button type="button" class="btn btn-ghost btn-xs btn-view-user" data-id="${u.id}" onclick="openUserEditModal(${u.id})" title="Xem & Chỉnh sửa phân quyền">✏️ Sửa</button>
+                <button type="button" class="btn btn-ghost btn-xs btn-toggle-user" data-id="${u.id}" data-name="${(u.name || u.email).replace(/"/g, '&quot;')}" data-email="${u.email}" data-status="${isAct ? 'inactive' : 'active'}" title="${isAct ? 'Khóa tài khoản' : 'Kích hoạt lại'}">
                   ${isAct ? '🔒 Khóa' : '🔓 Mở'}
                 </button>
               </td>
@@ -1055,25 +1211,37 @@
 
         // Nút mở modal chi tiết & sửa
         tbody.querySelectorAll('.btn-view-user').forEach(b => {
-          b.addEventListener('click', async function () {
-            openUserEditModal(parseInt(this.dataset.id, 10));
+          b.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const id = parseInt(this.dataset.id, 10);
+            if (id) openUserEditModal(id);
           });
         });
 
         // Nút nhanh Khóa/Mở tài khoản
         tbody.querySelectorAll('.btn-toggle-user').forEach(b => {
-          b.addEventListener('click', async function () {
+          b.addEventListener('click', async function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             const id = parseInt(this.dataset.id, 10);
             const targetStatus = this.dataset.status;
-            const actionText = targetStatus === 'inactive' ? 'vô hiệu hóa' : 'kích hoạt lại';
-            if (confirm(`Bạn có chắc chắn muốn ${actionText} tài khoản #${id} không?`)) {
-              try {
-                const res = await CleanovaAPI.admin.toggleUserStatus(id, targetStatus);
-                showAlert('success', res.message);
-                await loadUsers();
-                await loadStats();
-              } catch (err) {
-                showAlert('danger', err.message);
+            const name = this.dataset.name;
+            const email = this.dataset.email;
+
+            if (targetStatus === 'inactive') {
+              openLockModal(id, name, email, 'user');
+            } else {
+              if (confirm(`Bạn có chắc chắn muốn kích hoạt lại tài khoản "${name}" (#${id}) không?`)) {
+                try {
+                  const res = await CleanovaAPI.admin.toggleUserStatus(id, 'active');
+                  showAlert('success', res.message);
+                  await loadUsers();
+                  await loadStats();
+                  await loadStaff();
+                } catch (err) {
+                  showAlert('danger', err.message);
+                }
               }
             }
           });
@@ -1093,28 +1261,68 @@
         currentUsersPage++; loadUsers();
       });
 
-      // Mở modal sửa thông tin / phân quyền tài khoản
-      async function openUserEditModal(id) {
-        try {
-          const res = await CleanovaAPI.admin.getUserDetail(id);
-          const u = res.data.user;
-          document.getElementById('edit-user-id').value = u.id;
-          document.getElementById('modal-user-name').textContent = u.name || u.email;
-          document.getElementById('modal-user-email').textContent = u.email;
-          document.getElementById('modal-user-avatar').textContent = (u.name || u.email).charAt(0).toUpperCase();
+      // Hàm điền dữ liệu vào Modal sửa tài khoản
+      function populateUserEditModal(u, totalBookings = null) {
+        if (!u) return;
+        document.getElementById('edit-user-id').value = u.id;
+        document.getElementById('modal-user-name').textContent = u.name || u.email;
+        document.getElementById('modal-user-email').textContent = u.email;
+        document.getElementById('modal-user-avatar').textContent = (u.name || u.email).charAt(0).toUpperCase();
 
-          document.getElementById('edit-user-name-input').value = u.name || '';
-          document.getElementById('edit-user-phone-input').value = u.phone || '';
-          document.getElementById('edit-user-address-input').value = u.address || '';
-          document.getElementById('edit-user-role-select').value = u.role;
-          document.getElementById('edit-user-status-select').value = u.status || 'active';
-          document.getElementById('modal-user-order-count').textContent = res.data.total_bookings || 0;
+        document.getElementById('edit-user-name-input').value = u.name || '';
+        document.getElementById('edit-user-phone-input').value = u.phone || '';
+        document.getElementById('edit-user-address-input').value = u.address || '';
+        document.getElementById('edit-user-role-select').value = u.role || 'customer';
+        document.getElementById('edit-user-status-select').value = u.status || 'active';
+        
+        const wrapReason = document.getElementById('wrap-edit-user-lock-reason');
+        const reasonInput = document.getElementById('edit-user-lock-reason-input');
+        if (reasonInput) reasonInput.value = u.lock_reason || '';
+        if (wrapReason) wrapReason.style.display = (u.status === 'inactive') ? 'block' : 'none';
 
-          document.getElementById('modal-user-detail').style.display = 'flex';
-        } catch (err) {
-          showAlert('danger', 'Không thể lấy thông tin tài khoản: ' + err.message);
+        if (totalBookings !== null && totalBookings !== undefined) {
+          document.getElementById('modal-user-order-count').textContent = totalBookings;
         }
       }
+
+      // Mở modal sửa thông tin / phân quyền tài khoản (phản hồi ngay lập tức)
+      async function openUserEditModal(id) {
+        id = parseInt(id, 10);
+        if (!id) return;
+
+        // 1. Điền từ cache để hiển thị ngay lập tức không có độ trễ
+        const cachedUser = allUsers.find(item => item.id === id);
+        if (cachedUser) {
+          populateUserEditModal(cachedUser);
+          document.getElementById('modal-user-detail').style.display = 'flex';
+        }
+
+        // 2. Lấy dữ liệu chi tiết từ server
+        try {
+          const res = await CleanovaAPI.admin.getUserDetail(id);
+          if (res && res.data && res.data.user) {
+            populateUserEditModal(res.data.user, res.data.total_bookings);
+            document.getElementById('modal-user-detail').style.display = 'flex';
+          }
+        } catch (err) {
+          console.error('Lỗi khi lấy chi tiết tài khoản:', err);
+          if (!cachedUser) {
+            showAlert('danger', 'Không thể lấy thông tin tài khoản: ' + err.message);
+          }
+        }
+      }
+      window.openUserEditModal = openUserEditModal;
+
+      // Xử lý ẩn/hiện lý do khóa khi thay đổi trạng thái trong modal sửa
+      document.getElementById('edit-user-status-select').addEventListener('change', function () {
+        const wrapReason = document.getElementById('wrap-edit-user-lock-reason');
+        if (this.value === 'inactive') {
+          wrapReason.style.display = 'block';
+          document.getElementById('edit-user-lock-reason-input').focus();
+        } else {
+          wrapReason.style.display = 'none';
+        }
+      });
 
       // Submit lưu sửa tài khoản
       document.getElementById('form-edit-user').addEventListener('submit', async function (e) {
@@ -1125,9 +1333,16 @@
         const address = document.getElementById('edit-user-address-input').value.trim();
         const role = document.getElementById('edit-user-role-select').value;
         const status = document.getElementById('edit-user-status-select').value;
+        const lock_reason = document.getElementById('edit-user-lock-reason-input').value.trim();
+
+        if (status === 'inactive' && !lock_reason) {
+          alert('Vui lòng nhập lý do khi khóa tài khoản!');
+          document.getElementById('edit-user-lock-reason-input').focus();
+          return;
+        }
 
         try {
-          const res = await CleanovaAPI.admin.updateUser(id, { name, phone, address, role, status });
+          const res = await CleanovaAPI.admin.updateUser(id, { name, phone, address, role, status, lock_reason });
           showAlert('success', res.message || 'Cập nhật tài khoản thành công!');
           document.getElementById('modal-user-detail').style.display = 'none';
           await loadUsers();
@@ -1195,6 +1410,8 @@
                   </span>
                 </div>
 
+                ${!isAct && st.lock_reason ? `<div style="font-size: 11px; color: #dc2626; margin-bottom: var(--space-md); background: #fef2f2; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid #fecaca; line-height: 1.4;">🔒 <strong>Lý do khóa:</strong> ${st.lock_reason}</div>` : ''}
+
                 <div style="background: var(--color-bg-alt); padding: 10px 14px; border-radius: var(--radius-md); margin-bottom: var(--space-md); font-size: 12px;">
                   <div>📞 SĐT: <strong>${st.phone || 'Chưa cập nhật'}</strong></div>
                   <div style="margin-top: 4px;">📍 Đ/C: <strong>${st.address || 'Hà Nội'}</strong></div>
@@ -1214,8 +1431,8 @@
 
               <div style="display: flex; gap: 8px; border-top: 1px solid var(--color-border); padding-top: var(--space-md); margin-top: auto;">
                 <button class="btn btn-ghost btn-xs btn-view-staff-tasks" data-id="${st.id}" data-name="${st.name}" style="flex: 1;">📋 Xem công việc</button>
-                <button class="btn btn-ghost btn-xs btn-toggle-staff" data-id="${st.id}" data-status="${isAct ? 'inactive' : 'active'}" style="color: ${isAct ? '#dc2626' : '#16a34a'};">
-                  ${isAct ? 'Khóa' : 'Kích hoạt'}
+                <button class="btn btn-ghost btn-xs btn-toggle-staff" data-id="${st.id}" data-name="${st.name}" data-email="${st.email}" data-status="${isAct ? 'inactive' : 'active'}" style="color: ${isAct ? '#dc2626' : '#16a34a'};">
+                  ${isAct ? '🔒 Khóa' : '🔓 Kích hoạt'}
                 </button>
               </div>
             </div>
@@ -1234,17 +1451,80 @@
           b.addEventListener('click', async function () {
             const id = parseInt(this.dataset.id, 10);
             const targetStatus = this.dataset.status;
-            try {
-              const res = await CleanovaAPI.admin.toggleUserStatus(id, targetStatus);
-              showAlert('success', res.message);
-              await loadStaff();
-              await loadUsers();
-            } catch (err) {
-              showAlert('danger', err.message);
+            const name = this.dataset.name || `Nhân viên #${id}`;
+            const email = this.dataset.email || '';
+
+            if (targetStatus === 'inactive') {
+              openLockModal(id, name, email, 'staff');
+            } else {
+              if (confirm(`Bạn có chắc chắn muốn kích hoạt lại nhân viên "${name}" không?`)) {
+                try {
+                  const res = await CleanovaAPI.admin.toggleUserStatus(id, 'active');
+                  showAlert('success', res.message);
+                  await loadStaff();
+                  await loadUsers();
+                } catch (err) {
+                  showAlert('danger', err.message);
+                }
+              }
             }
           });
         });
       }
+
+      // ------------------------------------------------------------
+      // QUẢN LÝ MODAL KHÓA TÀI KHOẢN (LOCK MODAL LOGIC)
+      // ------------------------------------------------------------
+      function openLockModal(id, name, email, type = 'user') {
+        document.getElementById('lock-target-user-id').value = id;
+        document.getElementById('lock-target-type').value = type;
+        document.getElementById('lock-target-user-name').textContent = name || email;
+        document.getElementById('lock-target-user-email').textContent = email || '';
+        document.getElementById('lock-reason-input').value = '';
+        document.getElementById('modal-lock-user').style.display = 'flex';
+        setTimeout(() => document.getElementById('lock-reason-input').focus(), 150);
+      }
+      window.openLockModal = openLockModal;
+
+      // Nút chọn gợi ý lý do khóa nhanh
+      document.querySelectorAll('.btn-quick-reason').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const input = document.getElementById('lock-reason-input');
+          input.value = this.dataset.reason;
+          input.focus();
+        });
+      });
+
+      // Submit form khóa tài khoản
+      document.getElementById('form-lock-user').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('lock-target-user-id').value, 10);
+        const reason = document.getElementById('lock-reason-input').value.trim();
+
+        if (!reason) {
+          alert('Vui lòng nhập lý do khóa tài khoản khách hàng hoặc nhân viên!');
+          document.getElementById('lock-reason-input').focus();
+          return;
+        }
+
+        const submitBtn = document.getElementById('btn-confirm-lock-user');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang xử lý...';
+
+        try {
+          const res = await CleanovaAPI.admin.toggleUserStatus(id, 'inactive', reason);
+          showAlert('success', res.message || 'Đã khóa tài khoản thành công!');
+          document.getElementById('modal-lock-user').style.display = 'none';
+          await loadUsers();
+          await loadStats();
+          await loadStaff();
+        } catch (err) {
+          alert('Lỗi: ' + err.message);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '🔒 Xác nhận khóa';
+        }
+      });
 
       // Modal Thêm nhân viên
       document.getElementById('btn-open-create-staff').addEventListener('click', () => {

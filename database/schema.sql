@@ -30,6 +30,7 @@ CREATE TABLE users (
   address VARCHAR(255) DEFAULT NULL COMMENT 'Địa chỉ mặc định',
   role ENUM('customer', 'user', 'staff', 'admin') DEFAULT 'customer' COMMENT 'Vai trò: customer (khách hàng), staff (nhân viên), admin (quản trị viên)',
   status ENUM('active', 'inactive') DEFAULT 'active' COMMENT 'Trạng thái tài khoản: active (hoạt động), inactive (bị vô hiệu hóa)',
+  lock_reason VARCHAR(255) DEFAULT NULL COMMENT 'Lý do khóa tài khoản nếu status = inactive',
   avatar_url VARCHAR(255) DEFAULT NULL COMMENT 'Đường dẫn ảnh đại diện',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm đăng ký',
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Thời điểm cập nhật'

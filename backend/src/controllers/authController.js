@@ -123,10 +123,11 @@ const authController = {
 
       // Kiểm tra trạng thái hoạt động của tài khoản
       if (user.status === 'inactive' || user.status === 'deactivated') {
+        const reasonMsg = user.lock_reason ? ` Lý do: "${user.lock_reason}".` : '';
         return res.status(403).json({
           success: false,
           code: 'ACCOUNT_DEACTIVATED',
-          message: 'Tài khoản của bạn đã bị vô hiệu hóa bởi Quản trị viên. Vui lòng liên hệ ban quản trị Cleanova.'
+          message: `Tài khoản của bạn đã bị khóa.${reasonMsg} Vui lòng liên hệ ban quản trị Cleanova để được hỗ trợ.`
         });
       }
 

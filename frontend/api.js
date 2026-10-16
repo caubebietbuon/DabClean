@@ -395,10 +395,10 @@
         });
       },
 
-      async toggleUserStatus(id, status) {
+      async toggleUserStatus(id, status, reason = '') {
         return await request(`/admin/users/${id}/status`, {
           method: 'PATCH',
-          body: JSON.stringify({ status })
+          body: JSON.stringify({ status, reason })
         });
       },
 

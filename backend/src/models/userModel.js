@@ -7,7 +7,7 @@ const UserModel = {
   // Tìm người dùng theo email
   async findByEmail(email) {
     const rows = await db.query(
-      'SELECT id, name, email, password, phone, address, role, status, created_at FROM users WHERE email = ? LIMIT 1',
+      'SELECT id, name, email, password, phone, address, role, status, lock_reason, created_at FROM users WHERE email = ? LIMIT 1',
       [email.trim().toLowerCase()]
     );
     return rows[0] || null;
@@ -16,7 +16,7 @@ const UserModel = {
   // Tìm người dùng theo ID
   async findById(id) {
     const rows = await db.query(
-      'SELECT id, name, email, phone, address, role, status, created_at FROM users WHERE id = ? LIMIT 1',
+      'SELECT id, name, email, phone, address, role, status, lock_reason, created_at FROM users WHERE id = ? LIMIT 1',
       [id]
     );
     return rows[0] || null;
@@ -41,10 +41,11 @@ const UserModel = {
   },
 
   // Quản trị viên cập nhật tài khoản
-  async updateAdminUser(id, { name, phone, address, role, status }) {
+  async updateAdminUser(id, { name, phone, address, role, status, lock_reason = null }) {
+    const finalReason = status === 'inactive' ? (lock_reason || null) : null;
     const result = await db.query(
-      'UPDATE users SET name = ?, phone = ?, address = ?, role = ?, status = ? WHERE id = ?',
-      [name.trim(), phone || '', address || '', role, status, id]
+      'UPDATE users SET name = ?, phone = ?, address = ?, role = ?, status = ?, lock_reason = ? WHERE id = ?',
+      [name.trim(), phone || '', address || '', role, status, finalReason, id]
     );
     return result.affectedRows > 0;
   },
@@ -58,11 +59,12 @@ const UserModel = {
     return result.affectedRows > 0;
   },
 
-  // Cập nhật trạng thái tài khoản (Hoạt động / Vô hiệu hóa)
-  async updateStatus(id, status) {
+  // Cập nhật trạng thái tài khoản (Hoạt động / Vô hiệu hóa) kèm lý do
+  async updateStatus(id, status, lock_reason = null) {
+    const finalReason = status === 'inactive' ? (lock_reason || null) : null;
     const result = await db.query(
-      'UPDATE users SET status = ? WHERE id = ?',
-      [status, id]
+      'UPDATE users SET status = ?, lock_reason = ? WHERE id = ?',
+      [status, finalReason, id]
     );
     return result.affectedRows > 0;
   },
@@ -107,7 +109,7 @@ const UserModel = {
   // Lấy toàn bộ danh sách người dùng cho Admin
   async getAll() {
     const rows = await db.query(
-      'SELECT id, name, email, phone, address, role, status, created_at FROM users ORDER BY id DESC'
+      'SELECT id, name, email, phone, address, role, status, lock_reason, created_at FROM users ORDER BY id DESC'
     );
     return rows;
   },
@@ -115,7 +117,7 @@ const UserModel = {
   // Lấy danh sách nhân viên Cleanova (Staff)
   async getStaffList() {
     const rows = await db.query(
-      "SELECT id, name, email, phone, address, role, status, created_at FROM users WHERE role = 'staff' ORDER BY id DESC"
+      "SELECT id, name, email, phone, address, role, status, lock_reason, created_at FROM users WHERE role = 'staff' ORDER BY id DESC"
     );
     return rows;
   },
