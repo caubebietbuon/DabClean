@@ -3,6 +3,7 @@
 // ============================================================
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
+const { getJwtSecret } = require('../config/jwt');
 
 const authMiddleware = {
   // Xác thực token đăng nhập
@@ -17,7 +18,7 @@ const authMiddleware = {
       }
 
       const token = authHeader.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'cleanova_super_secret_jwt_key_2026_modern_cleaning');
+      const decoded = jwt.verify(token, getJwtSecret());
 
       // Tải thông tin người dùng từ Database
       const user = await UserModel.findById(decoded.id);

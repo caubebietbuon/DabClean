@@ -605,7 +605,7 @@
               <!-- Thông tin đơn -->
               <div>
                 <div class="order-header-meta">
-                  <span class="booking-code-tag">${b.booking_code}</span>
+                  <span class="booking-code-tag">${escapeText(b.booking_code)}</span>
                   <span class="status-badge ${statusClass}">${statusText}</span>
                   <span class="badge ${b.payment_status === 'paid' ? 'badge-paid' : 'badge-unpaid'}" style="font-size: 11px; padding: 2px 8px; border-radius: 99px;">
                     ${b.payment_status === 'paid' ? '✓ Đã thanh toán' : 'Chưa thanh toán'}
@@ -613,26 +613,26 @@
                 </div>
 
                 <div class="order-service-name">
-                  <span>${b.service_icon || '🧹'}</span>
-                  <span>${b.service_name || 'Dịch vụ vệ sinh Cleanova'}</span>
+                  <span>${escapeText(b.service_icon || '🧹')}</span>
+                  <span>${escapeText(b.service_name || 'Dịch vụ vệ sinh Cleanova')}</span>
                 </div>
 
                 <div class="order-info-grid">
                   <div class="order-info-item">
                     <span class="order-info-icon">📅</span>
                     <div>
-                      <strong>${b.booking_date}</strong> (${b.booking_time})
+                      <strong>${b.booking_date}</strong> (${escapeText(b.booking_time)})
                     </div>
                   </div>
                   <div class="order-info-item">
                     <span class="order-info-icon">📍</span>
                     <div style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                      ${b.address}
+                      ${escapeText(b.address)}
                     </div>
                   </div>
                   <div class="order-info-item">
                     <span class="order-info-icon">💳</span>
-                    <div>${paymentText}</div>
+                    <div>${escapeText(paymentText)}</div>
                   </div>
                 </div>
 
@@ -640,7 +640,7 @@
                 ${b.staff_name ? `
                   <div class="assigned-staff-chip">
                     <span class="staff-mini-avatar">👷</span>
-                    <span>Chuyên viên: <strong>${b.staff_name}</strong> ${b.staff_phone ? `(${b.staff_phone})` : ''}</span>
+                    <span>Chuyên viên: <strong>${escapeText(b.staff_name)}</strong> ${b.staff_phone ? `(${escapeText(b.staff_phone)})` : ''}</span>
                   </div>
                 ` : `
                   <div style="font-size: 11px; color: var(--color-text-muted); margin-top: 6px;">
@@ -650,7 +650,7 @@
 
                 ${b.notes ? `
                   <div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 6px; font-style: italic;">
-                    Ghi chú: "${b.notes}"
+                    Ghi chú: "${escapeText(b.notes)}"
                   </div>
                 ` : ''}
                 ${b.cancel_reason ? `
@@ -719,39 +719,39 @@
                   <strong style="font-size: 1.25rem; color: var(--color-primary);">${Number(b.total_price).toLocaleString('vi-VN')} đ</strong>
                 </div>
                 <div style="font-size: var(--font-size-sm); color: var(--color-text-main); font-weight: 700;">
-                  ${b.service_icon || '🧹'} ${b.service_name}
+                  ${escapeText(b.service_icon || '🧹')} ${escapeText(b.service_name)}
                 </div>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: var(--font-size-sm); margin-bottom: var(--space-lg);">
                 <div>
                   <span style="color: var(--color-text-muted); display: block; font-size: 11px;">NGÀY & GIỜ HẸN</span>
-                  <strong>${b.booking_date} lúc ${b.booking_time}</strong>
+                  <strong>${b.booking_date} lúc ${escapeText(b.booking_time)}</strong>
                 </div>
                 <div>
                   <span style="color: var(--color-text-muted); display: block; font-size: 11px;">QUY MÔ & TẦN SUẤT</span>
-                  <strong>${b.area_size} · ${b.frequency}</strong>
+                  <strong>${escapeText(b.area_size)} · ${escapeText(b.frequency)}</strong>
                 </div>
                 <div>
                   <span style="color: var(--color-text-muted); display: block; font-size: 11px;">ĐIỆN THOẠI LIÊN HỆ</span>
-                  <strong>${b.phone}</strong>
+                  <strong>${escapeText(b.phone)}</strong>
                 </div>
                 <div>
                   <span style="color: var(--color-text-muted); display: block; font-size: 11px;">PHƯƠNG THỨC THANH TOÁN</span>
-                  <strong>${paymentLabels[b.payment_method] || b.payment_method}</strong>
+                  <strong>${escapeText(paymentLabels[b.payment_method] || b.payment_method)}</strong>
                 </div>
               </div>
 
               <div style="margin-bottom: var(--space-lg); font-size: var(--font-size-sm);">
                 <span style="color: var(--color-text-muted); display: block; font-size: 11px;">ĐỊA CHỈ THỰC HIỆN DỊCH VỤ</span>
-                <strong>${b.address}</strong>
+                <strong>${escapeText(b.address)}</strong>
               </div>
 
               ${b.staff_name ? `
                 <div style="padding: 12px; background: var(--color-primary-ultra-light); border: 1px solid var(--color-primary-light); border-radius: var(--radius-md); margin-bottom: var(--space-lg); font-size: var(--font-size-sm);">
-                  <strong>👷 Nhân viên phụ trách: ${b.staff_name}</strong>
-                  ${b.staff_phone ? `<div>Điện thoại: <a href="tel:${b.staff_phone}">${b.staff_phone}</a></div>` : ''}
-                  ${b.staff_notes ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Ghi chú nhân viên: "${b.staff_notes}"</div>` : ''}
+                  <strong>👷 Nhân viên phụ trách: ${escapeText(b.staff_name)}</strong>
+                  ${b.staff_phone ? `<div>Điện thoại: <a href="tel:${escapeText(b.staff_phone)}">${escapeText(b.staff_phone)}</a></div>` : ''}
+                  ${b.staff_notes ? `<div style="font-size: 12px; color: var(--color-text-secondary); margin-top: 4px;">Ghi chú nhân viên: "${escapeText(b.staff_notes)}"</div>` : ''}
                 </div>
               ` : ''}
 

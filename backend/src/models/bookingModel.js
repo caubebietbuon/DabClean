@@ -103,15 +103,27 @@ const BookingModel = {
     return result.affectedRows > 0;
   },
 
-  // Nhân viên cập nhật trạng thái công việc được giao
-  async updateStaffTaskStatus(bookingId, staffId, status, staff_notes = '', cancel_reason = '') {
-    const result = await db.query(
-      `UPDATE bookings
+  // Kiểm tra xem người dùng đã từng áp dụng mã ưu đãi này chưa (không tính đơn đã hủy)
+  async hasUsedPromoCode(userId, promoCode) {
+    const rows = await db.query(
+      `SELECT id FROM bookings WHERE user_id = ? AND UPPER(discount_code) = ? AND status != 'cancelled' LIMIT 1`,
+      [userId, promoCode.toUpperCase()]
+    );
+    return rows.length > 0;
+  },
+
+  // Nhân viên cập nhật trạng thái công việc được giao (Kèm điều kiện status hiện tại để chống race condition)
+  async updateStaffTaskStatus(bookingId, staffId, status, staff_notes = '', cancel_reason = '', expectedCurrentStatus = null) {
+    let sql = `UPDATE bookings
        SET status = ?, staff_notes = ?, cancel_reason = ?,
            arrived_at = IF(? = 'arrived', COALESCE(arrived_at, NOW()), arrived_at)
-       WHERE id = ? AND staff_id = ?`,
-      [status, staff_notes, cancel_reason || null, status, bookingId, staffId]
-    );
+       WHERE id = ? AND staff_id = ?`;
+    const params = [status, staff_notes, cancel_reason || null, status, bookingId, staffId];
+    if (expectedCurrentStatus) {
+      sql += ' AND status = ?';
+      params.push(expectedCurrentStatus);
+    }
+    const result = await db.query(sql, params);
     return result.affectedRows > 0;
   },
 
@@ -149,12 +161,15 @@ const BookingModel = {
     );
   },
 
-  // Cập nhật trạng thái đơn (User hủy đơn hoặc Admin đổi trạng thái)
-  async updateStatus(id, status, cancel_reason = '') {
-    const result = await db.query(
-      'UPDATE bookings SET status = ?, cancel_reason = ? WHERE id = ?',
-      [status, cancel_reason || null, id]
-    );
+  // Cập nhật trạng thái đơn (User hủy đơn hoặc Admin đổi trạng thái, kèm điều kiện chống race condition)
+  async updateStatus(id, status, cancel_reason = '', expectedCurrentStatus = null) {
+    let sql = 'UPDATE bookings SET status = ?, cancel_reason = ? WHERE id = ?';
+    const params = [status, cancel_reason || null, id];
+    if (expectedCurrentStatus) {
+      sql += ' AND status = ?';
+      params.push(expectedCurrentStatus);
+    }
+    const result = await db.query(sql, params);
     return result.affectedRows > 0;
   },
 
@@ -167,12 +182,15 @@ const BookingModel = {
     return result.affectedRows > 0;
   },
 
-  // Khách hàng yêu cầu đổi lịch đơn đặt dịch vụ
-  async reschedule(id, { booking_date, booking_time, notes }) {
-    const result = await db.query(
-      'UPDATE bookings SET booking_date = ?, booking_time = ?, notes = ? WHERE id = ?',
-      [booking_date, booking_time, notes || '', id]
-    );
+  // Khách hàng yêu cầu đổi lịch đơn đặt dịch vụ (Chỉ cho phép khi ở trạng thái pending, assigned, confirmed)
+  async reschedule(id, { booking_date, booking_time, notes }, expectedCurrentStatus = null) {
+    let sql = `UPDATE bookings SET booking_date = ?, booking_time = ?, notes = ? WHERE id = ? AND status IN ('pending', 'assigned', 'confirmed')`;
+    const params = [booking_date, booking_time, notes || '', id];
+    if (expectedCurrentStatus) {
+      sql += ' AND status = ?';
+      params.push(expectedCurrentStatus);
+    }
+    const result = await db.query(sql, params);
     return result.affectedRows > 0;
   },
 

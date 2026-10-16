@@ -25,7 +25,8 @@ const translations = {
     btn_book_now: 'Đặt lịch ngay',
 
     /* --- Hero Section --- */
-    hero_badge: '🟢 Ứng dụng dọn vệ sinh #1 Việt Nam',
+    hero_badge: '🟢 Ứng dụng dọn vệ sinh #2 Việt Nam',
+    hero_badge_note: 'Vì chưa qua kiểm chứng',
     hero_title_1: 'Dịch vụ dọn vệ sinh',
     hero_title_highlight: 'nhà cửa & văn phòng',
     hero_title_2: 'chuyên nghiệp',
@@ -234,7 +235,8 @@ const translations = {
     btn_book_now: 'Book Now',
 
     /* --- Hero Section --- */
-    hero_badge: '🟢 #1 Cleaning Service App in Vietnam',
+    hero_badge: '🟢 #2 Cleaning Service App in Vietnam',
+    hero_badge_note: 'Because it is unverified',
     hero_title_1: 'Professional Cleaning',
     hero_title_highlight: 'Home & Office',
     hero_title_2: 'Services',
@@ -912,6 +914,7 @@ function initScrollReveal() {
 
   // 5. Kích hoạt hiệu ứng mượt cho các phần tử Hero section ngay khi tải trang
   const heroElements = [
+    { sel: '.hero .hero-badge-container', animClass: 'hero-animate-badge' },
     { sel: '.hero .hero-badge', animClass: 'hero-animate-badge' },
     { sel: '.hero .hero-title', animClass: 'hero-animate-title' },
     { sel: '.hero .hero-subtitle', animClass: 'hero-animate-subtitle' },

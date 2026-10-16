@@ -1,10 +1,9 @@
-// ============================================================
-// CLEANOVA BACKEND - Auth Controller
-// ============================================================
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
 const PartnerModel = require('../models/partnerModel');
+const { getJwtSecret, JWT_EXPIRES_IN } = require('../config/jwt');
+const { sanitizeInput } = require('../utils/sanitize');
 
 // Tạo JWT Token cho người dùng
 function generateToken(user) {
@@ -14,9 +13,43 @@ function generateToken(user) {
       email: user.email,
       role: user.role
     },
-    process.env.JWT_SECRET || 'cleanova_super_secret_jwt_key_2026_modern_cleaning',
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+    getJwtSecret(),
+    { expiresIn: JWT_EXPIRES_IN }
   );
+}
+
+// Bộ nhớ chống brute-force đăng nhập (Tối đa 5 lần sai trong 15 phút)
+const failedLoginAttempts = new Map();
+const MAX_FAILED_ATTEMPTS = 5;
+const LOCKOUT_DURATION_MS = 15 * 60 * 1000;
+
+function checkRateLimit(key) {
+  const now = Date.now();
+  const entry = failedLoginAttempts.get(key);
+  if (!entry) return { blocked: false };
+  if (now > entry.resetTime) {
+    failedLoginAttempts.delete(key);
+    return { blocked: false };
+  }
+  if (entry.count >= MAX_FAILED_ATTEMPTS) {
+    const remainingMins = Math.ceil((entry.resetTime - now) / 60000);
+    return { blocked: true, remainingMins };
+  }
+  return { blocked: false };
+}
+
+function recordFailure(key) {
+  const now = Date.now();
+  const entry = failedLoginAttempts.get(key);
+  if (!entry || now > entry.resetTime) {
+    failedLoginAttempts.set(key, { count: 1, resetTime: now + LOCKOUT_DURATION_MS });
+  } else {
+    entry.count += 1;
+  }
+}
+
+function recordSuccess(key) {
+  failedLoginAttempts.delete(key);
 }
 
 const authController = {
@@ -25,21 +58,32 @@ const authController = {
     try {
       const { name, email, password, phone, address } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào
-      if (!name || !name.trim()) {
+      // Kiểm tra dữ liệu đầu vào (kiểu dữ liệu và định dạng)
+      if (typeof name !== 'string' || !name.trim()) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập họ và tên của bạn.' });
       }
-      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập địa chỉ email hợp lệ.' });
       }
-      if (!password || password.length < 6) {
+      if (typeof password !== 'string' || password.length < 6) {
         return res.status(400).json({ success: false, message: 'Mật khẩu phải có ít nhất 6 ký tự.' });
       }
 
-      // Kiểm tra xem email đã được đăng ký chưa
-      const existingUser = await UserModel.findByEmail(email);
+      const normalizedEmail = email.trim().toLowerCase();
+
+      // Kiểm tra xem email đã được đăng ký người dùng chưa
+      const existingUser = await UserModel.findByEmail(normalizedEmail);
       if (existingUser) {
         return res.status(409).json({ success: false, message: 'Email này đã được sử dụng. Vui lòng đăng nhập hoặc dùng email khác.' });
+      }
+
+      // Bảo vệ Bug 11: Ngăn chặn kẻ xấu chiếm email của ứng viên đối tác đang chờ duyệt
+      const pendingPartner = await PartnerModel.findByEmail(normalizedEmail);
+      if (pendingPartner && pendingPartner.status === 'pending') {
+        return res.status(409).json({
+          success: false,
+          message: 'Email này hiện đang trong quá trình xét duyệt hồ sơ đối tác. Không thể tạo thêm tài khoản khách hàng.'
+        });
       }
 
       // Mã hóa mật khẩu bằng bcrypt
@@ -48,11 +92,11 @@ const authController = {
 
       // Lưu người dùng vào Database
       const userId = await UserModel.create({
-        name,
-        email,
+        name: sanitizeInput(name),
+        email: normalizedEmail,
         password: hashedPassword,
-        phone: phone || '',
-        address: address || '',
+        phone: typeof phone === 'string' ? sanitizeInput(phone) : '',
+        address: typeof address === 'string' ? sanitizeInput(address) : '',
         role: 'user'
       });
 
@@ -84,19 +128,41 @@ const authController = {
     try {
       const { email, password } = req.body;
 
-      if (!email || !email.trim()) {
-        return res.status(400).json({ success: false, message: 'Vui lòng nhập email đăng nhập.' });
+      // Bảo vệ Bug 13: Validate email và password phải là chuỗi
+      if (typeof email !== 'string' || !email.trim()) {
+        return res.status(400).json({ success: false, message: 'Vui lòng nhập địa chỉ email hợp lệ.' });
       }
-      if (!password) {
+      if (typeof password !== 'string' || !password) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập mật khẩu.' });
       }
 
+      const normalizedEmail = email.trim().toLowerCase();
+      const clientIp = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+      const rateLimitKey = `${clientIp}_${normalizedEmail}`;
+
+      // Giới hạn tần suất đăng nhập sai liên tiếp
+      const rateCheck = checkRateLimit(rateLimitKey);
+      if (rateCheck.blocked) {
+        return res.status(429).json({
+          success: false,
+          code: 'TOO_MANY_ATTEMPTS',
+          message: `Bạn đã đăng nhập sai quá ${MAX_FAILED_ATTEMPTS} lần liên tiếp. Vui lòng thử lại sau ${rateCheck.remainingMins} phút để đảm bảo an toàn.`
+        });
+      }
+
       // Tìm người dùng trong cơ sở dữ liệu
-      const user = await UserModel.findByEmail(email);
+      const user = await UserModel.findByEmail(normalizedEmail);
       if (!user) {
-        // Kiểm tra xem có phải là ứng viên đối tác đang chờ xét duyệt không
-        const partnerApp = await PartnerModel.findByEmail(email);
+        // Kiểm tra xem có phải là ứng viên đối tác không
+        const partnerApp = await PartnerModel.findByEmail(normalizedEmail);
         if (partnerApp) {
+          // BẢO VỆ BUG 13: Bắt buộc phải so khớp mật khẩu trước khi tiết lộ trạng thái hồ sơ đối tác
+          const isPartnerMatch = await bcrypt.compare(password, partnerApp.password);
+          if (!isPartnerMatch) {
+            recordFailure(rateLimitKey);
+            return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không chính xác.' });
+          }
+
           if (partnerApp.status === 'pending') {
             return res.status(403).json({
               success: false,
@@ -112,14 +178,20 @@ const authController = {
             });
           }
         }
+
+        recordFailure(rateLimitKey);
         return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không chính xác.' });
       }
 
       // So khớp mật khẩu với hash bcrypt
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
+        recordFailure(rateLimitKey);
         return res.status(401).json({ success: false, message: 'Email hoặc mật khẩu không chính xác.' });
       }
+
+      // Đăng nhập đúng -> Xóa lịch sử đăng nhập sai
+      recordSuccess(rateLimitKey);
 
       // Kiểm tra trạng thái hoạt động của tài khoản
       if (user.status === 'inactive' || user.status === 'deactivated') {
@@ -173,7 +245,11 @@ const authController = {
         return res.status(400).json({ success: false, message: 'Họ và tên không được để trống.' });
       }
 
-      await UserModel.updateProfile(req.user.id, { name, phone, address });
+      await UserModel.updateProfile(req.user.id, {
+        name: sanitizeInput(name),
+        phone: typeof phone === 'string' ? sanitizeInput(phone) : phone,
+        address: typeof address === 'string' ? sanitizeInput(address) : address
+      });
       const updatedUser = await UserModel.findById(req.user.id);
 
       res.json({

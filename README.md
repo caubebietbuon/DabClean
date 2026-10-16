@@ -110,13 +110,16 @@ Hệ thống có cơ chế **Fallback thông minh**: nếu MySQL chưa bật, se
 #### Bước 2: Khởi động Backend Server
 Mở terminal tại thư mục gốc dự án:
 ```powershell
-# Di chuyển vào thư mục backend
+# 1. Cài đặt thư viện Backend
 cd backend
-
-# Cài đặt thư viện phụ thuộc (nếu chưa cài)
 npm install
 
-# Khởi chạy máy chủ
+# 2. (Tùy chọn) Cài đặt thư viện cho AI Module (nếu sử dụng tính năng phân tích ảnh AI)
+cd ../ai-module
+npm install
+cd ../backend
+
+# 3. Khởi chạy máy chủ Backend
 node server.js
 ```
 

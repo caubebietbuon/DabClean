@@ -85,7 +85,7 @@ INSERT INTO services (id, name, slug, description, short_description, base_price
 -- 3. DỮ LIỆU ĐƠN ĐẶT LỊCH MẪU (bookings)
 -- ------------------------------------------------------------
 INSERT INTO bookings (id, booking_code, user_id, service_id, booking_date, booking_time, area_size, frequency, address, phone, notes, total_price, discount_code, payment_method, payment_status, status, staff_id, assigned_at, staff_notes) VALUES
-(1, 'CNV-2026-0001', 2, 1, '2026-10-18', '08:30:00', 'medium', 'weekly', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Nhà có mèo cưng, vui lòng dùng dung dịch sinh học an toàn', 425000.00, 'CLEANOVA20', 'cash', 'unpaid', 'confirmed', 3, '2026-10-14 10:00:00', 'Đã liên hệ khách, chuẩn bị bộ lau đa năng và dung dịch hữu cơ.'),
+(1, 'CNV-2026-0001', 2, 1, '2026-10-18', '08:30:00', 'medium', 'weekly', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Nhà có mèo cưng, vui lòng dùng dung dịch sinh học an toàn', 191250.00, NULL, 'cash', 'unpaid', 'confirmed', 3, '2026-10-14 10:00:00', 'Đã liên hệ khách, chuẩn bị bộ lau đa năng và dung dịch hữu cơ.'),
 (2, 'CNV-2026-0002', 2, 4, '2026-10-22', '14:00:00', 'small', 'once', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Giặt 1 bộ sofa góc L nỉ nhung', 320000.00, 'CLEANOVA20', 'bank_transfer', 'paid', 'completed', 3, '2026-10-14 11:00:00', 'Đã giặt xong, khách nghiệm thu hài lòng 100%.'),
 (3, 'CNV-2026-0003', 5, 2, '2026-10-25', '09:00:00', 'large', 'once', 'Tòa S2.05 Vinhomes Smart City, Hà Nội', '0901122334', 'Cần tổng vệ sinh trước khi đón bố mẹ lên chơi', 2000000.00, NULL, 'momo', 'paid', 'in_progress', 4, '2026-10-14 14:00:00', 'Đang xử lý tẩy cặn canxi và lau kính tầng 2.'),
 (4, 'CNV-2026-0004', 2, 3, '2026-10-28', '08:00:00', 'medium', 'monthly', 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội', '0987654321', 'Vệ sinh văn phòng định kỳ đầu tháng', 650000.00, NULL, 'cash', 'unpaid', 'pending', NULL, NULL, NULL);
@@ -95,3 +95,11 @@ INSERT INTO bookings (id, booking_code, user_id, service_id, booking_date, booki
 -- ------------------------------------------------------------
 INSERT INTO reviews (id, booking_id, user_id, service_id, rating, comment) VALUES
 (1, 2, 2, 4, 5, 'Chuyên viên làm việc rất cẩn thận và đúng giờ. Bộ sofa màu ghi sáng nhà mình bị ố cafe mà sau khi giặt xong sạch bong như mới!');
+
+-- ------------------------------------------------------------
+-- 5. DỮ LIỆU HỒ SƠ ĐỐI TÁC ỨNG TUYỂN (partner_applications)
+-- ------------------------------------------------------------
+INSERT INTO partner_applications (id, name, email, phone, password, address, work_area, experience, available_hours, bio, status, reviewed_by, reviewed_at, user_id) VALUES
+(1, 'Đặng Quốc Anh', 'quocanh.partner@gmail.com', '0977112233', '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', 'Số 45 ngõ 165 Cầu Giấy, Hà Nội', 'Cầu Giấy, Nam Từ Liêm', '1-3 năm', 'Toàn thời gian (Full-time)', 'Đã có 2 năm làm dịch vụ dọn dẹp buồng phòng khách sạn, cẩn thận, trung thực, có xe máy đi lại.', 'pending', NULL, NULL, NULL),
+(2, 'Nguyễn Thị Hồng', 'hong.partner@gmail.com', '0988776655', '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', 'Số 89 Nguyễn Trãi, Thanh Xuân, Hà Nội', 'Thanh Xuân, Đống Đa', 'Trên 3 năm', 'Linh hoạt theo ca', 'Kinh nghiệm tổng vệ sinh căn hộ cao cấp và giặt ghế sofa, nhiệt tình, tỉ mỉ.', 'approved', 1, '2026-10-12 09:00:00', 3);
+

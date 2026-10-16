@@ -13,10 +13,19 @@ const UserModel = {
     return rows[0] || null;
   },
 
-  // Tìm người dùng theo ID
+  // Tìm người dùng theo ID (không trả về hash password)
   async findById(id) {
     const rows = await db.query(
       'SELECT id, name, email, phone, address, role, status, lock_reason, created_at FROM users WHERE id = ? LIMIT 1',
+      [id]
+    );
+    return rows[0] || null;
+  },
+
+  // Tìm người dùng theo ID kèm mật khẩu (Dùng riêng cho xác thực đổi mật khẩu)
+  async findByIdWithPassword(id) {
+    const rows = await db.query(
+      'SELECT id, name, email, password, phone, address, role, status, lock_reason, created_at FROM users WHERE id = ? LIMIT 1',
       [id]
     );
     return rows[0] || null;

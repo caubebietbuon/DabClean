@@ -22,8 +22,17 @@ const PartnerModel = {
     return rows[0] || null;
   },
 
-  // Tìm hồ sơ theo ID
+  // Tìm hồ sơ theo ID (Không chọn trường password)
   async findById(id) {
+    const rows = await db.query(
+      'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE id = ? LIMIT 1',
+      [parseInt(id, 10)]
+    );
+    return rows[0] || null;
+  },
+
+  // Tìm hồ sơ theo ID kèm mật khẩu (Dùng riêng cho luồng phê duyệt cấp quyền)
+  async findByIdWithPassword(id) {
     const rows = await db.query(
       'SELECT id, name, email, phone, password, address, work_area, experience, available_hours, bio, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE id = ? LIMIT 1',
       [parseInt(id, 10)]

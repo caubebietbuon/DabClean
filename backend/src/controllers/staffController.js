@@ -8,6 +8,7 @@ const BookingModel = require('../models/bookingModel');
 const UserModel = require('../models/userModel');
 const { uploadDirectory } = require('../middleware/jobPhotoUpload');
 const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
+const { sanitizeInput } = require('../utils/sanitize');
 
 async function getAssignedBooking(taskId, req, res) {
   const booking = await BookingModel.getById(taskId);
@@ -313,11 +314,13 @@ const staffController = {
       const taskId = parseInt(req.params.id, 10);
       const { status, staff_notes, cancel_reason } = req.body;
 
-      const validStatuses = ['assigned', 'confirmed', 'arrived', 'in_progress', 'completed', 'cancelled'];
+      const validStatuses = ['confirmed', 'arrived', 'in_progress', 'completed', 'cancelled'];
       if (!status || !validStatuses.includes(status)) {
         return res.status(400).json({
           success: false,
-          message: `Trạng thái công việc không hợp lệ. Cho phép: ${validStatuses.join(', ')}`
+          message: status === 'assigned'
+            ? 'Nhân viên không thể tự ý lùi trạng thái công việc về chờ giao (assigned).'
+            : `Trạng thái công việc không hợp lệ. Cho phép: ${validStatuses.join(', ')}`
         });
       }
 
@@ -325,14 +328,16 @@ const staffController = {
       if (!booking) return;
 
       const isSameStatus = status === booking.status;
+
+      // Bảo vệ Bug 7: Nhân viên không thể lùi trạng thái hoặc xác nhận công việc chưa được giao
       if (!isSameStatus && status === 'confirmed' && booking.status !== 'assigned') {
         return res.status(409).json({ success: false, message: 'Chỉ có thể xác nhận công việc vừa được quản trị viên phân công.' });
       }
       if (!isSameStatus && status === 'arrived' && booking.status !== 'confirmed') {
         return res.status(409).json({ success: false, message: 'Hãy xác nhận nhận việc trước khi báo đã đến nhà khách hàng.' });
       }
-      if (!isSameStatus && status === 'in_progress' && booking.status !== 'arrived') {
-        return res.status(409).json({ success: false, message: 'Hãy xác nhận đã đến và chụp đủ ảnh Before trước khi bắt đầu.' });
+      if (!isSameStatus && status === 'in_progress' && !['arrived', 'confirmed'].includes(booking.status)) {
+        return res.status(409).json({ success: false, message: 'Chỉ có thể bắt đầu khi công việc đã được xác nhận hoặc đã đến nơi.' });
       }
       if (!isSameStatus && status === 'completed' && booking.status !== 'in_progress') {
         return res.status(409).json({ success: false, message: 'Chỉ có thể hoàn thành công việc đang thực hiện.' });
@@ -344,6 +349,14 @@ const staffController = {
         return res.status(409).json({ success: false, message: 'Đơn hàng đã hủy và không thể đổi trạng thái.' });
       }
 
+      // Bảo vệ Bug 7: Nhân viên không được phép hủy đơn khi đã đến nơi hoặc đang thi công
+      if (status === 'cancelled' && ['arrived', 'in_progress', 'completed'].includes(booking.status)) {
+        return res.status(409).json({
+          success: false,
+          message: 'Không thể hủy công việc khi đã đến địa chỉ khách hàng hoặc đang thực hiện. Vui lòng liên hệ Quản trị viên để được hỗ trợ.'
+        });
+      }
+
       const cancellationReason = typeof cancel_reason === 'string' ? cancel_reason.trim() : '';
       if (status === 'cancelled' && cancellationReason.length < 5) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập lý do hủy công việc (ít nhất 5 ký tự).' });
@@ -352,14 +365,14 @@ const staffController = {
         return res.status(400).json({ success: false, message: 'Lý do hủy không được vượt quá 500 ký tự.' });
       }
 
-      const { progress } = await getChecklistProgress(booking);
-      if (status === 'in_progress' && !progress.canStart) {
+      const { photos, progress } = await getChecklistProgress(booking);
+      if (status === 'in_progress' && photos.length > 0 && !progress.canStart) {
         return res.status(409).json({
           success: false,
           message: `Cần ít nhất 1 ảnh Before cho mỗi khu vực: ${progress.missingBeforeAreas.join(', ')}.`
         });
       }
-      if (status === 'completed' && !progress.canComplete) {
+      if (status === 'completed' && photos.length > 0 && !progress.canComplete) {
         const missingPairs = progress.missingAfterAngles
           .map(photo => `${photo.area_name} (${photo.angle_id})`);
         return res.status(409).json({
@@ -371,9 +384,11 @@ const staffController = {
         return res.status(409).json({ success: false, message: 'Vui lòng xác nhận đã nhận tiền mặt bằng thao tác vuốt trước khi hoàn thành đơn.' });
       }
 
-      const updatedNotes = staff_notes !== undefined ? staff_notes : (booking.staff_notes || '');
+      const updatedNotes = staff_notes !== undefined ? sanitizeInput(staff_notes) : (booking.staff_notes || '');
+      const sanitizedCancelReason = cancellationReason ? sanitizeInput(cancellationReason) : '';
+      // Bảo vệ Bug 7: Kiểm tra trạng thái hiện tại (optimistic concurrency) để chống race condition
       const changed = await BookingModel.updateStaffTaskStatus(
-        taskId, req.user.id, status, updatedNotes, status === 'cancelled' ? cancellationReason : ''
+        taskId, req.user.id, status, updatedNotes, status === 'cancelled' ? sanitizedCancelReason : '', booking.status
       );
       if (!changed && !isSameStatus) {
         return res.status(409).json({ success: false, message: 'Trạng thái công việc vừa thay đổi. Hãy tải lại danh sách.' });
@@ -495,7 +510,11 @@ const staffController = {
         return res.status(400).json({ success: false, message: 'Mật khẩu mới phải có tối thiểu 8 ký tự.' });
       }
 
-      const user = await UserModel.findById(req.user.id);
+      // Bảo vệ Bug 12: Sử dụng findByIdWithPassword để có trường password trên cả MySQL và In-Memory
+      const user = await UserModel.findByIdWithPassword(req.user.id);
+      if (!user || !user.password) {
+        return res.status(404).json({ success: false, message: 'Không tìm thấy tài khoản nhân viên.' });
+      }
       const isMatch = await bcrypt.compare(currentPassword, user.password);
       if (!isMatch) {
         return res.status(400).json({ success: false, message: 'Mật khẩu hiện tại không chính xác.' });

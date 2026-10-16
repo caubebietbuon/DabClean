@@ -172,8 +172,8 @@ const inMemoryData = {
       address: 'Số 25 Phố Duy Tân, Cầu Giấy, Hà Nội',
       phone: '0987654321',
       notes: 'Nhà có mèo cưng, vui lòng dùng dung dịch sinh học an toàn',
-      total_price: 425000,
-      discount_code: 'CLEANOVA20',
+      total_price: 191250,
+      discount_code: null,
       payment_method: 'cash',
       payment_status: 'unpaid',
       status: 'confirmed',
@@ -401,12 +401,70 @@ async function initDatabase() {
         CONSTRAINT fk_booking_notifications_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
+
+    // Bảo vệ Bug 9: Tự động khởi tạo bảng audit_logs nếu cơ sở dữ liệu cũ chưa có
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS audit_logs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        admin_id INT NOT NULL COMMENT 'ID của Quản trị viên thực hiện thao tác',
+        action VARCHAR(100) NOT NULL,
+        target_id INT DEFAULT NULL,
+        target_type VARCHAR(50) DEFAULT 'user',
+        details TEXT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_audit_admin (admin_id),
+        CONSTRAINT fk_audit_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // Bảo vệ Bug 9: Tự động khởi tạo bảng partner_applications nếu cơ sở dữ liệu cũ chưa có
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS partner_applications (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL UNIQUE,
+        phone VARCHAR(20) NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        address VARCHAR(255) NOT NULL,
+        work_area VARCHAR(150) NOT NULL,
+        experience VARCHAR(100) DEFAULT NULL,
+        available_hours VARCHAR(100) DEFAULT NULL,
+        bio TEXT DEFAULT NULL,
+        status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+        rejection_reason TEXT DEFAULT NULL,
+        reviewed_by INT DEFAULT NULL,
+        reviewed_at TIMESTAMP NULL DEFAULT NULL,
+        user_id INT DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_partner_email (email),
+        INDEX idx_partner_phone (phone),
+        CONSTRAINT fk_partner_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL,
+        CONSTRAINT fk_partner_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    // Bảo vệ Bug 9: Tự động khởi tạo dữ liệu mẫu cho partner_applications nếu bảng đang trống
+    const [existingPartners] = await connection.query('SELECT COUNT(*) AS count FROM partner_applications');
+    if (existingPartners && existingPartners[0] && existingPartners[0].count === 0) {
+      await connection.query(`
+        INSERT INTO partner_applications (id, name, email, phone, password, address, work_area, experience, available_hours, bio, status, reviewed_by, reviewed_at, user_id) VALUES
+        (1, 'Đặng Quốc Anh', 'quocanh.partner@gmail.com', '0977112233', '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', 'Số 45 ngõ 165 Cầu Giấy, Hà Nội', 'Cầu Giấy, Nam Từ Liêm', '1-3 năm', 'Toàn thời gian (Full-time)', 'Đã có 2 năm làm dịch vụ dọn dẹp buồng phòng khách sạn, cẩn thận, trung thực, có xe máy đi lại.', 'pending', NULL, NULL, NULL),
+        (2, 'Nguyễn Thị Hồng', 'hong.partner@gmail.com', '0988776655', '$2a$10$7JYnCkFf7fq2BHHBQdQB/..B1pMhw147aKzaQG6mzoXFtGHRVXsYC', 'Số 89 Nguyễn Trãi, Thanh Xuân, Hà Nội', 'Thanh Xuân, Đống Đa', 'Trên 3 năm', 'Linh hoạt theo ca', 'Kinh nghiệm tổng vệ sinh căn hộ cao cấp và giặt ghế sofa, nhiệt tình, tỉ mỉ.', 'approved', 1, '2026-10-12 09:00:00', 3)
+      `);
+      // Đảm bảo không có tài khoản user rác chiếm email của đối tác đang chờ duyệt
+      await connection.query("DELETE FROM users WHERE email = 'quocanh.partner@gmail.com' AND role = 'user'");
+    }
+
     console.log(`[Database] Đã kết nối thành công tới MySQL Server (${dbConfig.host}:${dbConfig.port}/${dbConfig.database})`);
     isConnectedToMySQL = true;
   } catch (err) {
-    console.warn(`[Database] Lưu ý: Chưa thể kết nối MySQL (${err.code || err.message}).`);
-    console.warn(`[Database] Hệ thống tự động chuyển sang chế độ an toàn (In-Memory Database) để ứng dụng hoạt động ngay.`);
-    console.warn(`[Database] Khi bạn khởi động MySQL/XAMPP và tạo cleanova_db, hãy khởi động lại server để kết nối trực tiếp.`);
+    console.error('====================================================');
+    console.error(`[DATABASE ERROR CRITICAL] Không thể kết nối tới MySQL (${err.code || err.message})!`);
+    console.error(`- Host: ${dbConfig.host}:${dbConfig.port} | Database: ${dbConfig.database} | User: ${dbConfig.user}`);
+    console.error('CẢNH BÁO BẢO VỆ DỮ LIỆU: Ứng dụng đang tạm thời chuyển sang cơ chế In-Memory Database.');
+    console.error('LƯU Ý: Mọi thay đổi dữ liệu (tài khoản mới, đơn đặt) sẽ BỊ MẤT khi restart máy chủ nếu không sửa kết nối MySQL!');
+    console.error('====================================================');
     isConnectedToMySQL = false;
   } finally {
     if (connection) connection.release();
@@ -582,7 +640,13 @@ function queryInMemory(sql, params = []) {
   if (normalizedSql.includes('from users') && normalizedSql.includes('where id =')) {
     const id = parseInt(params[0], 10);
     const user = inMemoryData.users.find(u => u.id === id);
-    return user ? [{ ...user }] : [];
+    if (!user) return [];
+    // Khớp hành vi MySQL: không trả về password nếu câu query không yêu cầu
+    if (!normalizedSql.includes('password')) {
+      const { password, ...safeUser } = user;
+      return [{ ...safeUser }];
+    }
+    return [{ ...user }];
   }
 
   // 2a. SELECT staff list
@@ -751,7 +815,16 @@ function queryInMemory(sql, params = []) {
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
 
-    // 7b. Lọc đơn theo khách hàng đặt
+    // 7b. Lọc đơn theo promo code đã dùng (hasUsedPromoCode)
+    if (normalizedSql.includes('discount_code')) {
+      const userId = parseInt(params[0], 10);
+      const promoCode = (params[1] || '').toUpperCase();
+      return inMemoryData.bookings
+        .filter(b => b.user_id === userId && (b.discount_code || '').toUpperCase() === promoCode && b.status !== 'cancelled')
+        .map(b => ({ id: b.id }));
+    }
+
+    // 7b2. Lọc đơn theo khách hàng đặt
     if (normalizedSql.includes('where b.user_id =') || normalizedSql.includes('where user_id =')) {
       const userId = parseInt(params[0], 10);
       return inMemoryData.bookings
@@ -862,8 +935,10 @@ function queryInMemory(sql, params = []) {
       const staff_notes = params[1];
       const id = parseInt(params[4], 10);
       const staffId = parseInt(params[5], 10);
+      const expectedStatus = params[6];
       const booking = inMemoryData.bookings.find(b => b.id === id && b.staff_id === staffId);
       if (booking) {
+        if (expectedStatus && booking.status !== expectedStatus) return { affectedRows: 0 };
         booking.status = status;
         if (staff_notes !== undefined) booking.staff_notes = staff_notes;
         booking.cancel_reason = params[2] || null;
@@ -884,12 +959,23 @@ function queryInMemory(sql, params = []) {
         booking.status = params[1] || 'pending';
       }
       if (normalizedSql.includes('booking_date = ?')) {
+        if (normalizedSql.includes("status in ('pending', 'assigned', 'confirmed')") && !['pending', 'assigned', 'confirmed'].includes(booking.status)) {
+          return { affectedRows: 0 };
+        }
+        if (normalizedSql.includes('and status = ?')) {
+          const expectedStatus = params[params.length - 1];
+          if (expectedStatus && booking.status !== expectedStatus) return { affectedRows: 0 };
+        }
         booking.booking_date = params[0];
         booking.booking_time = params[1];
         if (params[2] !== undefined) booking.notes = params[2];
         return { affectedRows: 1 };
       }
       if (normalizedSql.includes('status = ?') && !normalizedSql.includes('staff_id = ?')) {
+        if (normalizedSql.includes('and status = ?')) {
+          const expectedStatus = params[params.length - 1];
+          if (expectedStatus && booking.status !== expectedStatus) return { affectedRows: 0 };
+        }
         booking.status = params[0];
       }
       if (normalizedSql.includes('cancel_reason = ?')) {
@@ -967,7 +1053,13 @@ function queryInMemory(sql, params = []) {
     if (normalizedSql.includes('where id =')) {
       const id = parseInt(params[0], 10);
       const app = apps.find(a => a.id === id);
-      return app ? [{ ...app }] : [];
+      if (!app) return [];
+      // Khớp MySQL: không trả về hash password nếu câu query không yêu cầu
+      if (!normalizedSql.includes('password')) {
+        const { password, ...safeApp } = app;
+        return [safeApp];
+      }
+      return [{ ...app }];
     }
     // Theo Email
     if (normalizedSql.includes('where email =')) {

@@ -4,6 +4,7 @@
 const bcrypt = require('bcryptjs');
 const UserModel = require('../models/userModel');
 const PartnerModel = require('../models/partnerModel');
+const { sanitizeInput } = require('../utils/sanitize');
 
 const partnerController = {
   // Đăng ký hồ sơ đối tác mới (POST /api/partner/register)
@@ -99,15 +100,15 @@ const partnerController = {
       // 6. Lưu hồ sơ ứng tuyển với trạng thái mặc định 'pending'
       // Tuyệt đối không cấp quyền Admin hoặc Staff hoạt động tự động
       const applicationId = await PartnerModel.create({
-        name: name.trim(),
+        name: sanitizeInput(name),
         email: email.trim().toLowerCase(),
         phone: cleanPhone,
         password: hashedPassword,
-        address: address.trim(),
-        work_area: work_area.trim(),
-        experience: experience || '',
-        available_hours: available_hours || '',
-        bio: bio || '',
+        address: sanitizeInput(address),
+        work_area: sanitizeInput(work_area),
+        experience: experience ? sanitizeInput(experience) : '',
+        available_hours: available_hours ? sanitizeInput(available_hours) : '',
+        bio: bio ? sanitizeInput(bio) : '',
         status: 'pending'
       });
 

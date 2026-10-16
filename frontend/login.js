@@ -274,7 +274,7 @@ function validateReturnUrl(rawUrl, userRole) {
 
   try {
     let decoded = decodeURIComponent(rawUrl.trim());
-    
+
     // Ngăn chặn Open Redirect sang domain bên ngoài
     if (/^(https?:|\/\/|javascript:|data:)/i.test(decoded)) {
       try {
@@ -300,7 +300,7 @@ function validateReturnUrl(rawUrl, userRole) {
     }
 
     const allowedPages = [
-      'trangchu.html', 'services.html', 'khampha.html', 'booking.html', 
+      'trangchu.html', 'services.html', 'khampha.html', 'booking.html',
       'my-bookings.html', 'profile.html', 'partner-register.html'
     ];
 

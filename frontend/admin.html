@@ -967,6 +967,18 @@
         setTimeout(() => { alertBox.style.display = 'none'; }, 5000);
       }
 
+      // Hàm escape HTML chống tấn công Stored XSS
+      function escapeHtml(value) {
+        if (value === null || value === undefined) return '';
+        return String(value).replace(/[&<>"']/g, character => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        })[character]);
+      }
+
       // Quản lý Tabs
       const tabBtns = document.querySelectorAll('.admin-tab-btn');
       const tabPanes = document.querySelectorAll('.tab-pane');
@@ -1067,23 +1079,23 @@
           // Options nhân viên để phân công
           const staffOptions = allStaff.map(st => `
             <option value="${st.id}" ${b.staff_id === st.id ? 'selected' : ''}>
-              ${st.name} ${st.status === 'inactive' ? '(Đã khóa)' : ''}
+              ${escapeHtml(st.name)} ${st.status === 'inactive' ? '(Đã khóa)' : ''}
             </option>
           `).join('');
 
           return `
             <tr>
-              <td><strong>#${b.booking_code || ('CLN-' + b.id)}</strong></td>
+              <td><strong>#${escapeHtml(b.booking_code || ('CLN-' + b.id))}</strong></td>
               <td>
-                <div style="font-weight: 700;">${b.customer_name || 'Khách hàng'}</div>
-                <div style="font-size: 12px; color: var(--color-text-secondary);">${b.customer_phone || b.phone || 'Chưa có SĐT'}</div>
+                <div style="font-weight: 700;">${escapeHtml(b.customer_name || 'Khách hàng')}</div>
+                <div style="font-size: 12px; color: var(--color-text-secondary);">${escapeHtml(b.customer_phone || b.phone || 'Chưa có SĐT')}</div>
               </td>
               <td>
-                <span>${b.service_icon || '✨'}</span>
-                <strong>${b.service_name || 'Dịch vụ'}</strong>
+                <span>${escapeHtml(b.service_icon || '✨')}</span>
+                <strong>${escapeHtml(b.service_name || 'Dịch vụ')}</strong>
               </td>
-              <td>${dateStr} (${b.booking_time || '08:00'})</td>
-              <td style="max-width: 200px; font-size: 13px;">${b.address || '---'}</td>
+              <td>${dateStr} (${escapeHtml(b.booking_time || '08:00')})</td>
+              <td style="max-width: 200px; font-size: 13px;">${escapeHtml(b.address || '---')}</td>
               <td style="font-weight: 700; color: var(--color-primary-dark);">${priceStr}</td>
               <td>
                 <select class="staff-select" data-id="${b.id}" style="max-width: 170px;">
@@ -1199,22 +1211,22 @@
             <tr>
               <td><strong>#${u.id}</strong></td>
               <td>
-                <div style="font-weight: 700;">${u.name || '---'}</div>
-                <div style="font-size: 11px; color: var(--color-text-tertiary);">${u.address || 'Chưa cập nhật địa chỉ'}</div>
+                <div style="font-weight: 700;">${escapeHtml(u.name || '---')}</div>
+                <div style="font-size: 11px; color: var(--color-text-tertiary);">${escapeHtml(u.address || 'Chưa cập nhật địa chỉ')}</div>
               </td>
-              <td>${u.email}</td>
-              <td>${u.phone || 'Chưa có SĐT'}</td>
+              <td>${escapeHtml(u.email)}</td>
+              <td>${escapeHtml(u.phone || 'Chưa có SĐT')}</td>
               <td><span class="role-badge ${roleClass}">${roleName}</span></td>
               <td>
                 <span class="user-status-badge ${isAct ? 'status-active' : 'status-inactive'}">
                   ${isAct ? '● Hoạt động' : '● Đã khóa'}
                 </span>
-                ${!isAct && u.lock_reason ? `<div style="font-size: 11px; color: #dc2626; margin-top: 3px; font-weight: 500; max-width: 170px;" title="${u.lock_reason}">🔒 <em>${u.lock_reason}</em></div>` : ''}
+                ${!isAct && u.lock_reason ? `<div style="font-size: 11px; color: #dc2626; margin-top: 3px; font-weight: 500; max-width: 170px;" title="${escapeHtml(u.lock_reason)}">🔒 <em>${escapeHtml(u.lock_reason)}</em></div>` : ''}
               </td>
               <td>${dateStr}</td>
               <td style="text-align: right; white-space: nowrap;">
                 <button type="button" class="btn btn-ghost btn-xs btn-view-user" data-id="${u.id}" onclick="openUserEditModal(${u.id})" title="Xem & Chỉnh sửa phân quyền">✏️ Sửa</button>
-                <button type="button" class="btn btn-ghost btn-xs btn-toggle-user" data-id="${u.id}" data-name="${(u.name || u.email).replace(/"/g, '&quot;')}" data-email="${u.email}" data-status="${isAct ? 'inactive' : 'active'}" title="${isAct ? 'Khóa tài khoản' : 'Kích hoạt lại'}">
+                <button type="button" class="btn btn-ghost btn-xs btn-toggle-user" data-id="${u.id}" data-name="${escapeHtml(u.name || u.email)}" data-email="${escapeHtml(u.email)}" data-status="${isAct ? 'inactive' : 'active'}" title="${isAct ? 'Khóa tài khoản' : 'Kích hoạt lại'}">
                   ${isAct ? '🔒 Khóa' : '🔓 Mở'}
                 </button>
               </td>
@@ -1411,11 +1423,11 @@
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-md);">
                   <div style="display: flex; gap: var(--space-sm); align-items: center;">
                     <div style="width: 44px; height: 44px; border-radius: 50%; background: #DBEAFE; color: #1E40AF; display: grid; place-items: center; font-weight: 800; font-size: 18px;">
-                      ${st.name ? st.name.charAt(0).toUpperCase() : 'S'}
+                      ${escapeHtml(st.name ? st.name.charAt(0).toUpperCase() : 'S')}
                     </div>
                     <div>
-                      <div style="font-weight: 800; font-size: 15px;">${st.name}</div>
-                      <div style="font-size: 12px; color: var(--color-text-secondary);">${st.email}</div>
+                      <div style="font-weight: 800; font-size: 15px;">${escapeHtml(st.name)}</div>
+                      <div style="font-size: 12px; color: var(--color-text-secondary);">${escapeHtml(st.email)}</div>
                     </div>
                   </div>
                   <span class="user-status-badge ${isAct ? 'status-active' : 'status-inactive'}">
@@ -1423,11 +1435,11 @@
                   </span>
                 </div>
 
-                ${!isAct && st.lock_reason ? `<div style="font-size: 11px; color: #dc2626; margin-bottom: var(--space-md); background: #fef2f2; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid #fecaca; line-height: 1.4;">🔒 <strong>Lý do khóa:</strong> ${st.lock_reason}</div>` : ''}
+                ${!isAct && st.lock_reason ? `<div style="font-size: 11px; color: #dc2626; margin-bottom: var(--space-md); background: #fef2f2; padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid #fecaca; line-height: 1.4;">🔒 <strong>Lý do khóa:</strong> ${escapeHtml(st.lock_reason)}</div>` : ''}
 
                 <div style="background: var(--color-bg-alt); padding: 10px 14px; border-radius: var(--radius-md); margin-bottom: var(--space-md); font-size: 12px;">
-                  <div>📞 SĐT: <strong>${st.phone || 'Chưa cập nhật'}</strong></div>
-                  <div style="margin-top: 4px;">📍 Đ/C: <strong>${st.address || 'Hà Nội'}</strong></div>
+                  <div>📞 SĐT: <strong>${escapeHtml(st.phone || 'Chưa cập nhật')}</strong></div>
+                  <div style="margin-top: 4px;">📍 Đ/C: <strong>${escapeHtml(st.address || 'Hà Nội')}</strong></div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; text-align: center; margin-bottom: var(--space-md);">
@@ -1443,8 +1455,8 @@
               </div>
 
               <div style="display: flex; gap: 8px; border-top: 1px solid var(--color-border); padding-top: var(--space-md); margin-top: auto;">
-                <button class="btn btn-ghost btn-xs btn-view-staff-tasks" data-id="${st.id}" data-name="${st.name}" style="flex: 1;">📋 Xem công việc</button>
-                <button class="btn btn-ghost btn-xs btn-toggle-staff" data-id="${st.id}" data-name="${st.name}" data-email="${st.email}" data-status="${isAct ? 'inactive' : 'active'}" style="color: ${isAct ? '#dc2626' : '#16a34a'};">
+                <button class="btn btn-ghost btn-xs btn-view-staff-tasks" data-id="${st.id}" data-name="${escapeHtml(st.name)}" style="flex: 1;">📋 Xem công việc</button>
+                <button class="btn btn-ghost btn-xs btn-toggle-staff" data-id="${st.id}" data-name="${escapeHtml(st.name)}" data-email="${escapeHtml(st.email)}" data-status="${isAct ? 'inactive' : 'active'}" style="color: ${isAct ? '#dc2626' : '#16a34a'};">
                   ${isAct ? '🔒 Khóa' : '🔓 Kích hoạt'}
                 </button>
               </div>
@@ -1596,11 +1608,11 @@
                 <tbody>
                   ${tasks.map(t => `
                     <tr>
-                      <td><strong>#${t.booking_code}</strong></td>
-                      <td>${t.service_name}</td>
-                      <td>${new Date(t.booking_date).toLocaleDateString('vi-VN')} (${t.booking_time})</td>
-                      <td>${t.customer_name} (${t.customer_phone})</td>
-                      <td>${t.address}</td>
+                      <td><strong>#${escapeHtml(t.booking_code)}</strong></td>
+                      <td>${escapeHtml(t.service_name)}</td>
+                      <td>${new Date(t.booking_date).toLocaleDateString('vi-VN')} (${escapeHtml(t.booking_time)})</td>
+                      <td>${escapeHtml(t.customer_name)} (${escapeHtml(t.customer_phone)})</td>
+                      <td>${escapeHtml(t.address)}</td>
                       <td><span class="status-badge status-${t.status}">● ${t.status}</span></td>
                     </tr>
                   `).join('')}
@@ -1636,15 +1648,15 @@
 
         tbody.innerHTML = allServices.map(s => `
           <tr>
-            <td style="font-size: 24px;">${s.icon || '🧹'}</td>
+            <td style="font-size: 24px;">${escapeHtml(s.icon || '🧹')}</td>
             <td>
-              <strong style="color: var(--color-primary-dark);">${s.name}</strong>
-              <div style="font-size: 12px; color: var(--color-text-secondary);">${s.short_description || ''}</div>
+              <strong style="color: var(--color-primary-dark);">${escapeHtml(s.name)}</strong>
+              <div style="font-size: 12px; color: var(--color-text-secondary);">${escapeHtml(s.short_description || '')}</div>
             </td>
-            <td><code>${s.slug}</code></td>
+            <td><code>${escapeHtml(s.slug)}</code></td>
             <td style="font-weight: 700;">${Number(s.base_price).toLocaleString('vi-VN')} đ</td>
-            <td>${s.price_unit}</td>
-            <td>${s.duration_estimate || '2-4 giờ'}</td>
+            <td>${escapeHtml(s.price_unit)}</td>
+            <td>${escapeHtml(s.duration_estimate || '2-4 giờ')}</td>
             <td><span class="status-badge status-confirmed">Hiển thị</span></td>
             <td style="text-align: right; white-space: nowrap;">
               <button class="btn btn-ghost btn-xs btn-edit-service" data-id="${s.id}">Sửa</button>
@@ -1779,16 +1791,16 @@
             <tr>
               <td><strong>#APP-${p.id}</strong></td>
               <td>
-                <div style="font-weight: 700; color: var(--color-text-main);">${p.name || '---'}</div>
-                <div style="font-size: 12px; color: var(--color-text-secondary);">${p.email || '---'}</div>
-                <div style="font-size: 12px; color: var(--color-primary); font-weight: 600;">📞 ${p.phone || '---'}</div>
+                <div style="font-weight: 700; color: var(--color-text-main);">${escapeHtml(p.name || '---')}</div>
+                <div style="font-size: 12px; color: var(--color-text-secondary);">${escapeHtml(p.email || '---')}</div>
+                <div style="font-size: 12px; color: var(--color-primary); font-weight: 600;">📞 ${escapeHtml(p.phone || '---')}</div>
               </td>
               <td>
-                <div style="font-weight: 600; font-size: 13px;">${p.work_area || 'Chưa chọn'}</div>
-                <div style="font-size: 12px; color: var(--color-text-secondary); max-width: 180px;">${p.address || '---'}</div>
+                <div style="font-weight: 600; font-size: 13px;">${escapeHtml(p.work_area || 'Chưa chọn')}</div>
+                <div style="font-size: 12px; color: var(--color-text-secondary); max-width: 180px;">${escapeHtml(p.address || '---')}</div>
               </td>
-              <td style="font-size: 13px;">${p.available_hours || 'Linh hoạt'}</td>
-              <td style="font-size: 13px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.experience || 'Chưa ghi'}</td>
+              <td style="font-size: 13px;">${escapeHtml(p.available_hours || 'Linh hoạt')}</td>
+              <td style="font-size: 13px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(p.experience || 'Chưa ghi')}</td>
               <td>${statusBadge}</td>
               <td style="font-size: 12px; color: var(--color-text-muted);">${dateStr}</td>
               <td style="text-align: right; white-space: nowrap;">
@@ -1836,7 +1848,7 @@
           statusText = `<span style="color: #065f46; font-weight: 700;">✅ Đã phê duyệt cấp tài khoản nhân viên (Ngày duyệt: ${reviewedDate})</span>`;
           actionsBox.style.display = 'none';
         } else {
-          statusText = `<span style="color: #991b1b; font-weight: 700;">❌ Đã từ chối (Lý do: ${p.rejection_reason || 'Không đáp ứng tiêu chuẩn'})</span>`;
+          statusText = `<span style="color: #991b1b; font-weight: 700;">❌ Đã từ chối (Lý do: ${escapeHtml(p.rejection_reason || 'Không đáp ứng tiêu chuẩn')})</span>`;
           actionsBox.style.display = 'none';
         }
 
@@ -1844,7 +1856,7 @@
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-lg); background: var(--color-bg-alt); padding: var(--space-md); border-radius: var(--radius-lg);">
             <div>
               <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Họ và tên</div>
-              <div style="font-weight: 700; font-size: 15px; color: var(--color-text-main);">${p.name}</div>
+              <div style="font-weight: 700; font-size: 15px; color: var(--color-text-main);">${escapeHtml(p.name)}</div>
             </div>
             <div>
               <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Trạng thái hồ sơ</div>
@@ -1852,40 +1864,40 @@
             </div>
             <div>
               <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Email liên hệ</div>
-              <div style="font-size: 14px; color: var(--color-primary); font-weight: 600;">${p.email}</div>
+              <div style="font-size: 14px; color: var(--color-primary); font-weight: 600;">${escapeHtml(p.email)}</div>
             </div>
             <div>
               <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Số điện thoại</div>
-              <div style="font-size: 14px; font-weight: 700;">${p.phone}</div>
+              <div style="font-size: 14px; font-weight: 700;">${escapeHtml(p.phone)}</div>
             </div>
             <div>
               <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Khu vực làm việc mong muốn</div>
-              <div style="font-size: 13px; font-weight: 600;">${p.work_area || 'Chưa xác định'}</div>
+              <div style="font-size: 13px; font-weight: 600;">${escapeHtml(p.work_area || 'Chưa xác định')}</div>
             </div>
             <div>
               <div style="font-size: 11px; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700;">Khung giờ sẵn sàng làm việc</div>
-              <div style="font-size: 13px;">${p.available_hours || 'Toàn thời gian'}</div>
+              <div style="font-size: 13px;">${escapeHtml(p.available_hours || 'Toàn thời gian')}</div>
             </div>
           </div>
 
           <div style="margin-bottom: var(--space-md);">
             <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px;">Địa chỉ thường trú / liên hệ:</div>
             <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 8px 12px; font-size: 13px;">
-              ${p.address || 'Chưa cung cấp'}
+              ${escapeHtml(p.address || 'Chưa cung cấp')}
             </div>
           </div>
 
           <div style="margin-bottom: var(--space-md);">
             <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px;">Kinh nghiệm làm việc trong ngành vệ sinh:</div>
             <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; white-space: pre-line;">
-              ${p.experience || 'Chưa có kinh nghiệm (Cần đào tạo định hướng từ đầu)'}
+              ${escapeHtml(p.experience || 'Chưa có kinh nghiệm (Cần đào tạo định hướng từ đầu)')}
             </div>
           </div>
 
           <div style="margin-bottom: var(--space-md);">
             <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); margin-bottom: 4px;">Giới thiệu bản thân & nguyện vọng:</div>
             <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; white-space: pre-line; color: var(--color-text-secondary);">
-              ${p.bio || 'Không có ghi chú thêm.'}
+              ${escapeHtml(p.bio || 'Không có ghi chú thêm.')}
             </div>
           </div>
 

@@ -1378,6 +1378,13 @@
         btnApplyPromo.addEventListener('click', () => {
           const code = promoInput.value.trim().toUpperCase();
           if (code === 'CLEANOVA20') {
+            if (selectedFrequency !== 'once') {
+              promoApplied = false;
+              promoBox.style.display = 'none';
+              promoMsg.textContent = 'Mã CLEANOVA20 chỉ áp dụng cho đơn đặt 1 lần (không áp dụng cùng gói định kỳ).';
+              promoMsg.style.color = 'var(--color-error)';
+              return;
+            }
             promoApplied = true;
             promoBox.style.display = 'flex';
             document.getElementById('promo-applied-code').textContent = code;
@@ -1421,8 +1428,15 @@
         if (summaryDur) summaryDur.textContent = `Thời lượng: ~${srv.duration_estimate || '2 - 4 giờ'}`;
 
         const basePrice = parseFloat(srv.base_price) || 200000;
-        const mult = areaMultipliers[selectedArea] || 1.0;
-        const servicePrice = basePrice * mult;
+        let servicePrice = 0;
+        if (srv.price_unit === 'm²' || srv.price_unit === 'm2' || srv.slug === 've-sinh-sau-xay-dung') {
+          const areaM2Map = { small: 50, medium: 80, large: 150 };
+          const m2 = areaM2Map[selectedArea] || (parseFloat(selectedArea) || 50);
+          servicePrice = basePrice * m2;
+        } else {
+          const mult = areaMultipliers[selectedArea] || 1.0;
+          servicePrice = basePrice * mult;
+        }
 
         // Tính tổng tiền các add-on đang chọn
         let addonsTotal = 0;
@@ -1457,15 +1471,27 @@
           freqRow.style.display = 'none';
         }
 
-        // Voucher giảm giá 20%
+        // Voucher giảm giá 20% (Chỉ áp dụng khi không có chiết khấu tần suất)
         let voucherDiscountVal = 0;
         const voucherRow = document.getElementById('summary-voucher-discount-row');
         if (promoApplied) {
-          voucherDiscountVal = subtotal * 0.20;
-          voucherRow.style.display = 'flex';
-          document.getElementById('summary-voucher-discount').textContent = `-${Math.round(voucherDiscountVal).toLocaleString('vi-VN')} đ (20%)`;
+          if (freqDiscountVal > 0) {
+            promoApplied = false;
+            if (promoBox) promoBox.style.display = 'none';
+            if (promoMsg) {
+              promoMsg.textContent = 'Mã CLEANOVA20 không áp dụng cùng gói định kỳ.';
+              promoMsg.style.color = 'var(--color-error)';
+            }
+            if (voucherRow) voucherRow.style.display = 'none';
+          } else {
+            voucherDiscountVal = subtotal * 0.20;
+            if (voucherRow) {
+              voucherRow.style.display = 'flex';
+              document.getElementById('summary-voucher-discount').textContent = `-${Math.round(voucherDiscountVal).toLocaleString('vi-VN')} đ (20%)`;
+            }
+          }
         } else {
-          voucherRow.style.display = 'none';
+          if (voucherRow) voucherRow.style.display = 'none';
         }
 
         const finalTotal = Math.max(subtotal - freqDiscountVal - voucherDiscountVal, 50000);

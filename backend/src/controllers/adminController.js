@@ -7,6 +7,7 @@ const ServiceModel = require('../models/serviceModel');
 const UserModel = require('../models/userModel');
 const PartnerModel = require('../models/partnerModel');
 const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
+const { sanitizeInput } = require('../utils/sanitize');
 
 const adminController = {
   // 1. Thống kê tổng quan Dashboard (GET /api/admin/stats)
@@ -56,6 +57,16 @@ const adminController = {
         return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
       }
 
+      // Bảo vệ Bug 7: Không cho phép đổi trạng thái của đơn đã hoàn thành hoặc đã hủy
+      if (booking.status === 'completed' || booking.status === 'cancelled') {
+        if (status !== booking.status) {
+          return res.status(409).json({
+            success: false,
+            message: `Thao tác bị từ chối: Đơn đặt lịch đã ở trạng thái kết thúc (${booking.status === 'completed' ? 'Hoàn thành' : 'Đã hủy'}) và không thể đổi về trạng thái khác.`
+          });
+        }
+      }
+
       if (status === 'cancelled' && (reason.length < 5 || reason.length > 500)) {
         return res.status(400).json({ success: false, message: 'Lý do hủy phải dài từ 5 đến 500 ký tự.' });
       }
@@ -72,7 +83,12 @@ const adminController = {
           return res.status(409).json({ success: false, message: 'Đơn tiền mặt cần được xác nhận thanh toán trước khi hoàn thành.' });
         }
       }
-      await BookingModel.updateStatus(id, status, status === 'cancelled' ? reason : '');
+      // Bảo vệ Bug 7: Cập nhật có kiểm tra status hiện tại để chống race condition
+      const sanitizedReason = reason ? sanitizeInput(reason) : '';
+      const changed = await BookingModel.updateStatus(id, status, status === 'cancelled' ? sanitizedReason : '', booking.status);
+      if (!changed && status !== booking.status) {
+        return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi bởi người khác. Vui lòng tải lại.' });
+      }
 
       // Ghi nhật ký thao tác
       await UserModel.logAudit(req.user.id, 'UPDATE_BOOKING_STATUS', id, 'booking', `Cập nhật trạng thái đơn #${booking.booking_code} thành ${status}`);
@@ -134,25 +150,28 @@ const adminController = {
       if (!name || !name.trim()) {
         return res.status(400).json({ success: false, message: 'Tên dịch vụ không được để trống.' });
       }
-      if (!base_price || isNaN(base_price)) {
-        return res.status(400).json({ success: false, message: 'Giá dịch vụ phải là số hợp lệ.' });
+      // Bảo vệ Bug 5: Xác thực giá dịch vụ phải là số dương lớn hơn 0
+      const parsedBasePrice = parseFloat(base_price);
+      if (isNaN(parsedBasePrice) || parsedBasePrice <= 0) {
+        return res.status(400).json({ success: false, message: 'Giá dịch vụ phải là số dương lớn hơn 0.' });
       }
 
-      const generatedSlug = slug || name.trim().toLowerCase().replace(/[\s\W-]+/g, '-');
+      const safeName = sanitizeInput(name);
+      const generatedSlug = slug || safeName.toLowerCase().replace(/[\s\W-]+/g, '-');
       const existing = await ServiceModel.getBySlug(generatedSlug);
       if (existing) {
         return res.status(409).json({ success: false, message: 'Đường dẫn slug này đã tồn tại, vui lòng chọn tên khác.' });
       }
 
       const serviceId = await ServiceModel.create({
-        name: name.trim(),
+        name: safeName,
         slug: generatedSlug,
-        description: description || name,
-        short_description: short_description || '',
-        base_price: parseFloat(base_price),
-        price_unit: price_unit || 'lần',
-        duration_estimate: duration_estimate || '2-4 giờ',
-        icon: icon || '🧹'
+        description: description ? sanitizeInput(description) : safeName,
+        short_description: short_description ? sanitizeInput(short_description) : '',
+        base_price: parsedBasePrice,
+        price_unit: price_unit ? sanitizeInput(price_unit) : 'lần',
+        duration_estimate: duration_estimate ? sanitizeInput(duration_estimate) : '2-4 giờ',
+        icon: icon ? sanitizeInput(icon) : '🧹'
       });
 
       const newService = await ServiceModel.getById(serviceId);
@@ -179,14 +198,24 @@ const adminController = {
         return res.status(404).json({ success: false, message: 'Không tìm thấy dịch vụ cần cập nhật.' });
       }
 
+      // Bảo vệ Bug 5: Không cho phép cập nhật giá âm hoặc bằng 0
+      let updatedBasePrice = service.base_price;
+      if (base_price !== undefined) {
+        const parsed = parseFloat(base_price);
+        if (isNaN(parsed) || parsed <= 0) {
+          return res.status(400).json({ success: false, message: 'Giá dịch vụ phải là số dương lớn hơn 0.' });
+        }
+        updatedBasePrice = parsed;
+      }
+
       await ServiceModel.update(id, {
-        name: name || service.name,
-        description: description || service.description,
-        short_description: short_description !== undefined ? short_description : service.short_description,
-        base_price: base_price !== undefined ? parseFloat(base_price) : service.base_price,
-        price_unit: price_unit || service.price_unit,
-        duration_estimate: duration_estimate || service.duration_estimate,
-        icon: icon || service.icon
+        name: name !== undefined ? sanitizeInput(name) : service.name,
+        description: description !== undefined ? sanitizeInput(description) : service.description,
+        short_description: short_description !== undefined ? sanitizeInput(short_description) : service.short_description,
+        base_price: updatedBasePrice,
+        price_unit: price_unit !== undefined ? sanitizeInput(price_unit) : service.price_unit,
+        duration_estimate: duration_estimate !== undefined ? sanitizeInput(duration_estimate) : service.duration_estimate,
+        icon: icon !== undefined ? sanitizeInput(icon) : service.icon
       });
 
       const updated = await ServiceModel.getById(id);
@@ -321,9 +350,34 @@ const adminController = {
 
       const { name, phone, address, role, status, lock_reason } = req.body;
 
+      const validRoles = ['customer', 'user', 'staff', 'admin'];
+      const updatedRole = role && validRoles.includes(role) ? role : targetUser.role;
+
+      const validStatuses = ['active', 'inactive'];
+      const updatedStatus = status && validStatuses.includes(status) ? status : (targetUser.status || 'active');
+
+      // Quy tắc an toàn: Không cho phép Admin tự vô hiệu hóa chính mình qua updateUser
+      if (id === req.user.id && updatedStatus === 'inactive') {
+        return res.status(400).json({
+          success: false,
+          message: 'Thao tác bị từ chối: Bạn không thể tự vô hiệu hóa tài khoản quản trị của chính mình!'
+        });
+      }
+
+      // Quy tắc an toàn: Không cho phép vô hiệu hóa Admin cuối cùng qua updateUser
+      if (targetUser.role === 'admin' && updatedStatus === 'inactive') {
+        const activeAdmins = await UserModel.countActiveAdmins();
+        if (activeAdmins <= 1) {
+          return res.status(400).json({
+            success: false,
+            message: 'Thao tác bị từ chối: Không thể vô hiệu hóa Quản trị viên (Admin) duy nhất còn hoạt động trong hệ thống!'
+          });
+        }
+      }
+
       // Quy tắc an toàn: Nếu hạ quyền tài khoản Admin hiện tại xuống vai trò khác,
       // phải kiểm tra xem có còn ít nhất 1 Admin khác đang hoạt động không!
-      if (targetUser.role === 'admin' && role && role !== 'admin') {
+      if (targetUser.role === 'admin' && updatedRole !== 'admin') {
         const activeAdmins = await UserModel.countActiveAdmins();
         if (activeAdmins <= 1) {
           return res.status(400).json({
@@ -333,12 +387,6 @@ const adminController = {
         }
       }
 
-      const validRoles = ['customer', 'user', 'staff', 'admin'];
-      const updatedRole = role && validRoles.includes(role) ? role : targetUser.role;
-
-      const validStatuses = ['active', 'inactive'];
-      const updatedStatus = status && validStatuses.includes(status) ? status : (targetUser.status || 'active');
-
       if (updatedStatus === 'inactive' && (!lock_reason || !lock_reason.trim()) && !targetUser.lock_reason) {
         return res.status(400).json({
           success: false,
@@ -347,13 +395,13 @@ const adminController = {
       }
 
       const finalLockReason = updatedStatus === 'inactive' 
-        ? (lock_reason !== undefined ? lock_reason.trim() : targetUser.lock_reason) 
+        ? (lock_reason !== undefined ? sanitizeInput(lock_reason) : targetUser.lock_reason) 
         : null;
 
       await UserModel.updateAdminUser(id, {
-        name: name !== undefined ? name : targetUser.name,
-        phone: phone !== undefined ? phone : targetUser.phone,
-        address: address !== undefined ? address : targetUser.address,
+        name: name !== undefined ? sanitizeInput(name) : targetUser.name,
+        phone: phone !== undefined ? sanitizeInput(phone) : targetUser.phone,
+        address: address !== undefined ? sanitizeInput(address) : targetUser.address,
         role: updatedRole,
         status: updatedStatus,
         lock_reason: finalLockReason
@@ -387,14 +435,6 @@ const adminController = {
         return res.status(400).json({ success: false, message: "Trạng thái phải là 'active' hoặc 'inactive'." });
       }
 
-      // Khóa tài khoản bắt buộc phải có lý do
-      if (status === 'inactive' && (!reason || !reason.trim())) {
-        return res.status(400).json({
-          success: false,
-          message: 'Vui lòng cung cấp lý do khi khóa tài khoản khách hàng hoặc nhân viên!'
-        });
-      }
-
       // Quy tắc bảo mật bắt buộc:
       // 1. Không cho phép Admin tự vô hiệu hóa chính mình
       if (id === req.user.id && status === 'inactive') {
@@ -415,7 +455,9 @@ const adminController = {
         }
       }
 
-      const finalReason = status === 'inactive' ? reason.trim() : null;
+      const finalReason = status === 'inactive'
+        ? (reason && typeof reason === 'string' && reason.trim() ? sanitizeInput(reason) : 'Khóa tài khoản theo yêu cầu quản trị viên')
+        : null;
       await UserModel.updateStatus(id, status, finalReason);
 
       const actionText = status === 'active' ? 'Kích hoạt lại' : 'Khóa';
@@ -637,9 +679,14 @@ const adminController = {
       if (!partner) {
         return res.status(404).json({ success: false, message: 'Không tìm thấy hồ sơ đối tác này.' });
       }
+
+      // Bảo vệ Bug 10: Xóa bỏ hoàn toàn trường password trước khi trả về cho Client
+      const safePartner = { ...partner };
+      delete safePartner.password;
+
       res.json({
         success: true,
-        data: partner
+        data: safePartner
       });
     } catch (err) {
       next(err);
@@ -650,7 +697,8 @@ const adminController = {
   async approvePartner(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
-      const partner = await PartnerModel.findById(id);
+      // Sử dụng findByIdWithPassword để lấy mật khẩu chính thức của ứng viên
+      const partner = await PartnerModel.findByIdWithPassword(id);
       if (!partner) {
         return res.status(404).json({ success: false, message: 'Không tìm thấy hồ sơ đối tác.' });
       }
@@ -667,6 +715,10 @@ const adminController = {
         staffUserId = existingUser.id;
         await UserModel.updateRole(staffUserId, 'staff');
         await UserModel.updateStatus(staffUserId, 'active');
+        // Bảo vệ Bug 11: Cập nhật mật khẩu tài khoản thành mật khẩu ứng viên đã đăng ký
+        if (partner.password) {
+          await UserModel.updatePassword(staffUserId, partner.password);
+        }
       } else {
         staffUserId = await UserModel.create({
           name: partner.name,
@@ -718,8 +770,9 @@ const adminController = {
         return res.status(404).json({ success: false, message: 'Không tìm thấy hồ sơ đối tác.' });
       }
 
+      const sanitizedRejectionReason = rejection_reason ? sanitizeInput(rejection_reason) : 'Chưa đáp ứng tiêu chí đợt tuyển dụng này';
       await PartnerModel.reject(id, {
-        rejection_reason: rejection_reason || 'Chưa đáp ứng tiêu chí đợt tuyển dụng này',
+        rejection_reason: sanitizedRejectionReason,
         reviewed_by: req.user.id
       });
 
@@ -729,7 +782,7 @@ const adminController = {
         'REJECT_PARTNER',
         id,
         'partner',
-        `Từ chối hồ sơ đối tác ${partner.name} (${partner.email}). Lý do: ${rejection_reason || 'Không nêu'}`
+        `Từ chối hồ sơ đối tác ${partner.name} (${partner.email}). Lý do: ${sanitizedRejectionReason}`
       );
 
       res.json({
@@ -738,7 +791,7 @@ const adminController = {
         data: {
           partner_id: id,
           status: 'rejected',
-          rejection_reason
+          rejection_reason: sanitizedRejectionReason
         }
       });
     } catch (err) {
