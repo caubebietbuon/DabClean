@@ -622,7 +622,7 @@
             }
 
             if (res.ok && data && data.success) {
-              return data;
+              return adaptScanResponse(data);
             }
 
             if (data && data.message) {
@@ -650,27 +650,20 @@
         );
 
         if (isNetworkErr) {
-          console.warn('[Cleanova AI] Cảnh báo kết nối máy chủ, tự động kích hoạt chế độ phân tích AI dự phòng trên trình duyệt.');
-          try {
-            // Phân tích dự phòng cục bộ ngay trên Client để trải nghiệm người dùng không bị gián đoạn
-            const clientResult = await runClientSideVisionFallback(formData);
-            if (clientResult) return clientResult;
-          } catch (fallbackErr) {
-            console.error('[Cleanova AI Fallback Error]:', fallbackErr);
-          }
-
-          throw new Error('Không thể kết nối đến máy chủ AI (Lỗi kết nối / Failed to fetch). Vui lòng khởi động backend server (npm start tại thư mục backend hoặc ai-module).');
+          throw new Error('Không thể kết nối đến máy chủ AI. Vui lòng khởi động AI module (npm start trong ai-module, cổng 5100) hoặc backend (cổng 5000).');
         }
 
         throw lastError || new Error('Không thể hoàn tất phân tích hình ảnh từ máy chủ AI.');
       },
 
+      // Quét ảnh (chỉ trả độ bẩn, không báo giá).
+      // Endpoint cũ `/ai/analyze` đã bị gỡ ở AI module v2.0 — nay dùng `/ai/scan`.
       async analyze(formData) {
         const endpoints = [
-          `${API_BASE_URL}/ai/analyze`,
-          'http://127.0.0.1:5000/api/ai/analyze',
-          'http://localhost:5100/api/ai/analyze',
-          'http://127.0.0.1:5100/api/ai/analyze'
+          `${API_BASE_URL}/ai/scan`,
+          'http://127.0.0.1:5000/api/ai/scan',
+          'http://localhost:5100/api/ai/scan',
+          'http://127.0.0.1:5100/api/ai/scan'
         ];
 
         const uniqueEndpoints = [...new Set(endpoints)];
@@ -690,7 +683,7 @@
 
             const data = await res.json().catch(() => null);
             if (res.ok && data && data.success) {
-              return data;
+              return adaptScanResponse(data);
             }
             if (data && data.message) {
               throw new Error(data.message);
@@ -720,148 +713,110 @@
   };
 
   /**
-   * Phân tích dự phòng trực tiếp trên trình duyệt bằng HTML5 Canvas & Heuristics
-   * Đảm bảo khách hàng luôn nhận được kết quả trực quan ngay cả khi backend offline
+   * Chuyển kết quả từ AI module v2.0 (MobileNet) sang cấu trúc mà giao diện
+   * booking.html đang mong đợi.
+   *
+   * AI module v2.0 trả về:
+   *   { success, data: { scan: { diem, phanLoai, doTinCay, ... },
+   *                      quote: { dirtLevel, service, totalPrice, ... } } }
+   * (hoặc chỉ { scan } nếu gọi /scan)
+   *
+   * Giao diện booking.html cần:
+   *   { overallScore, rating1to5, dirtLevel, quote, analysis, spaces, recommendations }
+   *
+   * ⚠️ KHÁC BIỆT CƠ BẢN GIỮA HAI CÔNG NGHỆ:
+   * - Bản CŨ (heuristic) trả 5 chỉ số riêng lẻ: stains, clutter, dust, debris, brightness.
+   * - Bản MỚI (MobileNet) là mô hình PHÂN LOẠI 3 lớp, KHÔNG có 5 chỉ số đó.
+   *   Nó chỉ trả 3 xác suất: sach / hoiBan / ratBan.
+   * Nên ta dùng chính 3 xác suất làm "chỉ số" hiển thị, thay vì bịa số liệu.
+   * Đây là thông tin TRUNG THỰC — không bịa ra chỉ số không tồn tại.
    */
-  async function runClientSideVisionFallback(formData) {
-    const rawFiles = formData.getAll('images').concat(formData.getAll('image'));
-    const files = rawFiles.filter(f => f instanceof File && f.size > 0);
-    if (files.length === 0) return null;
+  function adaptScanResponse(json) {
+    const d = json.data || {};
+    const scan = d.scan || d;          // /scan trả thẳng, /estimate bọc trong .scan
+    const quote = d.quote || null;
 
-    const areaSize = parseFloat(formData.get('areaSize')) || 75;
-    const roomNames = ['Phòng khách', 'Phòng ngủ', 'Phòng bếp', 'Phòng tắm / WC', 'Ban công'];
-    const perImageAnalysis = [];
-    let totalScore = 0;
-    const combinedSignals = { clutter: 0, stains: 0, dust: 0, brightness: 0, debris: 0 };
+    const score = Math.round(scan.diem != null ? scan.diem : 0);
+    const conf = scan.doTinCay || {};
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      // Đo đặc trưng cơ bản từ kích thước file và tên
-      let score = 30 + (file.size % 45); // Sinh điểm số dựa trên dung lượng ảnh
-      score = Math.min(92, Math.max(18, score));
-      totalScore += score;
+    // Quy đổi điểm 0..100 -> thang 5 sao cho giao diện
+    const rating1to5 = Math.max(1, Math.min(5, Math.round(score / 20)));
 
-      const signals = {
-        stains: Math.min(85, Math.round(score * 0.9)),
-        clutter: Math.min(90, Math.round(score * 1.1)),
-        dust: Math.min(80, Math.round(score * 0.95)),
-        debris: Math.min(75, Math.round(score * 0.8)),
-        brightness: Math.min(80, Math.round(score * 0.85))
-      };
+    // 3 xác suất -> phần trăm hiển thị (0..100)
+    const pct = (v) => Math.round((v || 0) * 1000) / 10;
+    const signals = {
+      sach: pct(conf.sach),
+      hoiBan: pct(conf.hoiBan),
+      ratBan: pct(conf.ratBan)
+    };
 
-      for (const k of Object.keys(combinedSignals)) {
-        combinedSignals[k] += signals[k];
-      }
-
-      let roomType = roomNames[i % roomNames.length];
-      const lower = file.name.toLowerCase();
-      if (lower.includes('bep') || lower.includes('kitchen')) roomType = 'Phòng bếp';
-      else if (lower.includes('khach') || lower.includes('living')) roomType = 'Phòng khách';
-      else if (lower.includes('ngu') || lower.includes('bed')) roomType = 'Phòng ngủ';
-      else if (lower.includes('tam') || lower.includes('wc')) roomType = 'Phòng tắm / WC';
-
-      const issues = [];
-      if (signals.stains > 40) issues.push('Mảng bám ố vàng trên bề mặt');
-      if (signals.clutter > 45) issues.push('Đồ đạc bừa bộn cần thu dọn');
-      if (signals.dust > 45) issues.push('Bụi bặm trên gờ tường / kệ tủ');
-      if (signals.debris > 35) issues.push('Cặn bẩn, tóc, vụn rác sàn nhà');
-      if (issues.length === 0) issues.push('Cần lau dọn và hút bụi tiêu chuẩn');
-
-      perImageAnalysis.push({
+    // Mỗi ảnh (khi gửi nhiều) -> một thẻ "không gian"
+    const perImage = scan.ketQuaTungAnh || [];
+    const spaces = perImage.map((r, i) => {
+      const s = Math.round(r.diem);
+      return {
         index: i + 1,
-        filename: file.name,
-        roomType,
-        issues: issues.join(', '),
-        score,
-        severity: score >= 70 ? 'high' : (score >= 40 ? 'medium' : 'low'),
-        signals
-      });
-    }
+        filename: r.filename || `Ảnh #${i + 1}`,
+        roomType: r.filename ? r.filename.replace(/\.[^.]+$/, '') : `Ảnh #${i + 1}`,
+        score: s,
+        severity: s >= 65 ? 'high' : (s >= 35 ? 'medium' : 'low'),
+        issues: `Phân loại: ${r.phanLoaiHienThi || r.phanLoai} (${s}/100)`,
+        signals: {
+          sach: pct(r.doTinCay && r.doTinCay.sach),
+          hoiBan: pct(r.doTinCay && r.doTinCay.hoiBan),
+          ratBan: pct(r.doTinCay && r.doTinCay.ratBan)
+        }
+      };
+    });
 
-    const n = files.length;
-    const avgScore = Math.round(totalScore / n);
-    for (const k of Object.keys(combinedSignals)) {
-      combinedSignals[k] = Math.round(combinedSignals[k] / n);
-    }
+    const level = (quote && quote.dirtLevel) || {
+      level: scan.phanLoai === 'rat-ban' ? 'very_heavy'
+        : scan.phanLoai === 'hoi-ban' ? 'moderate' : 'clean',
+      label: scan.phanLoaiHienThi || scan.phanLoai,
+      score
+    };
 
-    let rating1to5 = 3;
-    let dirtLevelKey = 'moderate';
-    let dirtLabel = 'Bẩn vừa';
-    let multiplier = 1.35;
-    let recServiceName = 'Tổng vệ sinh Deep Cleaning';
-    let estimatedHours = '3 - 4 giờ';
-
-    if (avgScore >= 75) {
-      rating1to5 = 5;
-      dirtLevelKey = 'very_heavy';
-      dirtLabel = 'Rất bẩn / Cần dọn ngay';
-      multiplier = 2.0;
-      recServiceName = 'Tổng vệ sinh chuyên sâu Premium';
-      estimatedHours = '5 - 6 giờ (2 nhân viên)';
-    } else if (avgScore >= 60) {
-      rating1to5 = 4;
-      dirtLevelKey = 'heavy';
-      dirtLabel = 'Bẩn nhiều';
-      multiplier = 1.6;
-      recServiceName = 'Tổng vệ sinh Deep Cleaning';
-      estimatedHours = '4 - 5 giờ';
-    } else if (avgScore >= 40) {
-      rating1to5 = 3;
-      dirtLevelKey = 'moderate';
-      dirtLabel = 'Bẩn vừa';
-      multiplier = 1.35;
-      recServiceName = 'Dọn dẹp tiêu chuẩn';
-      estimatedHours = '3 - 4 giờ';
-    } else {
-      rating1to5 = 2;
-      dirtLevelKey = 'light';
-      dirtLabel = 'Bẩn nhẹ';
-      multiplier = 1.15;
-      recServiceName = 'Dọn dẹp nhà cửa theo giờ';
-      estimatedHours = '2 - 3 giờ';
-    }
-
-    const basePrice = 200000;
-    const finalPrice = Math.round(basePrice * multiplier / 1000) * 1000;
+    const service = (quote && quote.service) || null;
+    const recommendations = [
+      `Mô hình AI (MobileNet) phân loại: ${scan.phanLoaiHienThi || scan.phanLoai}`,
+      `Độ tin cậy: Sạch ${signals.sach}% · Hơi bẩn ${signals.hoiBan}% · Rất bẩn ${signals.ratBan}%`,
+      service ? `Gói dịch vụ gợi ý: ${service.name}` : null,
+      quote ? `Chi phí dự kiến: ${quote.totalPriceLabel}` : null
+    ].filter(Boolean);
 
     return {
       success: true,
-      isOfflineFallback: true,
       data: {
+        overallScore: score,
+        dirtScore: score,
         rating1to5,
-        ratingLabel: `${rating1to5}/5 sao (${dirtLabel})`,
-        overallScore: avgScore,
-        dirtScore: avgScore,
-        dirtLevel: {
-          level: dirtLevelKey,
-          label: dirtLabel,
-          priceMultiplier: multiplier
-        },
-        totalImages: files.length,
-        spaces: perImageAnalysis,
+        ratingLabel: `${rating1to5}/5 (${level.label || ''})`,
+        dirtLevel: level,
+        totalImages: scan.soAnh || 1,
+        spaces,
+        // booking.html đọc data.analysis.signals
         analysis: {
-          overallScore: avgScore,
-          signals: combinedSignals
+          overallScore: score,
+          signals,
+          analyzer: 'mobilenet-transfer-learning'
         },
-        quote: {
-          finalPrice,
-          formatVnd: `${finalPrice.toLocaleString('vi-VN')} ₫`,
-          dirtFactor: multiplier,
-          estimatedHours,
-          recommendedService: {
-            id: avgScore >= 60 ? 2 : 1,
-            name: recServiceName,
-            estimatedHours,
-            description: 'Làm sạch sâu và phục hồi không gian tối ưu cho gia đình bạn.'
-          }
-        },
-        recommendations: [
-          `Đã phân tích tổng hợp ${files.length} ảnh không gian.`,
-          `Mức độ bẩn chung đạt ${rating1to5}/5 điểm.`,
-          `Khuyến nghị sử dụng gói "${recServiceName}" với thời lượng ước tính ${estimatedHours}.`
-        ],
-        summary: `Hệ thống phân tích hoàn tất ${files.length} không gian. Đánh giá tình trạng đạt ${rating1to5}/5 (${dirtLabel}). Đề xuất gói ${recServiceName}.`,
-        estimatedHours
+        // booking.html đọc data.quote.finalPrice, .dirtFactor, .estimatedHours,
+        // .recommendedService
+        quote: quote ? {
+          finalPrice: quote.totalPrice,
+          formatVnd: quote.totalPriceLabel,
+          dirtFactor: (quote.dirtLevel && quote.dirtLevel.priceMultiplier) || 1,
+          estimatedHours: '~3 - 4 giờ',
+          recommendedService: service ? {
+            id: service.code === 'premium' ? 2 : 1,
+            name: service.name,
+            description: service.description
+          } : null,
+          breakdown: quote.breakdown,
+          priceRange: quote.priceRange
+        } : null,
+        recommendations,
+        summary: `AI phân loại độ bẩn: ${level.label} (${score}/100).`
       }
     };
   }

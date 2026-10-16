@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cleanova AI · Quét ảnh & Báo giá</title>
+  <title>Cleanova AI · Quét độ bẩn bằng AI</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -20,50 +20,40 @@
     }
     body {
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
+      background: var(--bg); color: var(--text); line-height: 1.5;
       padding: 24px 16px 64px;
     }
     .wrap { max-width: 1080px; margin: 0 auto; }
-    header { text-align: center; margin-bottom: 32px; }
+    header { text-align: center; margin-bottom: 28px; }
     header h1 { font-size: 1.9rem; color: var(--primary-dark); }
     header p { color: var(--muted); margin-top: 6px; }
+    .badge {
+      display:inline-block; margin-top:10px; font-size:.78rem; font-weight:700;
+      background:#fff; border:1px solid var(--border); border-radius:999px; padding:5px 14px; color:var(--primary-dark);
+    }
 
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
     @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
 
     .card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 22px;
-      box-shadow: 0 6px 24px rgba(2, 44, 34, .06);
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 22px; box-shadow: 0 6px 24px rgba(2,44,34,.06);
     }
     .card h2 { font-size: 1.1rem; margin-bottom: 14px; color: var(--primary-dark); }
 
-    /* Dropzone */
     .dropzone {
-      border: 2px dashed var(--border);
-      border-radius: 12px;
-      padding: 28px 16px;
-      text-align: center;
-      cursor: pointer;
-      transition: .18s;
-      background: #FAFFFC;
+      border: 2px dashed var(--border); border-radius: 12px; padding: 26px 16px;
+      text-align: center; cursor: pointer; transition: .18s; background: #FAFFFC;
     }
     .dropzone:hover, .dropzone.drag { border-color: var(--primary); background: var(--primary-light); }
     .dropzone .big { font-size: 2.4rem; }
     .dropzone small { color: var(--muted); display: block; margin-top: 6px; }
 
     .preview { margin-top: 14px; }
-    .preview img {
-      width: 100%; border-radius: 12px; border: 1px solid var(--border);
-      max-height: 260px; object-fit: cover;
-    }
+    .preview img { width: 100%; border-radius: 12px; border: 1px solid var(--border); max-height: 240px; object-fit: cover; }
 
     label.field { display: block; margin-top: 14px; font-size: .88rem; font-weight: 600; }
-    input[type=number], select, input[type=text] {
+    input[type=number], select {
       width: 100%; padding: 10px 12px; margin-top: 6px;
       border: 1px solid var(--border); border-radius: 10px; font-size: .95rem;
     }
@@ -82,71 +72,65 @@
     button.primary:hover { background: var(--primary-dark); }
     button.primary:disabled { opacity: .55; cursor: not-allowed; }
 
-    /* Kết quả */
     .hidden { display: none; }
+
+    .gauge { text-align: center; }
     .score-ring {
-      --val: 0;
-      width: 132px; height: 132px; border-radius: 50%; margin: 0 auto 8px;
+      width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 10px;
       background: conic-gradient(var(--ring-color, var(--primary)) calc(var(--val) * 1%), #EDF2F7 0);
       display: grid; place-items: center; position: relative;
     }
-    .score-ring::after {
-      content: ''; width: 100px; height: 100px; border-radius: 50%; background: #fff;
-      position: absolute;
-    }
-    .score-ring .num {
-      position: relative; z-index: 1; font-size: 1.9rem; font-weight: 800;
-    }
-    .level-badge {
-      display: inline-block; padding: 5px 14px; border-radius: 999px;
-      font-weight: 700; font-size: .85rem; margin-top: 6px;
-    }
-    .signal { margin-top: 12px; }
-    .signal .row { display: flex; justify-content: space-between; font-size: .85rem; margin-bottom: 4px; }
-    .bar { height: 8px; background: #EDF2F7; border-radius: 999px; overflow: hidden; }
-    .bar > span { display: block; height: 100%; border-radius: 999px; }
+    .score-ring::after { content:''; width:112px; height:112px; border-radius:50%; background:#fff; position:absolute; }
+    .score-ring .num { position: relative; z-index: 1; font-size: 2.1rem; font-weight: 800; }
+    .level-badge { display:inline-block; padding:7px 18px; border-radius:999px; font-weight:800; font-size:1rem; }
 
-    .price-total {
-      font-size: 2rem; font-weight: 800; color: var(--primary-dark); text-align: center;
-      margin: 10px 0 2px;
-    }
-    .price-range { text-align: center; color: var(--muted); font-size: .9rem; }
-    .breakdown { margin-top: 16px; font-size: .88rem; }
-    .breakdown .line { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed var(--border); }
-    .breakdown .line:last-child { border-bottom: none; font-weight: 700; }
-    .tips { margin-top: 14px; }
-    .tips li { margin-left: 18px; font-size: .88rem; color: #334155; margin-bottom: 5px; }
+    .conf { margin-top: 20px; }
+    .conf-row { margin-top: 12px; }
+    .conf-row .head { display:flex; justify-content:space-between; font-size:.86rem; margin-bottom:5px; }
+    .bar { height: 10px; background: #EDF2F7; border-radius: 999px; overflow: hidden; }
+    .bar > span { display: block; height: 100%; border-radius: 999px; transition: width .5s ease; }
+
+    .price-total { font-size: 1.9rem; font-weight: 800; color: var(--primary-dark); text-align:center; margin:8px 0 2px; }
+    .price-range { text-align:center; color:var(--muted); font-size:.9rem; }
     .service-chip {
-      display: inline-flex; align-items: center; gap: 8px; background: var(--primary-light);
-      color: var(--primary-dark); padding: 7px 14px; border-radius: 999px; font-weight: 700;
-      font-size: .9rem; margin-bottom: 8px;
+      display:inline-flex; align-items:center; gap:8px; background:var(--primary-light);
+      color:var(--primary-dark); padding:7px 14px; border-radius:999px; font-weight:700; font-size:.9rem; margin-bottom:8px;
     }
-    .status { text-align: center; margin-top: 12px; font-size: .9rem; color: var(--muted); min-height: 20px; }
+    .breakdown { margin-top: 14px; font-size: .87rem; }
+    .breakdown .line { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px dashed var(--border); }
+    .breakdown .line:last-child { border-bottom:none; font-weight:800; }
+
+    .status { text-align:center; margin-top:12px; font-size:.9rem; color:var(--muted); min-height:20px; }
     .status.error { color: var(--danger); }
-    .spinner {
-      width: 18px; height: 18px; border: 3px solid #fff; border-top-color: transparent;
-      border-radius: 50%; display: inline-block; vertical-align: -3px; margin-right: 8px;
-      animation: spin .7s linear infinite;
+    .json-box {
+      margin-top:14px; background:#0F172A; color:#A7F3D0; border-radius:10px;
+      padding:12px; font-family:ui-monospace,Consolas,monospace; font-size:.76rem;
+      overflow-x:auto; white-space:pre;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .warn-box {
+      background:#FEF3C7; border:1px solid #FCD34D; color:#92400E;
+      border-radius:10px; padding:12px; font-size:.86rem; margin-bottom:14px;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
       <h1>🌿 Cleanova AI</h1>
-      <p>Tải ảnh phòng — AI quét độ bẩn & gợi ý mức giá dịch vụ phù hợp</p>
+      <p>Tải ảnh phòng — AI quét độ bẩn &amp; gợi ý mức giá dịch vụ</p>
+      <div class="badge">MobileNet v1 + Transfer Learning · TensorFlow.js</div>
     </header>
 
     <div class="grid">
       <!-- CỘT NHẬP LIỆU -->
       <section class="card">
         <h2>1. Thông tin phòng</h2>
+        <div id="modelWarn" class="warn-box hidden"></div>
 
         <div class="dropzone" id="dropzone">
           <div class="big">📷</div>
           <strong>Nhấn để chọn ảnh</strong> hoặc kéo thả vào đây
-          <small>JPEG / PNG / WebP · tối đa 10MB</small>
+          <small>JPEG / PNG · tối đa 10MB</small>
         </div>
         <input type="file" id="fileInput" accept="image/*" class="hidden">
 
@@ -174,13 +158,13 @@
           <label><input type="checkbox" value="post_construction"> Sau xây dựng</label>
         </div>
 
-        <button class="primary" id="analyzeBtn" disabled>🔍 Phân tích & Báo giá</button>
+        <button class="primary" id="scanBtn" disabled>🔍 Quét độ bẩn &amp; Báo giá</button>
         <div class="status" id="status"></div>
       </section>
 
       <!-- CỘT KẾT QUẢ -->
       <section class="card">
-        <h2>2. Kết quả phân tích</h2>
+        <h2>2. Kết quả AI</h2>
 
         <div id="emptyState" style="text-align:center;color:var(--muted);padding:40px 10px">
           <div style="font-size:2.6rem">🧾</div>
@@ -188,26 +172,23 @@
         </div>
 
         <div id="result" class="hidden">
-          <div style="text-align:center">
-            <div class="score-ring" id="scoreRing">
-              <span class="num" id="scoreNum">0</span>
-            </div>
+          <div class="gauge">
+            <div class="score-ring" id="scoreRing"><span class="num" id="scoreNum">0</span></div>
             <div class="level-badge" id="levelBadge">—</div>
           </div>
 
-          <div id="signals" style="margin-top:18px"></div>
+          <div class="conf" id="conf"></div>
 
           <hr style="border:none;border-top:1px dashed var(--border);margin:18px 0">
 
           <div class="service-chip" id="serviceChip">—</div>
           <div class="price-total" id="priceTotal">—</div>
           <div class="price-range" id="priceRange">—</div>
-
           <div class="breakdown" id="breakdown"></div>
 
-          <div class="tips">
-            <strong style="font-size:.9rem">💡 Khuyến nghị</strong>
-            <ul id="tips" style="margin-top:8px"></ul>
+          <div style="margin-top:16px">
+            <strong style="font-size:.88rem">📤 JSON trả về từ API</strong>
+            <div class="json-box" id="jsonBox"></div>
           </div>
         </div>
       </section>
@@ -215,7 +196,6 @@
   </div>
 
   <script>
-    // Đổi BASE_URL nếu module AI chạy ở host/cổng khác
     const API_BASE = (location.port === '5100')
       ? `${location.origin}/api/ai`
       : 'http://localhost:5100/api/ai';
@@ -225,25 +205,20 @@
 
     // --- Chọn ảnh ---
     $('dropzone').addEventListener('click', () => $('fileInput').click());
-    $('dropzone').addEventListener('dragover', (e) => { e.preventDefault(); e.currentTarget.classList.add('drag'); });
-    $('dropzone').addEventListener('dragleave', (e) => e.currentTarget.classList.remove('drag'));
+    $('dropzone').addEventListener('dragover', (e) => { e.preventDefault(); $('dropzone').classList.add('drag'); });
+    $('dropzone').addEventListener('dragleave', () => $('dropzone').classList.remove('drag'));
     $('dropzone').addEventListener('drop', (e) => {
-      e.preventDefault(); e.currentTarget.classList.remove('drag');
+      e.preventDefault(); $('dropzone').classList.remove('drag');
       if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
     });
-    $('fileInput').addEventListener('change', (e) => {
-      if (e.target.files[0]) setFile(e.target.files[0]);
-    });
+    $('fileInput').addEventListener('change', (e) => { if (e.target.files[0]) setFile(e.target.files[0]); });
 
     function setFile(file) {
-      if (!file.type.startsWith('image/')) {
-        setStatus('Chỉ chấp nhận file ảnh.', true); return;
-      }
+      if (!file.type.startsWith('image/')) { setStatus('Chỉ chấp nhận file ảnh.', true); return; }
       selectedFile = file;
-      const url = URL.createObjectURL(file);
-      $('previewImg').src = url;
+      $('previewImg').src = URL.createObjectURL(file);
       $('preview').classList.remove('hidden');
-      $('analyzeBtn').disabled = false;
+      $('scanBtn').disabled = false;
       setStatus('');
     }
 
@@ -253,12 +228,12 @@
       el.className = 'status' + (isError ? ' error' : '');
     }
 
-    // --- Gửi phân tích ---
-    $('analyzeBtn').addEventListener('click', async () => {
+    // --- Gọi API /estimate ---
+    $('scanBtn').addEventListener('click', async () => {
       if (!selectedFile) return;
-      const btn = $('analyzeBtn');
+      const btn = $('scanBtn');
       btn.disabled = true;
-      setStatus('Đang phân tích ảnh…');
+      setStatus('Đang phân tích ảnh bằng AI… (lần đầu có thể mất ~20s)');
 
       const extras = [...document.querySelectorAll('.checks input:checked')].map(c => c.value);
       const form = new FormData();
@@ -280,62 +255,74 @@
       }
     });
 
-    // --- Hiển thị kết quả ---
-    function colorForScore(s) {
-      if (s >= 65) return '#EF4444';
-      if (s >= 45) return '#F59E0B';
-      return '#10B981';
-    }
-    function severityColor(sev) {
-      return sev === 'high' ? '#EF4444' : sev === 'medium' ? '#F59E0B' : '#10B981';
-    }
+    function colorForScore(s) { return s >= 65 ? '#EF4444' : s >= 45 ? '#F59E0B' : '#10B981'; }
 
     function render(data) {
-      const { analysis, dirtLevel, quote, recommendations } = data;
+      const { scan, quote } = data;
       $('emptyState').classList.add('hidden');
       $('result').classList.remove('hidden');
 
-      // Điểm bẩn
       const ring = $('scoreRing');
-      ring.style.setProperty('--val', analysis.overallScore);
-      ring.style.setProperty('--ring-color', colorForScore(analysis.overallScore));
-      $('scoreNum').textContent = Math.round(analysis.overallScore);
+      ring.style.setProperty('--val', scan.diem);
+      ring.style.setProperty('--ring-color', colorForScore(scan.diem));
+      $('scoreNum').textContent = Math.round(scan.diem);
 
       const badge = $('levelBadge');
-      badge.textContent = `${dirtLevel.label} · bẩn ${Math.round(analysis.overallScore)}/100`;
-      badge.style.background = colorForScore(analysis.overallScore) + '22';
-      badge.style.color = colorForScore(analysis.overallScore);
+      badge.textContent = `${scan.phanLoaiHienThi} · ${scan.diem}/100`;
+      badge.style.background = colorForScore(scan.diem) + '22';
+      badge.style.color = colorForScore(scan.diem);
 
-      // Các chỉ số
-      const sigHtml = analysis.findings.map(f => `
-        <div class="signal">
-          <div class="row"><span>${f.label}</span><b>${f.score}</b></div>
-          <div class="bar"><span style="width:${f.score}%;background:${severityColor(f.severity)}"></span></div>
-        </div>`).join('');
-      $('signals').innerHTML = sigHtml;
+      // Độ tin cậy từng loại
+      const c = scan.doTinCay;
+      const rows = [
+        { name: 'Sạch',     v: c.sach,   color: '#10B981' },
+        { name: 'Hơi bẩn',  v: c.hoiBan, color: '#F59E0B' },
+        { name: 'Rất bẩn',  v: c.ratBan, color: '#EF4444' }
+      ];
+      $('conf').innerHTML = '<strong style="font-size:.88rem">🎯 Độ tin cậy từng loại</strong>' +
+        rows.map(r => `
+          <div class="conf-row">
+            <div class="head"><span>${r.name}</span><b>${(r.v * 100).toFixed(2)}%</b></div>
+            <div class="bar"><span style="width:${r.v * 100}%;background:${r.color}"></span></div>
+          </div>`).join('');
 
-      // Gói dịch vụ & giá
+      // Giá
       $('serviceChip').textContent = `${quote.service.icon} ${quote.service.name}`;
       $('priceTotal').textContent = quote.totalPriceLabel;
       $('priceRange').textContent = `Khoảng tham khảo: ${quote.priceRange.label}`;
 
-      // Bóc tách giá
       const b = quote.breakdown;
       $('breakdown').innerHTML = `
         <div class="line"><span>Giá gốc (${quote.areaSize} m² × ${quote.service.pricePerSqm.toLocaleString('vi-VN')}₫)</span><span>${b.basePriceLabel}</span></div>
-        <div class="line"><span>Hệ số độ bẩn (${dirtLevel.label})</span><span>${b.dirtMultiplierLabel}</span></div>
+        <div class="line"><span>Hệ số độ bẩn (${quote.dirtLevel.label})</span><span>${b.dirtMultiplierLabel}</span></div>
         <div class="line"><span>Phụ phí đặc biệt</span><span>${b.extrasLabel}</span></div>
         <div class="line"><span>Phụ phí thời gian</span><span>${b.urgencyLabel}</span></div>
         <div class="line"><span>Tổng cộng</span><span>${quote.totalPriceLabel}</span></div>`;
 
-      // Khuyến nghị
-      $('tips').innerHTML = recommendations.map(t => `<li>${t}</li>`).join('');
+      $('jsonBox').textContent = JSON.stringify({
+        diem: scan.diem,
+        phanLoai: scan.phanLoai,
+        doTinCay: scan.doTinCay
+      }, null, 2);
     }
 
-    // Kiểm tra service ngay khi mở trang
-    fetch(`${API_BASE}/health`).catch(() => {
-      setStatus('Không kết nối được module AI. Hãy chạy "node server.js" trong ai-module.', true);
-    });
+    // Kiểm tra model đã train chưa
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/model-info`);
+        const json = await res.json();
+        if (!json.data.trained) {
+          $('modelWarn').classList.remove('hidden');
+          $('modelWarn').innerHTML =
+            '⚠️ <b>Model chưa được huấn luyện.</b><br>' +
+            'Hãy chạy trong thư mục <code>ai-module</code>:<br>' +
+            '<code>npm run make-dataset</code> (tuỳ chọn, tạo dataset test)<br>' +
+            '<code>npm run train</code>';
+        }
+      } catch {
+        setStatus('Không kết nối được module AI. Hãy chạy "npm start" trong ai-module.', true);
+      }
+    })();
   </script>
 </body>
 </html>
