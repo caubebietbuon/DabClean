@@ -51,7 +51,8 @@ function formatVnd(value) {
 /**
  * Tính báo giá từ kết quả phân tích ảnh + thông tin người dùng nhập.
  *
- * @param {object} analysis      - kết quả từ imageAnalyzer.analyzeImage()
+ * @param {object} analysis      - kết quả quét ảnh, cần trường `overallScore` (0-100)
+ *                                 (từ predict.js: dùng giá trị `diem`)
  * @param {object} options       - tuỳ chọn báo giá
  * @param {number} options.areaSize        - diện tích (m2)
  * @param {string} options.urgency         - 'normal' | 'soon' | 'urgent'

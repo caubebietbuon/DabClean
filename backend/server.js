@@ -19,7 +19,7 @@ process.on('unhandledRejection', (reason) => {
 app.listen(PORT, () => {
   console.log('====================================================');
   console.log(`  CLEANOVA BACKEND SERVER IS RUNNING`);
-  console.log(`  - Local URL:    http://localhost:${PORT}`);
+  console.log(`  - Local URL:    c`);
   console.log(`  - API Health:   http://localhost:${PORT}/api/health`);
   console.log(`  - Services API: http://localhost:${PORT}/api/services`);
   console.log('----------------------------------------------------');

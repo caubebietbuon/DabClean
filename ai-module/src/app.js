@@ -33,12 +33,14 @@ app.use('/demo', express.static(publicPath));
 app.get('/info', (req, res) => {
   res.json({
     service: 'Cleanova AI Module',
-    version: '1.0.0',
+    version: '2.0.0',
+    engine: 'tensorflow.js - MobileNet transfer learning',
     endpoints: {
       health: 'GET  /api/ai/health',
+      modelInfo: 'GET  /api/ai/model-info',
       services: 'GET  /api/ai/services',
-      analyze: 'POST /api/ai/analyze   (multipart: image)',
-      estimate: 'POST /api/ai/estimate  (multipart: image, areaSize, urgency, extras)'
+      scan: 'POST /api/ai/scan      (multipart: image | images)',
+      estimate: 'POST /api/ai/estimate (multipart: image, areaSize, urgency, extras)'
     },
     demo: '/index.html'
   });

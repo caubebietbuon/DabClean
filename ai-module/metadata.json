@@ -1,0 +1,21 @@
+{
+  "labels": [
+    "sach",
+    "hoi-ban",
+    "rat-ban"
+  ],
+  "embeddingDim": 1024,
+  "backbone": "mobilenet-v1-1.0",
+  "imageSize": 224,
+  "hiddenUnits": 64,
+  "dropout": 0.3,
+  "epochs": 15,
+  "trainedAt": "2026-10-16T03:44:31.233Z",
+  "datasetCounts": {
+    "sach": 25,
+    "hoi-ban": 25,
+    "rat-ban": 25
+  },
+  "finalTrainAccuracy": 1,
+  "finalValAccuracy": 1
+}

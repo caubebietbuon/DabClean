@@ -1,14 +1,16 @@
 # ============================================================
 # CLEANOVA - .gitignore
 # ============================================================
+# Chỉ chặn file chứa thông tin nhạy cảm (mật khẩu, secret key)
+# và thư mục upload tạm. Mọi thứ khác đều được push.
+# ============================================================
 
-# Dependencies
-node_modules/
-package-lock.json
-
-# Environment variables (chứa mật khẩu, secret key)
+# Environment variables (chứa mật khẩu MySQL, JWT secret)
 .env
 backend/.env
+ai-module/.env
+
+# Thư mục upload tạm
 backend/uploads/
 
 # Logs
@@ -31,4 +33,3 @@ ehthumbs.db
 # Build output
 dist/
 build/
-ai-module/
