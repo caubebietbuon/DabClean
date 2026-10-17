@@ -17,8 +17,9 @@ const uploadJobPhoto = multer({
   storage,
   limits: { fileSize: 8 * 1024 * 1024, files: 1 },
   fileFilter(req, file, callback) {
-    if (file.mimetype !== 'image/jpeg') {
-      const error = new Error('Ảnh tải lên phải là JPEG đã được nén trên thiết bị.');
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.mimetype)) {
+      const error = new Error('Ảnh tải lên phải là tệp ảnh hợp lệ (JPEG, PNG hoặc WebP).');
       error.statusCode = 400;
       return callback(error);
     }

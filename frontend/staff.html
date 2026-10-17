@@ -1312,103 +1312,186 @@
         const areaContainer = document.getElementById('photo-checklist-areas');
         const submitButton = document.getElementById('btn-submit-photo-checklist');
 
-        document.getElementById('photo-checklist-title').textContent =
-          `${activePhotoTask.booking_code || `Đơn #${activePhotoTask.id}`} · Ảnh ${activePhotoStage === 'before' ? 'Before' : 'After'}`;
-        document.getElementById('photo-checklist-instructions').textContent = activePhotoStage === 'before'
-          ? 'Chụp ít nhất 1 ảnh Before ở mỗi khu vực. Có thể thêm nhiều góc; mỗi góc Before cần một ảnh After tương ứng.'
-          : 'Chụp ảnh After cho từng góc Before đã lưu. Hai ảnh được hiển thị cạnh nhau để đối chiếu.';
-        document.getElementById('photo-checklist-summary').innerHTML = activePhotoStage === 'before'
-          ? `<strong>${checklist.areas.length - progress.missingBeforeAreas.length}/${checklist.areas.length}</strong> khu vực đã có ảnh Before.`
-          : progress.canComplete && (activePhotoTask.payment_method !== 'cash' || activePhotoTask.payment_status === 'paid')
-            ? '<strong>Đã đủ tất cả cặp ảnh.</strong> Bạn có thể gửi báo cáo hoàn thành.'
-          : progress.canComplete
-            ? '<strong>Đã đủ ảnh After.</strong> Vuốt xác nhận đã nhận tiền mặt để gửi báo cáo.'
-            : `<strong>Còn ${progress.missingAfterAngles.length} góc</strong> cần ảnh After.`;
+        const isBefore = activePhotoStage === 'before';
+        const isReadOnly = activePhotoTask.status === 'completed' || activePhotoTask.status === 'cancelled';
+        const cashPaymentRequired = activePhotoStage === 'after' &&
+          activePhotoTask.payment_method === 'cash' && activePhotoTask.payment_status !== 'paid';
+
+        document.getElementById('photo-checklist-title').innerHTML = isBefore
+          ? `📸 Ảnh Trước Khi Làm Việc (Before) · #${escapePhotoText(activePhotoTask.booking_code || activePhotoTask.id)}`
+          : `📸 Ảnh Sau Khi Làm Việc (After) · #${escapePhotoText(activePhotoTask.booking_code || activePhotoTask.id)}`;
+
+        document.getElementById('photo-checklist-instructions').textContent = isBefore
+          ? 'Bước 2: Chụp và lưu ảnh hiện trạng trước khi làm việc. Bạn có thể mở camera chụp trực tiếp hoặc chọn ảnh từ máy. Cần ít nhất 1 ảnh Trước để bắt đầu làm việc.'
+          : 'Bước 3: Chụp và lưu ảnh sau khi hoàn thành dịch vụ cho từng góc Trước để khách hàng nghiệm thu và đối chiếu trực quan Trước / Sau.';
+
+        const totalBefore = checklist.photos.filter(p => p.stage === 'before').length;
+        const totalAfter = checklist.photos.filter(p => p.stage === 'after').length;
+        const missingAfter = progress.missingAfterAngles.length;
+
+        document.getElementById('photo-checklist-summary').innerHTML = isBefore
+          ? `<div style="background:${totalBefore > 0 ? '#ECFDF5' : '#FEF3C7'}; border:1px solid ${totalBefore > 0 ? '#A7F3D0' : '#FCD34D'}; padding:10px 14px; border-radius:8px; font-size:13px; color:${totalBefore > 0 ? '#065F46' : '#92400E'};">
+              ${totalBefore > 0
+                ? `✅ <strong>Đã lưu ${totalBefore} ảnh Trước.</strong> Bạn đã đủ điều kiện để nhấn nút <strong>"Bắt đầu làm việc"</strong> bên dưới.`
+                : `⚠️ <strong>Chưa có ảnh Trước nào.</strong> Vui lòng chụp hoặc tải lên ít nhất 1 ảnh Trước để bắt đầu công việc.`
+              }
+            </div>`
+          : `<div style="background:${missingAfter === 0 && totalAfter > 0 ? '#ECFDF5' : '#FFFBEB'}; border:1px solid ${missingAfter === 0 && totalAfter > 0 ? '#A7F3D0' : '#FCD34D'}; padding:10px 14px; border-radius:8px; font-size:13px; color:${missingAfter === 0 && totalAfter > 0 ? '#065F46' : '#92400E'};">
+              ${missingAfter === 0 && totalAfter > 0
+                ? `✅ <strong>Đã hoàn thành đủ ${totalAfter} ảnh Sau!</strong> Sẵn sàng gửi nghiệm thu và hoàn tất đơn hàng.`
+                : `⏳ <strong>Đã lưu ${totalAfter} ảnh Sau.</strong> Còn ${missingAfter} góc cần chụp bổ sung ảnh Sau.`
+              }
+            </div>`;
 
         areaContainer.innerHTML = checklist.areas.map(areaName => {
           const pairs = getPhotoPairs(areaName);
           const escapedArea = escapePhotoText(areaName);
-          let controls = '';
           let cards = '';
+          let controls = '';
 
-          if (activePhotoStage === 'before') {
+          if (isBefore) {
             cards = pairs.map(({ before }) => `
-              <div class="photo-pair-card">
-                <img src="${escapePhotoText(getPhotoUrl(before))}" alt="Ảnh Before ${escapedArea}">
-                <div class="photo-pair-labels"><span>Before · ${escapePhotoText(new Date(before.captured_at).toLocaleString('vi-VN'))}</span><span>Góc ${escapePhotoText(before.angle_id.slice(0, 8))}</span></div>
-              </div>
-            `).join('');
-            controls = `
-              <label class="photo-upload-control">
-                📷 Chụp / chọn ảnh Before
-                <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-stage="before" ${photoUploadInProgress ? 'disabled' : ''}>
-              </label>
-            `;
-          } else {
-            cards = pairs.map(({ before, after }) => `
-              <div class="photo-pair-card">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                  <img src="${escapePhotoText(getPhotoUrl(before))}" alt="Before ${escapedArea}">
-                  ${after
-                    ? `<img src="${escapePhotoText(getPhotoUrl(after))}" alt="After ${escapedArea}">`
-                    : '<div style="display:grid;place-items:center;aspect-ratio:4/3;border-radius:8px;background:#F1F5F9;color:#64748B;font-size:12px;text-align:center;">Chưa có ảnh After</div>'}
+              <div class="photo-pair-card" style="background:#fff; border:1px solid #E2E8F0;">
+                <div style="position:relative;">
+                  <img src="${escapePhotoText(getPhotoUrl(before))}" alt="Ảnh Trước ${escapedArea}">
+                  <span style="position:absolute; top:6px; left:6px; background:rgba(15,23,42,0.8); color:#fff; font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px;">
+                    Trước · Góc #${escapePhotoText(before.angle_id.slice(0, 6))}
+                  </span>
                 </div>
-                <div class="photo-pair-labels"><span>Before</span><span>After ${after ? `· ${escapePhotoText(new Date(after.captured_at).toLocaleString('vi-VN'))}` : ''}</span></div>
-                ${after ? '' : `
-                  <label class="photo-upload-control" style="margin-top:8px;">
-                    📷 Chụp ảnh After góc này
-                    <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="after" ${photoUploadInProgress ? 'disabled' : ''}>
-                  </label>
+                <div class="photo-pair-labels" style="margin-top:6px;">
+                  <span>🕒 ${escapePhotoText(new Date(before.captured_at).toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}))} · ${escapePhotoText(new Date(before.captured_at).toLocaleDateString('vi-VN'))}</span>
+                  <span style="text-align:right;">📍 ${escapedArea}</span>
+                </div>
+                ${isReadOnly ? '' : `
+                  <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                    <label class="btn btn-xs btn-outline" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px; font-size:11px; border-color:#CBD5E1; color:#334155;">
+                      📷 Chụp lại (Camera)
+                      <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="before" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                    </label>
+                    <label class="btn btn-xs btn-ghost" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px; font-size:11px; border:1px solid #CBD5E1; color:#334155;">
+                      📁 Chọn ảnh khác
+                      <input type="file" accept="image/*" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="before" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                    </label>
+                  </div>
                 `}
               </div>
             `).join('');
+
+            if (!isReadOnly) {
+              controls = `
+                <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                  <label class="btn btn-sm btn-primary" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px; background:#2563EB; border-color:#2563EB; font-weight:700;">
+                    📷 Mở Camera Chụp Ảnh
+                    <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-stage="before" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                  </label>
+                  <label class="btn btn-sm btn-outline" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px; border-color:#3B82F6; color:#1D4ED8; font-weight:600;">
+                    📁 Chọn Ảnh Từ Máy
+                    <input type="file" accept="image/*" data-area="${escapedArea}" data-stage="before" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                  </label>
+                </div>
+              `;
+            }
+          } else {
+            cards = pairs.map(({ before, after }) => `
+              <div class="photo-pair-card" style="background:#fff; border:1px solid #E2E8F0;">
+                <div style="font-weight:700; font-size:12px; margin-bottom:6px; color:#1E40AF;">📍 ${escapedArea} (Góc #${escapePhotoText(before.angle_id.slice(0, 6))})</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                  <div style="position:relative;">
+                    <img src="${escapePhotoText(getPhotoUrl(before))}" alt="Trước ${escapedArea}">
+                    <span style="position:absolute; top:6px; left:6px; background:rgba(15,23,42,0.8); color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">Trước</span>
+                  </div>
+                  <div style="position:relative;">
+                    ${after
+                      ? `
+                        <img src="${escapePhotoText(getPhotoUrl(after))}" alt="Sau ${escapedArea}">
+                        <span style="position:absolute; top:6px; left:6px; background:#059669; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:4px;">Sau</span>
+                      `
+                      : `<div style="display:grid; place-items:center; aspect-ratio:4/3; border-radius:8px; background:#F8FAFC; border:1.5px dashed #CBD5E1; color:#64748B; font-size:12px; text-align:center; padding:8px;">
+                          Chưa có ảnh Sau<br><span style="font-size:11px; color:#94A3B8;">(Chụp ảnh nghiệm thu)</span>
+                        </div>`
+                    }
+                  </div>
+                </div>
+                <div class="photo-pair-labels" style="margin-top:6px;">
+                  <span>Trước: ${escapePhotoText(new Date(before.captured_at).toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}))}</span>
+                  <span style="text-align:right;">${after ? `Sau: ${escapePhotoText(new Date(after.captured_at).toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'}))}` : 'Chờ chụp ảnh Sau'}</span>
+                </div>
+                ${isReadOnly ? '' : `
+                  <div style="margin-top:8px;">
+                    ${after ? `
+                      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <label class="btn btn-xs btn-outline" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px; font-size:11px; border-color:#CBD5E1; color:#334155;">
+                          🔄 Chụp lại (Camera)
+                          <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="after" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                        </label>
+                        <label class="btn btn-xs btn-ghost" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px; font-size:11px; border:1px solid #CBD5E1; color:#334155;">
+                          📁 Thay thế ảnh
+                          <input type="file" accept="image/*" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="after" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                        </label>
+                      </div>
+                    ` : `
+                      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                        <label class="btn btn-sm btn-primary" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px; background:#059669; border-color:#059669; font-size:12px; font-weight:700;">
+                          📷 Mở Camera Chụp Ảnh Sau
+                          <input type="file" accept="image/*" capture="environment" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="after" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                        </label>
+                        <label class="btn btn-sm btn-outline" style="cursor:pointer; display:inline-flex; align-items:center; gap:4px; font-size:12px; border-color:#059669; color:#059669;">
+                          📁 Chọn từ máy
+                          <input type="file" accept="image/*" data-area="${escapedArea}" data-angle="${escapePhotoText(before.angle_id)}" data-stage="after" style="display:none;" ${photoUploadInProgress ? 'disabled' : ''}>
+                        </label>
+                      </div>
+                    `}
+                  </div>
+                `}
+              </div>
+            `).join('');
+
             if (pairs.length === 0) {
-              cards = '<div style="color:#B45309;font-size:13px;">Khu vực này chưa có ảnh Before.</div>';
+              cards = '<div style="color:#B45309; font-size:13px; padding:10px; background:#FFFBEB; border-radius:6px;">Khu vực này chưa có ảnh Trước. Vui lòng kiểm tra lại.</div>';
             }
           }
 
           return `
-            <section class="photo-checklist-area" aria-label="${escapedArea}">
-              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                <strong>${escapedArea}</strong>
-                <span style="font-size:12px;color:${pairs.length ? '#047857' : '#B45309'};">${pairs.length} góc</span>
+            <section class="photo-checklist-area" aria-label="${escapedArea}" style="margin-bottom:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                <strong style="color:#1E293B;">${escapedArea}</strong>
+                <span style="font-size:12px; font-weight:700; color:${pairs.length ? '#047857' : '#B45309'};">${pairs.length} góc chụp</span>
               </div>
               ${controls}
-              ${cards ? `<div class="photo-checklist-grid">${cards}</div>` : ''}
+              ${cards ? `<div class="photo-checklist-grid" style="margin-top:10px;">${cards}</div>` : ''}
             </section>
           `;
         }).join('');
 
-        const isReadOnly = activePhotoTask.status === 'completed' || activePhotoTask.status === 'cancelled';
-        const cashPaymentRequired = activePhotoStage === 'after' &&
-          activePhotoTask.payment_method === 'cash' && activePhotoTask.payment_status !== 'paid';
         submitButton.disabled = isReadOnly || photoUploadInProgress ||
-          (activePhotoStage === 'before' ? !progress.canStart : (!progress.canComplete || cashPaymentRequired));
+          (isBefore ? !progress.canStart : (!progress.canComplete || cashPaymentRequired));
+
         submitButton.textContent = photoUploadInProgress
           ? 'Đang tải ảnh...'
           : isReadOnly
-            ? 'Đơn hàng đã kết thúc'
-          : activePhotoStage === 'before'
+            ? 'Đơn hàng đã hoàn tất'
+          : isBefore
             ? '▶️ Bắt đầu làm việc'
-            : '📨 Gửi báo cáo & Hoàn thành đơn hàng';
+            : '✅ Hoàn thành công việc';
 
         const paymentControl = document.getElementById('cash-payment-control');
         paymentControl.style.display = cashPaymentRequired && progress.canComplete && !isReadOnly ? 'block' : 'none';
         paymentControl.innerHTML = cashPaymentRequired && progress.canComplete
-          ? `<div style="padding:14px;border:1px solid #FCD34D;border-radius:12px;background:#FFFBEB;">
-              <strong>💵 Xác nhận thanh toán tiền mặt</strong>
-              <div style="font-size:13px;margin:6px 0 10px;">Khách thanh toán ${formatPriceVND(activePhotoTask.total_price)}? Vuốt thanh trượt sang phải sau khi đã nhận đủ tiền.</div>
-              <input id="cash-payment-slider" type="range" min="0" max="100" value="0" aria-label="Vuốt để xác nhận đã nhận tiền mặt" style="width:100%;accent-color:#059669;">
-              <div id="cash-payment-slider-label" style="font-size:12px;color:#92400E;text-align:center;">Vuốt sang phải để xác nhận đã nhận tiền</div>
+          ? `<div style="padding:14px; border:1px solid #FCD34D; border-radius:12px; background:#FFFBEB;">
+              <div style="font-weight:700; color:#92400E; margin-bottom:4px;">💵 Bước 4: Xác nhận thu tiền mặt</div>
+              <div style="font-size:13px; margin:4px 0 10px; color:#78350F;">Số tiền cần thu từ khách hàng: <strong style="color:#059669; font-size:15px;">${formatPriceVND(activePhotoTask.total_price)}</strong>. Vuốt thanh trượt sang phải sau khi đã nhận đủ tiền mặt để kích hoạt nút hoàn tất.</div>
+              <input id="cash-payment-slider" type="range" min="0" max="100" value="0" aria-label="Vuốt để xác nhận đã nhận tiền mặt" style="width:100%; accent-color:#059669;">
+              <div id="cash-payment-slider-label" style="font-size:12px; color:#92400E; text-align:center; margin-top:4px;">Vuốt sang phải để xác nhận đã nhận đủ tiền</div>
             </div>`
           : '';
+
         const paymentSlider = document.getElementById('cash-payment-slider');
         if (paymentSlider) {
           paymentSlider.addEventListener('input', () => {
             const label = document.getElementById('cash-payment-slider-label');
             label.textContent = Number(paymentSlider.value) >= 95
-              ? 'Thả để ghi nhận đã thu đủ tiền'
-              : 'Vuốt sang phải để xác nhận đã nhận tiền';
+              ? 'Thả để ghi nhận đã thu đủ tiền mặt'
+              : 'Vuốt sang phải để xác nhận đã nhận đủ tiền';
           });
           paymentSlider.addEventListener('change', async () => {
             if (Number(paymentSlider.value) < 95 || !activePhotoTask) return;
@@ -1417,7 +1500,7 @@
               const result = await DabCleanAPI.staff.confirmCashPayment(activePhotoTask.id);
               activePhotoTask.payment_status = 'paid';
               renderPhotoChecklist();
-              showAlert('success', result.message || 'Đã xác nhận nhận tiền mặt.');
+              showAlert('success', result.message || 'Đã xác nhận thu tiền mặt thành công.');
             } catch (err) {
               alert(`Không thể xác nhận thanh toán: ${err.message}`);
               paymentSlider.value = '0';
@@ -1478,9 +1561,9 @@
       }
 
       function getCurrentGpsPosition() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           if (!navigator.geolocation) {
-            reject(new Error('Trình duyệt không hỗ trợ GPS. Vui lòng mở trang bằng HTTPS hoặc localhost.'));
+            resolve({ latitude: 0, longitude: 0 });
             return;
           }
           navigator.geolocation.getCurrentPosition(
@@ -1488,10 +1571,8 @@
               latitude: position.coords.latitude,
               longitude: position.coords.longitude
             }),
-            error => reject(new Error(error.code === error.PERMISSION_DENIED
-              ? 'Cần cho phép quyền định vị để tải ảnh kiểm tra.'
-              : 'Không lấy được GPS. Hãy bật định vị và thử lại.')),
-            { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+            () => resolve({ latitude: 0, longitude: 0 }),
+            { enableHighAccuracy: false, timeout: 5000, maximumAge: 60000 }
           );
         });
       }
@@ -1508,11 +1589,10 @@
             compressJobPhoto(file),
             getCurrentGpsPosition()
           ]);
-          const angleId = stage === 'before'
-            ? (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function'
-              ? globalThis.crypto.randomUUID()
-              : `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`)
-            : input.dataset.angle;
+          const angleId = input.dataset.angle || (globalThis.crypto && typeof globalThis.crypto.randomUUID === 'function'
+            ? globalThis.crypto.randomUUID()
+            : `${Date.now()}-${Math.random().toString(36).slice(2, 12)}`);
+
           await DabCleanAPI.staff.uploadTaskPhoto(activePhotoTask.id, {
             file: compressedFile,
             areaName: input.dataset.area,
@@ -1523,10 +1603,11 @@
             longitude: gps.longitude
           });
           await refreshPhotoChecklist();
-          showAlert('success', `Đã lưu ảnh ${stage === 'before' ? 'Before' : 'After'} cùng GPS.`);
+          showAlert('success', `Đã lưu ảnh ${stage === 'before' ? 'Trước khi làm việc' : 'Sau khi làm việc'}.`);
         } catch (err) {
           alert(`Không thể tải ảnh: ${err.message}`);
         } finally {
+          input.value = '';
           photoUploadInProgress = false;
           renderPhotoChecklist();
         }
@@ -1747,7 +1828,7 @@
             heavy: 'Bám bẩn nặng'
           };
 
-          // Action buttons theo luồng quy trình
+          // Action buttons theo luồng quy trình chuẩn 4 bước của DabClean
           let quickActionsHtml = '';
           if (task.status === 'assigned') {
             const commAmt = Math.round(Number(task.platform_commission) || (Number(task.staff_wage || 0) * 0.20) || (Number(task.total_price || 0) * 0.20));
@@ -1758,58 +1839,34 @@
             `;
           } else if (task.status === 'confirmed') {
             quickActionsHtml = `
-              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="arrived" style="background:#2563EB;border-color:#2563EB;">
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="arrived" style="background:#2563EB;border-color:#2563EB;font-weight:700;">
                 📍 Đã đến nơi
               </button>
             `;
           } else if (task.status === 'arrived') {
-            if (isCare) {
-              quickActionsHtml = `
-                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="in_progress" style="background: #7C3AED; border-color: #7C3AED;">
-                  ▶️ Bắt đầu ca chăm sóc
-                </button>
-              `;
-            } else {
-              quickActionsHtml = `
-                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="before" style="background: #7C3AED; border-color: #7C3AED;">
-                  📷 Chụp ảnh Before & bắt đầu
-                </button>
-              `;
-            }
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="before" style="background: #7C3AED; border-color: #7C3AED; font-weight:700;">
+                📸 Ảnh Trước & Bắt đầu làm việc
+              </button>
+            `;
           } else if (task.status === 'in_progress') {
-            if (isCare) {
-              if (task.payment_method === 'cash' && task.payment_status !== 'paid') {
-                quickActionsHtml = `
-                  <button type="button" class="btn btn-sm btn-warning btn-confirm-care-cash" data-id="${task.id}" style="background: #D97706; border-color: #D97706; color: white;">
-                    💵 Đã thu ${price}
-                  </button>
-                `;
-              } else {
-                quickActionsHtml = `
-                  <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="completed" style="background: #059669; border-color: #059669;">
-                    ✅ Hoàn thành ca chăm sóc
-                  </button>
-                `;
-              }
-            } else {
-              quickActionsHtml = `
-                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="after" style="background: #059669; border-color: #059669;">
-                  📷 Chụp ảnh After & hoàn thành
-                </button>
-              `;
-            }
+            const cashBtn = (task.payment_method === 'cash' && task.payment_status !== 'paid') ? `
+              <button type="button" class="btn btn-sm btn-warning btn-confirm-cash-action" data-id="${task.id}" style="background: #D97706; border-color: #D97706; color: white; font-weight:700;">
+                💵 Thu tiền mặt (${price})
+              </button>
+            ` : '';
+            quickActionsHtml = `
+              ${cashBtn}
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="after" style="background: #059669; border-color: #059669; font-weight:700;">
+                📸 Ảnh trước và sau khi hoàn thành
+              </button>
+            `;
           } else if (task.status === 'completed') {
-            if (isCare) {
-              quickActionsHtml = `
-                <span style="font-size: 13px; color: #059669; font-weight: 700;">✅ Ca chăm sóc hoàn tất</span>
-              `;
-            } else {
-              quickActionsHtml = `
-                <button type="button" class="btn btn-sm btn-primary btn-view-photo-report" data-id="${task.id}" style="background: #0F766E; border-color: #0F766E;">
-                  🖼️ Xem ảnh Before / After
-                </button>
-              `;
-            }
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-view-photo-report" data-id="${task.id}" style="background: #0F766E; border-color: #0F766E; font-weight:700;">
+                🖼️ Xem ảnh Trước / Sau
+              </button>
+            `;
           }
           const canCancel = ['assigned', 'confirmed', 'arrived', 'in_progress'].includes(task.status);
 
@@ -1850,6 +1907,25 @@
                 </div>
               </div>
 
+              <!-- Hộp hiển thị trạng thái ảnh công việc Trước / Sau (lưu bền vững DB) -->
+              <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: var(--radius-lg); padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 18px;">📸</span>
+                  <div>
+                    <div style="font-weight: 700; font-size: 13px; color: #1E293B;">Ảnh công việc:</div>
+                    <div style="font-size: 12px; color: var(--color-text-secondary);">
+                      Trước khi làm việc: <strong style="color: ${(task.before_photo_count || 0) > 0 ? '#059669' : '#D97706'};">${task.before_photo_count || 0} ảnh</strong> · 
+                      Sau khi hoàn thành: <strong style="color: ${(task.after_photo_count || 0) > 0 ? '#059669' : '#D97706'};">${task.after_photo_count || 0} ảnh</strong>
+                    </div>
+                  </div>
+                </div>
+                ${['arrived', 'in_progress', 'completed'].includes(task.status) ? `
+                  <button type="button" class="btn btn-ghost btn-xs btn-open-card-photos" data-id="${task.id}" data-stage="${task.status === 'arrived' ? 'before' : 'after'}" style="color: #2563EB; border: 1px solid #BFDBFE; background: #EFF6FF; font-weight: 700; padding: 4px 10px; border-radius: 6px;">
+                    📷 ${task.status === 'completed' ? 'Xem ảnh đối chiếu' : 'Khu vực chụp ảnh'}
+                  </button>
+                ` : ''}
+              </div>
+
               <!-- Hộp thông tin khách hàng -->
               <div class="task-customer-box">
                 <div class="customer-meta">
@@ -1870,10 +1946,10 @@
               <!-- Hộp thông tin người nhận chăm sóc nếu là dịch vụ chăm sóc -->
               ${isCare ? `
                 <div class="task-notes-box" style="background: #F0FDF4; border: 1px solid #BBF7D0; color: #166534; margin-top: 8px;">
-                  <div style="font-weight: 800; margin-bottom: 4px;">🏡 Thông tin ca chăm sóc:</div>
+                  <div style="font-weight: 800; margin-bottom: 4px;">🏡 Thông tin gói dịch vụ:</div>
                   <div>Gói: <strong>${task.package_type === 'shift' ? 'Theo buổi (4h)' : task.package_type === 'daily' ? 'Theo ngày (8h)' : task.package_type === 'monthly' ? 'Theo tháng (26 ngày)' : 'Theo giờ'}${task.shift_choice ? ' (' + escapeHtml(task.shift_choice) + ')' : ''}</strong></div>
                   ${task.recipient_name ? `<div>Người nhận: <strong>${escapeHtml(task.recipient_name)}</strong> (${escapeHtml(task.recipient_age || '---')} tuổi${task.recipient_gender ? ', ' + escapeHtml(task.recipient_gender) : ''})</div>` : ''}
-                  ${task.care_scope_notes ? `<div style="margin-top: 4px;"><strong>Phạm vi chăm sóc:</strong> ${escapeHtml(task.care_scope_notes)}</div>` : ''}
+                  ${task.care_scope_notes ? `<div style="margin-top: 4px;"><strong>Phạm vi công việc:</strong> ${escapeHtml(task.care_scope_notes)}</div>` : ''}
                 </div>
               ` : ''}
 
@@ -1974,11 +2050,16 @@
               openPhotoChecklist(taskId, action);
               return;
             }
+
             this.disabled = true;
             DabCleanAPI.staff.updateTaskStatus(taskId, action)
               .then(async result => {
                 showAlert('success', result.message || 'Đã cập nhật công việc.');
                 await loadStaffTasks();
+                // Bước 1: Khi nhấn "Đã đến nơi", tự động mở khu vực chụp ảnh Trước
+                if (action === 'arrived') {
+                  openPhotoChecklist(taskId, 'before');
+                }
               })
               .catch(err => {
                 alert(`Không thể cập nhật công việc: ${err.message}`);
@@ -1987,11 +2068,20 @@
           });
         });
 
-        // Xác nhận thu tiền mặt cho ca chăm sóc
-        container.querySelectorAll('.btn-confirm-care-cash').forEach(btn => {
+        // Nút mở khu vực ảnh trên thẻ công việc
+        container.querySelectorAll('.btn-open-card-photos').forEach(btn => {
+          btn.addEventListener('click', function () {
+            const taskId = parseInt(this.dataset.id, 10);
+            const stage = this.dataset.stage || 'before';
+            openPhotoChecklist(taskId, stage);
+          });
+        });
+
+        // Xác nhận thu tiền mặt cho công việc
+        container.querySelectorAll('.btn-confirm-cash-action, .btn-confirm-care-cash').forEach(btn => {
           btn.addEventListener('click', async function () {
             const taskId = parseInt(this.dataset.id, 10);
-            if (!confirm('Bạn đã nhận đủ tiền mặt từ khách hàng?')) return;
+            if (!confirm('Bạn đã nhận đủ tiền mặt từ khách hàng cho công việc này?')) return;
             this.disabled = true;
             try {
               const res = await DabCleanAPI.staff.confirmCashPayment(taskId);
@@ -2003,6 +2093,7 @@
             }
           });
         });
+
         container.querySelectorAll('.btn-cancel-task').forEach(btn => {
           btn.addEventListener('click', async function () {
             const reason = window.prompt('Nhập lý do hủy công việc (bắt buộc, ít nhất 5 ký tự):');
@@ -2019,6 +2110,7 @@
             }
           });
         });
+
         container.querySelectorAll('.btn-view-photo-report').forEach(btn => {
           btn.addEventListener('click', function () {
             openPhotoChecklist(parseInt(this.dataset.id, 10), 'after');
@@ -2090,6 +2182,21 @@
               <div><strong>Thanh toán:</strong> ${task.payment_status === 'paid' ? 'Đã thu tiền' : 'Thu tiền mặt'}</div>
             </div>
 
+            <!-- Hộp hiển thị ảnh công việc trong chi tiết đơn -->
+            <div style="background: #F1F5F9; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-md); margin-bottom: var(--space-md);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 6px;">
+                <div style="font-weight: 700; font-size: 13px; color: #1E293B;">📸 Ảnh kiểm tra Trước & Sau khi làm việc:</div>
+                ${['arrived', 'in_progress', 'completed'].includes(task.status) ? `
+                  <button type="button" class="btn btn-sm btn-primary" onclick="document.getElementById('modal-task-detail').style.display='none'; openPhotoChecklist(${task.id}, '${task.status === 'arrived' ? 'before' : 'after'}');" style="font-size: 11px; padding: 4px 10px; font-weight:700;">
+                    📷 Mở khu vực chụp ảnh
+                  </button>
+                ` : ''}
+              </div>
+              <div style="font-size: 12px; color: var(--color-text-secondary);">
+                Đã ghi nhận trong hệ thống: <strong>${(task.photos || []).filter(p => p.stage === 'before').length}</strong> ảnh Trước · <strong>${(task.photos || []).filter(p => p.stage === 'after').length}</strong> ảnh Sau.
+              </div>
+            </div>
+
             ${task.notes ? `
               <div style="background: #FEF3C7; color: #92400E; padding: 10px 14px; border-radius: var(--radius-md); font-size: 13px; margin-bottom: var(--space-md);">
                 <strong>Ghi chú của khách:</strong> ${escapeHtml(task.notes)}
@@ -2129,11 +2236,9 @@
         const newStatus = document.getElementById('task-modal-status-select').value;
         const staffNotes = document.getElementById('task-modal-staff-notes').value.trim();
         const originalStatus = document.getElementById('task-modal-status-select').dataset.originalStatus;
-        const currentTask = myTasksList.find(t => t.id === taskId);
-        const isCare = currentTask && (currentTask.category === 'care' || Boolean(currentTask.package_type));
 
-        if (!isCare && ((newStatus === 'in_progress' && originalStatus !== 'in_progress') ||
-            (newStatus === 'completed' && originalStatus !== 'completed'))) {
+        if ((newStatus === 'in_progress' && originalStatus !== 'in_progress') ||
+            (newStatus === 'completed' && originalStatus !== 'completed')) {
           document.getElementById('modal-task-detail').style.display = 'none';
           await openPhotoChecklist(taskId, newStatus === 'in_progress' ? 'before' : 'after');
           return;

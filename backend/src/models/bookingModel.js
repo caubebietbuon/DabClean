@@ -163,7 +163,9 @@ const BookingModel = {
   async getByStaffId(staffId) {
     return await db.query(
       `SELECT b.*, s.name AS service_name, s.icon AS service_icon, s.duration_estimate,
-              u.name AS customer_name, u.phone AS customer_phone, u.email AS customer_email
+              u.name AS customer_name, u.phone AS customer_phone, u.email AS customer_email,
+              (SELECT COUNT(*) FROM booking_job_photos WHERE booking_id = b.id AND stage = 'before') AS before_photo_count,
+              (SELECT COUNT(*) FROM booking_job_photos WHERE booking_id = b.id AND stage = 'after') AS after_photo_count
        FROM bookings b
        LEFT JOIN services s ON b.service_id = s.id
        LEFT JOIN users u ON b.user_id = u.id
@@ -178,7 +180,9 @@ const BookingModel = {
     const rows = await db.query(
       `SELECT b.*, s.name AS service_name, s.icon AS service_icon, s.duration_estimate,
               u.name AS customer_name, u.email AS customer_email, u.name AS user_name, u.email AS user_email,
-              st.name AS staff_name, st.phone AS staff_phone, st.email AS staff_email
+              st.name AS staff_name, st.phone AS staff_phone, st.email AS staff_email,
+              (SELECT COUNT(*) FROM booking_job_photos WHERE booking_id = b.id AND stage = 'before') AS before_photo_count,
+              (SELECT COUNT(*) FROM booking_job_photos WHERE booking_id = b.id AND stage = 'after') AS after_photo_count
        FROM bookings b
        LEFT JOIN services s ON b.service_id = s.id
        LEFT JOIN users u ON b.user_id = u.id
@@ -272,6 +276,15 @@ const BookingModel = {
        (booking_id, area_name, angle_id, stage, image_url, captured_at, latitude, longitude)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [booking_id, area_name, angle_id, stage, image_url, captured_at, latitude, longitude]
+    );
+  },
+
+  async updateJobPhoto(id, { image_url, captured_at, latitude, longitude }) {
+    return await db.query(
+      `UPDATE booking_job_photos 
+       SET image_url = ?, captured_at = ?, latitude = ?, longitude = ?, created_at = NOW()
+       WHERE id = ?`,
+      [image_url, captured_at, latitude, longitude, id]
     );
   },
 

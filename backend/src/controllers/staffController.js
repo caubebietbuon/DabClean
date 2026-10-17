@@ -11,6 +11,7 @@ const CommissionPaymentModel = require('../models/commissionPaymentModel');
 const { uploadDirectory } = require('../middleware/jobPhotoUpload');
 const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
 const { sanitizeInput } = require('../utils/sanitize');
+const db = require('../config/db');
 
 async function getAssignedBooking(taskId, req, res) {
   const booking = await BookingModel.getById(taskId);
@@ -135,6 +136,9 @@ const staffController = {
         });
       }
 
+      const photos = await BookingModel.getJobPhotos(taskId);
+      booking.photos = photos || [];
+
       res.json({
         success: true,
         data: booking
@@ -202,7 +206,7 @@ const staffController = {
   async getTaskPhoto(req, res, next) {
     try {
       const { filename } = req.params;
-      if (!/^[a-f0-9]{48}\.jpg$/.test(filename)) {
+      if (!/^[a-f0-9]{48}\.(jpg|jpeg|png|webp)$/i.test(filename)) {
         return res.status(404).json({ success: false, message: 'Không tìm thấy ảnh công việc.' });
       }
       const imageUrl = `/staff/photos/${filename}`;
@@ -241,12 +245,15 @@ const staffController = {
 
       try {
         const fileHandle = await fs.open(file.path, 'r');
-        const signature = Buffer.alloc(3);
-        await fileHandle.read(signature, 0, 3, 0);
+        const signature = Buffer.alloc(4);
+        await fileHandle.read(signature, 0, 4, 0);
         await fileHandle.close();
-        if (signature[0] !== 0xff || signature[1] !== 0xd8 || signature[2] !== 0xff) {
+        const isJpeg = signature[0] === 0xff && signature[1] === 0xd8 && signature[2] === 0xff;
+        const isPng = signature[0] === 0x89 && signature[1] === 0x50 && signature[2] === 0x4e && signature[3] === 0x47;
+        const isWebp = signature[0] === 0x52 && signature[1] === 0x49 && signature[2] === 0x46 && signature[3] === 0x46;
+        if (!isJpeg && !isPng && !isWebp) {
           await fs.unlink(file.path);
-          return res.status(400).json({ success: false, message: 'Tệp tải lên không phải ảnh JPEG hợp lệ.' });
+          return res.status(400).json({ success: false, message: 'Tệp tải lên không phải ảnh hợp lệ (hỗ trợ JPEG, PNG, WebP).' });
         }
 
         const taskId = Number(req.params.id);
@@ -262,25 +269,32 @@ const staffController = {
 
         const { areaName, angleId, stage, capturedAt, latitude, longitude } = req.body;
         const areas = getRequiredAreas(booking.service_name, booking.category || '');
-        if (!areas.includes(areaName)) {
-          await fs.unlink(file.path);
-          return res.status(400).json({
-            success: false,
-            message: `Khu vực "${areaName || 'trống'}" không thuộc checklist: ${areas.join(', ')}.`
-          });
+        const effectiveArea = (areaName && typeof areaName === 'string' && areaName.trim())
+          ? areaName.trim()
+          : (areas[0] || 'Khu vực làm việc');
+
+        let effectiveAngleId = angleId;
+        if (!effectiveAngleId || typeof effectiveAngleId !== 'string' || effectiveAngleId.trim() === '') {
+          effectiveAngleId = `angle-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
         }
-        if (!['before', 'after'].includes(stage) || !/^[a-zA-Z0-9-]{8,64}$/.test(angleId || '')) {
+
+        if (!['before', 'after'].includes(stage)) {
           await fs.unlink(file.path);
-          return res.status(400).json({ success: false, message: 'Thông tin giai đoạn hoặc góc chụp không hợp lệ.' });
+          return res.status(400).json({ success: false, message: 'Giai đoạn chụp ảnh không hợp lệ (phải là before hoặc after).' });
         }
-        if ((stage === 'before' && booking.status !== 'arrived') ||
-            (stage === 'after' && booking.status !== 'in_progress')) {
+
+        if (stage === 'before' && booking.status !== 'arrived') {
           await fs.unlink(file.path);
           return res.status(409).json({
             success: false,
-            message: stage === 'before'
-              ? 'Ảnh Before chỉ được thêm sau khi xác nhận đã đến địa chỉ khách hàng.'
-              : 'Ảnh After chỉ được thêm khi công việc đang thực hiện.'
+            message: 'Ảnh Trước chỉ được thêm sau khi nhân viên đã xác nhận đến nơi (arrived).'
+          });
+        }
+        if (stage === 'after' && booking.status !== 'in_progress') {
+          await fs.unlink(file.path);
+          return res.status(409).json({
+            success: false,
+            message: 'Ảnh Sau chỉ được thêm khi công việc đang được thực hiện (in_progress).'
           });
         }
 
@@ -290,33 +304,59 @@ const staffController = {
           await fs.unlink(file.path);
           return res.status(400).json({ success: false, message: 'Thời điểm chụp ảnh không hợp lệ.' });
         }
-        const lat = latitude === undefined || latitude === '' ? NaN : Number(latitude);
-        const lng = longitude === undefined || longitude === '' ? NaN : Number(longitude);
-        if (!Number.isFinite(lat) || lat < -90 || lat > 90 ||
-            !Number.isFinite(lng) || lng < -180 || lng > 180) {
-          await fs.unlink(file.path);
-          return res.status(400).json({ success: false, message: 'Cần cho phép định vị GPS để gửi ảnh kiểm tra.' });
-        }
+
+        const lat = (latitude !== undefined && latitude !== '' && !isNaN(latitude) && Number(latitude) >= -90 && Number(latitude) <= 90) ? Number(latitude) : 0;
+        const lng = (longitude !== undefined && longitude !== '' && !isNaN(longitude) && Number(longitude) >= -180 && Number(longitude) <= 180) ? Number(longitude) : 0;
 
         const photos = await BookingModel.getJobPhotos(taskId);
-        if (stage === 'after' && !photos.some(photo =>
-          photo.stage === 'before' && photo.area_name === areaName && photo.angle_id === angleId
-        )) {
-          await fs.unlink(file.path);
-          return res.status(409).json({ success: false, message: 'Ảnh After phải khớp với một góc Before đã lưu.' });
-        }
-        if (photos.some(photo =>
-          photo.stage === stage && photo.area_name === areaName && photo.angle_id === angleId
-        )) {
-          await fs.unlink(file.path);
-          return res.status(409).json({ success: false, message: 'Góc chụp này đã có ảnh ở giai đoạn đã chọn.' });
+        if (stage === 'after') {
+          const matchingBefore = photos.find(photo => photo.stage === 'before' && (photo.angle_id === effectiveAngleId || photo.area_name === effectiveArea));
+          if (matchingBefore) {
+            effectiveAngleId = matchingBefore.angle_id;
+          } else {
+            await fs.unlink(file.path);
+            return res.status(409).json({ success: false, message: 'Ảnh Sau phải tương ứng với một góc hoặc khu vực Trước đã lưu.' });
+          }
         }
 
         const imageUrl = `/staff/photos/${file.filename}`;
+
+        // Kiểm tra xem đã có ảnh tại góc này chưa -> Cho phép chụp lại / thay thế ảnh
+        const existingPhoto = photos.find(photo =>
+          photo.stage === stage && photo.area_name === effectiveArea && photo.angle_id === effectiveAngleId
+        );
+
+        if (existingPhoto) {
+          const oldFilename = path.basename(existingPhoto.image_url);
+          await fs.unlink(path.join(uploadDirectory, oldFilename)).catch(() => {});
+          await db.query(
+            `UPDATE booking_job_photos 
+             SET image_url = ?, captured_at = ?, latitude = ?, longitude = ?, created_at = NOW()
+             WHERE id = ?`,
+            [imageUrl, parsedCapturedAt, lat, lng, existingPhoto.id]
+          );
+
+          return res.status(200).json({
+            success: true,
+            message: `Đã thay thế và cập nhật ảnh ${stage === 'before' ? 'Trước' : 'Sau'} thành công.`,
+            data: {
+              id: existingPhoto.id,
+              area_name: effectiveArea,
+              angle_id: effectiveAngleId,
+              stage,
+              image_url: imageUrl,
+              captured_at: parsedCapturedAt,
+              latitude: lat,
+              longitude: lng,
+              is_replacement: true
+            }
+          });
+        }
+
         const result = await BookingModel.addJobPhoto({
           booking_id: taskId,
-          area_name: areaName,
-          angle_id: angleId,
+          area_name: effectiveArea,
+          angle_id: effectiveAngleId,
           stage,
           image_url: imageUrl,
           captured_at: parsedCapturedAt,
@@ -330,11 +370,11 @@ const staffController = {
 
         res.status(201).json({
           success: true,
-          message: 'Đã lưu ảnh cùng thời gian tải lên và vị trí GPS.',
+          message: `Đã lưu ảnh ${stage === 'before' ? 'Trước' : 'Sau'} thành công.`,
           data: {
             id: result.insertId,
-            area_name: areaName,
-            angle_id: angleId,
+            area_name: effectiveArea,
+            angle_id: effectiveAngleId,
             stage,
             image_url: imageUrl,
             captured_at: parsedCapturedAt,
@@ -454,7 +494,7 @@ const staffController = {
       if (status === 'in_progress' && photos.length > 0 && !progress.canStart) {
         return res.status(409).json({
           success: false,
-          message: `Cần ít nhất 1 ảnh Before cho mỗi khu vực: ${progress.missingBeforeAreas.join(', ')}.`
+          message: 'Cần chụp và lưu ít nhất 1 ảnh Trước khi làm việc (Before).'
         });
       }
       if (status === 'completed' && photos.length > 0 && !progress.canComplete) {
