@@ -244,11 +244,15 @@
   flex-direction: column;
   padding: var(--space-xl) var(--space-lg);
   overflow-y: auto;
-  transition: right var(--transition-normal);
+  transition: right var(--transition-normal), visibility var(--transition-normal);
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .mobile-nav.active {
   right: 0;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .mobile-nav .nav-link {

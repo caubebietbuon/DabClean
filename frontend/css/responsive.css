@@ -120,9 +120,92 @@
     --font-size-2xl: 1.5rem;
   }
 
-  /* Ẩn nút đối tác trên top bar vì đã có card đối tác lớn nổi bật trong Mobile Drawer */
-  .btn-partner-header {
+  /* Ẩn các nút hành động thừa trên top bar mobile vì đã có trong Mobile Drawer */
+  .btn-partner-header,
+  #btn-login-header,
+  #btn-register-header {
     display: none !important;
+  }
+
+  /* Khống chế container và header actions trên mobile */
+  .header-actions {
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  /* Khống chế calculator không bị tràn */
+  .calculator-wrapper {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .calculator-form {
+    padding: var(--space-lg) var(--space-md) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .calculator-form select,
+  .calculator-form input {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .calculator-result {
+    padding: var(--space-xl) var(--space-md) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Khống chế danh mục dịch vụ trên mobile */
+  .services-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-lg) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .service-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Khống chế bảng giá trên mobile */
+  .pricing-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-lg) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .pricing-plan-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Khống chế float cards ở hero không tràn màn hình */
+  .hero-float-card.card-1 {
+    left: 4px !important;
+  }
+
+  .hero-float-card.card-2 {
+    right: 4px !important;
+  }
+
+  .hero-illustration {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .section {
@@ -168,9 +251,50 @@
   }
 
   .toast {
-    min-width: calc(100vw - 32px);
+    left: 16px;
     right: 16px;
+    width: auto;
+    max-width: calc(100% - 32px);
     bottom: 16px;
+    box-sizing: border-box;
+  }
+
+  /* Bảo vệ Quy trình 4 bước (Section 4 & Bước 4) trên mobile */
+  .workflow-process-grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: var(--space-md) !important;
+    box-sizing: border-box !important;
+  }
+
+  .workflow-step-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: var(--space-lg) var(--space-md) !important;
+    box-sizing: border-box !important;
+  }
+
+  .guide-bottom-bar {
+    flex-direction: column !important;
+    padding: var(--space-lg) var(--space-md) !important;
+    gap: var(--space-md) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .guide-bottom-bar-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: var(--space-sm) !important;
+  }
+
+  .guide-bottom-bar-actions .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    text-align: center !important;
   }
 }
 
@@ -202,5 +326,13 @@
 
   .modal-footer .btn {
     width: 100%;
+  }
+
+  .workflow-step-title {
+    font-size: 1rem;
+  }
+
+  .workflow-step-desc {
+    font-size: 13px;
   }
 }

@@ -281,7 +281,7 @@
 /* ------------------------------------------------------------
    7. RESPONSIVE OPTIMIZATIONS (Di động & Màn hình nhỏ)
    ------------------------------------------------------------ */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   :root {
     --reveal-distance: 20px;
     --reveal-duration: 520ms;

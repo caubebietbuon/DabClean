@@ -263,8 +263,11 @@
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: var(--space-xl);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .service-card {
@@ -280,6 +283,9 @@
   overflow: hidden;
   cursor: pointer;
   outline: none;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .service-card:focus-visible {
@@ -964,6 +970,9 @@
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-lg);
   margin-top: var(--space-2xl);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .workflow-step-card {
@@ -976,6 +985,10 @@
   position: relative;
   transition: all var(--transition-normal);
   box-shadow: var(--shadow-sm);
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .workflow-step-card:hover {
@@ -989,6 +1002,8 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: var(--space-md);
+  width: 100%;
+  min-width: 0;
 }
 
 .workflow-step-num {
@@ -1001,6 +1016,7 @@
   border-radius: var(--radius-full);
   letter-spacing: 0.5px;
   text-transform: uppercase;
+  flex-shrink: 0;
 }
 
 .workflow-step-icon {
@@ -1013,6 +1029,7 @@
   justify-content: center;
   font-size: 22px;
   border: 1px solid var(--color-border-light);
+  flex-shrink: 0;
 }
 
 .workflow-step-title {
@@ -1021,6 +1038,8 @@
   color: var(--color-text-main);
   margin-bottom: var(--space-xs);
   line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .workflow-step-desc {
@@ -1028,6 +1047,28 @@
   color: var(--color-text-secondary);
   line-height: var(--line-height-relaxed);
   margin: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Quy tắc responsive trực tiếp cho Quy trình 4 bước */
+@media (max-width: 1024px) {
+  .workflow-process-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+@media (max-width: 640px) {
+  .workflow-process-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+  }
+
+  .workflow-step-card {
+    padding: var(--space-lg) var(--space-md);
+  }
 }
 
 /* ------------------------------------------------------------
@@ -1040,8 +1081,11 @@
 
 .pricing-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
   gap: var(--space-xl);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pricing-plan-card {
@@ -1054,6 +1098,9 @@
   transition: all var(--transition-normal);
   box-shadow: var(--shadow-card);
   position: relative;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .pricing-plan-card:hover {

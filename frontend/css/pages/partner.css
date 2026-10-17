@@ -1033,7 +1033,7 @@
 /* ------------------------------------------------------------
    7. RESPONSIVE BREAKPOINTS (Mobile & Tablet)
    ------------------------------------------------------------ */
-@media (max-width: 992px) {
+@media (max-width: 1024px) {
   .why-dabclean-grid,
   .guide-steps-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1059,6 +1059,37 @@
   .guide-bottom-bar {
     flex-direction: column;
     text-align: center;
+    padding: var(--space-lg) var(--space-md);
+    gap: var(--space-lg);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .guide-bottom-bar-text {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .guide-bottom-bar-text strong,
+  .guide-bottom-bar-text span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .guide-bottom-bar-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-sm);
+    flex-shrink: 1;
+    box-sizing: border-box;
+  }
+
+  .guide-bottom-bar-actions .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
   }
 }
 
