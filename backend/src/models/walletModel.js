@@ -494,16 +494,16 @@ const WalletModel = {
   },
 
   /**
-   * Kiểm tra điều kiện nhận đơn của nhân viên theo chính sách Ví Tín Dụng:
-   * Nhân viên chỉ được nhận đơn mới nếu số dư ví tín dụng lớn hơn 100.000 VNĐ.
-   * Điều kiện chính xác: creditBalance > 100000 (Đúng 100.000 VNĐ không đủ điều kiện).
+   * Kiểm tra điều kiện nhận đơn của nhân viên theo chính sách Ví Tín Dụng CleanNova:
+   * Nhân viên được phép nhận đơn khi số dư ví tín dụng bằng hoặc lớn hơn 100.000 VNĐ.
+   * Điều kiện bắt buộc: creditBalance >= 100000.
    */
   async checkStaffBookingEligibility(staffId) {
     const { creditWallet } = await this.getOrCreateStaffWallets(staffId);
     const creditBalance = parseFloat(creditWallet.balance) || 0;
     const minThreshold = 100000;
-    const isEligible = creditBalance > minThreshold;
-    const amountNeeded = isEligible ? 0 : Math.max(1, minThreshold - creditBalance + 1);
+    const isEligible = creditBalance >= minThreshold;
+    const amountNeeded = isEligible ? 0 : Math.max(0, minThreshold - creditBalance);
 
     return {
       eligible: isEligible,
@@ -515,7 +515,7 @@ const WalletModel = {
       amount_needed: amountNeeded,
       message: isEligible
         ? 'Đủ điều kiện nhận đơn mới.'
-        : `Chưa đủ điều kiện nhận đơn: Số dư ví tín dụng hiện tại (${creditBalance.toLocaleString('vi-VN')} đ) phải lớn hơn 100.000 VNĐ. Vui lòng nạp thêm tối thiểu ${amountNeeded.toLocaleString('vi-VN')} đ hoặc chuyển từ Ví thu nhập để đủ điều kiện.`
+        : `Chưa đủ điều kiện nhận đơn: Số dư ví tín dụng hiện tại (${creditBalance.toLocaleString('vi-VN')} đ) phải từ 100.000 VNĐ trở lên. Vui lòng nạp thêm tối thiểu ${amountNeeded.toLocaleString('vi-VN')} đ hoặc chuyển từ Ví thu nhập để đủ điều kiện.`
     };
   },
 
@@ -526,8 +526,8 @@ const WalletModel = {
     const { creditWallet, earningsWallet } = await this.getOrCreateStaffWallets(staffId);
     const creditBal = parseFloat(creditWallet.balance) || 0;
     const earningsBal = parseFloat(earningsWallet.balance) || 0;
-    const isEligible = creditBal > 100000;
-    const amountNeeded = isEligible ? 0 : Math.max(1, 100000 - creditBal + 1);
+    const isEligible = creditBal >= 100000;
+    const amountNeeded = isEligible ? 0 : Math.max(0, 100000 - creditBal);
 
     // Thống kê ví tín dụng: Tổng tiền đã nạp & Tổng chiết khấu đã trừ
     const cStats = await db.query(
@@ -826,7 +826,7 @@ const WalletModel = {
 
       await connection.commit();
 
-      const isEligible = creditAfter > 100000;
+      const isEligible = creditAfter >= 100000;
       return {
         success: true,
         transaction_code: xferCode,
@@ -834,7 +834,7 @@ const WalletModel = {
         earnings_balance: earningsAfter,
         credit_balance: creditAfter,
         is_eligible: isEligible,
-        amount_needed: isEligible ? 0 : Math.max(1, 100000 - creditAfter + 1)
+        amount_needed: isEligible ? 0 : Math.max(0, 100000 - creditAfter)
       };
     } catch (err) {
       await connection.rollback();
@@ -845,7 +845,7 @@ const WalletModel = {
   },
 
   /**
-   * Quyết toán thù lao và chiết khấu hai ví nhân viên theo mô hình Grab Driver:
+   * Quyết toán thù lao và chiết khấu hai ví nhân viên CleanNova:
    * 
    * Trường hợp A (Khách thanh toán tiền mặt):
    * - Nhân viên đã giữ trực tiếp toàn bộ tiền mặt từ khách.
@@ -1259,7 +1259,7 @@ const WalletModel = {
         IFNULL(cw.balance, 0) AS credit_balance,
         IFNULL(ew.id, 0) AS earnings_wallet_id,
         IFNULL(ew.balance, 0) AS earnings_balance,
-        CASE WHEN IFNULL(cw.balance, 0) > 100000 THEN 1 ELSE 0 END AS is_eligible,
+        CASE WHEN IFNULL(cw.balance, 0) >= 100000 THEN 1 ELSE 0 END AS is_eligible,
         CASE WHEN IFNULL(cw.balance, 0) < 0 THEN ABS(cw.balance) ELSE 0 END AS credit_debt,
         IFNULL((
           SELECT SUM(staff_wage) FROM bookings 

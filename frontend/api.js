@@ -333,7 +333,7 @@
         return await request('/wallet/staff/summary');
       },
 
-      // Hai ví nhân viên (Mô hình Grab Driver: Ví tín dụng & Ví thu nhập)
+      // Hai ví nhân viên CleanNova: Ví tín dụng & Ví thu nhập
       async getStaffWallets() {
         return await request('/wallet/staff/wallets');
       },

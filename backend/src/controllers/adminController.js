@@ -130,9 +130,18 @@ const adminController = {
         note
       });
 
+      if (result.alreadySettled || result.isIdempotent) {
+        return res.status(409).json({
+          success: false,
+          code: 'ALREADY_SETTLED',
+          message: `Đơn hàng #${result.booking_code} đã được quyết toán thù lao trước đó. Không thể quyết toán lần hai.`,
+          data: result
+        });
+      }
+
       res.json({
         success: true,
-        message: `Đã quyết toán thành công thù lao đơn #${result.booking_code}. Khấu trừ chiết khấu CleanNova: ${result.platform_commission.toLocaleString('vi-VN')} đ, Thực nhận vào ví: ${result.net_wage.toLocaleString('vi-VN')} đ.`,
+        message: `Đã quyết toán thành công thù lao đơn #${result.booking_code}. Khấu trừ chiết khấu CleanNova: ${Number(result.platform_commission || 0).toLocaleString('vi-VN')} đ, Thực nhận vào ví: ${Number(result.net_wage || 0).toLocaleString('vi-VN')} đ.`,
         data: result
       });
     } catch (err) {
@@ -262,13 +271,13 @@ const adminController = {
         if (staff.status === 'inactive') {
           return res.status(400).json({ success: false, message: 'Nhân viên này đang bị vô hiệu hóa, không thể phân công việc mới.' });
         }
-        // Kiểm tra điều kiện ví tín dụng: creditBalance > 100000
+        // Kiểm tra điều kiện ví tín dụng: creditBalance >= 100000
         const eligibility = await WalletModel.checkStaffBookingEligibility(staff.id);
         if (!eligibility.eligible) {
           return res.status(400).json({
             success: false,
             code: 'STAFF_INELIGIBLE_CREDIT',
-            message: `Không thể phân công: Số dư ví tín dụng của nhân viên ${staff.name} là ${eligibility.creditBalance.toLocaleString('vi-VN')} đ (yêu cầu > 100.000 đ). Nhân viên cần nạp hoặc chuyển thêm ít nhất ${eligibility.amountNeeded.toLocaleString('vi-VN')} đ để đủ điều kiện nhận đơn.`,
+            message: `Không thể phân công: Số dư ví tín dụng của nhân viên ${staff.name} là ${eligibility.creditBalance.toLocaleString('vi-VN')} đ (yêu cầu tối thiểu 100.000 đ). Nhân viên cần nạp hoặc chuyển thêm ít nhất ${eligibility.amountNeeded.toLocaleString('vi-VN')} đ để đủ điều kiện nhận đơn.`,
             data: eligibility
           });
         }

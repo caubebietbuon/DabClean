@@ -330,20 +330,21 @@ const staffController = {
 
       const isSameStatus = status === booking.status;
 
-      // Bảo vệ Bug 7: Nhân viên không thể lùi trạng thái hoặc xác nhận công việc chưa được giao
+      // Bảo vệ: Kiểm tra điều kiện ví tín dụng (creditBalance >= 100000) và trạng thái đơn khi nhận việc
       if (!isSameStatus && status === 'confirmed') {
-        if (booking.status !== 'assigned') {
-          return res.status(409).json({ success: false, message: 'Chỉ có thể xác nhận công việc vừa được quản trị viên phân công.' });
-        }
-        // Kiểm tra điều kiện ví tín dụng: creditBalance > 100000
+        // Kiểm tra điều kiện ví tín dụng: creditBalance >= 100000
         const eligibility = await WalletModel.checkStaffBookingEligibility(req.user.id);
         if (!eligibility.eligible) {
           return res.status(403).json({
             success: false,
             code: 'INSUFFICIENT_CREDIT_BALANCE',
-            message: `Số dư ví tín dụng hiện tại (${eligibility.creditBalance.toLocaleString('vi-VN')} đ) không đủ điều kiện nhận việc (yêu cầu > 100.000 đ). Bạn cần nạp hoặc chuyển thêm ít nhất ${eligibility.amountNeeded.toLocaleString('vi-VN')} đ.`,
+            message: `Số dư ví tín dụng hiện tại (${eligibility.creditBalance.toLocaleString('vi-VN')} đ) không đủ điều kiện nhận việc (yêu cầu tối thiểu 100.000 đ). Bạn cần nạp hoặc chuyển thêm ít nhất ${eligibility.amountNeeded.toLocaleString('vi-VN')} đ.`,
             data: eligibility
           });
+        }
+
+        if (booking.status !== 'assigned') {
+          return res.status(409).json({ success: false, message: 'Chỉ có thể xác nhận công việc vừa được quản trị viên phân công.' });
         }
       }
       if (!isSameStatus && status === 'arrived' && booking.status !== 'confirmed') {

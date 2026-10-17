@@ -211,24 +211,24 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 - `POST /api/bookings/:id/review` : Gửi đánh giá dịch vụ và nhân viên (`rating`, `staff_rating`, `comment`) sau khi hoàn thành.
 - `POST /api/bookings/:id/tip` : Ghi nhận tip tự nguyện từ 1.000 đến 1.000.000 VNĐ cho nhân viên được giao; khoản tip được thanh toán trực tiếp với nhân viên.
 
-### Hệ thống Hai Ví & Sổ cái Đối tác (`/api/wallet`) - *Mô hình Grab Driver*
+### Hệ thống Hai Ví & Sổ cái Nhân viên (`/api/wallet`) - *CleanNova Two-Wallet System*
 - `GET /api/wallet/staff/wallets` : Lấy số dư chi tiết của Ví Tín Dụng (Credit Wallet) và Ví Thu Nhập (Earnings Wallet), kèm trạng thái điều kiện nhận đơn (`eligible`).
-- `GET /api/wallet/staff/eligibility` : Kiểm tra điều kiện nhận đơn (yêu cầu số dư ví tín dụng `creditBalance > 100.000 VNĐ`).
+- `GET /api/wallet/staff/eligibility` : Kiểm tra điều kiện nhận đơn (yêu cầu số dư ví tín dụng `creditBalance >= 100.000 VNĐ`).
 - `POST /api/wallet/staff/topup-credit` : Nạp tiền trực tiếp vào Ví Tín Dụng (hỗ trợ sandbox và bù nợ âm tự động).
 - `POST /api/wallet/staff/transfer` : Chuyển tiền từ Ví Thu Nhập sang Ví Tín Dụng để duy trì quyền nhận đơn mà không tạo doanh thu sàn.
 - `POST /api/wallet/withdraw` : Tạo lệnh rút tiền từ Ví Thu Nhập về tài khoản ngân hàng của nhân viên.
 - `GET /api/wallet/transactions` : Lấy lịch sử sổ cái biến động của từng ví với bộ lọc phân loại.
 
-### Nhân viên & Đối tác (`/api/staff`) - *Yêu cầu Token Staff/Admin*
-- `PATCH /api/staff/tasks/:id/status` : Nhân viên xác nhận nhận việc (`confirmed` - kiểm tra nghiêm ngặt `creditBalance > 100.000 VNĐ`), báo đã đến (`arrived`), hoàn thành (`completed` - tự động khấu trừ chiết khấu sàn từ ví tín dụng).
+### Nhân viên (`/api/staff`) - *Yêu cầu Token Staff/Admin*
+- `PATCH /api/staff/tasks/:id/status` : Nhân viên xác nhận nhận việc (`confirmed` - kiểm tra nghiêm ngặt `creditBalance >= 100.000 VNĐ`), báo đã đến (`arrived`), hoàn thành (`completed` - tự động khấu trừ chiết khấu sàn từ ví tín dụng).
 - `GET /api/staff/tasks/:id/checklist` : Lấy danh sách khu vực, ảnh Before/After và tiến độ từng góc chụp.
 - `POST /api/staff/tasks/:id/photos` : Tải ảnh JPEG lên dạng `multipart/form-data` (tối đa 8 MB sau nén), kèm `areaName`, `angleId`, `stage`, `capturedAt`, `latitude`, `longitude`.
 - `POST /api/staff/tasks/:id/cash-payment` : Ghi nhận thu tiền mặt sau khi hoàn tất ảnh After; giao diện yêu cầu nhân viên vuốt thanh xác nhận.
 
 ### Quản trị viên (`/api/admin`) - *Yêu cầu Token có quyền Admin*
-- `GET /api/admin/stats` : Lấy số liệu thống kê Dashboard: phân tách Tiền mặt vs Trực tuyến và 6 chỉ số Quản trị Hai Ví Đối Tác.
-- `GET /api/admin/staff-wallets` : Lấy danh sách toàn bộ nhân viên kèm số dư Ví Tín Dụng, Ví Thu Nhập, nợ tín dụng và trạng thái đủ điều kiện.
-- `PUT /api/admin/bookings/:id/assign` : Gán đơn cho nhân viên (kiểm tra điều kiện `creditBalance > 100.000 VNĐ`, từ chối nếu không đủ).
+- `GET /api/admin/stats` : Lấy số liệu thống kê Dashboard: phân tách Tiền mặt vs Trực tuyến và 6 chỉ số Quản trị Hai Ví Nhân Viên CleanNova.
+- `GET /api/admin/staff-wallets` : Lấy danh sách toàn bộ nhân viên kèm số dư Ví Tín Dụng, Ví Thu Nhập, nợ tín dụng và trạng thái đủ điều kiện (`creditBalance >= 100.000 VNĐ`).
+- `PUT /api/admin/bookings/:id/assign` : Gán đơn cho nhân viên (kiểm tra điều kiện `creditBalance >= 100.000 VNĐ`, từ chối nếu không đủ).
 - `POST /api/admin/bookings/:id/payout` : Quyết toán thù lao và khấu trừ hoa hồng đơn hàng idempotent.
 - `GET /api/admin/bookings` : Lấy toàn bộ đơn đặt lịch trong hệ thống.
 - `PUT /api/admin/bookings/:id/status` : Cập nhật trạng thái đơn đặt lịch.
@@ -259,9 +259,9 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 
 1. Để chấm bài nhanh nhất, chỉ cần mở terminal tại thư mục `backend` và gõ `node server.js`.
 2. Mở trình duyệt tại **`http://localhost:5000`**.
-3. Đăng nhập bằng tài khoản `admin@cleanova.vn` / `Admin@Cleanova2026!` để kiểm tra toàn bộ quyền Admin Dashboard & Quản trị Hệ thống Hai Ví Đối Tác (Mô hình Grab Driver).
-4. Mở thêm cửa sổ ẩn danh và đăng nhập bằng tài khoản `staff@cleanova.vn` / `Staff@Cleanova2026!` để trải nghiệm Cổng Nhân Viên: Quản lý Hai Ví (Ví Tín Dụng & Ví Thu Nhập), nạp ví tín dụng, chuyển tiền giữa 2 ví, kiểm tra điều kiện nhận đơn.
-5. Chạy bộ kiểm thử tự động toàn diện cho hệ thống Hai Ví Đối Tác:
+3. Đăng nhập bằng tài khoản `admin@cleanova.vn` / `Admin@Cleanova2026!` để kiểm tra toàn bộ quyền Admin Dashboard & Quản trị Hệ thống Hai Ví Nhân Viên CleanNova.
+4. Mở thêm cửa sổ ẩn danh và đăng nhập bằng tài khoản `staff@cleanova.vn` / `Staff@Cleanova2026!` để trải nghiệm Cổng Nhân Viên: Quản lý Hai Ví (Ví Tín Dụng & Ví Thu Nhập), nạp ví tín dụng, chuyển tiền giữa 2 ví, kiểm tra điều kiện nhận đơn (`creditBalance >= 100.000 VNĐ`).
+5. Chạy bộ kiểm thử tự động toàn diện cho hệ thống Hai Ví Nhân Viên CleanNova:
    ```bash
    node backend/test-two-staff-wallets.js
    ```

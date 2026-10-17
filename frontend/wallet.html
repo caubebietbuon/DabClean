@@ -161,27 +161,38 @@
       box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35);
     }
     .wallet-stats-mini {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: 10px;
       margin-top: 16px;
       padding-top: 16px;
       border-top: 1px solid #f1f5f9;
+      width: 100%;
     }
     .stat-mini-item {
       background: #f8fafc;
-      padding: 10px 14px;
+      padding: 12px 16px;
       border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
     }
     .stat-mini-num {
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1.2rem;
+      font-weight: 800;
       color: #0f766e;
+      order: 2;
+      text-align: right;
     }
     .stat-mini-lbl {
-      font-size: 0.78rem;
+      font-size: 0.85rem;
+      font-weight: 600;
       color: #64748b;
-      margin-top: 2px;
+      margin-top: 0;
+      order: 1;
     }
 
     /* Bảng giao dịch */

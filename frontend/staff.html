@@ -93,33 +93,41 @@
       .photo-checklist-grid { grid-template-columns: 1fr; }
     }
 
-    /* Stats Grid */
+    /* Stats Grid - Vertical 1-column layout across all viewports */
     .staff-stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--space-lg);
-      margin-bottom: var(--space-2xl);
+      display: grid !important;
+      grid-template-columns: minmax(0, 1fr) !important;
+      gap: 12px !important;
+      margin-bottom: var(--space-xl) !important;
+      width: 100% !important;
     }
     @media (max-width: 992px) {
       .staff-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: minmax(0, 1fr) !important;
       }
     }
     @media (max-width: 576px) {
       .staff-stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr) !important;
       }
     }
 
     .staff-stat-card {
       background: var(--color-white);
       border: 1px solid var(--color-border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-xl);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
       box-shadow: var(--shadow-sm);
       position: relative;
       overflow: hidden;
       transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      width: 100%;
+      box-sizing: border-box;
     }
     .staff-stat-card:hover {
       transform: translateY(-2px);
@@ -139,27 +147,37 @@
     .staff-stat-card.doing::before { background: #8B5CF6; }
     .staff-stat-card.done::before { background: #10B981; }
 
+    .stat-info-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1 1 auto;
+      min-width: 160px;
+    }
+
     .stat-label {
       font-size: var(--font-size-xs);
       font-weight: 700;
       color: var(--color-text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: var(--space-xs);
+      margin-bottom: 2px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
     }
     .stat-number {
-      font-size: var(--font-size-3xl);
+      font-size: 26px;
       font-weight: 800;
       color: var(--color-text);
       line-height: 1.1;
+      text-align: right;
+      white-space: nowrap;
     }
     .stat-subtext {
       font-size: 12px;
       color: var(--color-text-tertiary);
-      margin-top: 6px;
+      margin-top: 2px;
     }
 
     /* Staff Navigation Tabs */
@@ -482,36 +500,44 @@
       <!-- Thống kê nhanh công việc (Staff Stats) -->
       <div class="staff-stats-grid">
         <div class="staff-stat-card total">
-          <div class="stat-label">
-            <span>Tổng việc được giao</span>
-            <span>💼</span>
+          <div class="stat-info-wrap">
+            <div class="stat-label">
+              <span>💼</span>
+              <span>Tổng việc được giao</span>
+            </div>
+            <div class="stat-subtext">Toàn bộ công việc phụ trách</div>
           </div>
           <div class="stat-number" id="stat-total">0</div>
-          <div class="stat-subtext">Toàn bộ công việc phụ trách</div>
         </div>
         <div class="staff-stat-card pending">
-          <div class="stat-label">
-            <span>Chờ tiếp nhận</span>
-            <span>⏳</span>
+          <div class="stat-info-wrap">
+            <div class="stat-label">
+              <span>⏳</span>
+              <span>Chờ tiếp nhận</span>
+            </div>
+            <div class="stat-subtext">Đã phân công, chờ làm việc</div>
           </div>
           <div class="stat-number" id="stat-assigned" style="color: #D97706;">0</div>
-          <div class="stat-subtext">Đã phân công, chờ làm việc</div>
         </div>
         <div class="staff-stat-card doing">
-          <div class="stat-label">
-            <span>Đang thực hiện</span>
-            <span>🧹</span>
+          <div class="stat-info-wrap">
+            <div class="stat-label">
+              <span>🧹</span>
+              <span>Đang thực hiện</span>
+            </div>
+            <div class="stat-subtext">Đang có mặt tại nhà khách</div>
           </div>
           <div class="stat-number" id="stat-doing" style="color: #7C3AED;">0</div>
-          <div class="stat-subtext">Đang có mặt tại nhà khách</div>
         </div>
         <div class="staff-stat-card done">
-          <div class="stat-label">
-            <span>Đã hoàn thành</span>
-            <span>✅</span>
+          <div class="stat-info-wrap">
+            <div class="stat-label">
+              <span>✅</span>
+              <span>Đã hoàn thành</span>
+            </div>
+            <div class="stat-subtext">Hoàn tất kiểm tra và bàn giao</div>
           </div>
           <div class="stat-number" id="stat-completed" style="color: #059669;">0</div>
-          <div class="stat-subtext">Hoàn tất kiểm tra và bàn giao</div>
         </div>
       </div>
 
@@ -535,7 +561,7 @@
            TAB 1: DANH SÁCH CÔNG VIỆC CỦA TÔI
            ============================================================ -->
       <div class="tab-pane" id="tab-tasks" style="display: block;">
-        <!-- Banner cảnh báo điều kiện nhận việc ví tín dụng (Grab Driver Model) -->
+        <!-- Banner cảnh báo điều kiện nhận việc ví tín dụng CleanNova -->
         <div id="staff-eligibility-banner" style="display: none; margin-bottom: var(--space-lg);"></div>
 
         <!-- Bộ lọc & Tìm kiếm -->
@@ -687,7 +713,7 @@
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
             <div>
               <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); padding: 3px 10px; border-radius: var(--radius-full); font-weight: 700;">Mô hình Grab Driver</span>
+                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); padding: 3px 10px; border-radius: var(--radius-full); font-weight: 700;">Hệ Thống Hai Ví CleanNova</span>
                 <span style="font-size: 12px; color: #94A3B8;">Hệ thống tài chính đối tác CleanNova</span>
               </div>
               <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 6px 0; color: #fff; display: flex; align-items: center; gap: 10px;">
@@ -725,34 +751,22 @@
           </div>
 
           <div style="padding: var(--space-xl); background: #fff;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-lg); align-items: center; margin-bottom: var(--space-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-lg); margin-bottom: var(--space-lg); padding: 20px 24px; background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg);">
               <div>
                 <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; margin-bottom: 4px;">Số Dư Ví Tín Dụng Hiện Tại</div>
-                <div id="staff-credit-balance" style="font-size: 32px; font-weight: 900; line-height: 1.2;">0 đ</div>
-                <div id="staff-credit-notice" style="font-size: 12px; margin-top: 4px; color: var(--color-text-secondary);">Ngưỡng nhận đơn: > 100.000 đ</div>
-              </div>
-
-              <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 12px 16px;">
-                <div style="font-size: 12px; color: var(--color-text-secondary); font-weight: 600;">Tổng tiền đã nạp</div>
-                <div id="staff-credit-deposited" style="font-size: 18px; font-weight: 800; color: #0284C7;">0 đ</div>
-                <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px;">Từ cổng thanh toán & nạp sandbox</div>
-              </div>
-
-              <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 12px 16px;">
-                <div style="font-size: 12px; color: var(--color-text-secondary); font-weight: 600;">Tổng chiết khấu đã khấu trừ</div>
-                <div id="staff-credit-deducted" style="font-size: 18px; font-weight: 800; color: #DC2626;">0 đ</div>
-                <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px;">Áp dụng cho cả đơn tiền mặt & trực tuyến</div>
+                <div id="staff-credit-balance" style="font-size: 32px; font-weight: 900; line-height: 1.2; color: #1E40AF;">0 đ</div>
+                <div id="staff-credit-notice" style="font-size: 13px; margin-top: 6px; color: var(--color-text-secondary);">Điều kiện nhận đơn: ≥ 100.000 đ</div>
               </div>
 
               <div>
-                <button type="button" class="btn btn-primary" id="btn-open-topup-credit-modal" style="width: 100%; padding: 12px 20px; font-weight: 700; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <button type="button" class="btn btn-primary" id="btn-open-topup-credit-modal" style="padding: 12px 24px; font-weight: 700; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; box-shadow: var(--shadow-sm);">
                   💳 Nạp Ví Tín Dụng
                 </button>
               </div>
             </div>
 
             <div style="font-size: 12px; background: #EFF6FF; border-left: 4px solid #3B82F6; padding: 10px 14px; border-radius: 4px; color: #1E40AF; line-height: 1.5;">
-              📌 <strong>Quy tắc Ví Tín Dụng:</strong> Trừ khoản chiết khấu CleanNova khi đơn hoàn thành (cả tiền mặt & trực tuyến). Cho phép số dư âm khi chiết khấu vượt số dư. Số dư phải <strong>lớn hơn 100.000 VNĐ</strong> để được phân công và xác nhận đơn mới.
+              📌 <strong>Quy tắc Ví Tín Dụng:</strong> Trừ khoản chiết khấu CleanNova khi đơn hoàn thành (cả tiền mặt & trực tuyến). Cho phép số dư âm khi chiết khấu vượt số dư. Số dư phải <strong>lớn hơn hoặc bằng 100.000 VNĐ</strong> để được phân công và xác nhận đơn mới.
             </div>
           </div>
         </div>
@@ -780,35 +794,45 @@
           </div>
 
           <div style="padding: var(--space-xl); background: #fff;">
-            <div class="staff-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-md); margin-bottom: var(--space-lg);">
+            <div class="staff-stats-grid" style="grid-template-columns: minmax(0, 1fr) !important; gap: 12px; margin-bottom: var(--space-lg); width: 100%;">
               <div class="staff-stat-card" style="border-left: 4px solid #10B981;">
-                <div class="stat-label"><span>Số Dư Khả Dụng</span><span>💵</span></div>
+                <div class="stat-info-wrap">
+                  <div class="stat-label"><span>💵</span><span>Số Dư Khả Dụng</span></div>
+                  <div class="stat-subtext">Có thể rút hoặc chuyển sang Ví Tín Dụng</div>
+                </div>
                 <div class="stat-number" id="staff-earnings-balance" style="color: #059669; font-size: 24px;">0 đ</div>
-                <div class="stat-subtext">Có thể rút hoặc chuyển sang Ví Tín Dụng</div>
               </div>
 
               <div class="staff-stat-card" style="border-left: 4px solid #3B82F6;">
-                <div class="stat-label"><span>Tiền Công Gộp (Gross)</span><span>📊</span></div>
+                <div class="stat-info-wrap">
+                  <div class="stat-label"><span>📊</span><span>Tiền Công Gộp (Gross)</span></div>
+                  <div class="stat-subtext">Toàn bộ đơn đã hoàn thành</div>
+                </div>
                 <div class="stat-number" id="staff-gross-earnings" style="color: #2563EB; font-size: 22px;">0 đ</div>
-                <div class="stat-subtext">Toàn bộ đơn đã hoàn thành</div>
               </div>
 
               <div class="staff-stat-card" style="border-left: 4px solid #8B5CF6;">
-                <div class="stat-label"><span>Thù Lao Thực Nhận</span><span>✨</span></div>
+                <div class="stat-info-wrap">
+                  <div class="stat-label"><span>✨</span><span>Thù Lao Thực Nhận</span></div>
+                  <div class="stat-subtext">Sau khi trừ chiết khấu CleanNova</div>
+                </div>
                 <div class="stat-number" id="staff-net-earnings" style="color: #7C3AED; font-size: 22px;">0 đ</div>
-                <div class="stat-subtext">Sau khi trừ chiết khấu CleanNova</div>
               </div>
 
               <div class="staff-stat-card" style="border-left: 4px solid #F59E0B;">
-                <div class="stat-label"><span>Tổng Đã Rút</span><span>🏦</span></div>
+                <div class="stat-info-wrap">
+                  <div class="stat-label"><span>🏦</span><span>Tổng Đã Rút</span></div>
+                  <div class="stat-subtext">Rút về tài khoản ngân hàng</div>
+                </div>
                 <div class="stat-number" id="staff-total-withdrawn" style="color: #D97706; font-size: 22px;">0 đ</div>
-                <div class="stat-subtext">Rút về tài khoản ngân hàng</div>
               </div>
 
               <div class="staff-stat-card" style="border-left: 4px solid #6366F1;">
-                <div class="stat-label"><span>Đã Chuyển Sang Ví TD</span><span>🔁</span></div>
+                <div class="stat-info-wrap">
+                  <div class="stat-label"><span>🔁</span><span>Đã Chuyển Sang Ví Tín Dụng</span></div>
+                  <div class="stat-subtext">Bù âm hoặc duy trì nhận việc</div>
+                </div>
                 <div class="stat-number" id="staff-transferred-to-credit" style="color: #4F46E5; font-size: 22px;">0 đ</div>
-                <div class="stat-subtext">Bù âm hoặc duy trì nhận việc</div>
               </div>
             </div>
 
@@ -867,6 +891,8 @@
               </select>
               <select id="staff-tx-filter-type" class="form-control" style="font-size: 12px; padding: 6px 12px; width: auto;">
                 <option value="all">Tất cả loại giao dịch</option>
+                <option value="credit_only">➕ Chỉ giao dịch cộng tiền (+)</option>
+                <option value="debit_only">➖ Chỉ giao dịch trừ tiền (−)</option>
                 <option value="topup">Nạp tiền tín dụng</option>
                 <option value="commission_deduction">Khấu trừ chiết khấu</option>
                 <option value="wage">Thù lao trực tuyến</option>
@@ -881,9 +907,10 @@
               <thead>
                 <tr>
                   <th>Mã giao dịch</th>
-                  <th>Ví</th>
-                  <th>Loại GD</th>
-                  <th style="text-align: right;">Số tiền</th>
+                  <th>Ví áp dụng</th>
+                  <th>Biến động</th>
+                  <th>Loại giao dịch</th>
+                  <th style="text-align: right;">Số tiền thay đổi</th>
                   <th style="text-align: right;">Số dư sau GD</th>
                   <th>Thời gian</th>
                   <th>Nội dung diễn giải</th>
@@ -891,7 +918,7 @@
               </thead>
               <tbody id="staff-wallet-tx-table-body">
                 <tr>
-                  <td colspan="7" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
+                  <td colspan="8" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
                     Đang tải lịch sử giao dịch ví...
                   </td>
                 </tr>
@@ -986,7 +1013,7 @@
             <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 10px 14px;">
               <div style="font-size: 11px; color: #1E40AF; text-transform: uppercase; font-weight: 700;">Ví Tín Dụng (Đích):</div>
               <div style="font-size: 18px; font-weight: 800;" id="transfer-modal-credit-balance">0 đ</div>
-              <div style="font-size: 10px; color: #1E40AF; margin-top: 2px;">Yêu cầu: > 100.000 đ</div>
+              <div style="font-size: 10px; color: #1E40AF; margin-top: 2px;">Yêu cầu: ≥ 100.000 đ</div>
             </div>
           </div>
 
@@ -1572,9 +1599,9 @@
                 <div style="display: flex; align-items: center; gap: 12px;">
                   <span style="font-size: 26px;">⚠️</span>
                   <div>
-                    <div style="font-weight: 800; color: #991B1B; font-size: 14px;">Chưa Đủ Điều Kiện Nhận Đơn Mới (Mô Hình Grab Driver)</div>
+                    <div style="font-weight: 800; color: #991B1B; font-size: 14px;">Chưa Đủ Điều Kiện Nhận Đơn Mới</div>
                     <div style="font-size: 13px; color: #B91C1C; margin-top: 2px;">
-                      Số dư Ví Tín Dụng hiện tại: <strong style="${staffCreditEligibility.creditBalance < 0 ? 'color:#DC2626;' : ''}">${formatPriceVND(staffCreditEligibility.creditBalance)}</strong> (yêu cầu phải <strong>lớn hơn 100.000 đ</strong>). Bạn cần nạp hoặc chuyển thêm ít nhất <strong>${formatPriceVND(staffCreditEligibility.amountNeeded)}</strong>.
+                      Số dư Ví Tín Dụng hiện tại: <strong style="${staffCreditEligibility.creditBalance < 0 ? 'color:#DC2626;' : ''}">${formatPriceVND(staffCreditEligibility.creditBalance)}</strong> (yêu cầu tối thiểu từ <strong>100.000 đ</strong> trở lên). Bạn cần nạp hoặc chuyển thêm ít nhất <strong>${formatPriceVND(staffCreditEligibility.amountNeeded)}</strong>.
                     </div>
                   </div>
                 </div>
@@ -1912,7 +1939,7 @@
             const action = this.dataset.action;
 
             if (action === 'confirmed' && staffCreditEligibility && !staffCreditEligibility.eligible) {
-              alert(`Không thể xác nhận nhận việc: Số dư ví tín dụng hiện tại (${formatPriceVND(staffCreditEligibility.creditBalance)}) chưa đạt điều kiện tối thiểu > 100.000 đ. Vui lòng nạp thêm tối thiểu ${formatPriceVND(staffCreditEligibility.amountNeeded)} hoặc chuyển từ Ví Thu Nhập.`);
+              alert(`Không thể xác nhận nhận việc: Số dư ví tín dụng hiện tại (${formatPriceVND(staffCreditEligibility.creditBalance)}) chưa đạt điều kiện tối thiểu ≥ 100.000 đ. Vui lòng nạp thêm tối thiểu ${formatPriceVND(staffCreditEligibility.amountNeeded)} hoặc chuyển từ Ví Thu Nhập.`);
               if (typeof openTopupModal === 'function') openTopupModal();
               return;
             }
@@ -2242,7 +2269,7 @@
       });
 
       // ------------------------------------------------------------
-      // 6. QUẢN LÝ HAI VÍ NHÂN VIÊN THEO MÔ HÌNH GRAB DRIVER
+      // 6. QUẢN LÝ HAI VÍ NHÂN VIÊN CLEANOVA
       // Ví tín dụng (Ví trên) & Ví thu nhập (Ví dưới)
       // ------------------------------------------------------------
       let staffTwoWallets = null;
@@ -2250,8 +2277,8 @@
 
       window.openTopupModal = function () {
         const creditBal = staffTwoWallets && staffTwoWallets.credit_wallet ? Number(staffTwoWallets.credit_wallet.balance) : 0;
-        const isEligible = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.is_eligible : (creditBal > 100000);
-        const amountNeeded = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.amount_needed : (isEligible ? 0 : Math.max(1, 100000 - creditBal + 1));
+        const isEligible = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.is_eligible : (creditBal >= 100000);
+        const amountNeeded = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.amount_needed : (isEligible ? 0 : Math.max(0, 100000 - creditBal));
 
         const curBalEl = document.getElementById('topup-modal-current-balance');
         if (curBalEl) {
@@ -2281,8 +2308,8 @@
       window.openTransferModal = function () {
         const creditBal = staffTwoWallets && staffTwoWallets.credit_wallet ? Number(staffTwoWallets.credit_wallet.balance) : 0;
         const earningsBal = staffTwoWallets && staffTwoWallets.earnings_wallet ? Number(staffTwoWallets.earnings_wallet.balance) : 0;
-        const isEligible = creditBal > 100000;
-        const amountNeeded = isEligible ? 0 : Math.max(1, 100000 - creditBal + 1);
+        const isEligible = creditBal >= 100000;
+        const amountNeeded = isEligible ? 0 : Math.max(0, 100000 - creditBal);
 
         document.getElementById('transfer-modal-earnings-balance').textContent = formatPriceVND(earningsBal);
         const credEl = document.getElementById('transfer-modal-credit-balance');
@@ -2356,22 +2383,24 @@
               if (cBal < 0) {
                 noticeEl.innerHTML = `<span style="color:#DC2626;font-weight:700;">⚠️ Đang nợ tín dụng: -${formatPriceVND(Math.abs(cBal))}. Tiền nạp sẽ tự động bù âm trước.</span>`;
               } else if (!credit_wallet.is_eligible) {
-                noticeEl.innerHTML = `<span style="color:#D97706;font-weight:700;">⚠️ Chưa đạt ngưỡng nhận việc: Cần thêm tối thiểu ${formatPriceVND(credit_wallet.amount_needed)}.</span>`;
+                noticeEl.innerHTML = `<span style="color:#D97706;font-weight:700;">⚠️ Chưa đạt điều kiện nhận việc: Cần thêm tối thiểu ${formatPriceVND(credit_wallet.amount_needed)}.</span>`;
               } else {
-                noticeEl.innerHTML = `<span style="color:#059669;font-weight:700;">✅ Số dư đạt chuẩn (> 100.000 đ), sẵn sàng nhận đơn mới.</span>`;
+                noticeEl.innerHTML = `<span style="color:#059669;font-weight:700;">✅ Số dư đạt chuẩn (≥ 100.000 đ), sẵn sàng nhận đơn mới.</span>`;
               }
             }
 
             if (badgeEl) {
               if (credit_wallet.is_eligible) {
-                badgeEl.innerHTML = `<span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;font-size:13px;font-weight:700;padding:6px 14px;border-radius:var(--radius-full);">🟢 ĐỦ ĐIỀU KIỆN NHẬN ĐƠN (> 100k)</span>`;
+                badgeEl.innerHTML = `<span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;font-size:13px;font-weight:700;padding:6px 14px;border-radius:var(--radius-full);">🟢 ĐỦ ĐIỀU KIỆN NHẬN ĐƠN (≥ 100k)</span>`;
               } else {
                 badgeEl.innerHTML = `<span class="status-badge" style="background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5;font-size:13px;font-weight:700;padding:6px 14px;border-radius:var(--radius-full);">🔴 CHƯA ĐỦ ĐIỀU KIỆN (Thiếu ${formatPriceVND(credit_wallet.amount_needed)})</span>`;
               }
             }
 
-            document.getElementById('staff-credit-deposited').textContent = formatPriceVND(credit_wallet.total_deposited || 0);
-            document.getElementById('staff-credit-deducted').textContent = formatPriceVND(credit_wallet.total_commission_deducted || 0);
+            const depEl = document.getElementById('staff-credit-deposited');
+            if (depEl) depEl.textContent = formatPriceVND(credit_wallet.total_deposited || 0);
+            const dedEl = document.getElementById('staff-credit-deducted');
+            if (dedEl) dedEl.textContent = formatPriceVND(credit_wallet.total_commission_deducted || 0);
           }
 
           // B. HIỂN THỊ VÍ THU NHẬP (EARNINGS WALLET - VÍ DƯỚI)
@@ -2453,11 +2482,26 @@
         const walletFilter = document.getElementById('staff-tx-filter-wallet') ? document.getElementById('staff-tx-filter-wallet').value : 'all';
         const typeFilter = document.getElementById('staff-tx-filter-type') ? document.getElementById('staff-tx-filter-type').value : 'all';
 
-        let filtered = transactions;
+        let filtered = Array.isArray(transactions) ? [...transactions] : [];
+
+        // Luôn sắp xếp giao dịch mới nhất lên trước
+        filtered.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
         if (walletFilter !== 'all') {
           filtered = filtered.filter(t => (t.wallet_type || 'credit') === walletFilter);
         }
-        if (typeFilter !== 'all') {
+
+        if (typeFilter === 'credit_only') {
+          filtered = filtered.filter(tx => {
+            const isDebit = tx.entry_type === 'debit' || tx.type === 'commission_deduction' || tx.type === 'withdrawal' || (tx.type === 'transfer' && (tx.transaction_code || '').endsWith('-OUT'));
+            return !isDebit;
+          });
+        } else if (typeFilter === 'debit_only') {
+          filtered = filtered.filter(tx => {
+            const isDebit = tx.entry_type === 'debit' || tx.type === 'commission_deduction' || tx.type === 'withdrawal' || (tx.type === 'transfer' && (tx.transaction_code || '').endsWith('-OUT'));
+            return isDebit;
+          });
+        } else if (typeFilter !== 'all') {
           filtered = filtered.filter(t => t.type === typeFilter);
         }
 
@@ -2467,7 +2511,7 @@
         if (!filtered || filtered.length === 0) {
           txTbody.innerHTML = `
             <tr>
-              <td colspan="7" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
+              <td colspan="8" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
                 Không có giao dịch nào phù hợp với bộ lọc đã chọn.
               </td>
             </tr>
@@ -2479,9 +2523,14 @@
           const amt = Number(tx.amount) || 0;
           const balAfter = Number(tx.balance_after) || 0;
           const timeStr = tx.created_at ? new Date(tx.created_at).toLocaleString('vi-VN') : '---';
-          const isDebit = tx.entry_type === 'debit' || tx.type === 'commission_deduction' || tx.type === 'withdrawal' || (tx.type === 'transfer' && tx.transaction_code.endsWith('-OUT'));
-          const sign = isDebit ? '-' : '+';
+          const isDebit = tx.entry_type === 'debit' || tx.type === 'commission_deduction' || tx.type === 'withdrawal' || (tx.type === 'transfer' && (tx.transaction_code || '').endsWith('-OUT'));
+          const sign = isDebit ? '−' : '+';
           const amtColor = isDebit ? '#DC2626' : '#059669';
+
+          // Flow Badge (Cộng/Trừ tiền)
+          const flowBadge = isDebit
+            ? `<span style="background:#FEE2E2; color:#B91C1C; font-weight:700; padding:3px 8px; border-radius:4px; font-size:11px; display:inline-flex; align-items:center; gap:4px; border:1px solid #FECACA;">➖ Trừ tiền</span>`
+            : `<span style="background:#DCFCE7; color:#15803D; font-weight:700; padding:3px 8px; border-radius:4px; font-size:11px; display:inline-flex; align-items:center; gap:4px; border:1px solid #BBF7D0;">➕ Cộng tiền</span>`;
 
           // Wallet Badge
           const wType = tx.wallet_type || (tx.type === 'wage' ? 'earnings' : 'credit');
@@ -2509,10 +2558,11 @@
             <tr>
               <td style="font-family: monospace; font-weight: 600; color: #4B5563;">#${escapeHtml(tx.transaction_code || tx.id || '')}</td>
               <td>${walletBadge}</td>
+              <td>${flowBadge}</td>
               <td>${typeBadge}</td>
-              <td style="text-align: right; font-weight: 700; color: ${amtColor};">${sign}${formatPriceVND(amt)}</td>
-              <td style="text-align: right; font-weight: 600;">${(balAfter < 0 ? '-' : '') + formatPriceVND(Math.abs(balAfter))}</td>
-              <td style="font-size: 12px; color: var(--color-text-secondary);">${timeStr}</td>
+              <td style="text-align: right; font-weight: 800; font-size: 14px; color: ${amtColor}; white-space: nowrap;">${sign} ${formatPriceVND(amt)}</td>
+              <td style="text-align: right; font-weight: 600;">${(balAfter < 0 ? '−' : '') + formatPriceVND(Math.abs(balAfter))}</td>
+              <td style="font-size: 12px; color: var(--color-text-secondary); white-space: nowrap;">${timeStr}</td>
               <td style="font-size: 13px;">${escapeHtml(tx.description || tx.reference_note || '---')}</td>
             </tr>
           `;
@@ -2569,7 +2619,7 @@
       if (btnFillSuggested) {
         btnFillSuggested.addEventListener('click', function () {
           const creditBal = staffTwoWallets && staffTwoWallets.credit_wallet ? Number(staffTwoWallets.credit_wallet.balance) : 0;
-          const needed = Math.max(1, 100000 - creditBal + 1);
+          const needed = Math.max(0, 100000 - creditBal);
           const input = document.getElementById('transfer-amount-input');
           if (input) input.value = needed;
         });

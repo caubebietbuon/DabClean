@@ -18,7 +18,7 @@
 | **Phase 6** | Tiền công, Doanh thu & Báo cáo Dashboard thực | **Completed** | Bổ sung 4 chỉ số tài chính thực tế (`stat-collected`, `stat-staff-wages`, `stat-wallet-bal`, `stat-net-profit`) từ MySQL. |
 | **Phase 8** | Kiểm thử hồi quy toàn diện & Nghiệm thu | **Completed** | Chạy 8 bộ test suite: **169/169 tests PASS (100%)**. |
 | **Phase 9** | Staff Wallet Commission & Admin Revenue Fix | **Completed** | Tích hợp chiết khấu hoa hồng nhân viên (Gross/Net), Sổ cái Staff Wallet, Quyết toán thù lao nguyên tử, Rút tiền thợ, 10 chỉ số tài chính Admin độc lập, Bảng phân rã theo ngày: **27/27 tests PASS**. |
-| **Phase 10** | Hệ thống Hai Ví Nhân Viên (Mô hình Grab Driver) | **Completed** | Tách bạch Ví Tín Dụng (Credit Wallet - ví trên, khấu trừ hoa hồng, cho phép âm, kiểm tra điều kiện nghiêm ngặt > 100k) và Ví Thu Nhập (Earnings Wallet - ví dưới, nhận công đơn online, rút tiền, chuyển sang ví trên). Kiểm thử toàn diện 13 kịch bản: **30/30 tests PASS (100%)**. |
+| **Phase 10** | Hệ thống Hai Ví Nhân Viên CleanNova | **Completed** | Tách bạch Ví Tín Dụng (Credit Wallet - ví trên, khấu trừ hoa hồng, cho phép âm, kiểm tra điều kiện bắt buộc >= 100k) và Ví Thu Nhập (Earnings Wallet - ví dưới, nhận công đơn online, rút tiền, chuyển sang ví trên). Kiểm thử toàn diện 13 kịch bản: **31/31 tests PASS (100%)**. |
 
 ---
 
@@ -186,7 +186,7 @@ node server.js
 
 ### 3. Chạy toàn bộ kiểm thử xác minh:
 ```powershell
-# Chạy bộ test Hệ thống Hai Ví Đối Tác - Mô hình Grab Driver (Mới nhất)
+# Chạy bộ test Hệ thống Hai Ví Nhân Viên CleanNova (Mới nhất)
 node backend/test-two-staff-wallets.js
 
 # Chạy bộ test Chiết khấu thù lao thợ & Doanh thu Admin
@@ -212,12 +212,12 @@ node backend/test-return-url.js
 
 ---
 
-## 5. CHI TIẾT KỸ THUẬT: HỆ THỐNG HAI VÍ NHÂN VIÊN (MÔ HÌNH GRAB DRIVER)
+## 5. CHI TIẾT KỸ THUẬT: HỆ THỐNG HAI VÍ NHÂN VIÊN CLEANOVA
 
 ### A. Kiến trúc Hai Ví (Dual-Wallet Architecture):
 1. **Ví Tín Dụng — Credit Wallet (`wallet_type = 'credit'`):**
    - **Mục đích:** Nhân viên nạp tiền trước để duy trì quyền nhận đơn và thanh toán chiết khấu hoa hồng cho CleanNova.
-   - **Điều kiện nhận đơn nghiêm ngặt:** Số dư ví tín dụng phải lớn hơn 100.000 VNĐ (`creditBalance > 100000`). Số dư đúng bằng 100.000 VNĐ hoặc âm là **KHÔNG đủ điều kiện**.
+   - **Điều kiện nhận đơn bắt buộc:** Số dư ví tín dụng phải bằng hoặc lớn hơn 100.000 VNĐ (`creditBalance >= 100000`). Số dư đúng 100.000 VNĐ là **Đủ điều kiện**; 99.999 VNĐ, 0 VNĐ hoặc âm là **KHÔNG đủ điều kiện**.
    - **Xử lý số dư âm:** Cho phép số dư âm khi chiết khấu bị trừ vượt quá số dư hiện tại (ghi nhận nợ chiết khấu sàn). Khi nạp tiền, hệ thống tự động bù khoản âm trước khi tạo số dư dương khả dụng.
    - **Idempotency:** Mỗi đơn hoàn thành chỉ khấu trừ chiết khấu đúng 1 lần với khóa duy nhất `COMMISSION-BOOKING-${booking.id}`.
 
@@ -229,17 +229,17 @@ node backend/test-return-url.js
 
 ### B. Kết Quả Kiểm Thử Toàn Diện (13 Kịch Bản Bắt Buộc):
 - File kiểm thử: [`backend/test-two-staff-wallets.js`](file:///c:/Users/tiend/Downloads/cleannova/backend/test-two-staff-wallets.js).
-- Kết quả: **30/30 tests PASS (100%)**.
+- Kết quả: **31/31 tests PASS (100%)**.
   1. Đơn tiền mặt 200k, CK 40k: Ví tín dụng -40k, Ví thu nhập giữ nguyên 0đ.
   2. Đơn trực tuyến 200k, CK 40k: Ví tín dụng -40k, Ví thu nhập +160k.
-  3. Số dư tín dụng 100.000đ: Chặn nhận đơn (`creditBalance > 100000`), Admin chặn gán đơn (HTTP 400).
-  4. Số dư tín dụng 100.001đ: Đủ điều kiện nhận việc và gán đơn thành công.
-  5. Số dư tín dụng âm: Chặn nhận việc, tính toán chính xác số tiền cần nạp bổ sung.
+  3. Số dư tín dụng 100.000đ: Đủ điều kiện nhận đơn (`creditBalance >= 100000`), Admin gán đơn thành công.
+  4. Số dư tín dụng 99.999đ: Chặn nhận đơn (`creditBalance < 100000`), Admin chặn gán đơn (HTTP 400).
+  5. Số dư tín dụng 0đ hoặc âm: Chặn nhận việc, tính toán chính xác số tiền cần nạp bổ sung.
   6. Chuyển 150k từ Ví Thu Nhập sang Ví Tín Dụng: Số dư cập nhật nguyên tử, không làm sai lệch doanh thu sàn.
   7. Nạp tiền khi ví âm: Tự động bù âm trước khi tạo số dư dương.
   8. Webhook lặp lại: Idempotency key bảo vệ, không cộng trùng số dư.
   9. Quyết toán lặp lại: Không trừ chiết khấu sàn hai lần.
   10. Concurrency: Khóa hàng ngăn chặn race-condition khi gửi 2 request song song.
   11. Bảo mật RBAC: Nhân viên không thể can thiệp số dư hoặc gọi API duyệt tiền của Admin.
-  12. Dashboard Admin: Tách bạch tiền mặt vs trực tuyến, hiển thị 6 chỉ số Quản trị Hai Ví Đối Tác độc lập.
+  12. Dashboard Admin: Tách bạch tiền mặt vs trực tuyến, hiển thị 6 chỉ số Quản trị Hai Ví Nhân Viên CleanNova độc lập.
   13. Đơn hủy/hoàn tiền: Xử lý đúng chính sách, không khấu trừ chiết khấu trên đơn hủy.

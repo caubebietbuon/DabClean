@@ -89,24 +89,26 @@ const pricingService = {
    * Tính toán báo giá dịch vụ vệ sinh sau xây dựng
    * Hỗ trợ 3 hình thức: m2, package (trọn gói), labor_daily (nhân công ngày)
    */
-  calculatePostConstructionPrice(service, {
-    pricing_type = 'm2',
-    building_type = 'apartment',
-    area_m2 = null,
-    area_size = 'medium',
-    floors = 1,
-    construction_status = 'newly_completed',
-    dirt_severity = 'medium',
-    glass_cleaning = 'standard',
-    stubborn_stains = 'none',
-    furniture_status = 'empty',
-    worker_count = null,
-    work_days = null,
-    frequency = 'once',
-    discount_code = null,
-    hasUsedPromo = false,
-    customConfig = null
-  } = {}) {
+  calculatePostConstructionPrice(service, options = {}) {
+    const {
+      pricing_type = 'm2',
+      building_type = 'apartment',
+      area_m2 = null,
+      area_size = 'medium',
+      floors = 1,
+      construction_status = 'newly_completed',
+      dirt_severity = 'medium',
+      glass_cleaning = 'standard',
+      stubborn_stains = 'none',
+      furniture_status = 'empty',
+      worker_count = null,
+      work_days = null,
+      frequency = 'once',
+      discount_code = null,
+      hasUsedPromo = false,
+      customConfig = null,
+      commission_rate = null
+    } = options;
     const rates = customConfig || defaultPostConstructionRates;
     let subtotal = 0;
     let appliedUnitRate = 0;

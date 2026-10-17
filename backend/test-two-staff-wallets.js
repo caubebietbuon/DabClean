@@ -1,11 +1,11 @@
 // ============================================================
-// CLEANOVA - TEST SUITE: TWO-WALLET SYSTEM FOR STAFF (GRAB DRIVER MODEL)
-// Kiểm thử toàn diện 13 kịch bản bắt buộc theo Section 11 của yêu cầu:
+// CLEANOVA - TEST SUITE: TWO-WALLET SYSTEM FOR STAFF (CLEANOVA MODEL)
+// Kiểm thử toàn diện 13 kịch bản bắt buộc:
 // 1. Đơn tiền mặt 200k, CK 40k: trừ ví tín dụng 40k, ví thu nhập không đổi.
 // 2. Đơn trực tuyến 200k, CK 40k: trừ ví tín dụng 40k, ví thu nhập +160k.
-// 3. Số dư tín dụng 100.000đ: KHÔNG được nhận đơn.
-// 4. Số dư tín dụng 100.001đ: ĐƯỢC nhận đơn.
-// 5. Số dư tín dụng âm: KHÔNG được nhận đơn.
+// 3. Số dư tín dụng 100.000đ: ĐƯỢC nhận đơn (creditBalance >= 100.000đ).
+// 4. Số dư tín dụng 99.999đ: KHÔNG được nhận đơn.
+// 5. Số dư tín dụng 0đ hoặc âm: KHÔNG được nhận đơn.
 // 6. Chuyển 150k từ ví thu nhập sang ví tín dụng: số dư chuẩn, không tạo doanh thu sàn.
 // 7. Nạp tiền khi ví tín dụng âm: bù âm trước.
 // 8. Idempotency key nạp tiền: không cộng tiền hai lần.
@@ -68,7 +68,7 @@ async function getWalletBal(walletId) {
 
 async function runTwoWalletTestSuite() {
   console.log('============================================================');
-  console.log('🛵 CLEANOVA: TEST SUITE HỆ THỐNG HAI VÍ ĐỐI TÁC (GRAB DRIVER)');
+  console.log('💼 CLEANOVA: TEST SUITE HỆ THỐNG HAI VÍ NHÂN VIÊN CLEANOVA');
   console.log('============================================================\n');
 
   for (let i = 0; i < 20; i++) {
@@ -208,20 +208,11 @@ async function runTwoWalletTestSuite() {
     );
 
     // ------------------------------------------------------------
-    // TÌNH HUỐNG 3, 4, 5: ĐIỀU KIỆN NHẬN ĐƠN (creditBalance > 100.000 VNĐ)
+    // TÌNH HUỐNG 3, 4, 5: ĐIỀU KIỆN NHẬN ĐƠN (creditBalance >= 100.000 VNĐ)
     // ------------------------------------------------------------
-    console.log('\n--- KỊCH BẢN 3, 4, 5: ĐIỀU KIỆN NHẬN ĐƠN (creditBalance > 100.000 VNĐ) ---');
+    console.log('\n--- KỊCH BẢN 3, 4, 5: ĐIỀU KIỆN NHẬN ĐƠN (creditBalance >= 100.000 VNĐ) ---');
 
-    // 3. Số dư đúng 100.000 VNĐ -> KHÔNG ĐƯỢC NHẬN ĐƠN (bất đẳng thức nghiêm ngặt)
-    await pool.query('UPDATE wallets SET balance = 100000.00 WHERE id = ?', [creditWallet.id]);
-    const elig100k = await WalletModel.checkStaffBookingEligibility(staffId);
-    assert(
-      elig100k.eligible === false && elig100k.creditBalance === 100000 && elig100k.amountNeeded === 1,
-      '3.1. Số dư ví tín dụng đúng 100.000 VNĐ: eligible = FALSE (cần thêm tối thiểu 1đ)',
-      elig100k
-    );
-
-    // Test API Backend chặn gán đơn khi số dư đúng 100.000đ
+    // Tạo đơn để test gán việc
     const testAssignCode = 'TEST-ASSIGN-' + Date.now().toString(36).toUpperCase();
     const insAssign = await pool.query(`
       INSERT INTO bookings (
@@ -231,46 +222,67 @@ async function runTwoWalletTestSuite() {
     `, [testAssignCode, custUser.id]);
     const bIdAssign = insAssign.insertId || insAssign.id;
 
+    // 3. Số dư đúng 100.000 VNĐ -> ĐƯỢC NHẬN ĐƠN (creditBalance >= 100000)
+    await pool.query('UPDATE wallets SET balance = 100000.00 WHERE id = ?', [creditWallet.id]);
+    const elig100k = await WalletModel.checkStaffBookingEligibility(staffId);
+    assert(
+      elig100k.eligible === true && elig100k.creditBalance === 100000 && elig100k.amountNeeded === 0,
+      '3.1. Số dư ví tín dụng đúng 100.000 VNĐ: eligible = TRUE (đáp ứng điều kiện >= 100.000đ)',
+      elig100k
+    );
+
     const assignRes1 = await request(`/api/admin/bookings/${bIdAssign}/assign`, {
       method: 'PUT',
       headers: { Authorization: `Bearer ${adminToken}` },
       body: { staff_id: staffId }
     });
     assert(
-      assignRes1.status === 400 && assignRes1.body.code === 'STAFF_INELIGIBLE_CREDIT',
-      '3.2. Admin API chặn gán đơn cho thợ có ví tín dụng = 100.000đ (HTTP 400 STAFF_INELIGIBLE_CREDIT)',
+      assignRes1.status === 200 && assignRes1.body.success,
+      '3.2. Admin API gán đơn thành công cho thợ có ví tín dụng = 100.000 VNĐ',
       assignRes1.body
     );
 
-    // 4. Số dư 100.001 VNĐ -> ĐƯỢC NHẬN ĐƠN
-    await pool.query('UPDATE wallets SET balance = 100001.00 WHERE id = ?', [creditWallet.id]);
-    const elig100k1 = await WalletModel.checkStaffBookingEligibility(staffId);
+    // 4. Số dư 99.999 VNĐ -> KHÔNG ĐƯỢC NHẬN ĐƠN (thiếu đúng 1 VNĐ)
+    await pool.query('UPDATE wallets SET balance = 99999.00 WHERE id = ?', [creditWallet.id]);
+    const elig99k = await WalletModel.checkStaffBookingEligibility(staffId);
     assert(
-      elig100k1.eligible === true && elig100k1.amountNeeded === 0,
-      '4.1. Số dư ví tín dụng 100.001 VNĐ: eligible = TRUE (> 100.000đ)',
-      elig100k1
+      elig99k.eligible === false && elig99k.creditBalance === 99999 && elig99k.amountNeeded === 1,
+      '4.1. Số dư ví tín dụng 99.999 VNĐ: eligible = FALSE (cần nạp thêm đúng 1đ)',
+      elig99k
     );
 
+    // Reset đơn về pending để test admin assign chặn
+    await pool.query('UPDATE bookings SET status = "pending", staff_id = NULL WHERE id = ?', [bIdAssign]);
     const assignRes2 = await request(`/api/admin/bookings/${bIdAssign}/assign`, {
       method: 'PUT',
       headers: { Authorization: `Bearer ${adminToken}` },
       body: { staff_id: staffId }
     });
     assert(
-      assignRes2.status === 200 && assignRes2.body.success,
-      '4.2. Admin API gán đơn thành công cho thợ có ví tín dụng 100.001đ',
+      assignRes2.status === 400 && assignRes2.body.code === 'STAFF_INELIGIBLE_CREDIT',
+      '4.2. Admin API chặn gán đơn khi ví tín dụng = 99.999 VNĐ (HTTP 400 STAFF_INELIGIBLE_CREDIT)',
       assignRes2.body
     );
 
-    // 5. Số dư âm (-40.000 VNĐ) -> KHÔNG ĐƯỢC NHẬN ĐƠN
+    // 5. Số dư 0 VNĐ hoặc âm (-40.000 VNĐ) -> KHÔNG ĐƯỢC NHẬN ĐƠN
+    await pool.query('UPDATE wallets SET balance = 0.00 WHERE id = ?', [creditWallet.id]);
+    const eligZero = await WalletModel.checkStaffBookingEligibility(staffId);
+    assert(
+      eligZero.eligible === false && eligZero.creditBalance === 0 && eligZero.amountNeeded === 100000,
+      '5.1. Số dư ví tín dụng 0 VNĐ: eligible = FALSE (cần nạp đủ 100.000đ)',
+      eligZero
+    );
+
     await pool.query('UPDATE wallets SET balance = -40000.00 WHERE id = ?', [creditWallet.id]);
     const eligNeg = await WalletModel.checkStaffBookingEligibility(staffId);
     assert(
-      eligNeg.eligible === false && eligNeg.creditBalance === -40000 && eligNeg.amountNeeded === 140001,
-      '5.1. Số dư ví tín dụng âm (-40.000đ): eligible = FALSE (cần nạp 140.001đ để vượt ngưỡng)',
+      eligNeg.eligible === false && eligNeg.creditBalance === -40000 && eligNeg.amountNeeded === 140000,
+      '5.2. Số dư ví tín dụng âm (-40.000đ): eligible = FALSE (cần nạp bù âm + 100.000đ = 140.000đ)',
       eligNeg
     );
 
+    // Gán tạm thời để test staff confirm status
+    await pool.query('UPDATE bookings SET status = "assigned", staff_id = ? WHERE id = ?', [staffId, bIdAssign]);
     // Thợ tự nhận đơn (update status sang confirmed) khi đang nợ bị từ chối
     const staffConfirmRes = await request(`/api/staff/tasks/${bIdAssign}/status`, {
       method: 'PUT',
@@ -279,7 +291,7 @@ async function runTwoWalletTestSuite() {
     });
     assert(
       staffConfirmRes.status === 403 && staffConfirmRes.body.code === 'INSUFFICIENT_CREDIT_BALANCE',
-      '5.2. Staff API từ chối thợ nhận việc khi ví tín dụng âm (HTTP 403 INSUFFICIENT_CREDIT_BALANCE)',
+      '5.3. Staff API từ chối thợ nhận việc khi ví tín dụng âm (HTTP 403 INSUFFICIENT_CREDIT_BALANCE)',
       staffConfirmRes.body
     );
 
@@ -486,7 +498,7 @@ async function runTwoWalletTestSuite() {
       s.staff_earnings_balance_total !== undefined &&
       s.staff_credit_topup_total !== undefined &&
       s.staff_interwallet_transfer_total !== undefined,
-      '12.2. Admin stats cung cấp đủ 6 chỉ số Quản trị Hai Ví Đối Tác (Mô hình Grab Driver)',
+      '12.2. Admin stats cung cấp đủ 6 chỉ số Quản trị Hai Ví Nhân Viên CleanNova',
       {
         creditTotal: s.staff_credit_balance_total,
         creditDebt: s.staff_credit_debt_total,

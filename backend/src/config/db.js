@@ -997,7 +997,7 @@ async function initDatabase() {
     `);
 
     // ------------------------------------------------------------
-    // Migration: Hệ thống Hai Ví Nhân Viên (Credit Wallet & Earnings Wallet theo mô hình Grab Driver)
+    // Migration: Hệ thống Hai Ví Nhân Viên CleanNova (Credit Wallet & Earnings Wallet)
     // ------------------------------------------------------------
     const [wCols] = await connection.query(`
       SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS

@@ -389,8 +389,8 @@ const BookingModel = {
         (SELECT IFNULL(SUM(balance), 0) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'credit') AS staff_credit_balance_total,
         (SELECT IFNULL(SUM(CASE WHEN balance < 0 THEN ABS(balance) ELSE 0 END), 0) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'credit') AS staff_credit_debt_total,
         (SELECT COUNT(*) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'credit' AND w.balance < 0) AS staff_negative_credit_count,
-        (SELECT COUNT(*) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'credit' AND w.balance <= 100000) AS staff_ineligible_count,
-        (SELECT COUNT(*) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'credit' AND w.balance > 100000) AS staff_eligible_count,
+        (SELECT COUNT(*) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'credit' AND w.balance < 100000) AS staff_ineligible_count,
+        (SELECT COUNT(*) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'credit' AND w.balance >= 100000) AS staff_eligible_count,
         (SELECT IFNULL(SUM(balance), 0) FROM wallets w JOIN users u ON w.user_id = u.id WHERE u.role = 'staff' AND w.wallet_type = 'earnings') AS staff_earnings_balance_total,
         (SELECT COUNT(*) FROM wallet_transactions) AS total_wallet_transactions,
         (SELECT IFNULL(SUM(amount), 0) FROM wallet_transactions WHERE type = 'topup' AND reference_type = 'credit_topup' AND status = 'completed') AS staff_credit_topup_total,
@@ -527,7 +527,7 @@ const BookingModel = {
       payment_fees: 0,
       platform_profit: platformProfit,
 
-      // Trạng thái hai ví nhân viên (Mô hình Grab Driver)
+      // Trạng thái hai ví nhân viên CleanNova
       staff_credit_balance_total: Math.round(parseFloat(counts.staff_credit_balance_total) || 0),
       staff_credit_debt_total: Math.round(parseFloat(counts.staff_credit_debt_total) || 0),
       staff_negative_credit_count: parseInt(counts.staff_negative_credit_count, 10) || 0,
