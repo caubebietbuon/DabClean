@@ -164,7 +164,7 @@ const authController = {
 
       res.status(201).json({
         success: true,
-        message: 'Đăng ký tài khoản thành công! Chào mừng bạn đến với Cleanova.',
+        message: 'Đăng ký tài khoản thành công! Chào mừng bạn đến với DabClean.',
         data: {
           token,
           user: {
@@ -226,7 +226,7 @@ const authController = {
             return res.status(403).json({
               success: false,
               code: 'PARTNER_APPLICATION_PENDING',
-              message: 'Hồ sơ đăng ký đối tác của bạn đang trong trạng thái chờ xét duyệt. Bạn sẽ có thể đăng nhập sau khi hồ sơ được Cleanova phê duyệt.'
+              message: 'Hồ sơ đăng ký đối tác của bạn đang trong trạng thái chờ xét duyệt. Bạn sẽ có thể đăng nhập sau khi hồ sơ được DabClean phê duyệt.'
             });
           }
           if (partnerApp.status === 'rejected') {
@@ -258,7 +258,7 @@ const authController = {
         return res.status(403).json({
           success: false,
           code: 'ACCOUNT_DEACTIVATED',
-          message: `Tài khoản của bạn đã bị khóa.${reasonMsg} Vui lòng liên hệ ban quản trị Cleanova để được hỗ trợ.`
+          message: `Tài khoản của bạn đã bị khóa.${reasonMsg} Vui lòng liên hệ ban quản trị DabClean để được hỗ trợ.`
         });
       }
 

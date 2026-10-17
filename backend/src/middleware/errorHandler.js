@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Error Handling Middleware
+// DABCLEAN BACKEND - Error Handling Middleware
 // ============================================================
 
 // Xử lý route không tồn tại (404)

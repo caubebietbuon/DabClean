@@ -24,7 +24,7 @@ function validateReturnUrl(rawUrl, userRole) {
   // Loại bỏ các ký tự điều khiển hoặc backslash (\)
   if (trimmed.includes('\\')) return null;
 
-  // Danh sách các trang đích an toàn của Cleanova
+  // Danh sách các trang đích an toàn của DabClean
   const allowedPages = [
     'trangchu.html',
     'services.html',

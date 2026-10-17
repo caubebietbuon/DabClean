@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Server Entry Point
+// DABCLEAN BACKEND - Server Entry Point
 // ============================================================
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -18,7 +18,7 @@ process.on('unhandledRejection', (reason) => {
 
 app.listen(PORT, () => {
   console.log('====================================================');
-  console.log(`  CLEANOVA BACKEND SERVER IS RUNNING`);
+  console.log(`  DABCLEAN BACKEND SERVER IS RUNNING`);
   console.log(`  - Local URL:    c`);
   console.log(`  - API Health:   http://localhost:${PORT}/api/health`);
   console.log(`  - Services API: http://localhost:${PORT}/api/services`);

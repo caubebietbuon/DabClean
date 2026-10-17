@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Wallet Controller (Ví CleanNova)
+// DABCLEAN BACKEND - Wallet Controller (Ví DabClean)
 // ============================================================
 const WalletModel = require('../models/walletModel');
 const { sanitizeInput } = require('../utils/sanitize');
@@ -68,7 +68,7 @@ const walletController = {
         });
       }
 
-      const cleanDesc = description ? sanitizeInput(description) : 'Nạp tiền vào Ví CleanNova (Sandbox)';
+      const cleanDesc = description ? sanitizeInput(description) : 'Nạp tiền vào Ví DabClean (Sandbox)';
       const result = await WalletModel.topup({
         userId: req.user.id,
         amount: parsedAmount,
@@ -79,7 +79,7 @@ const walletController = {
 
       res.status(200).json({
         success: true,
-        message: `Nạp thành công ${Math.round(parsedAmount).toLocaleString('vi-VN')} đ vào Ví CleanNova!`,
+        message: `Nạp thành công ${Math.round(parsedAmount).toLocaleString('vi-VN')} đ vào Ví DabClean!`,
         data: result
       });
     } catch (err) {
@@ -87,7 +87,7 @@ const walletController = {
     }
   },
 
-  // 4. Thanh toán đơn đặt lịch bằng Ví CleanNova (POST /api/wallet/pay-booking)
+  // 4. Thanh toán đơn đặt lịch bằng Ví DabClean (POST /api/wallet/pay-booking)
   async payBooking(req, res, next) {
     try {
       const { booking_id, idempotency_key } = req.body;
@@ -108,7 +108,7 @@ const walletController = {
 
       res.status(200).json({
         success: true,
-        message: `Thanh toán thành công đơn #${result.booking_code} bằng Ví CleanNova!`,
+        message: `Thanh toán thành công đơn #${result.booking_code} bằng Ví DabClean!`,
         data: result
       });
     } catch (err) {

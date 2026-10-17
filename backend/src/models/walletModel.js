@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Wallet Model (Ví CleanNova & Double-Entry Ledger)
+// DABCLEAN BACKEND - Wallet Model (Ví DabClean & Double-Entry Ledger)
 // ============================================================
 const crypto = require('crypto');
 const db = require('../config/db');
@@ -195,7 +195,7 @@ const WalletModel = {
   },
 
   /**
-   * Thanh toán đơn hàng bằng Ví CleanNova (Atomic Deduction)
+   * Thanh toán đơn hàng bằng Ví DabClean (Atomic Deduction)
    * Chống thanh toán trùng, trừ tiền đúng 1 lần và ghi bút toán sổ cái (Debit)
    */
   async payBooking({ userId, bookingId, idempotencyKey = null }) {
@@ -248,7 +248,7 @@ const WalletModel = {
 
       const currentBalance = parseFloat(wallet.balance) || 0;
       if (currentBalance < amountToPay) {
-        const error = new Error(`Số dư Ví CleanNova không đủ. Số dư hiện có: ${Math.round(currentBalance).toLocaleString('vi-VN')} đ, cần thanh toán: ${Math.round(amountToPay).toLocaleString('vi-VN')} đ.`);
+        const error = new Error(`Số dư Ví DabClean không đủ. Số dư hiện có: ${Math.round(currentBalance).toLocaleString('vi-VN')} đ, cần thanh toán: ${Math.round(amountToPay).toLocaleString('vi-VN')} đ.`);
         error.statusCode = 400;
         error.code = 'INSUFFICIENT_WALLET_BALANCE';
         throw error;
@@ -312,7 +312,7 @@ const WalletModel = {
   },
 
   /**
-   * Hoàn tiền đơn hàng vào Ví CleanNova (Atomic Refund)
+   * Hoàn tiền đơn hàng vào Ví DabClean (Atomic Refund)
    * Áp dụng khi khách hủy đơn đã trả tiền hoặc admin duyệt hoàn tiền
    */
   async refundBooking({ bookingId, reason = 'Hoàn tiền hủy đơn đặt dịch vụ', adminId = null }) {

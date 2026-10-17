@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Partner Model (Hồ sơ đăng ký đối tác & nhân viên)
+// DABCLEAN BACKEND - Partner Model (Hồ sơ đăng ký đối tác & nhân viên)
 // ============================================================
 const db = require('../config/db');
 

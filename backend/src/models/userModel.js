@@ -1,15 +1,23 @@
 // ============================================================
-// CLEANOVA BACKEND - User Model (Thao tác bảng users & audit_logs)
+// DABCLEAN BACKEND - User Model (Thao tác bảng users & audit_logs)
 // ============================================================
 const db = require('../config/db');
 
 const UserModel = {
   // Tìm người dùng theo email
   async findByEmail(email) {
-    const rows = await db.query(
+    const cleanEmail = email.trim().toLowerCase();
+    let rows = await db.query(
       'SELECT id, name, email, password, phone, address, role, status, lock_reason, created_at FROM users WHERE email = ? LIMIT 1',
-      [email.trim().toLowerCase()]
+      [cleanEmail]
     );
+    if (!rows[0] && cleanEmail.endsWith('@dabclean.vn')) {
+      const altEmail = cleanEmail.replace(/@dabclean\.vn$/, '@cleanova.vn');
+      rows = await db.query(
+        'SELECT id, name, email, password, phone, address, role, status, lock_reason, created_at FROM users WHERE email = ? LIMIT 1',
+        [altEmail]
+      );
+    }
     return rows[0] || null;
   },
 
@@ -123,7 +131,7 @@ const UserModel = {
     return rows;
   },
 
-  // Lấy danh sách nhân viên Cleanova (Staff)
+  // Lấy danh sách nhân viên DabClean (Staff)
   async getStaffList() {
     const rows = await db.query(
       "SELECT id, name, email, phone, address, role, status, lock_reason, created_at FROM users WHERE role = 'staff' ORDER BY id DESC"

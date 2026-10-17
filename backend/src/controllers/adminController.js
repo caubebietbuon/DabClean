@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Admin Controller (Quản trị viên & Phân quyền)
+// DABCLEAN BACKEND - Admin Controller (Quản trị viên & Phân quyền)
 // ============================================================
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
@@ -787,7 +787,7 @@ const adminController = {
   // QUẢN LÝ NHÂN VIÊN (STAFF MANAGEMENT)
   // ------------------------------------------------------------
 
-  // 13. Lấy danh sách nhân viên Cleanova (GET /api/admin/staff)
+  // 13. Lấy danh sách nhân viên DabClean (GET /api/admin/staff)
   async getAllStaff(req, res, next) {
     try {
       const staffList = await UserModel.getStaffList();

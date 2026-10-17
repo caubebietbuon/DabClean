@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Partner Routes (/api/partner)
+// DABCLEAN BACKEND - Partner Routes (/api/partner)
 // ============================================================
 const express = require('express');
 const router = express.Router();

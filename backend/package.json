@@ -1,7 +1,7 @@
 {
-  "name": "cleanova-backend",
+  "name": "dabclean-backend",
   "version": "1.0.0",
-  "description": "Backend REST API cho ứng dụng dịch vụ dọn vệ sinh Cleanova",
+  "description": "Backend REST API cho ứng dụng dịch vụ dọn vệ sinh DabClean",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -9,13 +9,13 @@
     "test": "node test-comprehensive.js"
   },
   "keywords": [
-    "cleanova",
+    "dabclean",
     "express",
     "mysql",
     "rest-api",
     "fullstack"
   ],
-  "author": "Cleanova Team",
+  "author": "DabClean Team",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

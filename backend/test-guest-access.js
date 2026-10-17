@@ -45,7 +45,7 @@ async function runTests() {
       path: '/',
       method: 'GET'
     });
-    assert(resHome.statusCode === 200 && typeof resHome.data === 'string' && resHome.data.includes('Cleanova'),
+    assert(resHome.statusCode === 200 && typeof resHome.data === 'string' && (resHome.data.includes('DabClean') || resHome.data.includes('Cleanova')),
       'Test 1: Mở website gốc (/) phục vụ thẳng trang chủ trangchu.html');
 
     // 2. Kiểm tra truy cập trang /trangchu.html

@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Pricing Service (Thống nhất tính giá dịch vụ)
+// DABCLEAN BACKEND - Pricing Service (Thống nhất tính giá dịch vụ)
 // Hỗ trợ Dịch vụ Vệ sinh tiêu chuẩn, Chăm sóc tại nhà & Vệ sinh sau xây dựng
 // ============================================================
 
@@ -298,16 +298,16 @@ const pricingService = {
     const freqDiscount = frequencyDiscounts[frequency] || 0.0;
     let discountAmount = Math.round(subtotal * freqDiscount);
 
-    // Ưu đãi mã CLEANOVA20
+    // Ưu đãi mã DABCLEAN20 / CLEANOVA20
     const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
-    if (normalizedPromo === 'CLEANOVA20') {
+    if (normalizedPromo === 'CLEANOVA20' || normalizedPromo === 'DABCLEAN20') {
       if (freqDiscount > 0) {
-        const error = new Error('Mã ưu đãi CLEANOVA20 chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.');
+        const error = new Error('Mã ưu đãi chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.');
         error.statusCode = 400;
         throw error;
       }
       if (hasUsedPromo) {
-        const error = new Error('Mã ưu đãi CLEANOVA20 chỉ được áp dụng 1 lần duy nhất cho mỗi tài khoản khách hàng.');
+        const error = new Error('Mã ưu đãi chỉ được áp dụng 1 lần duy nhất cho mỗi tài khoản khách hàng.');
         error.statusCode = 400;
         throw error;
       }
@@ -466,14 +466,14 @@ const pricingService = {
     const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
     if (options.voucher_discount !== undefined && options.voucher_discount !== null) {
       discountAmount = Math.max(discountAmount, parseFloat(options.voucher_discount) || 0);
-    } else if (normalizedPromo === 'CLEANOVA20') {
+    } else if (normalizedPromo === 'CLEANOVA20' || normalizedPromo === 'DABCLEAN20') {
       if (freqDiscount > 0) {
-        const error = new Error('Mã ưu đãi CLEANOVA20 chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.');
+        const error = new Error('Mã ưu đãi chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.');
         error.statusCode = 400;
         throw error;
       }
       if (hasUsedPromo) {
-        const error = new Error('Mã ưu đãi CLEANOVA20 chỉ được áp dụng 1 lần duy nhất cho mỗi tài khoản khách hàng.');
+        const error = new Error('Mã ưu đãi chỉ được áp dụng 1 lần duy nhất cho mỗi tài khoản khách hàng.');
         error.statusCode = 400;
         throw error;
       }

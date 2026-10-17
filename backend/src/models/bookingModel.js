@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Booking Model (Thao tác bảng bookings & Staff tasks)
+// DABCLEAN BACKEND - Booking Model (Thao tác bảng bookings & Staff tasks)
 // ============================================================
 const db = require('../config/db');
 

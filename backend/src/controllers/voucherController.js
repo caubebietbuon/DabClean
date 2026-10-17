@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Voucher Controller (Quản lý Voucher & Khuyến mãi)
+// DABCLEAN BACKEND - Voucher Controller (Quản lý Voucher & Khuyến mãi)
 // ============================================================
 const VoucherModel = require('../models/voucherModel');
 const { sanitizeInput } = require('../utils/sanitize');

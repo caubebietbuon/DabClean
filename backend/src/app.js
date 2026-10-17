@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Express Application Initialization
+// DABCLEAN BACKEND - Express Application Initialization
 // ============================================================
 const express = require('express');
 const cors = require('cors');
@@ -49,7 +49,7 @@ app.get('/api/health', (req, res) => {
   const db = require('./config/db');
   res.json({
     status: 'OK',
-    app: 'Cleanova Fullstack API',
+    app: 'DabClean Fullstack API',
     version: '1.0.0',
     mysql_connected: db.isMySQLConnected(),
     timestamp: new Date().toISOString()
@@ -59,12 +59,12 @@ app.get('/api/health', (req, res) => {
 // Phục vụ các file tĩnh Frontend từ thư mục frontend/
 const frontendPath = path.join(__dirname, '../../frontend');
 
-// Khách vãng lai truy cập thẳng vào Trang chủ Cleanova công khai
+// Khách vãng lai truy cập thẳng vào Trang chủ DabClean công khai
 app.get(['/', '/home', '/trangchu'], (req, res) => {
   res.sendFile(path.join(frontendPath, 'trangchu.html'));
 });
 
-// Friendly clean routing cho trang Đăng ký đối tác & Khám phá Cleanova
+// Friendly clean routing cho trang Đăng ký đối tác & Khám phá DabClean
 app.get(['/partner/register', '/employee/register', '/partner-register'], (req, res) => {
   res.sendFile(path.join(frontendPath, 'partner-register.html'));
 });

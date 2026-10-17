@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Staff Controller (Dành riêng cho Nhân viên)
+// DABCLEAN BACKEND - Staff Controller (Dành riêng cho Nhân viên)
 // ============================================================
 const bcrypt = require('bcryptjs');
 const fs = require('fs/promises');
@@ -420,7 +420,7 @@ const staffController = {
           booking_id: updated.id,
           notification_type: 'staff_accepted_booking',
           title: `Nhân viên đã nhận đơn ${updated.booking_code}`,
-          message: `${updated.staff_name || 'Nhân viên Cleanova'} đã nhận đơn ${updated.booking_code} cho dịch vụ ${updated.service_name}, lịch ${bookingTime} ngày ${bookingDate}. Địa chỉ: ${updated.address}. Tổng tiền: ${Number(updated.total_price).toLocaleString('vi-VN')} đ.${staffContact}`,
+          message: `${updated.staff_name || 'Nhân viên DabClean'} đã nhận đơn ${updated.booking_code} cho dịch vụ ${updated.service_name}, lịch ${bookingTime} ngày ${bookingDate}. Địa chỉ: ${updated.address}. Tổng tiền: ${Number(updated.total_price).toLocaleString('vi-VN')} đ.${staffContact}`,
           data: {
             bookingId: updated.id,
             bookingCode: updated.booking_code,

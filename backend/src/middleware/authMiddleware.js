@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Auth & Role Middleware (Xác thực JWT & Phân quyền)
+// DABCLEAN BACKEND - Auth & Role Middleware (Xác thực JWT & Phân quyền)
 // ============================================================
 const jwt = require('jsonwebtoken');
 const UserModel = require('../models/userModel');
@@ -71,7 +71,7 @@ const authMiddleware = {
     if (!req.user || (req.user.role !== 'staff' && req.user.role !== 'admin')) {
       return res.status(403).json({
         success: false,
-        message: 'Truy cập bị từ chối: Khu vực này chỉ dành riêng cho Nhân viên Cleanova.'
+        message: 'Truy cập bị từ chối: Khu vực này chỉ dành riêng cho Nhân viên DabClean.'
       });
     }
     next();

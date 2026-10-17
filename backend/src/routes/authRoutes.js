@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Auth Routes (/api/auth)
+// DABCLEAN BACKEND - Auth Routes (/api/auth)
 // ============================================================
 const express = require('express');
 const router = express.Router();

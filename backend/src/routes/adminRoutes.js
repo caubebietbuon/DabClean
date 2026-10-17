@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Admin Routes (/api/admin)
+// DABCLEAN BACKEND - Admin Routes (/api/admin)
 // ============================================================
 const express = require('express');
 const router = express.Router();

@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Voucher Model (Quản lý mã giảm giá & Khuyến mãi động)
+// DABCLEAN BACKEND - Voucher Model (Quản lý mã giảm giá & Khuyến mãi động)
 // ============================================================
 const db = require('../config/db');
 
@@ -82,12 +82,12 @@ const VoucherModel = {
       };
     }
 
-    // Quy tắc riêng cho CLEANOVA20: không áp dụng cho đơn định kỳ
-    if (cleanCode === 'CLEANOVA20' && frequency !== 'once') {
+    // Quy tắc riêng cho DABCLEAN20 / CLEANOVA20: không áp dụng cho đơn định kỳ
+    if ((cleanCode === 'CLEANOVA20' || cleanCode === 'DABCLEAN20') && frequency !== 'once') {
       return {
         valid: false,
         discountAmount: 0,
-        reason: 'Mã ưu đãi CLEANOVA20 chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.'
+        reason: `Mã ưu đãi ${cleanCode} chỉ áp dụng cho đơn đặt dịch vụ 1 lần và không áp dụng đồng thời với gói chiết khấu định kỳ.`
       };
     }
 

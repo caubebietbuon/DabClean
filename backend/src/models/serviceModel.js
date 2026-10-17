@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Service Model (Thao tác bảng services)
+// DABCLEAN BACKEND - Service Model (Thao tác bảng services)
 // ============================================================
 const db = require('../config/db');
 

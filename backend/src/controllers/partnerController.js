@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Partner Controller (Đăng ký trở thành đối tác Cleanova)
+// DABCLEAN BACKEND - Partner Controller (Đăng ký trở thành đối tác DabClean)
 // ============================================================
 const bcrypt = require('bcryptjs');
 const UserModel = require('../models/userModel');
@@ -68,7 +68,7 @@ const partnerController = {
       if (existingUser) {
         return res.status(409).json({
           success: false,
-          message: 'Email này đã tồn tại trong hệ thống Cleanova. Vui lòng đăng nhập hoặc sử dụng email khác.'
+          message: 'Email này đã tồn tại trong hệ thống DabClean. Vui lòng đăng nhập hoặc sử dụng email khác.'
         });
       }
 

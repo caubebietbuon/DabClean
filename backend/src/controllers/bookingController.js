@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Booking Controller (Xử lý đặt lịch & đơn cá nhân)
+// DABCLEAN BACKEND - Booking Controller (Xử lý đặt lịch & đơn cá nhân)
 // ============================================================
 const crypto = require('crypto');
 const BookingModel = require('../models/bookingModel');
@@ -247,14 +247,14 @@ const bookingController = {
       const staffWage = calculation.staffWage;
       const finalDurationHours = calculation.durationHours;
 
-      // Nếu thanh toán bằng Ví CleanNova, kiểm tra số dư trước khi tạo đơn
+      // Nếu thanh toán bằng Ví DabClean, kiểm tra số dư trước khi tạo đơn
       if (payment_method === 'wallet') {
         const walletInfo = await WalletModel.getBalance(req.user.id);
         if (walletInfo.balance < totalPrice) {
           return res.status(400).json({
             success: false,
             code: 'INSUFFICIENT_WALLET_BALANCE',
-            message: `Số dư Ví CleanNova (${Math.round(walletInfo.balance).toLocaleString('vi-VN')} đ) không đủ để thanh toán ${Math.round(totalPrice).toLocaleString('vi-VN')} đ. Vui lòng nạp thêm tiền hoặc chọn phương thức khác.`
+            message: `Số dư Ví DabClean (${Math.round(walletInfo.balance).toLocaleString('vi-VN')} đ) không đủ để thanh toán ${Math.round(totalPrice).toLocaleString('vi-VN')} đ. Vui lòng nạp thêm tiền hoặc chọn phương thức khác.`
           });
         }
       }
@@ -321,7 +321,7 @@ const bookingController = {
         }
       }
 
-      // Nếu thanh toán bằng Ví CleanNova, tiến hành trừ tiền nguyên tử
+      // Nếu thanh toán bằng Ví DabClean, tiến hành trừ tiền nguyên tử
       if (payment_method === 'wallet' && bookingId) {
         await WalletModel.payBooking({
           userId: req.user.id,
@@ -337,10 +337,10 @@ const bookingController = {
       const newBooking = await BookingModel.getById(bookingId);
 
       const successMsg = isPostConstruction && calculation.quoteStatus === 'pending_survey'
-        ? 'Gửi yêu cầu khảo sát & báo giá dịch vụ vệ sinh sau xây dựng thành công! CleanNova sẽ liên hệ khảo sát thực tế miễn phí và gửi báo giá chính thức.'
+        ? 'Gửi yêu cầu khảo sát & báo giá dịch vụ vệ sinh sau xây dựng thành công! DabClean sẽ liên hệ khảo sát thực tế miễn phí và gửi báo giá chính thức.'
         : (payment_method === 'wallet'
-            ? 'Đặt lịch & thanh toán bằng Ví CleanNova thành công! Đội ngũ CleanNova sẽ liên hệ xác nhận.'
-            : 'Đặt lịch dịch vụ thành công! Đội ngũ CleanNova sẽ liên hệ xác nhận trong ít phút.');
+            ? 'Đặt lịch & thanh toán bằng Ví DabClean thành công! Đội ngũ DabClean sẽ liên hệ xác nhận.'
+            : 'Đặt lịch dịch vụ thành công! Đội ngũ DabClean sẽ liên hệ xác nhận trong ít phút.');
 
       res.status(201).json({
         success: true,
@@ -393,8 +393,8 @@ const bookingController = {
       const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
 
       let alreadyUsedPromo = false;
-      if (req.user && normalizedPromo === 'CLEANOVA20') {
-        alreadyUsedPromo = await BookingModel.hasUsedPromoCode(req.user.id, 'CLEANOVA20');
+      if (req.user && (normalizedPromo === 'CLEANOVA20' || normalizedPromo === 'DABCLEAN20')) {
+        alreadyUsedPromo = (await BookingModel.hasUsedPromoCode(req.user.id, 'CLEANOVA20')) || (await BookingModel.hasUsedPromoCode(req.user.id, 'DABCLEAN20'));
       }
 
       const calculation = pricingService.calculatePrice(service, {
@@ -522,7 +522,7 @@ const bookingController = {
         return res.status(400).json({ success: false, message: 'Lý do hủy đơn phải dài từ 5 đến 500 ký tự.' });
       }
 
-      // Bảo vệ Bug 7 & Phase 4: Nếu đơn đã thanh toán qua Ví CleanNova, tự động hoàn tiền 100% vào Ví người dùng
+      // Bảo vệ Bug 7 & Phase 4: Nếu đơn đã thanh toán qua Ví DabClean, tự động hoàn tiền 100% vào Ví người dùng
       const sanitizedReason = sanitizeInput(reason);
       if (booking.payment_method === 'wallet' && booking.payment_status === 'paid') {
         await WalletModel.refundBooking({
@@ -540,7 +540,7 @@ const bookingController = {
       res.json({
         success: true,
         message: (booking.payment_method === 'wallet' && booking.payment_status === 'paid')
-          ? 'Hủy đơn đặt lịch thành công và đã hoàn tiền 100% vào Ví CleanNova của bạn!'
+          ? 'Hủy đơn đặt lịch thành công và đã hoàn tiền 100% vào Ví DabClean của bạn!'
           : 'Hủy đơn đặt lịch thành công.'
       });
     } catch (err) {
@@ -603,7 +603,7 @@ const bookingController = {
 
       res.json({
         success: true,
-        message: 'Đổi lịch thực hiện dịch vụ thành công! Đội ngũ Cleanova đã ghi nhận lịch hẹn mới.',
+        message: 'Đổi lịch thực hiện dịch vụ thành công! Đội ngũ DabClean đã ghi nhận lịch hẹn mới.',
         data: refreshed
       });
     } catch (err) {
@@ -648,7 +648,7 @@ const bookingController = {
 
       res.status(201).json({
         success: true,
-        message: 'Cảm ơn bạn đã gửi đánh giá chất lượng dịch vụ cho Cleanova!',
+        message: 'Cảm ơn bạn đã gửi đánh giá chất lượng dịch vụ cho DabClean!',
         data: { id: reviewId, rating, comment }
       });
     } catch (err) {

@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA BACKEND - Database Configuration (MySQL Pool + Graceful Fallback)
+// DABCLEAN BACKEND - Database Configuration (MySQL Pool + Graceful Fallback)
 // ============================================================
 const mysql = require('mysql2/promise');
 const path = require('path');
@@ -30,11 +30,11 @@ const inMemoryData = {
   users: [
     {
       id: 1,
-      name: 'Quản Trị Viên Cleanova',
+      name: 'Quản Trị Viên DabClean',
       email: 'admin@cleanova.vn',
       password: '$2a$10$ZZn8Td.6jh83f7FySaJ/1OnHyXgbyE2yC9rmaOaiHv6sq4Hiraoja', // Admin@Cleanova2026!
       phone: '0912345678',
-      address: 'Tòa nhà Cleanova, Cầu Giấy, Hà Nội',
+      address: 'Tòa nhà DabClean, Cầu Giấy, Hà Nội',
       role: 'admin',
       status: 'active',
       created_at: new Date('2026-01-01T08:00:00Z')
@@ -229,7 +229,7 @@ const inMemoryData = {
       id: 8,
       name: 'Chăm sóc người bệnh tại nhà',
       slug: 'cham-soc-nguoi-benh',
-      description: 'Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người ốm, người sau phẫu thuật hoặc đang hồi phục sức khỏe: hỗ trợ vệ sinh cá nhân, thay ga giường, theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ) và hỗ trợ dinh dưỡng theo chế độ ăn uống đã thống nhất. LƯU Ý: Dịch vụ hỗ trợ đời sống, nhân viên Cleanova không thực hiện các thủ thuật can thiệp y tế chuyên sâu.',
+      description: 'Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người ốm, người sau phẫu thuật hoặc đang hồi phục sức khỏe: hỗ trợ vệ sinh cá nhân, thay ga giường, theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ) và hỗ trợ dinh dưỡng theo chế độ ăn uống đã thống nhất. LƯU Ý: Dịch vụ hỗ trợ đời sống, nhân viên DabClean không thực hiện các thủ thuật can thiệp y tế chuyên sâu.',
       short_description: 'Hỗ trợ sinh hoạt và chăm sóc thông thường theo kế hoạch đã thống nhất.',
       base_price: 120000,
       price_unit: 'giờ',
@@ -684,7 +684,7 @@ async function initDatabase() {
         id: 8,
         name: 'Chăm sóc người bệnh tại nhà',
         slug: 'cham-soc-nguoi-benh',
-        description: 'Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người ốm, người sau phẫu thuật hoặc đang hồi phục sức khỏe: hỗ trợ vệ sinh cá nhân, thay ga giường, theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ) và hỗ trợ dinh dưỡng theo chế độ ăn uống đã thống nhất. LƯU Ý: Dịch vụ hỗ trợ đời sống, nhân viên Cleanova không thực hiện các thủ thuật can thiệp y tế chuyên sâu.',
+        description: 'Hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người ốm, người sau phẫu thuật hoặc đang hồi phục sức khỏe: hỗ trợ vệ sinh cá nhân, thay ga giường, theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ) và hỗ trợ dinh dưỡng theo chế độ ăn uống đã thống nhất. LƯU Ý: Dịch vụ hỗ trợ đời sống, nhân viên DabClean không thực hiện các thủ thuật can thiệp y tế chuyên sâu.',
         short_description: 'Hỗ trợ sinh hoạt và chăm sóc thông thường theo kế hoạch đã thống nhất.',
         base_price: 120000.00,
         price_unit: 'giờ',
@@ -1118,6 +1118,12 @@ async function initDatabase() {
     // Khởi tạo các mã voucher mặc định nếu chưa có
     const [existingVouchers] = await connection.query('SELECT code FROM vouchers');
     const existingVoucherCodes = new Set(existingVouchers.map(v => v.code));
+    if (!existingVoucherCodes.has('DABCLEAN20')) {
+      await connection.query(`
+        INSERT INTO vouchers (code, discount_type, discount_value, max_discount_amount, min_order_amount, applicable_services, start_date, end_date, usage_limit, used_count, per_user_limit, is_active, description)
+        VALUES ('DABCLEAN20', 'percentage', 20.00, 500000.00, 0.00, NULL, '2026-01-01 00:00:00', '2027-12-31 23:59:59', 1000, 0, 1, 1, 'Giảm 20% tối đa 500.000đ cho đơn đặt dịch vụ 1 lần')
+      `);
+    }
     if (!existingVoucherCodes.has('CLEANOVA20')) {
       await connection.query(`
         INSERT INTO vouchers (code, discount_type, discount_value, max_discount_amount, min_order_amount, applicable_services, start_date, end_date, usage_limit, used_count, per_user_limit, is_active, description)
