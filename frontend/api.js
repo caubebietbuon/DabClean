@@ -347,6 +347,10 @@
         });
       },
 
+      async getCommissionPaymentStatus(refCode) {
+        return await request(`/wallet/commission/payment/${encodeURIComponent(refCode)}`);
+      },
+
       async getAdminStaffWallets() {
         return await request('/wallet/admin/staff-wallets');
       }
@@ -543,6 +547,26 @@
         });
       },
 
+      // Quản lý & đối soát thanh toán chiết khấu
+      async getCommissionPayments(params = {}) {
+        const qs = new URLSearchParams(params).toString();
+        return await request(`/admin/commission/payments${qs ? '?' + qs : ''}`);
+      },
+
+      async confirmBankTransferManual(data) {
+        return await request('/admin/commission/confirm-bank-transfer', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+      },
+
+      async reviewCommissionRefund(data) {
+        return await request('/admin/commission/review-refund', {
+          method: 'POST',
+          body: JSON.stringify(data)
+        });
+      },
+
       // Quản lý dịch vụ
       async createService(serviceData) {
         return await request('/admin/services', {
@@ -665,6 +689,16 @@
 
     // Module Nhân viên DabClean (Staff Portal)
     staff: {
+      async getAvailableBookings() {
+        return await request('/staff/available-bookings');
+      },
+
+      async acceptBooking(id, payment_method = 'wallet', idempotency_key = null) {
+        return await request(`/staff/tasks/${id}/accept`, {
+          method: 'POST',
+          body: JSON.stringify({ payment_method, idempotency_key })
+        });
+      },
       async getMyTasks(status = '') {
         const query = status ? `?status=${encodeURIComponent(status)}` : '';
         return await request(`/staff/tasks${query}`);

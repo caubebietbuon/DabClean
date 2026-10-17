@@ -6,8 +6,14 @@ const router = express.Router();
 const walletController = require('../controllers/walletController');
 const { verifyToken, requireRole } = require('../middleware/authMiddleware');
 
-// Tất cả các route ví đều bắt buộc xác thực token
+// Webhook nhận thông báo chuyển khoản ngân hàng (có thể gọi từ bên thứ 3 / mô phỏng)
+router.post('/commission/webhook', walletController.handleCommissionWebhook);
+
+// Tất cả các route ví khác đều bắt buộc xác thực token
 router.use(verifyToken);
+
+// Kiểm tra trạng thái thanh toán chiết khấu
+router.get('/commission/payment/:refCode', walletController.getCommissionPaymentStatus);
 
 // 1. Khách hàng: Lấy thông tin & số dư ví
 router.get('/my', walletController.getMyWallet);

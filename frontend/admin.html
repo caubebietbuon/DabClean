@@ -743,6 +743,9 @@
         <button class="admin-tab-btn" data-tab="tab-vouchers" role="tab">
           <span>🏷️</span> Quản lý Voucher (<span id="tab-count-vouchers">0</span>)
         </button>
+        <button class="admin-tab-btn" data-tab="tab-commission" role="tab">
+          <span>🏦</span> Đối Soát Chiết Khấu (<span id="tab-count-commission">0</span>)
+        </button>
       </nav>
 
       <!-- TAB 1: QUẢN LÝ ĐƠN ĐẶT LỊCH & PHÂN CÔNG NHÂN VIÊN -->
@@ -1201,6 +1204,50 @@
             </thead>
             <tbody id="vouchers-table-body">
               <tr><td colspan="8" style="text-align: center; padding: 24px;">Đang tải danh sách voucher...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 9: QUẢN LÝ & ĐỐI SOÁT CHIẾT KHẤU NHẬN CA (COMMISSION PAYMENTS) -->
+      <section id="tab-commission" class="tab-pane" style="display: none;" role="tabpanel">
+        <div class="table-controls">
+          <div style="font-weight: 700; font-size: 15px; color: #1E40AF;">🏦 Đối Soát & Quản Lý Chiết Khấu Nhân Viên Nhận Ca</div>
+          <div style="display: flex; gap: var(--space-sm); align-items: center; flex-wrap: wrap;">
+            <select id="filter-comm-status" class="form-control" style="width: auto; padding: 6px 12px; font-size: 12px;">
+              <option value="all">Tất cả trạng thái</option>
+              <option value="pending">Chờ thanh toán / xác minh</option>
+              <option value="completed">Đã thanh toán (Hoàn tất)</option>
+              <option value="failed">Thất bại / Đơn hết khả dụng</option>
+              <option value="refunded">Đã hoàn tiền</option>
+            </select>
+            <select id="filter-comm-method" class="form-control" style="width: auto; padding: 6px 12px; font-size: 12px;">
+              <option value="all">Tất cả phương thức</option>
+              <option value="wallet">Trừ Ví Tín Dụng</option>
+              <option value="bank_transfer">Chuyển khoản VietQR</option>
+            </select>
+            <input type="text" id="search-comm-input" class="form-control" placeholder="Tìm mã đơn, mã CK, tên thợ..." style="width: 220px; padding: 6px 12px; font-size: 12px;">
+            <button id="btn-refresh-commission" class="btn btn-primary btn-sm">🔄 Làm mới</button>
+          </div>
+        </div>
+
+        <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 24px;">
+          <table class="table" style="margin: 0; font-size: 13px;">
+            <thead>
+              <tr style="background: #F8FAFC;">
+                <th>Mã GD / Tham Chiếu</th>
+                <th>Đơn hàng</th>
+                <th>Nhân viên</th>
+                <th style="text-align: right;">Chiết khấu</th>
+                <th>Phương thức</th>
+                <th style="text-align: center;">Trạng thái TT</th>
+                <th style="text-align: center;">Hoàn tiền</th>
+                <th>Thời gian</th>
+                <th style="text-align: center;">Hành động đối soát</th>
+              </tr>
+            </thead>
+            <tbody id="commission-table-body">
+              <tr><td colspan="9" style="text-align: center; padding: 24px;">Đang tải danh sách giao dịch chiết khấu...</td></tr>
             </tbody>
           </table>
         </div>
@@ -3461,7 +3508,188 @@
       await loadPartners();
       await loadPostConstructionConfig();
       await loadWallets();
+      // ------------------------------------------------------------
+      // 10. TAB 9: ĐỐI SOÁT & QUẢN LÝ CHIẾT KHẤU NHẬN CA
+      // ------------------------------------------------------------
+      async function loadCommissionPayments() {
+        const tbody = document.getElementById('commission-table-body');
+        if (!tbody) return;
+        try {
+          const status = document.getElementById('filter-comm-status') ? document.getElementById('filter-comm-status').value : 'all';
+          const payment_method = document.getElementById('filter-comm-method') ? document.getElementById('filter-comm-method').value : 'all';
+          const search = document.getElementById('search-comm-input') ? document.getElementById('search-comm-input').value.trim() : '';
+
+          const res = await DabCleanAPI.admin.getCommissionPayments({ status, payment_method, search });
+          const payments = res.data || [];
+          const countEl = document.getElementById('tab-count-commission');
+          if (countEl) countEl.textContent = payments.length;
+
+          if (payments.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Không có giao dịch chiết khấu nào phù hợp.</td></tr>`;
+            return;
+          }
+
+          tbody.innerHTML = payments.map(p => {
+            const amountStr = Number(p.amount || 0).toLocaleString('vi-VN') + ' đ';
+            const methodBadge = p.payment_method === 'wallet'
+              ? '<span class="badge" style="background:#EFF6FF;color:#1D4ED8;font-weight:700;">Ví Tín Dụng</span>'
+              : '<span class="badge" style="background:#FEF3C7;color:#92400E;font-weight:700;">Chuyển khoản VietQR</span>';
+
+            let statusBadge = '';
+            if (p.status === 'completed') {
+              statusBadge = '<span class="badge" style="background:#ECFDF5;color:#065F46;font-weight:700;">✅ Thành công</span>';
+            } else if (p.status === 'pending') {
+              statusBadge = '<span class="badge" style="background:#FFFBEB;color:#B45309;font-weight:700;">⏳ Chờ thanh toán</span>';
+            } else if (p.status === 'failed') {
+              statusBadge = '<span class="badge" style="background:#FEF2F2;color:#991B1B;font-weight:700;">❌ Thất bại</span>';
+            } else if (p.status === 'refunded') {
+              statusBadge = '<span class="badge" style="background:#F3E8FF;color:#6B21A8;font-weight:700;">↩️ Đã hoàn tiền</span>';
+            }
+
+            let refundBadge = '<span style="color:#94A3B8;">---</span>';
+            if (p.refund_status === 'pending_review') {
+              refundBadge = '<span class="badge" style="background:#FEF3C7;color:#D97706;font-weight:700;">⚠️ Chờ Admin duyệt</span>';
+            } else if (p.refund_status === 'refunded') {
+              refundBadge = '<span class="badge" style="background:#ECFDF5;color:#059669;font-weight:700;">Đã hoàn</span>';
+            } else if (p.refund_status === 'rejected') {
+              refundBadge = '<span class="badge" style="background:#FEE2E2;color:#DC2626;font-weight:700;">Từ chối hoàn</span>';
+            }
+
+            let actionsHtml = '';
+            if (p.status === 'pending' && p.payment_method === 'bank_transfer') {
+              actionsHtml += `
+                <button type="button" class="btn btn-primary btn-xs btn-confirm-bank-transfer" data-ref="${escapeHtml(p.reference_code)}" data-amt="${p.amount}" style="font-size:11px;font-weight:700;margin-bottom:4px;">
+                  ✅ Xác nhận CK
+                </button>
+              `;
+            }
+            if (p.refund_status === 'pending_review') {
+              actionsHtml += `
+                <button type="button" class="btn btn-sm btn-approve-refund" data-id="${p.id}" style="background:#059669;color:#fff;border-radius:4px;font-size:11px;font-weight:700;padding:4px 8px;margin-right:4px;">
+                  Duyệt hoàn
+                </button>
+                <button type="button" class="btn btn-sm btn-reject-refund" data-id="${p.id}" style="background:#DC2626;color:#fff;border-radius:4px;font-size:11px;font-weight:700;padding:4px 8px;">
+                  Từ chối
+                </button>
+              `;
+            }
+            if (!actionsHtml) actionsHtml = '<span style="color:#94A3B8;font-size:11px;">Hoàn tất</span>';
+
+            const timeStr = p.created_at ? new Date(p.created_at).toLocaleString('vi-VN') : '---';
+
+            return `
+              <tr>
+                <td>
+                  <strong>${escapeHtml(p.payment_code)}</strong>
+                  <div style="font-size:11px;color:#2563EB;font-family:monospace;font-weight:700;">${escapeHtml(p.reference_code || '---')}</div>
+                </td>
+                <td>
+                  <strong>#${escapeHtml(p.booking_code || String(p.booking_id))}</strong>
+                  <div style="font-size:11px;color:#64748B;">${escapeHtml(p.service_name || '')}</div>
+                </td>
+                <td>
+                  <strong>${escapeHtml(p.staff_name || 'Nhân viên')}</strong>
+                  <div style="font-size:11px;color:#64748B;">${escapeHtml(p.staff_phone || '')}</div>
+                </td>
+                <td style="text-align:right;">
+                  <strong style="color:#1E40AF;font-size:14px;">${amountStr}</strong>
+                </td>
+                <td>${methodBadge}</td>
+                <td style="text-align:center;">${statusBadge}</td>
+                <td style="text-align:center;">${refundBadge}</td>
+                <td style="font-size:11px;color:#64748B;">${timeStr}</td>
+                <td style="text-align:center;">${actionsHtml}</td>
+              </tr>
+            `;
+          }).join('');
+
+          tbody.querySelectorAll('.btn-confirm-bank-transfer').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const ref = this.dataset.ref;
+              const amt = parseFloat(this.dataset.amt);
+              const note = window.prompt(`Xác nhận đã nhận đủ ${Number(amt).toLocaleString('vi-VN')} đ từ sao kê ngân hàng cho mã tham chiếu ${ref}?\nNhập ghi chú đối soát (tùy chọn):`, 'Đã đối soát khớp sao kê ngân hàng');
+              if (note === null) return;
+              try {
+                this.disabled = true;
+                const result = await DabCleanAPI.admin.confirmBankTransferManual({
+                  reference_code: ref,
+                  amount: amt,
+                  note: note.trim()
+                });
+                showAlert('success', result.message || 'Xác nhận chuyển khoản thành công và đã phân công đơn!');
+                await loadCommissionPayments();
+                await loadBookings();
+              } catch (err) {
+                alert('Lỗi xác nhận: ' + err.message);
+                this.disabled = false;
+              }
+            });
+          });
+
+          tbody.querySelectorAll('.btn-approve-refund').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const pid = parseInt(this.dataset.id, 10);
+              const note = window.prompt('Nhập ghi chú phê duyệt hoàn tiền chiết khấu (tùy chọn):', 'Duyệt hoàn tiền chiết khấu theo chính sách DabClean');
+              if (note === null) return;
+              try {
+                this.disabled = true;
+                const result = await DabCleanAPI.admin.reviewCommissionRefund({
+                  payment_id: pid,
+                  decision: 'approve',
+                  refund_method: 'wallet',
+                  note: note.trim()
+                });
+                showAlert('success', result.message || 'Đã duyệt hoàn tiền thành công!');
+                await loadCommissionPayments();
+              } catch (err) {
+                alert('Lỗi duyệt hoàn tiền: ' + err.message);
+                this.disabled = false;
+              }
+            });
+          });
+
+          tbody.querySelectorAll('.btn-reject-refund').forEach(btn => {
+            btn.addEventListener('click', async function() {
+              const pid = parseInt(this.dataset.id, 10);
+              const note = window.prompt('Nhập lý do từ chối hoàn tiền chiết khấu (bắt buộc):');
+              if (!note || note.trim().length < 3) {
+                if (note !== null) alert('Vui lòng nhập lý do từ chối cụ thể.');
+                return;
+              }
+              try {
+                this.disabled = true;
+                const result = await DabCleanAPI.admin.reviewCommissionRefund({
+                  payment_id: pid,
+                  decision: 'reject',
+                  note: note.trim()
+                });
+                showAlert('info', result.message || 'Đã từ chối hoàn chiết khấu.');
+                await loadCommissionPayments();
+              } catch (err) {
+                alert('Lỗi: ' + err.message);
+                this.disabled = false;
+              }
+            });
+          });
+        } catch (err) {
+          console.warn('Lỗi tải danh sách đối soát chiết khấu:', err);
+        }
+      }
+
+      const btnRefreshComm = document.getElementById('btn-refresh-commission');
+      if (btnRefreshComm) btnRefreshComm.addEventListener('click', loadCommissionPayments);
+      const filterCommStatus = document.getElementById('filter-comm-status');
+      if (filterCommStatus) filterCommStatus.addEventListener('change', loadCommissionPayments);
+      const filterCommMethod = document.getElementById('filter-comm-method');
+      if (filterCommMethod) filterCommMethod.addEventListener('change', loadCommissionPayments);
+      const searchCommInput = document.getElementById('search-comm-input');
+      if (searchCommInput) searchCommInput.addEventListener('input', () => {
+        clearTimeout(searchCommInput._timer);
+        searchCommInput._timer = setTimeout(loadCommissionPayments, 300);
+      });
+
       await loadVouchers();
+      await loadCommissionPayments();
     });
   </script>
 </body>

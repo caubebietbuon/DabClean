@@ -6,6 +6,7 @@ const BookingModel = require('../models/bookingModel');
 const ServiceModel = require('../models/serviceModel');
 const WalletModel = require('../models/walletModel');
 const VoucherModel = require('../models/voucherModel');
+const CommissionPaymentModel = require('../models/commissionPaymentModel');
 const pricingService = require('../services/pricingService');
 const { sanitizeInput, sanitizeReviewComment } = require('../utils/sanitize');
 
@@ -635,6 +636,20 @@ const bookingController = {
         const cancelled = await BookingModel.updateStatus(id, 'cancelled', sanitizedReason, booking.status);
         if (!cancelled) {
           return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi. Vui lòng tải lại trang.' });
+        }
+      }
+
+      // Hoàn trả chiết khấu cho nhân viên nếu đơn đã thanh toán chiết khấu (không do lỗi nhân viên)
+      if (booking.commission_status === 'paid') {
+        try {
+          await CommissionPaymentModel.handleCancellationRefund({
+            bookingId: id,
+            cancelReason: `Khách hàng hủy đơn: ${sanitizedReason}`,
+            fault: 'customer',
+            adminId: req.user.id
+          });
+        } catch (commErr) {
+          console.error('Lỗi hoàn chiết khấu cho thợ khi khách hủy đơn:', commErr.message);
         }
       }
 

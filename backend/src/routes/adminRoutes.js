@@ -29,6 +29,11 @@ router.put('/post-construction/config', adminController.updatePostConstructionCo
 router.get('/config/commission', adminController.getCommissionConfig);
 router.put('/config/commission', adminController.updateCommissionConfig);
 
+// 2d. Quản lý & đối soát thanh toán chiết khấu nhận ca
+router.get('/commission/payments', adminController.getCommissionPayments);
+router.post('/commission/confirm-bank-transfer', adminController.confirmBankTransferManual);
+router.post('/commission/review-refund', adminController.reviewCommissionRefund);
+
 // 3. Quản lý dịch vụ vệ sinh
 router.get('/services', serviceController.getAllServices);
 router.post('/services', adminController.createService);

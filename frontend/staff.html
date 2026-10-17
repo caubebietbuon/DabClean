@@ -759,14 +759,14 @@
               </div>
 
               <div>
-                <button type="button" class="btn btn-primary" id="btn-open-topup-credit-modal" style="padding: 12px 24px; font-weight: 700; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; box-shadow: var(--shadow-sm);">
-                  💳 Nạp Ví Tín Dụng
-                </button>
+                <div style="background: #F8FAFC; border: 1px solid #CBD5E1; color: #475569; padding: 10px 16px; border-radius: var(--radius-lg); font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                  🔒 Nạp ví chủ động đã tắt
+                </div>
               </div>
             </div>
 
             <div style="font-size: 12px; background: #EFF6FF; border-left: 4px solid #3B82F6; padding: 10px 14px; border-radius: 4px; color: #1E40AF; line-height: 1.5;">
-              📌 <strong>Quy tắc Ví Tín Dụng:</strong> Trừ khoản chiết khấu DabClean khi đơn hoàn thành (cả tiền mặt & trực tuyến). Cho phép số dư âm khi chiết khấu vượt số dư. Số dư phải <strong>lớn hơn hoặc bằng 100.000 VNĐ</strong> để được phân công và xác nhận đơn mới.
+              📌 <strong>Quy tắc Thanh Toán Chiết Khấu Nhận Ca:</strong> Khi nhận đơn, nếu Ví Tín Dụng đủ số dư, hệ thống sẽ tự động trừ chiết khấu và xác nhận ca ngay. Nếu ví không đủ số dư, bạn sẽ quét mã VietQR chuyển khoản trực tiếp cho khoản chiết khấu của đơn đó.
             </div>
           </div>
         </div>
@@ -937,58 +937,77 @@
   <div class="modal-backdrop" id="modal-staff-topup-credit" style="display: none;">
     <div class="modal-box" style="max-width: 500px;">
       <div class="modal-header">
-        <h3 class="modal-title">💳 Nạp Tiền Ví Tín Dụng DabClean</h3>
+        <h3 class="modal-title">ℹ️ Thông Báo Quy Chế Ví Tín Dụng</h3>
         <button class="modal-close" data-close="modal-staff-topup-credit">&times;</button>
       </div>
+      <div style="padding: var(--space-xl); text-align: center;">
+        <div style="font-size: 44px; margin-bottom: 12px;">🚫</div>
+        <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #1E293B;">Chức Năng Nạp Tiền Chủ Động Đã Vô Hiệu Hóa</h4>
+        <p style="font-size: 13px; color: #64748B; line-height: 1.6; margin-bottom: 20px; text-align: justify;">
+          Theo quy định mới của CleanNova / DabClean, nhân viên <strong>không còn nạp tiền chủ động</strong> vào Ví Tín Dụng. Thay vào đó, khi nhận đơn, nếu ví của bạn không đủ tiền trừ chiết khấu, hệ thống sẽ hiển thị mã <strong>VietQR</strong> để bạn chuyển khoản thanh toán riêng cho đơn đó một cách minh bạch.
+        </p>
+        <button type="button" class="btn btn-primary" data-close="modal-staff-topup-credit" style="width: 100%;">
+          Đã Hiểu
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 1B: CHUYỂN KHOẢN CHIẾT KHẤU NHẬN CA (VIETQR / NGÂN HÀNG)
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-staff-commission-transfer" style="display: none;">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🏦 Chuyển Khoản Chiết Khấu Nhận Ca</h3>
+        <button class="modal-close" data-close="modal-staff-commission-transfer">&times;</button>
+      </div>
       <div style="padding: var(--space-xl);">
-        <form id="form-staff-topup-credit">
-          <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: var(--space-lg);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <div style="font-size: 11px; color: #1E40AF; text-transform: uppercase; font-weight: 700;">Số dư ví tín dụng hiện tại:</div>
-                <div style="font-size: 22px; font-weight: 800;" id="topup-modal-current-balance">0 đ</div>
-              </div>
-              <div id="topup-modal-needed-box" style="text-align: right; display: none;">
-                <div style="font-size: 11px; color: #DC2626; font-weight: 700;">Cần nạp tối thiểu để nhận đơn:</div>
-                <div style="font-size: 14px; font-weight: 800; color: #DC2626;" id="topup-modal-needed-amount">0 đ</div>
-              </div>
+        <div style="background: #FEF3C7; border: 1px solid #FCD34D; border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: var(--space-md); font-size: 13px; color: #92400E; line-height: 1.5;">
+          ⚠️ <strong>Ví tín dụng không đủ số dư:</strong> Để tiếp nhận đơn <strong><span id="comm-transfer-booking-code">#---</span></strong>, bạn cần thanh toán toàn bộ khoản chiết khấu bằng chuyển khoản ngân hàng theo thông tin VietQR bên dưới.
+        </div>
+
+        <div style="text-align: center; margin-bottom: var(--space-md);">
+          <img id="comm-transfer-qr-img" src="" alt="Mã VietQR Chuyển Khoản" style="max-width: 220px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); border: 2px solid #E2E8F0; margin: 0 auto; display: block;">
+          <div style="font-size: 11px; color: var(--color-text-secondary); margin-top: 6px;">Quét mã VietQR bằng ứng dụng Ngân hàng để tự điền số tiền & nội dung</div>
+        </div>
+
+        <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: var(--radius-lg); padding: 14px 18px; margin-bottom: var(--space-md); font-size: 13px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--color-text-secondary);">Ngân hàng:</span>
+            <strong id="comm-transfer-bank-name">MB Bank</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--color-text-secondary);">Số tài khoản:</span>
+            <strong id="comm-transfer-acc-num" style="font-family: monospace;">0912345678</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--color-text-secondary);">Chủ tài khoản:</span>
+            <strong id="comm-transfer-acc-name">CONG TY DABCLEAN VIET NAM</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <span style="color: var(--color-text-secondary);">Số tiền chiết khấu:</span>
+            <strong id="comm-transfer-amount-display" style="color: #DC2626; font-size: 16px;">0 đ</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px dashed #CBD5E1;">
+            <span style="color: var(--color-text-secondary);">Nội dung chuyển khoản:</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <code id="comm-transfer-ref-code" style="background: #EFF6FF; color: #1D4ED8; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 13px;">---</code>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-copy-comm-ref" style="padding: 2px 6px; font-size: 11px;">📋 Copy</button>
             </div>
           </div>
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-md);">
-            <label class="form-label" style="font-weight: 700;">Chọn nhanh số tiền nạp</label>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px;">
-              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="100000" style="font-size: 12px; font-weight: 700;">100k</button>
-              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="200000" style="font-size: 12px; font-weight: 700;">200k</button>
-              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="500000" style="font-size: 12px; font-weight: 700;">500k</button>
-              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="1000000" style="font-size: 12px; font-weight: 700;">1.000k</button>
-            </div>
-            <label class="form-label" style="font-weight: 700;">Hoặc nhập số tiền (VNĐ) <span style="color: red;">*</span></label>
-            <input type="number" id="topup-credit-amount-input" class="form-control" required min="10000" step="10000" placeholder="Tối thiểu 10.000 VNĐ">
-            <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px;">Tiền nạp tự động bù khoản âm (nếu có) trước khi tạo số dư dương.</div>
-          </div>
+        <div id="comm-transfer-status-box" style="background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; text-align: center; padding: 10px; border-radius: var(--radius-md); font-size: 13px; font-weight: 700; margin-bottom: var(--space-lg);">
+          ⏳ Đang chờ xác minh thanh toán từ ngân hàng...
+        </div>
 
-          <div class="form-group" style="margin-bottom: var(--space-md);">
-            <label class="form-label" style="font-weight: 700;">Phương thức nạp tiền <span style="color: red;">*</span></label>
-            <select id="topup-credit-gateway" class="form-control" required>
-              <option value="sandbox_vietqr">VietQR / Chuyển khoản tức thì (Sandbox Gateway)</option>
-              <option value="sandbox_momo">Ví điện tử MoMo (Sandbox Gateway)</option>
-              <option value="sandbox_vnpay">Cổng VNPAY (Sandbox Gateway)</option>
-            </select>
-          </div>
-
-          <div class="form-group" style="margin-bottom: var(--space-lg);">
-            <label class="form-label" style="font-weight: 700;">Ghi chú giao dịch</label>
-            <input type="text" id="topup-credit-description" class="form-control" placeholder="VD: Nạp tiền duy trì nhận việc">
-          </div>
-
-          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
-            <button type="button" class="btn btn-ghost" data-close="modal-staff-topup-credit">Hủy bỏ</button>
-            <button type="submit" class="btn btn-primary" id="btn-submit-topup-credit">
-              ⚡ Xác Nhận Nạp Tiền
-            </button>
-          </div>
-        </form>
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+          <button type="button" class="btn btn-ghost" data-close="modal-staff-commission-transfer">Đóng</button>
+          <button type="button" class="btn btn-primary" id="btn-check-commission-status">
+            🔄 Tôi Đã Chuyển Khoản (Kiểm Tra)
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1731,19 +1750,12 @@
           // Action buttons theo luồng quy trình
           let quickActionsHtml = '';
           if (task.status === 'assigned') {
-            if (staffCreditEligibility && !staffCreditEligibility.eligible) {
-              quickActionsHtml = `
-                <button type="button" class="btn btn-sm btn-quick-action" data-id="${task.id}" data-action="confirmed" style="background:#EF4444;border-color:#EF4444;color:#fff;" title="Số dư ví tín dụng không đủ (> 100.000 đ)">
-                  ⚠️ Chưa đủ số dư tín dụng
-                </button>
-              `;
-            } else {
-              quickActionsHtml = `
-                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="confirmed">
-                  ✅ Xác nhận nhận ca
-                </button>
-              `;
-            }
+            const commAmt = Math.round(Number(task.platform_commission) || (Number(task.staff_wage || 0) * 0.20) || (Number(task.total_price || 0) * 0.20));
+            quickActionsHtml = `
+              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="accept_booking" style="background:#059669;border-color:#059669;font-weight:700;">
+                🤝 Nhận Ca (Chiết khấu: ${formatPriceVND(commAmt)})
+              </button>
+            `;
           } else if (task.status === 'confirmed') {
             quickActionsHtml = `
               <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="arrived" style="background:#2563EB;border-color:#2563EB;">
@@ -1938,9 +1950,23 @@
             const taskId = parseInt(this.dataset.id, 10);
             const action = this.dataset.action;
 
-            if (action === 'confirmed' && staffCreditEligibility && !staffCreditEligibility.eligible) {
-              alert(`Không thể xác nhận nhận việc: Số dư ví tín dụng hiện tại (${formatPriceVND(staffCreditEligibility.creditBalance)}) chưa đạt điều kiện tối thiểu ≥ 100.000 đ. Vui lòng nạp thêm tối thiểu ${formatPriceVND(staffCreditEligibility.amountNeeded)} hoặc chuyển từ Ví Thu Nhập.`);
-              if (typeof openTopupModal === 'function') openTopupModal();
+            if (action === 'accept_booking' || action === 'confirmed') {
+              this.disabled = true;
+              DabCleanAPI.staff.acceptBooking(taskId)
+                .then(async result => {
+                  if (result.requires_bank_transfer || result.code === 'PAYMENT_REQUIRED') {
+                    openCommissionTransferModal(result.data);
+                  } else {
+                    showAlert('success', result.message || 'Đã thanh toán chiết khấu và nhận ca thành công!');
+                    await loadStaffTasks();
+                  }
+                })
+                .catch(err => {
+                  alert(`Không thể nhận ca: ${err.message}`);
+                })
+                .finally(() => {
+                  this.disabled = false;
+                });
               return;
             }
 
@@ -2276,33 +2302,63 @@
       let staffAllTransactions = [];
 
       window.openTopupModal = function () {
-        const creditBal = staffTwoWallets && staffTwoWallets.credit_wallet ? Number(staffTwoWallets.credit_wallet.balance) : 0;
-        const isEligible = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.is_eligible : (creditBal >= 100000);
-        const amountNeeded = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.amount_needed : (isEligible ? 0 : Math.max(0, 100000 - creditBal));
+        alert('Chức năng nạp tiền chủ động vào Ví Tín Dụng đã được bãi bỏ. Khi nhận đơn, nếu ví không đủ số dư, hệ thống sẽ tự động cung cấp mã VietQR chuyển khoản cho toàn bộ khoản chiết khấu của đơn đó.');
+      };
 
-        const curBalEl = document.getElementById('topup-modal-current-balance');
-        if (curBalEl) {
-          curBalEl.textContent = formatPriceVND(creditBal);
-          curBalEl.style.color = creditBal < 0 ? '#DC2626' : (isEligible ? '#059669' : '#D97706');
-        }
+      window.openCommissionTransferModal = function (data) {
+        if (!data || !data.payment) return;
+        const p = data.payment;
+        document.getElementById('comm-transfer-booking-code').textContent = '#' + (data.booking_code || data.booking_id);
+        document.getElementById('comm-transfer-amount-display').textContent = formatPriceVND(data.commission_amount || p.amount);
+        document.getElementById('comm-transfer-acc-num').textContent = p.account_number || '0912345678';
+        document.getElementById('comm-transfer-acc-name').textContent = p.account_name || 'CONG TY DABCLEAN VIET NAM';
+        document.getElementById('comm-transfer-bank-name').textContent = p.bank_name || 'MB Bank';
+        document.getElementById('comm-transfer-ref-code').textContent = p.reference_code;
+        document.getElementById('comm-transfer-qr-img').src = p.qr_url || `https://img.vietqr.io/image/MB-0912345678-compact2.png?amount=${p.amount}&addInfo=${encodeURIComponent(p.reference_code)}`;
 
-        const neededBox = document.getElementById('topup-modal-needed-box');
-        const neededAmtEl = document.getElementById('topup-modal-needed-amount');
-        if (neededBox && neededAmtEl) {
-          if (!isEligible && amountNeeded > 0) {
-            neededBox.style.display = 'block';
-            neededAmtEl.textContent = formatPriceVND(amountNeeded);
-          } else {
-            neededBox.style.display = 'none';
+        const statusBox = document.getElementById('comm-transfer-status-box');
+        statusBox.style.background = '#EFF6FF';
+        statusBox.style.borderColor = '#BFDBFE';
+        statusBox.style.color = '#1E40AF';
+        statusBox.innerHTML = '⏳ Đang chờ xác minh thanh toán từ ngân hàng...';
+
+        document.getElementById('btn-copy-comm-ref').onclick = function() {
+          navigator.clipboard.writeText(p.reference_code).then(() => {
+            showAlert('success', 'Đã sao chép nội dung chuyển khoản!');
+          });
+        };
+
+        const checkBtn = document.getElementById('btn-check-commission-status');
+        checkBtn.onclick = async function() {
+          checkBtn.disabled = true;
+          checkBtn.textContent = '🔄 Đang kiểm tra...';
+          try {
+            const checkRes = await DabCleanAPI.wallet.getCommissionPaymentStatus(p.reference_code);
+            if (checkRes && checkRes.data && checkRes.data.status === 'completed') {
+              statusBox.style.background = '#ECFDF5';
+              statusBox.style.borderColor = '#A7F3D0';
+              statusBox.style.color = '#065F46';
+              statusBox.innerHTML = '✅ Thanh toán thành công! Ca làm việc đã được phân công cho bạn.';
+              showAlert('success', 'Thanh toán chiết khấu thành công! Bạn đã nhận ca.');
+              setTimeout(async () => {
+                document.getElementById('modal-staff-commission-transfer').style.display = 'none';
+                await loadStaffTasks();
+              }, 1200);
+            } else {
+              statusBox.style.background = '#FEF2F2';
+              statusBox.style.borderColor = '#FECACA';
+              statusBox.style.color = '#991B1B';
+              statusBox.innerHTML = '⏳ Ngân hàng chưa báo có khoản tiền này. Vui lòng thử lại sau 1-2 phút hoặc liên hệ Admin.';
+            }
+          } catch (cErr) {
+            alert('Lỗi kiểm tra trạng thái: ' + cErr.message);
+          } finally {
+            checkBtn.disabled = false;
+            checkBtn.textContent = '🔄 Tôi Đã Chuyển Khoản (Kiểm Tra)';
           }
-        }
+        };
 
-        const amtInput = document.getElementById('topup-credit-amount-input');
-        if (amtInput) {
-          amtInput.value = (!isEligible && amountNeeded > 0) ? Math.max(10000, Math.ceil(amountNeeded / 10000) * 10000) : '200000';
-        }
-
-        document.getElementById('modal-staff-topup-credit').style.display = 'flex';
+        document.getElementById('modal-staff-commission-transfer').style.display = 'flex';
       };
 
       window.openTransferModal = function () {
@@ -2625,45 +2681,8 @@
         });
       }
 
-      // Xử lý nạp tiền Ví Tín Dụng (POST /api/wallet/staff/topup-credit)
-      const formTopupCredit = document.getElementById('form-staff-topup-credit');
-      if (formTopupCredit) {
-        formTopupCredit.addEventListener('submit', async function (e) {
-          e.preventDefault();
-          const amount = parseInt(document.getElementById('topup-credit-amount-input').value, 10);
-          const gateway = document.getElementById('topup-credit-gateway').value;
-          const description = document.getElementById('topup-credit-description').value.trim() || 'Nạp tiền vào Ví tín dụng DabClean';
-
-          if (isNaN(amount) || amount < 10000) {
-            alert('Số tiền nạp tối thiểu là 10.000 VNĐ.');
-            return;
-          }
-
-          const submitBtn = document.getElementById('btn-submit-topup-credit');
-          submitBtn.disabled = true;
-          submitBtn.textContent = 'Đang xử lý giao dịch...';
-
-          try {
-            const idempotencyKey = `TOPUP-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-            const res = await DabCleanAPI.wallet.topupStaffCredit({
-              amount,
-              description,
-              reference_type: gateway,
-              idempotency_key: idempotencyKey
-            });
-
-            showAlert('success', res.message || 'Nạp tiền Ví Tín Dụng thành công!');
-            document.getElementById('modal-staff-topup-credit').style.display = 'none';
-            await loadStaffWallet();
-            await loadStaffTasks();
-          } catch (err) {
-            alert('Lỗi nạp tiền: ' + err.message);
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = '⚡ Xác Nhận Nạp Tiền';
-          }
-        });
-      }
+      // Chức năng nạp tiền chủ động đã bị vô hiệu hóa theo chính sách mới.
+      // Khi nhận đơn mà số dư ví thiếu, hệ thống tự động hướng dẫn chuyển khoản qua VietQR.
 
       // Xử lý chuyển tiền từ Ví Thu Nhập sang Ví Tín Dụng (POST /api/wallet/staff/transfer)
       const formTransfer = document.getElementById('form-staff-transfer');

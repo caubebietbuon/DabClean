@@ -454,6 +454,7 @@ const inMemoryData = {
 
 inMemoryData.jobPhotos = [];
 inMemoryData.bookingNotifications = [];
+inMemoryData.staff_commission_payments = [];
 
 // Khởi tạo và kiểm tra kết nối MySQL
 async function initDatabase() {
@@ -1201,6 +1202,71 @@ async function initDatabase() {
           commission_rate = COALESCE(NULLIF(commission_rate, 0), 0.2000)
       WHERE staff_wage > 0 AND (staff_net_wage = 0 OR staff_net_wage IS NULL)
     `);
+
+    // ------------------------------------------------------------
+    // Migration: Bảng staff_commission_payments & Cột đối soát chiết khấu nhận ca
+    // ------------------------------------------------------------
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS staff_commission_payments (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        payment_code VARCHAR(64) NOT NULL UNIQUE,
+        booking_id INT NOT NULL,
+        staff_id INT NOT NULL,
+        amount DECIMAL(12, 2) NOT NULL,
+        payment_method ENUM('wallet', 'bank_transfer') NOT NULL,
+        status ENUM('pending', 'completed', 'failed', 'refunded', 'pending_review', 'cancelled') NOT NULL DEFAULT 'pending',
+        reference_code VARCHAR(64) NOT NULL UNIQUE,
+        bank_name VARCHAR(100) DEFAULT 'MB Bank (Ngân hàng Quân Đội)',
+        bank_account_number VARCHAR(50) DEFAULT '0912345678',
+        bank_account_name VARCHAR(100) DEFAULT 'CONG TY DABCLEAN VIET NAM',
+        paid_at DATETIME DEFAULT NULL,
+        verified_by INT DEFAULT NULL,
+        bank_transaction_code VARCHAR(100) DEFAULT NULL,
+        refund_status ENUM('none', 'refunded', 'pending_review', 'rejected') NOT NULL DEFAULT 'none',
+        refund_reason TEXT DEFAULT NULL,
+        refunded_at DATETIME DEFAULT NULL,
+        refunded_by INT DEFAULT NULL,
+        notes TEXT DEFAULT NULL,
+        idempotency_key VARCHAR(100) DEFAULT NULL UNIQUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_comm_booking (booking_id),
+        INDEX idx_comm_staff (staff_id),
+        INDEX idx_comm_status (status),
+        INDEX idx_comm_ref (reference_code),
+        CONSTRAINT fk_comm_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+        CONSTRAINT fk_comm_staff FOREIGN KEY (staff_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_comm_admin FOREIGN KEY (verified_by) REFERENCES users(id) ON DELETE SET NULL,
+        CONSTRAINT fk_comm_refund_admin FOREIGN KEY (refunded_by) REFERENCES users(id) ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    const [bCommCols] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bookings'`
+    );
+    const existingBCommCols = new Set(bCommCols.map(c => c.COLUMN_NAME));
+    if (!existingBCommCols.has('commission_status')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_status ENUM('unpaid', 'paid', 'refunded', 'pending_review') NOT NULL DEFAULT 'unpaid' COMMENT 'Trạng thái thanh toán chiết khấu'");
+    }
+    if (!existingBCommCols.has('commission_payment_id')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_payment_id BIGINT NULL DEFAULT NULL COMMENT 'ID bản ghi thanh toán chiết khấu'");
+    }
+    if (!existingBCommCols.has('commission_paid_at')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_paid_at DATETIME NULL DEFAULT NULL COMMENT 'Thời điểm thanh toán chiết khấu'");
+    }
+    if (!existingBCommCols.has('commission_payment_method')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_payment_method VARCHAR(50) NULL DEFAULT NULL COMMENT 'Hình thức trả chiết khấu: wallet, bank_transfer'");
+    }
+    if (!existingBCommCols.has('commission_refund_status')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_refund_status ENUM('none', 'refunded', 'pending_review', 'rejected') NOT NULL DEFAULT 'none' COMMENT 'Trạng thái hoàn tiền chiết khấu'");
+    }
+    if (!existingBCommCols.has('commission_refund_reason')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_refund_reason TEXT NULL DEFAULT NULL COMMENT 'Lý do hoàn chiết khấu'");
+    }
+    if (!existingBCommCols.has('commission_refunded_at')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_refunded_at DATETIME NULL DEFAULT NULL COMMENT 'Thời điểm hoàn chiết khấu'");
+    }
 
     console.log(`[Database] Đã kết nối thành công tới MySQL Server (${dbConfig.host}:${dbConfig.port}/${dbConfig.database})`);
     isConnectedToMySQL = true;

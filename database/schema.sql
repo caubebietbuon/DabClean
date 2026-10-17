@@ -147,6 +147,13 @@ CREATE TABLE bookings (
   wage_status ENUM('pending', 'approved', 'paid', 'cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái đối soát tiền công: pending (chờ hoàn thành), approved (đã chốt), paid (đã chi trả), cancelled (hủy)',
   wage_settled_at DATETIME DEFAULT NULL COMMENT 'Thời điểm quản trị viên chi trả tiền công',
   wage_settled_by INT DEFAULT NULL COMMENT 'Admin ID đã duyệt chi trả tiền công',
+  commission_status ENUM('unpaid', 'paid', 'refunded', 'pending_review') NOT NULL DEFAULT 'unpaid' COMMENT 'Trạng thái thanh toán chiết khấu',
+  commission_payment_method VARCHAR(50) DEFAULT NULL COMMENT 'Hình thức thanh toán chiết khấu (wallet, bank_transfer)',
+  commission_payment_id BIGINT DEFAULT NULL COMMENT 'ID bản ghi thanh toán chiết khấu',
+  commission_paid_at DATETIME DEFAULT NULL COMMENT 'Thời điểm thanh toán chiết khấu thành công',
+  commission_refund_status ENUM('none', 'refunded', 'pending_review', 'rejected') NOT NULL DEFAULT 'none' COMMENT 'Trạng thái hoàn chiết khấu',
+  commission_refund_reason TEXT DEFAULT NULL COMMENT 'Lý do hoàn chiết khấu',
+  commission_refunded_at DATETIME DEFAULT NULL COMMENT 'Thời điểm hoàn chiết khấu',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
@@ -358,6 +365,42 @@ CREATE TABLE wallet_ledger_entries (
   INDEX idx_ledger_tx (transaction_id),
   CONSTRAINT fk_ledger_tx FOREIGN KEY (transaction_id) REFERENCES wallet_transactions(id) ON DELETE RESTRICT,
   CONSTRAINT fk_ledger_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 11b: staff_commission_payments (Thanh toán chiết khấu nhận ca của nhân viên)
+-- ------------------------------------------------------------
+CREATE TABLE staff_commission_payments (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  payment_code VARCHAR(64) NOT NULL UNIQUE COMMENT 'Mã thanh toán chiết khấu (CPAY-...)',
+  booking_id INT NOT NULL COMMENT 'Đơn đặt lịch liên quan',
+  staff_id INT NOT NULL COMMENT 'Nhân viên nhận đơn',
+  amount DECIMAL(12, 2) NOT NULL COMMENT 'Khoản chiết khấu phải thanh toán (VNĐ)',
+  payment_method ENUM('wallet', 'bank_transfer') NOT NULL COMMENT 'wallet (ví tín dụng) hoặc bank_transfer (chuyển khoản ngân hàng)',
+  status ENUM('pending', 'completed', 'failed', 'refunded', 'pending_review', 'cancelled') NOT NULL DEFAULT 'pending',
+  reference_code VARCHAR(64) NOT NULL UNIQUE COMMENT 'Mã tham chiếu chuyển khoản ngân hàng duy nhất',
+  bank_name VARCHAR(100) DEFAULT 'MB Bank (Ngân hàng Quân Đội)',
+  bank_account_number VARCHAR(50) DEFAULT '0912345678',
+  bank_account_name VARCHAR(100) DEFAULT 'CONG TY DABCLEAN VIET NAM',
+  paid_at DATETIME DEFAULT NULL COMMENT 'Thời điểm thanh toán thành công',
+  verified_by INT DEFAULT NULL COMMENT 'Admin ID đã duyệt đối soát (nếu chuyển khoản)',
+  bank_transaction_code VARCHAR(100) DEFAULT NULL COMMENT 'Mã giao dịch ngân hàng thực tế',
+  refund_status ENUM('none', 'refunded', 'pending_review', 'rejected') NOT NULL DEFAULT 'none',
+  refund_reason TEXT DEFAULT NULL,
+  refunded_at DATETIME DEFAULT NULL,
+  refunded_by INT DEFAULT NULL,
+  notes TEXT DEFAULT NULL,
+  idempotency_key VARCHAR(100) DEFAULT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_comm_booking (booking_id),
+  INDEX idx_comm_staff (staff_id),
+  INDEX idx_comm_status (status),
+  INDEX idx_comm_ref (reference_code),
+  CONSTRAINT fk_comm_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
+  CONSTRAINT fk_comm_staff FOREIGN KEY (staff_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_comm_admin FOREIGN KEY (verified_by) REFERENCES users(id) ON DELETE SET NULL,
+  CONSTRAINT fk_comm_refund_admin FOREIGN KEY (refunded_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------

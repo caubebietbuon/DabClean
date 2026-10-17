@@ -7,6 +7,7 @@ const path = require('path');
 const BookingModel = require('../models/bookingModel');
 const UserModel = require('../models/userModel');
 const WalletModel = require('../models/walletModel');
+const CommissionPaymentModel = require('../models/commissionPaymentModel');
 const { uploadDirectory } = require('../middleware/jobPhotoUpload');
 const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
 const { sanitizeInput } = require('../utils/sanitize');
@@ -36,6 +37,54 @@ async function getChecklistProgress(booking) {
 }
 
 const staffController = {
+  // 0a. Lấy danh sách việc làm khả dụng để nhận ca (GET /api/staff/available-bookings)
+  async getAvailableBookings(req, res, next) {
+    try {
+      const bookings = await CommissionPaymentModel.getAvailableBookingsForStaff(req.user.id);
+      res.json({
+        success: true,
+        count: bookings.length,
+        data: bookings
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 0b. Nhân viên tiếp nhận công việc & thanh toán chiết khấu (POST /api/staff/tasks/:id/accept)
+  async acceptBooking(req, res, next) {
+    try {
+      const taskId = parseInt(req.params.id, 10);
+      const { payment_method = 'wallet', idempotency_key } = req.body;
+
+      const result = await CommissionPaymentModel.initiatePayment({
+        bookingId: taskId,
+        staffId: req.user.id,
+        paymentMethod: payment_method,
+        idempotencyKey: idempotency_key || null
+      });
+
+      if (result.requires_bank_transfer) {
+        return res.status(200).json({
+          success: true,
+          requires_bank_transfer: true,
+          code: 'PAYMENT_REQUIRED',
+          message: result.message,
+          data: result.data
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        requires_bank_transfer: false,
+        message: result.message,
+        data: result.data
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
   // 1. Lấy danh sách công việc được phân công cho nhân viên (GET /api/staff/tasks)
   async getMyTasks(req, res, next) {
     try {
@@ -330,22 +379,44 @@ const staffController = {
 
       const isSameStatus = status === booking.status;
 
-      // Bảo vệ: Kiểm tra điều kiện ví tín dụng (creditBalance >= 100000) và trạng thái đơn khi nhận việc
+      // Nghiệp vụ mới: Nhân viên nhận ca bắt buộc phải thanh toán chiết khấu trước khi nhận đơn
       if (!isSameStatus && status === 'confirmed') {
-        // Kiểm tra điều kiện ví tín dụng: creditBalance >= 100000
-        const eligibility = await WalletModel.checkStaffBookingEligibility(req.user.id);
-        if (!eligibility.eligible) {
+        const { creditWallet } = await WalletModel.getOrCreateStaffWallets(req.user.id);
+        const creditBalance = parseFloat(creditWallet.balance) || 0;
+        if (creditBalance < 0) {
           return res.status(403).json({
             success: false,
             code: 'INSUFFICIENT_CREDIT_BALANCE',
-            message: `Số dư ví tín dụng hiện tại (${eligibility.creditBalance.toLocaleString('vi-VN')} đ) không đủ điều kiện nhận việc (yêu cầu tối thiểu 100.000 đ). Bạn cần nạp hoặc chuyển thêm ít nhất ${eligibility.amountNeeded.toLocaleString('vi-VN')} đ.`,
-            data: eligibility
+            message: `Ví tín dụng đang âm (${creditBalance.toLocaleString('vi-VN')} đ). Không thể nhận việc khi ví đang âm.`,
+            data: { credit_balance: creditBalance }
           });
         }
 
-        if (booking.status !== 'assigned') {
-          return res.status(409).json({ success: false, message: 'Chỉ có thể xác nhận công việc vừa được quản trị viên phân công.' });
+        const paymentResult = await CommissionPaymentModel.initiatePayment({
+          bookingId: taskId,
+          staffId: req.user.id,
+          paymentMethod: req.body.payment_method || 'wallet',
+          idempotencyKey: req.body.idempotency_key || null
+        });
+
+        if (paymentResult.requires_bank_transfer) {
+          return res.status(200).json({
+            success: true,
+            requires_bank_transfer: true,
+            code: 'PAYMENT_REQUIRED',
+            message: paymentResult.message,
+            data: paymentResult.data
+          });
         }
+
+        const updated = await BookingModel.getById(taskId);
+        return res.json({
+          success: true,
+          requires_bank_transfer: false,
+          message: paymentResult.message || `Đã thanh toán chiết khấu và nhận công việc #${updated.booking_code}.`,
+          data: updated,
+          commission: paymentResult.data
+        });
       }
       if (!isSameStatus && status === 'arrived' && booking.status !== 'confirmed') {
         return res.status(409).json({ success: false, message: 'Hãy xác nhận nhận việc trước khi báo đã đến nhà khách hàng.' });
@@ -406,6 +477,19 @@ const staffController = {
       );
       if (!changed && !isSameStatus) {
         return res.status(409).json({ success: false, message: 'Trạng thái công việc vừa thay đổi. Hãy tải lại danh sách.' });
+      }
+
+      if (status === 'cancelled') {
+        try {
+          await CommissionPaymentModel.handleCancellationRefund({
+            bookingId: taskId,
+            cancelReason: sanitizedCancelReason,
+            fault: 'staff',
+            adminId: req.user.id
+          });
+        } catch (commErr) {
+          console.error('Lỗi ghi nhận hoàn chiết khấu khi nhân viên hủy ca:', commErr.message);
+        }
       }
 
       const updated = await BookingModel.getById(taskId);

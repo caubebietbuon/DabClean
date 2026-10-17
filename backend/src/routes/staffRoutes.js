@@ -11,7 +11,9 @@ const { errorHandler } = require('../middleware/errorHandler');
 // Tất cả các route nhân viên đều yêu cầu đăng nhập và có quyền role = 'staff' (hoặc 'admin')
 router.use(verifyToken, staffRequired);
 
-// 1. Quản lý công việc được giao
+// 1. Quản lý công việc được giao & nhận ca
+router.get('/available-bookings', staffController.getAvailableBookings);
+router.post('/tasks/:id/accept', staffController.acceptBooking);
 router.get('/photos/:filename', staffController.getTaskPhoto);
 router.get('/tasks', staffController.getMyTasks);
 router.get('/tasks/:id', staffController.getTaskDetail);

@@ -8,6 +8,7 @@ const ServiceModel = require('../models/serviceModel');
 const UserModel = require('../models/userModel');
 const PartnerModel = require('../models/partnerModel');
 const WalletModel = require('../models/walletModel');
+const CommissionPaymentModel = require('../models/commissionPaymentModel');
 const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
 const { sanitizeInput } = require('../utils/sanitize');
 
@@ -106,6 +107,21 @@ const adminController = {
           const changed = await BookingModel.updateStatus(id, status, sanitizedReason, booking.status);
           if (!changed && status !== booking.status) {
             return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi bởi người khác. Vui lòng tải lại.' });
+          }
+        }
+
+        // Xử lý hoàn khoản chiết khấu nhân viên theo trách nhiệm lỗi
+        if (booking.commission_status === 'paid') {
+          const fault = req.body.fault || (req.body.staff_fault === true ? 'staff' : (req.body.staff_fault === false ? 'customer' : 'unclear'));
+          try {
+            await CommissionPaymentModel.handleCancellationRefund({
+              bookingId: id,
+              cancelReason: sanitizedReason || 'Quản trị viên hủy đơn',
+              fault,
+              adminId: req.user.id
+            });
+          } catch (commErr) {
+            console.error('Lỗi hoàn chiết khấu nhân viên khi Admin hủy đơn:', commErr.message);
           }
         }
       } else {
@@ -1093,6 +1109,101 @@ const adminController = {
           status: 'rejected',
           rejection_reason: sanitizedRejectionReason
         }
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 7. Quản lý & đối soát thanh toán chiết khấu nhận ca (GET /api/admin/commission/payments)
+  async getCommissionPayments(req, res, next) {
+    try {
+      const { status, payment_method, search, page = 1, limit = 50 } = req.query;
+      const parsedLimit = parseInt(limit, 10) || 50;
+      const offset = (Math.max(1, parseInt(page, 10) || 1) - 1) * parsedLimit;
+
+      const payments = await CommissionPaymentModel.getAllForAdmin({
+        status,
+        paymentMethod: payment_method,
+        search,
+        limit: parsedLimit,
+        offset
+      });
+
+      res.json({
+        success: true,
+        count: payments.length,
+        data: payments
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 8. Admin xác nhận chuyển khoản thủ công cho khoản chiết khấu (POST /api/admin/commission/confirm-bank-transfer)
+  async confirmBankTransferManual(req, res, next) {
+    try {
+      const { reference_code, amount, transaction_id, note } = req.body;
+      if (!reference_code) {
+        return res.status(400).json({
+          success: false,
+          message: 'Vui lòng cung cấp mã tham chiếu chuyển khoản (reference_code).'
+        });
+      }
+      if (amount === undefined || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Vui lòng cung cấp số tiền thực nhận chính xác.'
+        });
+      }
+
+      const result = await CommissionPaymentModel.verifyBankTransfer({
+        referenceCode: reference_code,
+        amount: parseFloat(amount),
+        transactionId: transaction_id || `ADMIN-CONFIRM-${Date.now()}`,
+        verifiedBy: req.user.id,
+        note: note ? sanitizeInput(note) : 'Quản trị viên xác nhận chuyển khoản thủ công qua đối soát sao kê ngân hàng'
+      });
+
+      res.json({
+        success: true,
+        message: result.message,
+        data: result
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 9. Phê duyệt hoặc từ chối hoàn chiết khấu (POST /api/admin/commission/review-refund)
+  async reviewCommissionRefund(req, res, next) {
+    try {
+      const { payment_id, decision, refund_method = 'wallet', note } = req.body;
+      if (!payment_id) {
+        return res.status(400).json({
+          success: false,
+          message: 'Vui lòng cung cấp mã ID giao dịch thanh toán chiết khấu (payment_id).'
+        });
+      }
+      if (!['approve', 'reject'].includes(decision)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Quyết định duyệt phải là "approve" hoặc "reject".'
+        });
+      }
+
+      const result = await CommissionPaymentModel.reviewCommissionRefund({
+        paymentId: parseInt(payment_id, 10),
+        decision,
+        refundMethod: refund_method,
+        adminId: req.user.id,
+        note: note ? sanitizeInput(note) : null
+      });
+
+      res.json({
+        success: true,
+        message: result.message,
+        data: result
       });
     } catch (err) {
       next(err);

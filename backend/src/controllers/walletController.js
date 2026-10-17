@@ -2,6 +2,7 @@
 // DABCLEAN BACKEND - Wallet Controller (Ví DabClean)
 // ============================================================
 const WalletModel = require('../models/walletModel');
+const CommissionPaymentModel = require('../models/commissionPaymentModel');
 const { sanitizeInput } = require('../utils/sanitize');
 
 const walletController = {
@@ -251,41 +252,13 @@ const walletController = {
   },
 
   // 12. Nhân viên: Nạp tiền vào Ví Tín Dụng (POST /api/wallet/staff/topup-credit)
+  // NGHIỆP VỤ MỚI: ĐÃ VÔ HIỆU HÓA HOÀN TOÀN CHỨC NĂNG NẠP CHỦ ĐỘNG
   async topupStaffCredit(req, res, next) {
-    try {
-      const { amount, idempotency_key, description } = req.body;
-      const parsedAmount = parseFloat(amount);
-
-      if (isNaN(parsedAmount) || parsedAmount <= 0) {
-        return res.status(400).json({
-          success: false,
-          message: 'Số tiền nạp vào Ví tín dụng phải là số dương lớn hơn 0 VNĐ.'
-        });
-      }
-      if (parsedAmount < 10000) {
-        return res.status(400).json({
-          success: false,
-          message: 'Số tiền nạp tối thiểu vào Ví tín dụng là 10.000 VNĐ.'
-        });
-      }
-
-      const cleanDesc = description ? sanitizeInput(description) : 'Nạp tiền vào Ví tín dụng đối tác CleanNova (Sandbox)';
-      const result = await WalletModel.topupCreditWallet({
-        staffId: req.user.id,
-        amount: parsedAmount,
-        idempotencyKey: idempotency_key || null,
-        description: cleanDesc,
-        referenceType: 'sandbox_staff_credit'
-      });
-
-      res.status(200).json({
-        success: true,
-        message: `Nạp thành công ${Math.round(parsedAmount).toLocaleString('vi-VN')} đ vào Ví tín dụng đối tác!`,
-        data: result
-      });
-    } catch (err) {
-      next(err);
-    }
+    return res.status(403).json({
+      success: false,
+      code: 'FEATURE_DISABLED',
+      message: 'Chức năng nạp tiền chủ động vào Ví Tín Dụng đã bị vô hiệu hóa theo quy định mới. Khi nhận đơn, nếu ví không đủ số dư, hệ thống sẽ tạo lệnh chuyển khoản ngân hàng trực tiếp cho toàn bộ khoản chiết khấu của đơn đó.'
+    });
   },
 
   // 13. Nhân viên: Chuyển tiền từ Ví Thu Nhập sang Ví Tín Dụng (POST /api/wallet/staff/transfer)
@@ -326,6 +299,74 @@ const walletController = {
       res.status(200).json({
         success: true,
         data: list
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 15. Webhook nhận thông báo chuyển khoản chiết khấu từ ngân hàng (POST /api/wallet/commission/webhook)
+  async handleCommissionWebhook(req, res, next) {
+    try {
+      const { reference_code, ref_code, content, amount, transaction_id, txn_id } = req.body;
+      const ref = reference_code || ref_code || (content && content.match(/DABCOMM\w+/i) ? content.match(/DABCOMM\w+/i)[0] : null);
+      const parsedAmount = parseFloat(amount);
+      const txnId = transaction_id || txn_id || `BANK-WH-${Date.now()}`;
+
+      if (!ref) {
+        return res.status(400).json({
+          success: false,
+          message: 'Không tìm thấy mã tham chiếu thanh toán chiết khấu (reference_code) trong dữ liệu webhook.'
+        });
+      }
+      if (isNaN(parsedAmount) || parsedAmount <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'Số tiền giao dịch webhook không hợp lệ.'
+        });
+      }
+
+      const result = await CommissionPaymentModel.verifyBankTransfer({
+        referenceCode: ref,
+        amount: parsedAmount,
+        transactionId: txnId,
+        verifiedBy: null,
+        note: `Webhook đối tác ngân hàng: giao dịch #${txnId}`
+      });
+
+      return res.status(200).json({
+        success: true,
+        message: result.message || 'Xác nhận chuyển khoản chiết khấu thành công.',
+        data: result
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 16. Lấy trạng thái thanh toán chiết khấu ngân hàng (GET /api/wallet/commission/payment/:refCode)
+  async getCommissionPaymentStatus(req, res, next) {
+    try {
+      const { refCode } = req.params;
+      const payment = await CommissionPaymentModel.getPaymentByReferenceCode(refCode);
+      if (!payment) {
+        return res.status(404).json({
+          success: false,
+          message: 'Không tìm thấy thông tin yêu cầu thanh toán chiết khấu này.'
+        });
+      }
+
+      // Bảo vệ: Chỉ chính nhân viên tạo yêu cầu hoặc Admin mới được xem
+      if (req.user && req.user.role !== 'admin' && payment.staff_id !== req.user.id) {
+        return res.status(403).json({
+          success: false,
+          message: 'Bạn không có quyền xem thông tin thanh toán này.'
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: payment
       });
     } catch (err) {
       next(err);

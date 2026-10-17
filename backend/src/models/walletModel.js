@@ -601,6 +601,12 @@ const WalletModel = {
    * Nếu số dư ví tín dụng đang âm, tiền nạp tự động bù khoản âm trước khi tạo số dư dương
    */
   async topupCreditWallet({ staffId, amount, idempotencyKey = null, description = 'Nạp tiền vào Ví tín dụng CleanNova', referenceType = 'sandbox_topup', referenceId = null }) {
+    if (referenceType === 'sandbox_staff_credit' || referenceType === 'staff_direct') {
+      const error = new Error('Chức năng nạp tiền chủ động vào Ví Tín Dụng đã bị vô hiệu hóa.');
+      error.statusCode = 403;
+      error.code = 'FEATURE_DISABLED';
+      throw error;
+    }
     const parsedAmount = Math.round(parseFloat(amount) || 0);
     if (isNaN(parsedAmount) || parsedAmount <= 0) {
       const error = new Error('Số tiền nạp phải là số dương lớn hơn 0.');
@@ -964,27 +970,37 @@ const WalletModel = {
       const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
 
       // 4. BƯỚC 1: Trừ chiết khấu từ Ví Tín Dụng (Áp dụng cho CẢ ĐƠN TIỀN MẶT và TRỰC TUYẾN)
-      // Cho phép số dư âm khi chiết khấu vượt số dư hiện tại (nghĩa vụ chiết khấu)
+      // NẾU CHIẾT KHẤU ĐÃ ĐƯỢC THU TRƯỚC ĐÓ KHI NHẬN ĐƠN (commission_status === 'paid'),
+      // KHÔNG ĐƯỢC TRỪ TIẾP LẦN HAI ĐỂ BẢO ĐẢM NGUYÊN TẮC KHÔNG TRỪ TIỀN TRÙNG LẶP.
       const creditBefore = parseFloat(creditWallet.balance) || 0;
-      const creditAfter = creditBefore - platformCommission;
+      let creditAfter = creditBefore;
+      let txCommId = null;
 
-      await connection.query('UPDATE wallets SET balance = ? WHERE id = ?', [creditAfter, creditWallet.id]);
+      if (booking.commission_status === 'paid') {
+        // Chiết khấu đã được thanh toán từ trước (bằng trừ ví lúc nhận ca hoặc chuyển khoản ngân hàng)
+        // Bỏ qua bước trừ ví tín dụng tại đây
+      } else {
+        // Áp dụng cho các đơn cũ chưa thu chiết khấu lúc nhận việc
+        creditAfter = creditBefore - platformCommission;
+        await connection.query('UPDATE wallets SET balance = ? WHERE id = ?', [creditAfter, creditWallet.id]);
 
-      const commTxnCode = `WTX-COMM-${dateStr}-${randomHex}`;
-      const commDesc = `Khấu trừ chiết khấu CleanNova đơn #${booking.booking_code} (${Math.round(commissionRate * 100)}% của ${grossWage.toLocaleString('vi-VN')} đ)`;
-      const [txComm] = await connection.query(
-        `INSERT INTO wallet_transactions 
-         (transaction_code, wallet_id, user_id, type, amount, balance_before, balance_after, status, description, reference_type, reference_id, idempotency_key)
-         VALUES (?, ?, ?, 'commission_deduction', ?, ?, ?, 'completed', ?, 'booking', ?, ?)`,
-        [commTxnCode, creditWallet.id, booking.staff_id, platformCommission, creditBefore, creditAfter, commDesc, String(booking.id), `COMMISSION-BOOKING-${booking.id}`]
-      );
+        const commTxnCode = `WTX-COMM-${dateStr}-${randomHex}`;
+        const commDesc = `Khấu trừ chiết khấu DabClean đơn #${booking.booking_code} (${Math.round(commissionRate * 100)}% của ${grossWage.toLocaleString('vi-VN')} đ)`;
+        const [txComm] = await connection.query(
+          `INSERT INTO wallet_transactions 
+           (transaction_code, wallet_id, user_id, type, amount, balance_before, balance_after, status, description, reference_type, reference_id, idempotency_key)
+           VALUES (?, ?, ?, 'commission_deduction', ?, ?, ?, 'completed', ?, 'booking', ?, ?)`,
+          [commTxnCode, creditWallet.id, booking.staff_id, platformCommission, creditBefore, creditAfter, commDesc, String(booking.id), `COMMISSION-BOOKING-${booking.id}`]
+        );
+        txCommId = txComm.insertId;
 
-      await connection.query(
-        `INSERT INTO wallet_ledger_entries 
-         (transaction_id, wallet_id, entry_type, amount, running_balance, notes)
-         VALUES (?, ?, 'debit', ?, ?, ?)`,
-        [txComm.insertId, creditWallet.id, platformCommission, creditAfter, `Khấu trừ chiết khấu CleanNova đơn #${booking.booking_code}`]
-      );
+        await connection.query(
+          `INSERT INTO wallet_ledger_entries 
+           (transaction_id, wallet_id, entry_type, amount, running_balance, notes)
+           VALUES (?, ?, 'debit', ?, ?, ?)`,
+          [txCommId, creditWallet.id, platformCommission, creditAfter, `Khấu trừ chiết khấu DabClean đơn #${booking.booking_code}`]
+        );
+      }
 
       // 5. BƯỚC 2: Xử lý Ví Thu Nhập theo phương thức thanh toán
       let earningsBefore = parseFloat(earningsWallet.balance) || 0;
@@ -1030,9 +1046,14 @@ const WalletModel = {
       );
 
       // 7. Ghi staff_payout_logs để phục vụ kiểm toán tài chính
-      const payoutNote = note || (isCashPayment 
-        ? `Đơn tiền mặt: Trừ chiết khấu ${platformCommission.toLocaleString('vi-VN')} đ từ Ví tín dụng`
-        : `Đơn trực tuyến: Trừ chiết khấu ${platformCommission.toLocaleString('vi-VN')} đ (Tín dụng), Cộng thù lao ${netWage.toLocaleString('vi-VN')} đ (Thu nhập)`);
+      const isAlreadyPaid = booking.commission_status === 'paid';
+      const payoutNote = note || (isAlreadyPaid
+        ? (isCashPayment
+            ? `Đơn tiền mặt: Chiết khấu đã thu trước khi nhận việc (${platformCommission.toLocaleString('vi-VN')} đ)`
+            : `Đơn trực tuyến: Chiết khấu đã thu trước, Cộng thù lao ${netWage.toLocaleString('vi-VN')} đ (Thu nhập)`)
+        : (isCashPayment 
+            ? `Đơn tiền mặt: Trừ chiết khấu ${platformCommission.toLocaleString('vi-VN')} đ từ Ví tín dụng`
+            : `Đơn trực tuyến: Trừ chiết khấu ${platformCommission.toLocaleString('vi-VN')} đ (Tín dụng), Cộng thù lao ${netWage.toLocaleString('vi-VN')} đ (Thu nhập)`));
       
       await connection.query(
         `INSERT INTO staff_payout_logs 
