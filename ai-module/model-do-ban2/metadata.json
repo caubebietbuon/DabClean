@@ -7,15 +7,55 @@
   "embeddingDim": 1024,
   "backbone": "mobilenet-v1-1.0",
   "imageSize": 224,
-  "hiddenUnits": 64,
-  "dropout": 0.3,
-  "epochs": 40,
-  "trainedAt": "2026-10-16T15:38:26.393Z",
+  "architecture": {
+    "hiddenUnits": [
+      256,
+      128
+    ],
+    "dropouts": [
+      0.5,
+      0.3
+    ],
+    "params": 295683
+  },
+  "training": {
+    "epochs": 30,
+    "epochsRun": 13,
+    "bestEpoch": 6,
+    "batch": 32,
+    "augmentPerImage": 1,
+    "classWeightRatBan": 1.5,
+    "classWeightDetail": {
+      "sach": 1.763,
+      "hoi-ban": 0.847,
+      "rat-ban": 1.198
+    },
+    "earlyStopped": true
+  },
+  "trainedAt": "2026-10-17T16:30:26.797Z",
   "datasetCounts": {
     "sach": 200,
-    "hoi-ban": 198,
-    "rat-ban": 199
+    "hoi-ban": 416,
+    "rat-ban": 441
   },
-  "finalTrainAccuracy": 0.9999999403953552,
-  "finalValAccuracy": 0.8166666626930237
+  "samplesTotal": 2114,
+  "valAccuracy": 0.874,
+  "confusionMatrix": {
+    "sach": {
+      "sach": 77,
+      "hoi-ban": 2,
+      "rat-ban": 1
+    },
+    "hoi-ban": {
+      "sach": 12,
+      "hoi-ban": 132,
+      "rat-ban": 22
+    },
+    "rat-ban": {
+      "sach": 3,
+      "hoi-ban": 13,
+      "rat-ban": 160
+    }
+  },
+  "pairErrorHoiRat": 0.102
 }

@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "labels": [
+      "sach",
+      "hoi-ban",
+      "rat-ban"
+    ],
+    "embeddingDim": 1024,
+    "backbone": "mobilenet-v1-1.0",
+    "imageSize": 224,
+    "architecture": {
+      "hiddenUnits": [
+        256,
+        128
+      ],
+      "dropouts": [
+        0.5,
+        0.3
+      ],
+      "params": 295683
+    },
+    "training": {
+      "epochs": 30,
+      "epochsRun": 13,
+      "bestEpoch": 6,
+      "batch": 32,
+      "augmentPerImage": 1,
+      "classWeightRatBan": 1.5,
+      "classWeightDetail": {
+        "sach": 1.763,
+        "hoi-ban": 0.847,
+        "rat-ban": 1.198
+      },
+      "earlyStopped": true
+    },
+    "trainedAt": "2026-10-17T16:30:26.797Z",
+    "datasetCounts": {
+      "sach": 200,
+      "hoi-ban": 416,
+      "rat-ban": 441
+    },
+    "samplesTotal": 2114,
+    "valAccuracy": 0.874,
+    "confusionMatrix": {
+      "sach": {
+        "sach": 77,
+        "hoi-ban": 2,
+        "rat-ban": 1
+      },
+      "hoi-ban": {
+        "sach": 12,
+        "hoi-ban": 132,
+        "rat-ban": 22
+      },
+      "rat-ban": {
+        "sach": 3,
+        "hoi-ban": 13,
+        "rat-ban": 160
+      }
+    },
+    "pairErrorHoiRat": 0.102
+  },
+  "samplePerClass": 6,
+  "byMode": {
+    "hybrid": {
+      "scores": {
+        "sach": {
+          "count": 6,
+          "correct": 4,
+          "accuracy": 0.667,
+          "avgScore": 25.3,
+          "predictedAs": {
+            "sach": 4,
+            "rat-ban": 2
+          }
+        },
+        "hoi-ban": {
+          "count": 6,
+          "correct": 3,
+          "accuracy": 0.5,
+          "avgScore": 63.7,
+          "predictedAs": {
+            "rat-ban": 3,
+            "hoi-ban": 3
+          }
+        },
+        "rat-ban": {
+          "count": 6,
+          "correct": 6,
+          "accuracy": 1,
+          "avgScore": 96.6,
+          "predictedAs": {
+            "rat-ban": 6
+          }
+        }
+      },
+      "cm": {
+        "accuracy": 0.722,
+        "matrix": {
+          "sach": {
+            "sach": 4,
+            "hoi-ban": 0,
+            "rat-ban": 2
+          },
+          "hoi-ban": {
+            "sach": 0,
+            "hoi-ban": 3,
+            "rat-ban": 3
+          },
+          "rat-ban": {
+            "sach": 0,
+            "hoi-ban": 0,
+            "rat-ban": 6
+          }
+        }
+      },
+      "pair": 0.25
+    }
+  },
+  "regression": {
+    "baseline": 0.9,
+    "hybrid": 0.667,
+    "whole": null,
+    "pass": false
+  },
+  "pairError": null,
+  "ratHighScore": {
+    "count": 10,
+    "pass": 10,
+    "avgScore": 97.7
+  },
+  "checks": [
+    {
+      "label": "Nhầm hoi-ban ↔ rat-ban < 10% (hybrid)",
+      "pass": false
+    },
+    {
+      "label": "Lớp sạch không giảm (< baseline)",
+      "pass": false
+    },
+    {
+      "label": "Ảnh ngập rác >85 điểm",
+      "pass": true
+    }
+  ],
+  "allPass": false
+}
