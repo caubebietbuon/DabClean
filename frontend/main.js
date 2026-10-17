@@ -19,14 +19,61 @@ const translations = {
     nav_why: 'Vì sao chọn?',
     nav_guide: 'Hướng dẫn',
     nav_timeline: 'Quy trình',
+    nav_workflow: 'Quy trình',
+    nav_commitments: 'Cam kết',
+    nav_book_now: 'Đặt lịch',
     nav_partner: 'Trở thành đối tác',
+    nav_explore: 'Khám phá',
+    nav_my_bookings: 'Đơn của tôi',
+    nav_wallet: 'Ví CleanNova',
+    nav_admin: 'Quản trị',
+    nav_staff: 'Nhân viên',
+    nav_profile: 'Hồ sơ cá nhân',
     btn_login: 'Đăng nhập',
+    btn_register: 'Đăng ký',
     btn_logout: 'Đăng xuất',
     btn_book_now: 'Đặt lịch ngay',
+    btn_learn_more: 'Tìm hiểu dịch vụ',
+
+    /* --- Notification Dropdown --- */
+    notif_header_title: 'Thông báo Cleanova',
+    notif_mark_read: 'Đã đọc',
+    notif_1_title: '🎉 Mã ưu đãi 20% đã sẵn sàng',
+    notif_1_desc: 'Nhập mã CLEANOVA20 khi đặt lịch để giảm trực tiếp 20%.',
+    notif_just_now: 'Vừa xong',
+    notif_2_title: '⚡ Đơn đặt gần nhất',
+    notif_2_desc: 'Đơn CNV-2026-0001 đang ở trạng thái xác nhận.',
+    notif_1_hour_ago: '1 giờ trước',
+
+    /* --- Mobile Drawer Card --- */
+    mobile_partner_title: 'Trở thành đối tác Cleanova',
+    mobile_partner_desc: 'Đăng ký tham gia đội ngũ & nhận việc',
+
+    /* --- Badges & Chips --- */
+    badge_cleaning: '🧹 Vệ sinh',
+    badge_care: '🏡 Chăm sóc tại nhà',
+    service_1_chip_1: '⏱️ Tối thiểu: 1 giờ',
+    service_2_chip_1: '⏱️ Ước tính: 4 - 6 giờ',
+    service_2_chip_2: '🏷️ Tiết kiệm 20%',
+    service_3_chip_1: '⏱️ Ước tính: 2 - 3 giờ',
+    service_3_chip_2: '💼 Doanh nghiệp',
+    service_4_chip_1: '⏱️ Ước tính: 1 - 2 giờ',
+    service_4_chip_2: '🔥 Hơi nóng 140°C',
+    service_5_chip_1: '⏱️ Ước tính theo công trình',
+    service_5_chip_2: '📐 m² / Trọn gói / Ngày',
+    service_6_chip_1: '🧸 Hỗ trợ sinh hoạt & vui chơi an toàn',
+    service_6_chip_2: '⏱️ Tối thiểu: 2 giờ',
+    service_7_chip_1: '❤️ Đồng hành & hỗ trợ sinh hoạt hằng ngày',
+    service_7_chip_2: '⏱️ Tối thiểu: 2 giờ',
+    service_8_chip_1: '📋 Hỗ trợ sinh hoạt thông thường theo kế hoạch',
+    service_8_chip_2: '⏱️ Tối thiểu: 2 giờ',
 
     /* --- Hero Section --- */
     hero_badge: '🟢 Dịch vụ Vệ sinh & Chăm sóc gia đình tại nhà',
+    hero_badge_note: 'Minh bạch chi phí · Đặt lịch tức thì',
     hero_title: 'Chăm sóc ngôi nhà, an tâm chăm sóc gia đình',
+    hero_title_1: 'Chăm sóc ngôi nhà,',
+    hero_title_highlight: 'an tâm chăm sóc gia đình',
     hero_subtitle: 'Từ không gian sống sạch sẽ đến sự chăm sóc tận tâm dành cho những người thân yêu. CleanNova giúp bạn tìm dịch vụ phù hợp ngay tại nhà.',
     hero_cta_explore: 'Khám phá dịch vụ',
     hero_cta_book: 'Đặt lịch ngay',
@@ -75,7 +122,7 @@ const translations = {
     btn_detail: 'Xem chi tiết',
     btn_book_service: 'Đặt dịch vụ',
 
-    /* --- Why CleanNova Section (5 Tiêu chí thực tế) --- */
+    /* --- Why CleanNova Section --- */
     why_badge: '✨ Vì sao chọn chúng tôi',
     why_title: 'Vì sao chọn CleanNova?',
     why_subtitle: 'Cam kết đem lại trải nghiệm dịch vụ tiện lợi, minh bạch và an tâm cho từng tổ ấm gia đình.',
@@ -95,24 +142,142 @@ const translations = {
     workflow_badge: '⚡ Quy trình đặt dịch vụ',
     workflow_title: '4 bước đặt lịch dịch vụ tại CleanNova',
     workflow_subtitle: 'Từ đặt lịch đến khi hoàn thành, mọi công đoạn diễn ra minh bạch, an tâm và thuận tiện.',
+    workflow_step_badge_1: 'Bước 01',
     workflow_step_1_title: 'Chọn dịch vụ phù hợp',
     workflow_step_1_desc: 'Duyệt danh mục dịch vụ vệ sinh hoặc chăm sóc tại nhà để chọn gói giải pháp phù hợp với nhu cầu gia đình.',
+    workflow_step_badge_2: 'Bước 02',
     workflow_step_2_title: 'Chọn ngày, giờ và thời lượng',
     workflow_step_2_desc: 'Linh hoạt chọn khung giờ thuận tiện và thời lượng thực hiện dịch vụ (tối thiểu 2 giờ cho dịch vụ chăm sóc).',
+    workflow_step_badge_3: 'Bước 03',
     workflow_step_3_title: 'Xem báo giá và xác nhận đặt lịch',
     workflow_step_3_desc: 'Hệ thống tự động tính toán chi phí minh bạch; bạn kiểm tra thông tin chi tiết và gửi đơn đặt lịch an tâm.',
+    workflow_step_badge_4: 'Bước 04',
     workflow_step_4_title: 'Theo dõi booking và thanh toán',
     workflow_step_4_desc: 'Nắm bắt tiến độ đơn hàng theo thời gian thực và thanh toán thuận tiện qua nhiều phương thức an toàn.',
+    workflow_cta_title: 'Sẵn sàng trải nghiệm dịch vụ tiện lợi?',
+    workflow_cta_desc: 'Chọn gói dịch vụ phù hợp ngay hôm nay để nhận được sự phục vụ tận tâm.',
+    workflow_cta_btn_book: 'Đặt dịch vụ ngay',
+    workflow_cta_btn_pricing: 'Xem bảng giá chi tiết',
 
-    /* --- Pricing Section --- */
+    /* --- Pricing Section (Section 5) --- */
     pricing_badge: '💰 Bảng giá minh bạch',
     pricing_title: 'Bảng giá dịch vụ CleanNova',
     pricing_subtitle: 'Bảng giá niêm yết công khai, đồng bộ trực tiếp từ hệ thống, không phụ phí phát sinh ngoài thỏa thuận.',
+    pricing_tab_all: '✨ Tất cả gói',
+    pricing_tab_cleaning: '🧹 Dịch vụ vệ sinh',
+    pricing_tab_care: '🏡 Dịch vụ chăm sóc',
+    pricing_tab_child: '👶 Chăm sóc trẻ em',
+    pricing_tab_elderly: '👵 Chăm sóc người cao tuổi',
+    pricing_tab_patient: '🩺 Chăm sóc người bệnh',
 
-    /* --- Commitments Section --- */
+    pricing_card_1_title: 'Dọn dẹp nhà cửa theo giờ',
+    pricing_card_1_desc: 'Dọn dẹp linh hoạt các phòng khách, phòng ngủ, bếp và toilet theo nhu cầu.',
+    pricing_card_1_min: '⏱️ Tối thiểu: 1 giờ',
+    pricing_card_1_f1: 'Lau chùi, hút bụi sàn nhà và nội thất',
+    pricing_card_1_f2: 'Cọ rửa nhà tắm, bồn cầu sáng bóng',
+    pricing_card_1_f3: 'Lau khu vực bồn rửa bát và đổ rác',
+    pricing_card_1_f4: 'Mang đầy đủ dụng cụ vệ sinh cơ bản',
+
+    pricing_card_2_title: 'Tổng vệ sinh Deep Cleaning',
+    pricing_card_2_desc: 'Làm sạch sâu toàn diện từng ngóc ngách, trần tường và xử lý vết ố lâu ngày.',
+    pricing_card_2_min: '⏱️ Tối thiểu: 4 giờ',
+    pricing_card_2_f1: 'Vệ sinh toàn diện trần, tường, khe cửa, ban công',
+    pricing_card_2_f2: 'Đánh bóng sàn gạch/gỗ bằng máy chuyên dụng',
+    pricing_card_2_f3: 'Tẩy cặn canxi vách kính tắm và thiết bị sứ',
+    pricing_card_2_f4: 'Tẩy sạch dầu mỡ máy hút mùi và khu bếp',
+
+    pricing_card_3_title: 'Vệ sinh văn phòng & Workspace',
+    pricing_card_3_desc: 'Giải pháp dọn dẹp chuyên nghiệp cho công ty, phòng họp và showroom kinh doanh.',
+    pricing_card_3_min: '⏱️ Tối thiểu: 2 giờ',
+    pricing_card_3_f1: 'Lau dọn bàn làm việc, màn hình và thiết bị văn phòng',
+    pricing_card_3_f2: 'Hút bụi sàn thảm và khử khuẩn khu vực pantry',
+    pricing_card_3_f3: 'Cọ rửa toilet văn phòng, bổ sung vật tư tiêu hao',
+    pricing_card_3_f4: 'Thu gom rác thải và giữ không gian thơm mát',
+
+    pricing_card_4_title: 'Giặt Sofa, Nệm & Rèm cửa',
+    pricing_card_4_desc: 'Công nghệ phun hơi nước nóng 140°C diệt 99.9% vi khuẩn, mạt bụi và nấm mốc.',
+    pricing_card_4_min: '⏱️ Tối thiểu: 1 giờ',
+    pricing_card_4_f1: 'Hút bụi mịn công nghiệp sâu trong đệm mút',
+    pricing_card_4_f2: 'Tẩy điểm các vết ố trà, cà phê và dầu mỡ',
+    pricing_card_4_f3: 'Khử khuẩn nhiệt hơi nước nóng 140°C an toàn',
+    pricing_card_4_f4: 'Hút khô nhanh chóng, sử dụng lại sau 2 - 3 giờ',
+
+    pricing_card_5_title: 'Vệ sinh sau xây dựng',
+    pricing_card_5_desc: 'Thu gom rác thô, cạo sạch sơn xi măng bám dính và hút sạch bụi mịn công trình.',
+    pricing_card_5_min: '⏱️ Ước tính theo quy mô • Có giá trọn gói & theo ngày',
+    pricing_card_5_f1: 'Báo giá theo m², trọn gói hoặc nhân công theo ngày',
+    pricing_card_5_f2: 'Tẩy sạch vết sơn, xi măng bám trên kính và sàn',
+    pricing_card_5_f3: 'Hút bụi mịn công nghiệp & khử mùi toàn bộ ngóc ngách',
+    pricing_card_5_f4: 'Khảo sát tận nơi miễn phí cho công trình phức tạp',
+
+    pricing_card_6_title: 'Chăm sóc trẻ em tại nhà',
+    pricing_card_6_desc: 'Bảo mẫu đồng hành chu đáo, hỗ trợ sinh hoạt và vui chơi lành mạnh.',
+    pricing_card_6_min: '⏱️ Tối thiểu: 2 giờ',
+    pricing_card_6_f1: 'Đón bé và hỗ trợ vệ sinh cá nhân',
+    pricing_card_6_f2: 'Chuẩn bị bữa ăn nhẹ dinh dưỡng theo dặn dò',
+    pricing_card_6_f3: 'Kèm bé đọc sách, học bài và vui chơi theo tuổi',
+    pricing_card_6_f4: 'Nhân viên chu đáo, hòa nhã và kiên nhẫn',
+
+    pricing_card_7_title: 'Chăm sóc người cao tuổi',
+    pricing_card_7_desc: 'Điều dưỡng viên đồng hành tâm tình, hỗ trợ sinh hoạt và chăm sóc tận tâm.',
+    pricing_card_7_min: '⏱️ Tối thiểu: 2 giờ',
+    pricing_card_7_f1: 'Hỗ trợ sinh hoạt và vận động nhẹ an toàn',
+    pricing_card_7_f2: 'Chuẩn bị bữa ăn ấm nóng hợp khẩu vị người già',
+    pricing_card_7_f3: 'Nhắc nhở uống thuốc đúng giờ theo đơn bác sĩ',
+    pricing_card_7_f4: 'Trò chuyện tâm tình, giảm cảm giác cô đơn',
+
+    pricing_card_8_title: 'Chăm sóc người bệnh tại nhà',
+    pricing_card_8_desc: 'Hỗ trợ sinh hoạt và phục hồi thể chất thông thường theo kế hoạch.',
+    pricing_card_8_min: '⏱️ Tối thiểu: 2 giờ',
+    pricing_card_8_f1: 'Hỗ trợ sinh hoạt cá nhân, thay ga trải giường',
+    pricing_card_8_f2: 'Theo dõi chỉ số sinh tồn cơ bản (huyết áp, nhiệt độ)',
+    pricing_card_8_f3: 'Hỗ trợ dinh dưỡng nhẹ theo chế độ thống nhất',
+    pricing_card_8_f4: 'Hỗ trợ đời sống thông thường (không can thiệp y tế chuyên sâu)',
+
+    pricing_unit_hourly: 'VNĐ / giờ',
+    pricing_unit_session: 'VNĐ / lần',
+    pricing_unit_item: 'VNĐ / món',
+    pricing_unit_m2: 'VNĐ / m²',
+    btn_book_this_service: 'Đặt dịch vụ này',
+    btn_quote_book: 'Nhận báo giá & Đặt lịch',
+    pricing_err_title: 'Không thể tải bảng giá dịch vụ',
+    pricing_err_desc: 'Hệ thống tạm thời không thể kết nối tới máy chủ dữ liệu bảng giá. Vui lòng thử lại sau.',
+    btn_retry: 'Thử lại',
+
+    /* --- Commitments & Scope (Section 6) --- */
     commitments_badge: '🛡️ Cam kết & Quy định',
     commitments_title: 'Cam kết & Phạm vi dịch vụ',
     commitments_subtitle: 'Rõ ràng trong từng quy định để bảo vệ quyền lợi và sự an tâm tuyệt đối của quý khách hàng.',
+
+    scope_1_title: 'Phạm vi dịch vụ vệ sinh',
+    scope_1_f1: 'Lau dọn, hút bụi phòng khách, phòng ngủ và hành lang trong tầm với an toàn.',
+    scope_1_f2: 'Vệ sinh sàn nhà, ban công nội bộ và các khu vực sinh hoạt chung.',
+    scope_1_f3: 'Cọ rửa bồn cầu, lavabo, gương soi và tẩy cặn canxi vách kính tắm.',
+    scope_1_f4: 'Lau khu vực bồn rửa bát và bề mặt ngoài của thiết bị gia dụng.',
+
+    scope_2_title: 'Phạm vi chăm sóc tại nhà',
+    scope_2_f1: 'Hỗ trợ các nhu cầu sinh hoạt hàng ngày theo thỏa thuận giữa hai bên.',
+    scope_2_f2: 'Hỗ trợ ăn uống, chuẩn bị bữa ăn nhẹ dinh dưỡng hợp khẩu vị.',
+    scope_2_f3: 'Nhắc nhở uống thuốc đúng giờ theo đúng chỉ định của bác sĩ điều trị.',
+    scope_2_f4: 'Hỗ trợ đi dạo, trò chuyện tâm tình và vận động nhẹ nhàng an toàn.',
+
+    scope_3_title: 'Không bao gồm trong giá cơ sở',
+    scope_3_f1: 'Không lau kính hoặc dọn dẹp ở khu vực ngoài ban công cao nguy hiểm không có rào chắn.',
+    scope_3_f2: 'Không tháo dỡ thiết bị cơ điện, điện tử tinh vi hoặc hệ thống ống ngầm.',
+    scope_3_f3: 'Không bưng vác vật nặng quá định mức an toàn hoặc thu gom rác công nghiệp độc hại.',
+
+    scope_4_title: 'Chính sách đổi hoặc hủy lịch',
+    scope_4_f1: 'Khách hàng được đổi lịch hoặc hủy lịch trực tuyến tại trang "Đơn của tôi".',
+    scope_4_f2: 'Miễn phí khi đơn hàng đang ở trạng thái Chờ xử lý hoặc Đã xác nhận trước thời điểm hẹn.',
+    scope_4_f3: 'Trạng thái đơn được cập nhật tự động và minh bạch ngay trên hệ thống.',
+
+    scope_5_title: 'Cách thức liên hệ hỗ trợ',
+    scope_5_f1: 'Tổng đài hỗ trợ khách hàng: 1900-8888 (Hoạt động từ 8:00 - 20:00 hàng ngày).',
+    scope_5_f2: 'Hộp thư điện tử tiếp nhận: contact@cleanova.vn.',
+    scope_5_f3: 'Gửi yêu cầu hỗ trợ trực tiếp từ giao diện tài khoản cá nhân.',
+
+    scope_disclaimer_title: 'LƯU Ý QUAN TRỌNG VỀ DỊCH VỤ CHĂM SÓC NGƯỜI BỆNH:',
+    scope_disclaimer_desc: 'Dịch vụ chăm sóc người bệnh tại nhà của CleanNova là dịch vụ hỗ trợ sinh hoạt đời sống và thể chất thông thường, KHÔNG PHẢI dịch vụ điều trị y tế. Nhân viên CleanNova tuyệt đối không thực hiện các thủ thuật can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn thuốc, thay băng vết mổ phức tạp). Các nghiệp vụ chuyên môn y khoa chỉ được phép thực hiện khi có nhân sự có chứng chỉ hành nghề y tế hợp lệ theo quy định pháp luật và quy trình chuyên trách.',
 
     /* --- Calculator Section --- */
     calc_badge: '💰 Báo giá nhanh',
@@ -135,14 +300,30 @@ const translations = {
     calc_option_weekly: 'Hàng tuần (Giảm 15%)',
     calc_option_monthly: 'Hàng tháng (Giảm 10%)',
     calc_result_label: 'GIÁ ƯỚC TÍNH',
+    calc_initial_price: '300.000 VNĐ',
     calc_result_unit: '/lần dịch vụ',
     calc_discount_text: 'Tiết kiệm',
     calc_btn_continue: 'Tiếp tục đặt lịch →',
 
-    /* --- Partner Section --- */
+    /* --- Partner Section (Section 8) --- */
     partner_badge: 'Đồng hành phát triển',
     partner_title: 'Cùng CleanNova mang đến không gian sạch hơn',
     partner_desc: 'Tham gia đội ngũ đối tác cung cấp dịch vụ chuyên nghiệp, chủ động thời gian và phát triển thu nhập ổn định theo chính sách minh bạch của CleanNova.',
+    partner_step_1: 'Gửi hồ sơ đăng ký trực tuyến trên trang riêng biệt',
+    partner_step_2: 'Chờ Cleanova thẩm định và xét duyệt hồ sơ',
+    partner_step_3: 'Hoàn thiện quy trình tiếp nhận & hướng dẫn tiêu chuẩn',
+    partner_step_4: 'Bắt đầu nhận công việc sau khi hồ sơ được phê duyệt',
+    btn_partner_action: 'Trở thành đối tác Cleanova',
+    partner_card_eyebrow: '⭐ Cơ hội nghề nghiệp linh hoạt',
+    partner_card_status: 'Đang mở đơn',
+    partner_feature_1_title: 'Chủ động thời gian',
+    partner_feature_1_desc: 'Tự do đăng ký nhận ca trực sáng, chiều, tối hoặc ngày cuối tuần.',
+    partner_feature_2_title: 'Thu nhập rõ ràng',
+    partner_feature_2_desc: 'Thù lao hiển thị minh bạch cho từng đơn hoàn thành, theo đúng thỏa thuận.',
+    partner_feature_3_title: 'Dụng cụ & Hóa chất chuẩn mực',
+    partner_feature_3_desc: 'Được tiếp cận hướng dẫn kỹ thuật an toàn và dụng cụ làm sạch chuẩn 5 sao.',
+    partner_feature_4_title: 'Ứng dụng nhân viên tiện lợi',
+    partner_feature_4_desc: 'Giao diện làm việc riêng (Staff Portal) giúp theo dõi lịch trình và trạng thái ca.',
 
     /* --- Testimonials Section --- */
     reviews_badge: '💬 Đánh giá khách hàng',
@@ -163,7 +344,7 @@ const translations = {
     promo_subtitle: 'Áp dụng cho tất cả dịch vụ. Ưu đãi có giới hạn — Đặt ngay hôm nay!',
     promo_btn: 'Đặt ngay — Nhập mã CLEANOVA20',
 
-    /* --- FAQ Section (6 câu hỏi chuẩn theo yêu cầu) --- */
+    /* --- FAQ Section --- */
     faq_badge: '❓ Câu hỏi thường gặp',
     faq_title: 'Giải đáp thắc mắc của bạn',
     faq_subtitle: 'Tìm câu trả lời cho những câu hỏi phổ biến về dịch vụ của Cleanova.',
@@ -191,20 +372,47 @@ const translations = {
     footer_link_office: 'Vệ sinh văn phòng',
     footer_link_sofa: 'Giặt sofa & nệm hơi nóng',
     footer_link_construction: 'Vệ sinh sau xây dựng',
-    footer_col3_title: 'Về Cleanova',
+    footer_link_child: 'Chăm sóc trẻ em tại nhà',
+    footer_link_child_care: 'Chăm sóc trẻ em tại nhà',
+    footer_link_elderly: 'Chăm sóc người cao tuổi',
+    footer_link_elderly_care: 'Chăm sóc người cao tuổi',
+    footer_link_patient: 'Chăm sóc người bệnh tại nhà',
+    footer_link_patient_care: 'Chăm sóc người bệnh tại nhà',
+    footer_link_pricing: 'Bảng giá dịch vụ',
+    footer_col3_title: 'Khám phá',
     footer_link_about: 'Giới thiệu CleanNova',
     footer_link_career: 'Tuyển dụng',
     footer_link_partner: 'Trở thành đối tác',
     footer_link_blog: 'Blog',
     footer_link_contact: 'Liên hệ',
-    footer_link_login: 'Tài khoản & Đăng nhập',
-    footer_newsletter_title: 'Nhận thông báo ưu đãi',
-    footer_newsletter_desc: 'Đăng ký email để nhận thông tin khuyến mãi và tin tức hữu ích.',
+    footer_link_login: 'Đăng nhập / Đăng ký',
+    footer_link_steps: 'Quy trình dọn dẹp 6 bước',
+    footer_link_ai: 'Công nghệ AI Quét độ bẩn',
+    footer_link_why: 'Vì sao chọn CleanNova?',
+    footer_link_faq: 'Câu hỏi thường gặp (FAQ)',
+    footer_newsletter_title: 'Hỗ trợ & Đặt lịch',
+    footer_link_book_online: '⚡ Đặt lịch trực tuyến',
+    footer_link_track: 'Theo dõi đơn hàng của tôi',
+    footer_link_my_bookings: 'Theo dõi đơn hàng của tôi',
+    footer_link_address_book: 'Sổ địa chỉ & Tài khoản',
+    footer_link_profile: 'Sổ địa chỉ & Tài khoản',
+    footer_newsletter_desc: 'Nhận mã ưu đãi giảm 20% định kỳ:',
     footer_newsletter_placeholder: 'Nhập email của bạn...',
     footer_newsletter_btn: 'Đăng ký',
     footer_copyright: '© 2026 Cleanova Inc. Bảo lưu mọi quyền.',
     footer_privacy: 'Chính sách bảo mật',
     footer_terms: 'Điều khoản dịch vụ',
+    footer_link_commitments: 'Cam kết Cleanova Care',
+    footer_commitment: 'Cam kết Cleanova Care',
+
+    /* --- Modal Dialog --- */
+    modal_service_title: 'Chi tiết dịch vụ',
+    modal_label_price: 'Đơn giá niêm yết',
+    modal_label_min: 'Thời lượng tối thiểu',
+    modal_label_duration: 'Quy mô đề xuất',
+    modal_features_heading: 'Phạm vi thực hiện tiêu chuẩn:',
+    modal_btn_close: 'Đóng',
+    modal_btn_book: 'Đặt dịch vụ này ngay',
 
     /* --- Toast Messages --- */
     toast_booking_title: 'Đặt lịch thành công!',
@@ -228,14 +436,61 @@ const translations = {
     nav_why: 'Why Cleanova',
     nav_guide: 'How It Works',
     nav_timeline: 'Process',
+    nav_workflow: 'Workflow',
+    nav_commitments: 'Commitments',
+    nav_book_now: 'Book Now',
     nav_partner: 'Become a Partner',
+    nav_explore: 'Explore',
+    nav_my_bookings: 'My Bookings',
+    nav_wallet: 'CleanNova Wallet',
+    nav_admin: 'Admin Portal',
+    nav_staff: 'Staff Portal',
+    nav_profile: 'My Profile',
     btn_login: 'Sign In',
+    btn_register: 'Sign Up',
     btn_logout: 'Log Out',
     btn_book_now: 'Book Now',
+    btn_learn_more: 'Learn More',
+
+    /* --- Notification Dropdown --- */
+    notif_header_title: 'Cleanova Notifications',
+    notif_mark_read: 'Mark read',
+    notif_1_title: '🎉 20% Promo Code Ready',
+    notif_1_desc: 'Use promo code CLEANOVA20 to save 20% on your next booking.',
+    notif_just_now: 'Just now',
+    notif_2_title: '⚡ Latest Booking',
+    notif_2_desc: 'Booking CNV-2026-0001 is currently in confirmed status.',
+    notif_1_hour_ago: '1 hour ago',
+
+    /* --- Mobile Drawer Card --- */
+    mobile_partner_title: 'Become a CleanNova Partner',
+    mobile_partner_desc: 'Register to join our team & receive jobs',
+
+    /* --- Badges & Chips --- */
+    badge_cleaning: '🧹 Cleaning',
+    badge_care: '🏡 In-Home Care',
+    service_1_chip_1: '⏱️ Min: 1 hour',
+    service_2_chip_1: '⏱️ Est: 4 - 6 hours',
+    service_2_chip_2: '🏷️ Save 20%',
+    service_3_chip_1: '⏱️ Est: 2 - 3 hours',
+    service_3_chip_2: '💼 Enterprise',
+    service_4_chip_1: '⏱️ Est: 1 - 2 hours',
+    service_4_chip_2: '🔥 140°C Steam',
+    service_5_chip_1: '⏱️ Estimated by project',
+    service_5_chip_2: '📐 sq m / Package / Daily',
+    service_6_chip_1: '🧸 Safe Living Support & Play',
+    service_6_chip_2: '⏱️ Min: 2 hours',
+    service_7_chip_1: '❤️ Companionship & Daily Assistance',
+    service_7_chip_2: '⏱️ Min: 2 hours',
+    service_8_chip_1: '📋 Planned Daily Living Care',
+    service_8_chip_2: '⏱️ Min: 2 hours',
 
     /* --- Hero Section --- */
     hero_badge: '🟢 Home Cleaning & Family Care Services',
+    hero_badge_note: 'Transparent Pricing · Instant Booking',
     hero_title: 'Caring for your home, peace of mind for your family',
+    hero_title_1: 'Caring for your home,',
+    hero_title_highlight: 'peace of mind for your family',
     hero_subtitle: 'From pristine living spaces to dedicated care for your loved ones. CleanNova helps you find the right service right at home.',
     hero_cta_explore: 'Explore Services',
     hero_cta_book: 'Book Now',
@@ -304,24 +559,142 @@ const translations = {
     workflow_badge: '⚡ Booking Process',
     workflow_title: '4 Steps to Book with CleanNova',
     workflow_subtitle: 'From scheduling to completion, everything is transparent, reliable, and convenient.',
+    workflow_step_badge_1: 'Step 01',
     workflow_step_1_title: 'Choose the Right Service',
     workflow_step_1_desc: 'Browse cleaning or in-home care services to pick the best fit for your household.',
+    workflow_step_badge_2: 'Step 02',
     workflow_step_2_title: 'Select Date, Time & Duration',
     workflow_step_2_desc: 'Choose your preferred time slot and duration (minimum 2 hours for in-home care).',
+    workflow_step_badge_3: 'Step 03',
     workflow_step_3_title: 'Review Quote & Confirm',
     workflow_step_3_desc: 'The system automatically calculates transparent costs; review and confirm your booking.',
+    workflow_step_badge_4: 'Step 04',
     workflow_step_4_title: 'Track Booking & Pay',
     workflow_step_4_desc: 'Follow order progress in real-time and pay securely via convenient methods.',
+    workflow_cta_title: 'Ready for convenient home care?',
+    workflow_cta_desc: 'Select your preferred package today to receive attentive and dedicated service.',
+    workflow_cta_btn_book: 'Book Service Now',
+    workflow_cta_btn_pricing: 'View Detailed Pricing',
 
-    /* --- Pricing Section --- */
+    /* --- Pricing Section (Section 5) --- */
     pricing_badge: '💰 Transparent Pricing',
     pricing_title: 'CleanNova Service Pricing',
     pricing_subtitle: 'Public rates synchronized directly from system backend without hidden fees.',
+    pricing_tab_all: '✨ All Packages',
+    pricing_tab_cleaning: '🧹 Cleaning Services',
+    pricing_tab_care: '🏡 Care Services',
+    pricing_tab_child: '👶 Child Care',
+    pricing_tab_elderly: '👵 Elderly Care',
+    pricing_tab_patient: '🩺 Patient Care',
 
-    /* --- Commitments Section --- */
+    pricing_card_1_title: 'Hourly House Cleaning',
+    pricing_card_1_desc: 'Flexible cleaning of living rooms, bedrooms, kitchen, and bathroom as needed.',
+    pricing_card_1_min: '⏱️ Minimum: 1 hour',
+    pricing_card_1_f1: 'Wipe, vacuum floors and clean furniture surfaces',
+    pricing_card_1_f2: 'Scrub bathroom, sparkling toilet & sink fixtures',
+    pricing_card_1_f3: 'Clean kitchen dish sink and take out trash',
+    pricing_card_1_f4: 'Bring all standard cleaning tools and supplies',
+
+    pricing_card_2_title: 'Deep Cleaning',
+    pricing_card_2_desc: 'Comprehensive deep cleaning of every corner, ceiling, wall, and stubborn stains.',
+    pricing_card_2_min: '⏱️ Minimum: 4 hours',
+    pricing_card_2_f1: 'Full cleaning of ceiling, walls, crevices, and balcony',
+    pricing_card_2_f2: 'Polish tile/wood floors with specialized equipment',
+    pricing_card_2_f3: 'Remove calcium stains on shower glass and fixtures',
+    pricing_card_2_f4: 'Degrease range hood, stovetop, and kitchen area',
+
+    pricing_card_3_title: 'Office & Workspace Cleaning',
+    pricing_card_3_desc: 'Professional cleaning solution for enterprises, meeting rooms, and showrooms.',
+    pricing_card_3_min: '⏱️ Minimum: 2 hours',
+    pricing_card_3_f1: 'Wipe desks, computer monitors, and office devices',
+    pricing_card_3_f2: 'Vacuum carpeted floors and disinfect pantry area',
+    pricing_card_3_f3: 'Clean office restrooms and replenish paper supplies',
+    pricing_card_3_f4: 'Collect waste and maintain a fresh, fragrant space',
+
+    pricing_card_4_title: 'Sofa, Mattress & Curtain Cleaning',
+    pricing_card_4_desc: '140°C steam extraction technology eliminating 99.9% of bacteria and dust mites.',
+    pricing_card_4_min: '⏱️ Minimum: 1 hour',
+    pricing_card_4_f1: 'Industrial deep suction of fine dust inside foam cushions',
+    pricing_card_4_f2: 'Spot-clean tea, coffee, and grease stains with eco solutions',
+    pricing_card_4_f3: '140°C thermal steam sanitation safe for family health',
+    pricing_card_4_f4: 'Rapid extraction drying, ready to use within 2 - 3 hours',
+
+    pricing_card_5_title: 'Post-Construction Cleaning',
+    pricing_card_5_desc: 'Rough waste collection, scraping paint/cement residues, and fine dust vacuuming.',
+    pricing_card_5_min: '⏱️ Project-based estimate • Package & Daily rates available',
+    pricing_card_5_f1: 'Quote by sq m, lump-sum package, or daily labor',
+    pricing_card_5_f2: 'Clean paint and cement residue off glass and floors',
+    pricing_card_5_f3: 'Industrial fine-dust extraction & complete odor removal',
+    pricing_card_5_f4: 'Free on-site inspection for complex properties',
+
+    pricing_card_6_title: 'In-Home Child Care',
+    pricing_card_6_desc: 'Dedicated babysitter assisting with daily living, meals, and wholesome activities.',
+    pricing_card_6_min: '⏱️ Minimum: 2 hours',
+    pricing_card_6_f1: 'Pick up child, assist with hygiene and clothing changes',
+    pricing_card_6_f2: 'Prepare nutritious snacks or help child eat on schedule',
+    pricing_card_6_f3: 'Read books, study tutoring, and age-appropriate games',
+    pricing_card_6_f4: 'Patient, gentle, and caring background-checked staff',
+
+    pricing_card_7_title: 'In-Home Elderly Care',
+    pricing_card_7_desc: 'Compassionate caregiver offering warm companionship and daily living assistance.',
+    pricing_card_7_min: '⏱️ Minimum: 2 hours',
+    pricing_card_7_f1: 'Assist with daily living routines and safe mobility',
+    pricing_card_7_f2: 'Prepare warm, nutritious meals suited for seniors',
+    pricing_card_7_f3: 'Timely medication reminders per doctor prescription',
+    pricing_card_7_f4: 'Warm conversation, companionship, easing loneliness',
+
+    pricing_card_8_title: 'In-Home Patient Care',
+    pricing_card_8_desc: 'Physical and daily living support for recovery under an agreed care plan.',
+    pricing_card_8_min: '⏱️ Minimum: 2 hours',
+    pricing_card_8_f1: 'Assist with personal hygiene and fresh bed linen changes',
+    pricing_card_8_f2: 'Monitor basic vital signs (temperature, blood pressure)',
+    pricing_card_8_f3: 'Support soft nutrition feeding per agreed dietary plan',
+    pricing_card_8_f4: 'Standard daily living care (no invasive medical procedures)',
+
+    pricing_unit_hourly: 'VND / hour',
+    pricing_unit_session: 'VND / session',
+    pricing_unit_item: 'VND / item',
+    pricing_unit_m2: 'VND / sq m',
+    btn_book_this_service: 'Book This Service',
+    btn_quote_book: 'Get Quote & Book',
+    pricing_err_title: 'Unable to load service pricing',
+    pricing_err_desc: 'Temporarily unable to connect to pricing database server. Please try again later.',
+    btn_retry: 'Retry',
+
+    /* --- Commitments & Scope (Section 6) --- */
     commitments_badge: '🛡️ Commitments & Terms',
     commitments_title: 'Commitments & Service Scope',
-    commitments_subtitle: 'Clear terms and policies to guarantee your peace of mind.',
+    commitments_subtitle: 'Clear terms and policies to guarantee your peace of mind and protection.',
+
+    scope_1_title: 'Cleaning Service Scope',
+    scope_1_f1: 'Wiping, dusting, and vacuuming rooms and hallways within safe reach.',
+    scope_1_f2: 'Cleaning floors, private balconies, and common family living areas.',
+    scope_1_f3: 'Scrubbing toilets, sinks, mirrors, and shower partition glass.',
+    scope_1_f4: 'Wiping dish washing sink area and exterior surfaces of home appliances.',
+
+    scope_2_title: 'In-Home Care Scope',
+    scope_2_f1: 'Assisting with agreed daily living activities and routines.',
+    scope_2_f2: 'Assisting with meals and preparing wholesome, suitable snacks.',
+    scope_2_f3: 'Reminding prescribed medication on time per doctor orders.',
+    scope_2_f4: 'Warm companionship, conversation, and safe gentle mobility.',
+
+    scope_3_title: 'Not Included in Base Price',
+    scope_3_f1: 'No exterior window washing or work on dangerous unguarded high balconies.',
+    scope_3_f2: 'No dismantling of intricate electrical appliances or concealed plumbing.',
+    scope_3_f3: 'No heavy lifting beyond safety standards or industrial hazardous waste removal.',
+
+    scope_4_title: 'Rescheduling & Cancellation Policy',
+    scope_4_f1: 'Clients can reschedule or cancel bookings online via "My Bookings".',
+    scope_4_f2: 'Free of charge while booking is in Pending or Confirmed status prior to appointment.',
+    scope_4_f3: 'Order status is automatically and transparently updated on the system.',
+
+    scope_5_title: 'Customer Support Channels',
+    scope_5_f1: 'Customer hotline: 1900-8888 (Operating 8:00 AM - 8:00 PM daily).',
+    scope_5_f2: 'Official support email: contact@cleanova.vn.',
+    scope_5_f3: 'Submit support requests directly from your personal account portal.',
+
+    scope_disclaimer_title: 'IMPORTANT NOTICE ON IN-HOME PATIENT CARE:',
+    scope_disclaimer_desc: 'CleanNova in-home patient care is a standard living and physical support service, NOT medical treatment. CleanNova staff strictly DO NOT perform invasive medical procedures (such as injections, intravenous drips, prescription medications, or surgical wound dressing). Specialized medical tasks may only be performed by licensed healthcare practitioners in compliance with applicable laws.',
 
     /* --- Calculator Section --- */
     calc_badge: '💰 Quick Quote',
@@ -344,14 +717,30 @@ const translations = {
     calc_option_weekly: 'Weekly (15% off)',
     calc_option_monthly: 'Monthly (10% off)',
     calc_result_label: 'ESTIMATED PRICE',
+    calc_initial_price: '$12.24',
     calc_result_unit: '/per service',
     calc_discount_text: 'You save',
     calc_btn_continue: 'Continue Booking →',
 
-    /* --- Partner Section --- */
+    /* --- Partner Section (Section 8) --- */
     partner_badge: 'Grow With Us',
     partner_title: 'Create Cleaner Spaces Together with CleanNova',
-    partner_desc: 'Join our professional service partner network, enjoy flexible hours, and grow dependable income under transparent policies.',
+    partner_desc: 'Join our professional service partner network, enjoy flexible hours, and grow dependable income under transparent CleanNova policies.',
+    partner_step_1: 'Submit your online application on the dedicated portal',
+    partner_step_2: 'Wait for CleanNova application review and background verification',
+    partner_step_3: 'Complete orientation and standard quality guidelines',
+    partner_step_4: 'Start receiving job assignments upon approval',
+    btn_partner_action: 'Become a CleanNova Partner',
+    partner_card_eyebrow: '⭐ Flexible Career Opportunity',
+    partner_card_status: 'Open for Applications',
+    partner_feature_1_title: 'Flexible Hours',
+    partner_feature_1_desc: 'Freely choose morning, afternoon, evening, or weekend shifts.',
+    partner_feature_2_title: 'Transparent Earnings',
+    partner_feature_2_desc: 'Clear compensation displayed per completed order as agreed.',
+    partner_feature_3_title: 'Standard Tools & Supplies',
+    partner_feature_3_desc: 'Access 5-star cleaning equipment and safety standard training.',
+    partner_feature_4_title: 'Convenient Staff App',
+    partner_feature_4_desc: 'Dedicated Staff Portal to track assignments and shift progress.',
 
     /* --- Testimonials Section --- */
     reviews_badge: '💬 Customer Reviews',
@@ -400,20 +789,47 @@ const translations = {
     footer_link_office: 'Office Cleaning',
     footer_link_sofa: 'Sofa & Mattress',
     footer_link_construction: 'Post-Construction',
+    footer_link_child: 'In-Home Child Care',
+    footer_link_child_care: 'In-Home Child Care',
+    footer_link_elderly: 'In-Home Elderly Care',
+    footer_link_elderly_care: 'In-Home Elderly Care',
+    footer_link_patient: 'In-Home Patient Care',
+    footer_link_patient_care: 'In-Home Patient Care',
+    footer_link_pricing: 'Service Pricing',
     footer_col3_title: 'About Cleanova',
     footer_link_about: 'About CleanNova',
     footer_link_career: 'Careers',
     footer_link_partner: 'Become a Partner',
     footer_link_blog: 'Blog',
     footer_link_contact: 'Contact',
-    footer_link_login: 'Account & Sign In',
-    footer_newsletter_title: 'Get Deals & Updates',
-    footer_newsletter_desc: 'Subscribe for promotions and useful news.',
+    footer_link_login: 'Sign In / Register',
+    footer_link_steps: '6-Step Cleaning Standard',
+    footer_link_ai: 'AI Dirt Scan Technology',
+    footer_link_why: 'Why CleanNova?',
+    footer_link_faq: 'FAQ',
+    footer_newsletter_title: 'Support & Booking',
+    footer_link_book_online: '⚡ Book Online',
+    footer_link_track: 'Track My Orders',
+    footer_link_my_bookings: 'Track My Orders',
+    footer_link_address_book: 'Address Book & Account',
+    footer_link_profile: 'Address Book & Account',
+    footer_newsletter_desc: 'Get 20% off promo codes periodically:',
     footer_newsletter_placeholder: 'Enter your email...',
     footer_newsletter_btn: 'Subscribe',
     footer_copyright: '© 2026 Cleanova Inc. All rights reserved.',
     footer_privacy: 'Privacy Policy',
     footer_terms: 'Terms of Service',
+    footer_link_commitments: 'Cleanova Care Commitments',
+    footer_commitment: 'Cleanova Care Commitments',
+
+    /* --- Modal Dialog --- */
+    modal_service_title: 'Service Details',
+    modal_label_price: 'Listed Rate',
+    modal_label_min: 'Minimum Duration',
+    modal_label_duration: 'Recommended Scale',
+    modal_features_heading: 'Standard Scope of Work:',
+    modal_btn_close: 'Close',
+    modal_btn_book: 'Book This Service Now',
 
     /* --- Toast Messages --- */
     toast_booking_title: 'Booking Received!',
@@ -432,9 +848,91 @@ const translations = {
    --------------------------------------------------------------- */
 let currentLang = localStorage.getItem('cleanova_lang') || 'vi';
 
+// Chuyển đổi tên đơn vị sang Tiếng Anh
+function formatUnitEN(unit) {
+  if (!unit) return 'hour';
+  const u = String(unit).toLowerCase();
+  if (u.includes('giờ') || u.includes('h')) return 'hour';
+  if (u.includes('lần') || u.includes('session')) return 'session';
+  if (u.includes('món') || u.includes('item')) return 'item';
+  if (u.includes('m²') || u.includes('m2') || u.includes('sq m')) return 'sq m';
+  if (u.includes('buổi') || u.includes('shift')) return 'shift';
+  if (u.includes('ngày') || u.includes('day')) return 'day';
+  if (u.includes('tháng') || u.includes('month')) return 'month';
+  return unit;
+}
+
+// Cập nhật giá và đơn vị tính động theo ngôn ngữ đã chọn
+function updateDynamicPricesLanguage(lang) {
+  const isEn = lang === 'en';
+  const services = window.lastLoadedServices || [];
+
+  if (services && services.length) {
+    services.forEach(service => {
+      // 1. Thẻ dịch vụ ở Section 2
+      const serviceCard = document.querySelector(`.service-card[data-service-id="${service.id}"]`);
+      if (serviceCard) {
+        const priceEl = serviceCard.querySelector('.service-price');
+        const bookBtn = serviceCard.querySelector('.btn-service-book');
+        if (priceEl && service.base_price) {
+          if (isEn) {
+            const unitEN = formatUnitEN(service.price_unit || service.pricing_unit || 'giờ');
+            priceEl.textContent = `From ${Number(service.base_price).toLocaleString('en-US')} VND / ${unitEN}`;
+          } else {
+            priceEl.textContent = `Từ ${formatVND(service.base_price)} / ${service.price_unit || service.pricing_unit || 'giờ'}`;
+          }
+        }
+        if (bookBtn && (service.is_active === 0 || service.is_active === false)) {
+          bookBtn.textContent = isEn ? 'Unavailable' : 'Tạm ngưng';
+        }
+      }
+
+      // 2. Thẻ bảng giá ở Section 5
+      const pricingCard = document.querySelector(`.pricing-plan-card[data-service-id="${service.id}"]`);
+      if (pricingCard) {
+        const amountEl = pricingCard.querySelector('.pricing-plan-amount');
+        const unitEl = pricingCard.querySelector('.pricing-plan-unit');
+        const bookLink = pricingCard.querySelector('a.btn-primary');
+
+        if (amountEl && service.base_price) {
+          amountEl.textContent = isEn
+            ? Number(service.base_price).toLocaleString('en-US')
+            : Number(service.base_price).toLocaleString('vi-VN');
+        }
+        if (unitEl && (service.price_unit || service.pricing_unit)) {
+          const u = service.price_unit || service.pricing_unit;
+          unitEl.textContent = isEn ? `VND / ${formatUnitEN(u)}` : `VNĐ / ${u}`;
+        }
+        if (bookLink && (service.is_active === 0 || service.is_active === false)) {
+          bookLink.textContent = isEn ? 'Unavailable' : 'Tạm ngưng nhận đơn';
+        }
+      }
+    });
+  } else {
+    // Cập nhật các đơn vị tĩnh mặc định nếu chưa tải API
+    const staticUnits = {
+      1: { vi: 'VNĐ / giờ', en: 'VND / hour' },
+      2: { vi: 'VNĐ / lần', en: 'VND / session' },
+      3: { vi: 'VNĐ / lần', en: 'VND / session' },
+      4: { vi: 'VNĐ / món', en: 'VND / item' },
+      5: { vi: 'VNĐ / m²', en: 'VND / sq m' },
+      6: { vi: 'VNĐ / giờ', en: 'VND / hour' },
+      7: { vi: 'VNĐ / giờ', en: 'VND / hour' },
+      8: { vi: 'VNĐ / giờ', en: 'VND / hour' }
+    };
+    Object.keys(staticUnits).forEach(id => {
+      const card = document.querySelector(`.pricing-plan-card[data-service-id="${id}"]`);
+      if (card) {
+        const unitEl = card.querySelector('.pricing-plan-unit');
+        if (unitEl) unitEl.textContent = isEn ? staticUnits[id].en : staticUnits[id].vi;
+      }
+    });
+  }
+}
+
 /* ---------------------------------------------------------------
    3. HÀM CHUYỂN ĐỔI NGÔN NGỮ
-   Cập nhật toàn bộ văn bản trên trang mà không load lại
+   Cập nhật 100% toàn bộ văn bản trên trang mà không load lại
    --------------------------------------------------------------- */
 function switchLanguage(lang) {
   currentLang = lang;
@@ -446,7 +944,7 @@ function switchLanguage(lang) {
   // Cập nhật tất cả phần tử có thuộc tính data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
-    if (t[key]) {
+    if (t[key] !== undefined) {
       el.textContent = t[key];
     }
   });
@@ -454,7 +952,7 @@ function switchLanguage(lang) {
   // Cập nhật placeholder
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
-    if (t[key]) {
+    if (t[key] !== undefined) {
       el.placeholder = t[key];
     }
   });
@@ -462,7 +960,7 @@ function switchLanguage(lang) {
   // Cập nhật aria-label
   document.querySelectorAll('[data-i18n-aria]').forEach(el => {
     const key = el.getAttribute('data-i18n-aria');
-    if (t[key]) {
+    if (t[key] !== undefined) {
       el.setAttribute('aria-label', t[key]);
     }
   });
@@ -470,7 +968,7 @@ function switchLanguage(lang) {
   // Cập nhật các option trong select
   document.querySelectorAll('[data-i18n-option]').forEach(el => {
     const key = el.getAttribute('data-i18n-option');
-    if (t[key]) {
+    if (t[key] !== undefined) {
       el.textContent = t[key];
     }
   });
@@ -482,6 +980,9 @@ function switchLanguage(lang) {
 
   // Cập nhật calculator khi đổi ngôn ngữ
   calculatePrice();
+
+  // Cập nhật giá và đơn vị tính động trên các thẻ dịch vụ
+  updateDynamicPricesLanguage(lang);
 }
 
 /* ---------------------------------------------------------------
@@ -1076,127 +1577,256 @@ function initLanguageToggle() {
    15. DỮ LIỆU CHI TIẾT DỊCH VỤ CHO MODAL (Service Details Dialog)
    --------------------------------------------------------------- */
 const serviceDetailsData = {
-  1: {
-    title: 'Dọn dẹp nhà cửa theo giờ',
-    category: 'Vệ sinh',
-    categoryClass: 'badge-category-cleaning',
-    desc: 'Dịch vụ dọn dẹp vệ sinh nhà ở linh hoạt theo nhu cầu thực tế của quý khách hàng. Nhân viên mang đầy đủ dụng cụ cơ bản giúp lau chùi, quét dọn và sắp xếp phòng khách, phòng ngủ, nhà bếp và khu vực vệ sinh sáng bóng.',
-    price: 'Từ 150.000 VNĐ / giờ',
-    minDuration: '1 giờ',
-    duration: '2 - 4 giờ',
-    features: [
-      'Quét bụi, hút bụi và lau sạch sàn nhà, bề mặt đồ nội thất',
-      'Cọ rửa bồn cầu, bồn rửa mặt, gương kính và vách kính phòng tắm',
-      'Lau mặt bếp, bồn rửa bát và lau sạch bên ngoài các thiết bị gia dụng',
-      'Thay ga gối, thu gom và phân loại rác thải sinh hoạt gọn gàng'
-    ]
+  vi: {
+    1: {
+      title: 'Dọn dẹp nhà cửa theo giờ',
+      category: 'Vệ sinh',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Dịch vụ dọn dẹp vệ sinh nhà ở linh hoạt theo nhu cầu thực tế của quý khách hàng. Nhân viên mang đầy đủ dụng cụ cơ bản giúp lau chùi, quét dọn và sắp xếp phòng khách, phòng ngủ, nhà bếp và khu vực vệ sinh sáng bóng.',
+      price: 'Từ 150.000 VNĐ / giờ',
+      minDuration: '1 giờ',
+      duration: '2 - 4 giờ',
+      features: [
+        'Quét bụi, hút bụi và lau sạch sàn nhà, bề mặt đồ nội thất',
+        'Cọ rửa bồn cầu, bồn rửa mặt, gương kính và vách kính phòng tắm',
+        'Lau mặt bếp, bồn rửa bát và lau sạch bên ngoài các thiết bị gia dụng',
+        'Thay ga gối, thu gom và phân loại rác thải sinh hoạt gọn gàng'
+      ]
+    },
+    2: {
+      title: 'Tổng vệ sinh Deep Cleaning',
+      category: 'Vệ sinh',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Giải pháp làm sạch toàn diện và chuyên sâu từng ngóc ngách không gian sống. Phù hợp cho nhà ở định kỳ hàng tháng, dọn nhà đón Tết hoặc trước khi có sự kiện gia đình.',
+      price: 'Từ 500.000 VNĐ / lần',
+      minDuration: '4 giờ',
+      duration: '4 - 6 giờ (tùy diện tích)',
+      features: [
+        'Lau chùi toàn bộ trần, tường, đèn chùm và các vị trí khó tiếp cận',
+        'Đánh bóng sàn gạch/gỗ bằng máy chuyên dụng và hóa chất sinh học',
+        'Tẩy cặn canxi vách kính tắm và xử lý vết ố men sứ lâu ngày',
+        'Vệ sinh sâu khu vực bếp, tẩy dầu mỡ bám dính trên máy hút mùi'
+      ]
+    },
+    3: {
+      title: 'Vệ sinh văn phòng & Workspace',
+      category: 'Vệ sinh',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Dịch vụ dọn dẹp không gian làm việc chuyên nghiệp cho công ty, văn phòng, phòng họp và showroom kinh doanh. Đem đến môi trường làm việc thông thoáng, nâng cao hiệu suất làm việc.',
+      price: 'Từ 300.000 VNĐ / lần',
+      minDuration: '2 giờ',
+      duration: '2 - 3 giờ',
+      features: [
+        'Lau dọn bàn ghế làm việc, màn hình máy tính và thiết bị văn phòng',
+        'Hút bụi thảm trải sàn và vệ sinh khử khuẩn khu vực pantry',
+        'Dọn dẹp toilet văn phòng và bổ sung vật tư tiêu hao',
+        'Thu gom tài liệu thải loại đúng nơi quy định và đổ rác định kỳ'
+      ]
+    },
+    4: {
+      title: 'Giặt Sofa, Nệm & Rèm cửa',
+      category: 'Vệ sinh',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Ứng dụng công nghệ hút bụi sâu và phun hút hơi nước nóng 140°C giúp tiêu diệt 99% vi khuẩn, mạt bụi và nấm mốc ẩn sâu trong sợi vải, mang lại sự êm ái thơm mát cho nội thất.',
+      price: 'Từ 400.000 VNĐ / món',
+      minDuration: '1 giờ',
+      duration: '1 - 2 giờ',
+      features: [
+        'Hút sạch bụi mịn sâu trong đệm mút bằng máy hút công nghiệp',
+        'Xử lý vết bẩn cục bộ (cà phê, trà, dầu mỡ) bằng dung dịch chuyên biệt',
+        'Phun hơi nước nóng 140°C khử trùng và tiêu diệt mạt bụi gây dị ứng',
+        'Sấy khô nhanh chóng, đảm bảo có thể sử dụng lại sau 2 - 3 giờ'
+      ]
+    },
+    5: {
+      title: 'Vệ sinh sau xây dựng',
+      category: 'Vệ sinh',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Dịch vụ tổng vệ sinh thô và tinh sau quá trình thi công xây dựng hoặc cải tạo nhà ở. Làm sạch triệt để xi măng thừa, vết sơn rơi vãi và bụi mịn công trình.',
+      price: 'Từ 8.000 VNĐ / m²',
+      minDuration: '1 ngày',
+      duration: '1 - 2 ngày',
+      features: [
+        'Thu gom xà bần, phế thải xây dựng thô còn tồn đọng',
+        'Dùng hóa chất chuyên dụng tẩy vết sơn, xi măng bám trên kính và sàn',
+        'Hút bụi mịn công nghiệp trong toàn bộ các phòng và khe kẽ',
+        'Nghiệm thu theo từng hạng mục cam kết sẵn sàng bàn giao vào ở'
+      ]
+    },
+    6: {
+      title: 'Chăm sóc trẻ em tại nhà',
+      category: 'Chăm sóc tại nhà',
+      categoryClass: 'badge-category-care',
+      desc: 'Dịch vụ bảo mẫu đồng hành hỗ trợ gia đình bận rộn chăm sóc trẻ nhỏ tại nhà. Nhân viên tận tâm, kiên nhẫn, hỗ trợ sinh hoạt, ăn uống và cùng bé tham gia các hoạt động vui chơi bổ ích.',
+      price: 'Từ 80.000 VNĐ / giờ',
+      minDuration: '2 giờ',
+      duration: '2 - 8 giờ / ca',
+      features: [
+        'Đón bé và hỗ trợ vệ sinh cá nhân, thay quần áo sạch sẽ',
+        'Chuẩn bị bữa ăn nhẹ dinh dưỡng hoặc hỗ trợ bé ăn đúng bữa',
+        'Cùng bé đọc truyện, xếp hình, vẽ tranh và các trò chơi phát triển kỹ năng',
+        'Theo dõi đảm bảo an toàn tuyệt đối cho bé trong không gian ngôi nhà'
+      ]
+    },
+    7: {
+      title: 'Chăm sóc người cao tuổi tại nhà',
+      category: 'Chăm sóc tại nhà',
+      categoryClass: 'badge-category-care',
+      desc: 'Dịch vụ chăm sóc và bầu bạn cùng người lớn tuổi, giúp người cao tuổi có cuộc sống thoải mái, ấm áp ngay trong tổ ấm của mình. Nhân viên hòa nhã, chu đáo và biết lắng nghe.',
+      price: 'Từ 90.000 VNĐ / giờ',
+      minDuration: '2 giờ',
+      duration: '2 - 8 giờ / ca',
+      features: [
+        'Hỗ trợ sinh hoạt thường nhật, vệ sinh cá nhân và vận động nhẹ an toàn',
+        'Chuẩn bị bữa ăn ấm nóng dinh dưỡng phù hợp khẩu vị người già',
+        'Nhắc nhở uống thuốc đúng giờ theo đúng đơn chỉ định của bác sĩ',
+        'Trò chuyện tâm tình, đi dạo và theo dõi sức khỏe tổng quát'
+      ]
+    },
+    8: {
+      title: 'Chăm sóc người bệnh tại nhà',
+      category: 'Chăm sóc tại nhà',
+      categoryClass: 'badge-category-care',
+      desc: 'Dịch vụ hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người đang hồi phục sức khỏe sau ốm hoặc điều trị tại nhà theo kế hoạch đã thống nhất giữa hai bên.',
+      price: 'Từ 120.000 VNĐ / giờ',
+      minDuration: '2 giờ',
+      duration: '2 - 8 giờ / ca',
+      features: [
+        'Hỗ trợ vệ sinh thân thể, tắm rửa nhẹ nhàng và thay ga gối sạch sẽ',
+        'Hỗ trợ chế biến và cho ăn thức ăn mềm, dinh dưỡng theo hướng dẫn',
+        'Đo và ghi chép chỉ số cơ bản (nhiệt độ, huyết áp) theo dõi định kỳ',
+        'LƯU Ý: Đây là dịch vụ hỗ trợ sinh hoạt đời sống, không phải điều trị y tế chuyên sâu'
+      ]
+    }
   },
-  2: {
-    title: 'Tổng vệ sinh Deep Cleaning',
-    category: 'Vệ sinh',
-    categoryClass: 'badge-category-cleaning',
-    desc: 'Giải pháp làm sạch toàn diện và chuyên sâu từng ngóc ngách không gian sống. Phù hợp cho nhà ở định kỳ hàng tháng, dọn nhà đón Tết hoặc trước khi có sự kiện gia đình.',
-    price: 'Từ 500.000 VNĐ / lần',
-    minDuration: '4 giờ',
-    duration: '4 - 6 giờ (tùy diện tích)',
-    features: [
-      'Lau chùi toàn bộ trần, tường, đèn chùm và các vị trí khó tiếp cận',
-      'Đánh bóng sàn gạch/gỗ bằng máy chuyên dụng và hóa chất sinh học',
-      'Tẩy cặn canxi vách kính tắm và xử lý vết ố men sứ lâu ngày',
-      'Vệ sinh sâu khu vực bếp, tẩy dầu mỡ bám dính trên máy hút mùi'
-    ]
-  },
-  3: {
-    title: 'Vệ sinh văn phòng & Workspace',
-    category: 'Vệ sinh',
-    categoryClass: 'badge-category-cleaning',
-    desc: 'Dịch vụ dọn dẹp không gian làm việc chuyên nghiệp cho công ty, văn phòng, phòng họp và showroom kinh doanh. Đem đến môi trường làm việc thông thoáng, nâng cao hiệu suất làm việc.',
-    price: 'Từ 300.000 VNĐ / lần',
-    minDuration: '2 giờ',
-    duration: '2 - 3 giờ',
-    features: [
-      'Lau dọn bàn ghế làm việc, màn hình máy tính và thiết bị văn phòng',
-      'Hút bụi thảm trải sàn và vệ sinh khử khuẩn khu vực pantry',
-      'Dọn dẹp toilet văn phòng và bổ sung vật tư tiêu hao',
-      'Thu gom tài liệu thải loại đúng nơi quy định và đổ rác định kỳ'
-    ]
-  },
-  4: {
-    title: 'Giặt Sofa, Nệm & Rèm cửa',
-    category: 'Vệ sinh',
-    categoryClass: 'badge-category-cleaning',
-    desc: 'Ứng dụng công nghệ hút bụi sâu và phun hút hơi nước nóng 140°C giúp tiêu diệt 99% vi khuẩn, mạt bụi và nấm mốc ẩn sâu trong sợi vải, mang lại sự êm ái thơm mát cho nội thất.',
-    price: 'Từ 400.000 VNĐ / món',
-    minDuration: '1 giờ',
-    duration: '1 - 2 giờ',
-    features: [
-      'Hút sạch bụi mịn sâu trong đệm mút bằng máy hút công nghiệp',
-      'Xử lý vết bẩn cục bộ (cà phê, trà, dầu mỡ) bằng dung dịch chuyên biệt',
-      'Phun hơi nước nóng 140°C khử trùng và tiêu diệt mạt bụi gây dị ứng',
-      'Sấy khô nhanh chóng, đảm bảo có thể sử dụng lại sau 2 - 3 giờ'
-    ]
-  },
-  5: {
-    title: 'Vệ sinh sau xây dựng',
-    category: 'Vệ sinh',
-    categoryClass: 'badge-category-cleaning',
-    desc: 'Dịch vụ tổng vệ sinh thô và tinh sau quá trình thi công xây dựng hoặc cải tạo nhà ở. Làm sạch triệt để xi măng thừa, vết sơn rơi vãi và bụi mịn công trình.',
-    price: 'Từ 8.000 VNĐ / m²',
-    minDuration: '1 ngày',
-    duration: '1 - 2 ngày',
-    features: [
-      'Thu gom xà bần, phế thải xây dựng thô còn tồn đọng',
-      'Dùng hóa chất chuyên dụng tẩy vết sơn, xi măng bám trên kính và sàn',
-      'Hút bụi mịn công nghiệp trong toàn bộ các phòng và khe kẽ',
-      'Nghiệm thu theo từng hạng mục cam kết sẵn sàng bàn giao vào ở'
-    ]
-  },
-  6: {
-    title: 'Chăm sóc trẻ em tại nhà',
-    category: 'Chăm sóc tại nhà',
-    categoryClass: 'badge-category-care',
-    desc: 'Dịch vụ bảo mẫu đồng hành hỗ trợ gia đình bận rộn chăm sóc trẻ nhỏ tại nhà. Nhân viên tận tâm, kiên nhẫn, hỗ trợ sinh hoạt, ăn uống và cùng bé tham gia các hoạt động vui chơi bổ ích.',
-    price: 'Từ 80.000 VNĐ / giờ',
-    minDuration: '2 giờ',
-    duration: '2 - 8 giờ / ca',
-    features: [
-      'Đón bé và hỗ trợ vệ sinh cá nhân, thay quần áo sạch sẽ',
-      'Chuẩn bị bữa ăn nhẹ dinh dưỡng hoặc hỗ trợ bé ăn đúng bữa',
-      'Cùng bé đọc truyện, xếp hình, vẽ tranh và các trò chơi phát triển kỹ năng',
-      'Theo dõi đảm bảo an toàn tuyệt đối cho bé trong không gian ngôi nhà'
-    ]
-  },
-  7: {
-    title: 'Chăm sóc người cao tuổi tại nhà',
-    category: 'Chăm sóc tại nhà',
-    categoryClass: 'badge-category-care',
-    desc: 'Dịch vụ chăm sóc và bầu bạn cùng người lớn tuổi, giúp người cao tuổi có cuộc sống thoải mái, ấm áp ngay trong tổ ấm của mình. Nhân viên hòa nhã, chu đáo và biết lắng nghe.',
-    price: 'Từ 90.000 VNĐ / giờ',
-    minDuration: '2 giờ',
-    duration: '2 - 8 giờ / ca',
-    features: [
-      'Hỗ trợ sinh hoạt thường nhật, vệ sinh cá nhân và vận động nhẹ an toàn',
-      'Chuẩn bị bữa ăn ấm nóng dinh dưỡng phù hợp khẩu vị người già',
-      'Nhắc nhở uống thuốc đúng giờ theo đúng đơn chỉ định của bác sĩ',
-      'Trò chuyện tâm tình, đi dạo và theo dõi sức khỏe tổng quát'
-    ]
-  },
-  8: {
-    title: 'Chăm sóc người bệnh tại nhà',
-    category: 'Chăm sóc tại nhà',
-    categoryClass: 'badge-category-care',
-    desc: 'Dịch vụ hỗ trợ sinh hoạt và chăm sóc thể chất thông thường cho người đang hồi phục sức khỏe sau ốm hoặc điều trị tại nhà theo kế hoạch đã thống nhất giữa hai bên.',
-    price: 'Từ 120.000 VNĐ / giờ',
-    minDuration: '2 giờ',
-    duration: '2 - 8 giờ / ca',
-    features: [
-      'Hỗ trợ vệ sinh thân thể, tắm rửa nhẹ nhàng và thay ga gối sạch sẽ',
-      'Hỗ trợ chế biến và cho ăn thức ăn mềm, dinh dưỡng theo hướng dẫn',
-      'Đo và ghi chép chỉ số cơ bản (nhiệt độ, huyết áp) theo dõi định kỳ',
-      'LƯU Ý: Đây là dịch vụ hỗ trợ sinh hoạt đời sống, không phải điều trị y tế chuyên sâu'
-    ]
+  en: {
+    1: {
+      title: 'Hourly Home Cleaning',
+      category: 'Cleaning',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Flexible hourly residential cleaning customized to your needs. Our staff brings all standard supplies to dust, sweep, mop, and sanitize your living room, bedroom, kitchen, and bathroom.',
+      price: 'From 150,000 VND / hour',
+      minDuration: '1 hour',
+      duration: '2 - 4 hours',
+      features: [
+        'Dusting, vacuuming, and mopping floors and furniture surfaces',
+        'Scrubbing toilets, sinks, mirrors, and glass shower enclosures',
+        'Wiping kitchen countertops, sink, and exterior appliances',
+        'Changing bed linens, collecting and disposing of household waste'
+      ]
+    },
+    2: {
+      title: 'Deep Cleaning Service',
+      category: 'Cleaning',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Comprehensive and thorough deep cleaning for every corner of your home. Ideal for monthly upkeep, festive deep cleans, or before family gatherings.',
+      price: 'From 500,000 VND / session',
+      minDuration: '4 hours',
+      duration: '4 - 6 hours (depending on area)',
+      features: [
+        'Wiping ceilings, walls, light fixtures, and hard-to-reach areas',
+        'Polishing tile/hardwood floors with specialized equipment and eco-friendly chemicals',
+        'Removing calcium deposits from shower glass and deep stain removal',
+        'Deep kitchen cleaning and degreasing exhaust fans and hoods'
+      ]
+    },
+    3: {
+      title: 'Office & Workspace Cleaning',
+      category: 'Cleaning',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Professional workplace cleaning for businesses, offices, conference rooms, and retail showrooms. Creates a fresh, sanitized environment to maximize productivity.',
+      price: 'From 300,000 VND / session',
+      minDuration: '2 hours',
+      duration: '2 - 3 hours',
+      features: [
+        'Sanitizing desks, chairs, monitors, and shared office equipment',
+        'Vacuuming carpets and sanitizing the pantry/kitchenette area',
+        'Disinfecting office restrooms and restocking paper consumables',
+        'Collecting recyclables and scheduled trash disposal'
+      ]
+    },
+    4: {
+      title: 'Sofa, Mattress & Curtain Cleaning',
+      category: 'Cleaning',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Deep extraction and 140°C thermal steam technology eliminates 99% of bacteria, dust mites, and mildew trapped inside fabric layers, restoring freshness and comfort.',
+      price: 'From 400,000 VND / item',
+      minDuration: '1 hour',
+      duration: '1 - 2 hours',
+      features: [
+        'High-power industrial vacuuming for deep-seated dust and allergens',
+        'Spot-treatment for stubborn stains (coffee, tea, grease) using specialized solutions',
+        '140°C steam injection to sanitize and eliminate allergy-triggering dust mites',
+        'High-velocity extraction drying, ready for reuse in just 2 - 3 hours'
+      ]
+    },
+    5: {
+      title: 'Post-Construction Cleaning',
+      category: 'Cleaning',
+      categoryClass: 'badge-category-cleaning',
+      desc: 'Complete rough and fine cleanup following construction or home renovation. Completely clears residual cement stains, paint splatters, and fine hazardous construction dust.',
+      price: 'From 8,000 VND / sq m',
+      minDuration: '1 day',
+      duration: '1 - 2 days',
+      features: [
+        'Debris clearing and sorting leftover construction waste',
+        'Chemical paint and cement removal from glass and floor tiles',
+        'Industrial HEPA vacuuming of fine dust across all surfaces and crevices',
+        'Section-by-section handover inspection ready for immediate move-in'
+      ]
+    },
+    6: {
+      title: 'In-Home Child Care',
+      category: 'Home Care',
+      categoryClass: 'badge-category-care',
+      desc: 'Dedicated in-home babysitting and nanny support for busy parents. Patient and attentive staff assists with hygiene, meals, homework, and engaging developmental activities.',
+      price: 'From 80,000 VND / hour',
+      minDuration: '2 hours',
+      duration: '2 - 8 hours / shift',
+      features: [
+        'Welcoming child, assisting with personal hygiene, and clean clothing changes',
+        'Preparing nutritious light meals and supervising meal times',
+        'Engaging child in storybooks, puzzles, drawing, and cognitive play',
+        'Constant safety supervision within the comfort of the home'
+      ]
+    },
+    7: {
+      title: 'In-Home Elderly Care',
+      category: 'Home Care',
+      categoryClass: 'badge-category-care',
+      desc: 'Compassionate companionship and daily living assistance for senior family members. Our courteous caregivers provide warm, attentive care right in the comfort of home.',
+      price: 'From 90,000 VND / hour',
+      minDuration: '2 hours',
+      duration: '2 - 8 hours / shift',
+      features: [
+        'Assistance with daily living activities, personal hygiene, and gentle mobility',
+        'Preparing warm, nutritious meals tailored to elderly dietary preferences',
+        'Timely reminders for prescribed medications as directed by doctors',
+        'Warm conversations, leisurely walks, and general health monitoring'
+      ]
+    },
+    8: {
+      title: 'In-Home Patient Care',
+      category: 'Home Care',
+      categoryClass: 'badge-category-care',
+      desc: 'Daily living assistance and non-medical physical care for individuals recovering from illness or convalescing at home according to an agreed-upon routine.',
+      price: 'From 120,000 VND / hour',
+      minDuration: '2 hours',
+      duration: '2 - 8 hours / shift',
+      features: [
+        'Gentle sponge baths, personal hygiene support, and clean bed linen changes',
+        'Assisting with meal preparation and feeding nutritious, easily digestible meals',
+        'Measuring and logging vital signs (temperature, blood pressure) periodically',
+        'NOTE: This is a daily living assistance service, NOT specialized medical treatment'
+      ]
+    }
   }
 };
+
+// Khởi tạo các thuộc tính mức gốc 1..8 để tương thích hoàn toàn
+for (let i = 1; i <= 8; i++) {
+  serviceDetailsData[i] = serviceDetailsData.vi[i];
+}
 
 /* ---------------------------------------------------------------
    16. ĐỒNG BỘ DỊCH VỤ & BẢNG GIÁ TỪ BACKEND API
@@ -1226,12 +1856,14 @@ async function initServicesAndPricing() {
       throw new Error('No services received from API');
     }
 
+    // Lưu cache để chuyển đổi ngôn ngữ không cần tải lại API
+    window.lastLoadedServices = services;
+
     // Cập nhật giá động và trạng thái trên các thẻ dịch vụ
     services.forEach(service => {
       // 1. Thẻ dịch vụ ở Section 2
       const serviceCard = document.querySelector(`.service-card[data-service-id="${service.id}"]`);
       if (serviceCard) {
-        const priceEl = serviceCard.querySelector('.service-price');
         const bookBtn = serviceCard.querySelector('.btn-service-book');
 
         if (service.is_active === 0 || service.is_active === false) {
@@ -1239,15 +1871,12 @@ async function initServicesAndPricing() {
           if (bookBtn) {
             bookBtn.classList.add('disabled');
             bookBtn.removeAttribute('href');
-            bookBtn.textContent = 'Tạm ngưng';
+            bookBtn.textContent = currentLang === 'en' ? 'Unavailable' : 'Tạm ngưng';
             bookBtn.setAttribute('disabled', 'true');
             bookBtn.onclick = (e) => e.preventDefault();
           }
         } else {
           serviceCard.style.opacity = '1';
-          if (priceEl && service.base_price) {
-            priceEl.textContent = `Từ ${formatVND(service.base_price)} / ${service.price_unit || service.pricing_unit || 'giờ'}`;
-          }
           if (bookBtn) {
             const isCare = service.category === 'care' || Number(service.id) >= 6;
             bookBtn.setAttribute('href', isCare ? `booking-care.html?service=${service.id}` : `booking.html?service_id=${service.id}`);
@@ -1258,8 +1887,6 @@ async function initServicesAndPricing() {
       // 2. Thẻ bảng giá ở Section 5
       const pricingCard = document.querySelector(`.pricing-plan-card[data-service-id="${service.id}"]`);
       if (pricingCard) {
-        const amountEl = pricingCard.querySelector('.pricing-plan-amount');
-        const unitEl = pricingCard.querySelector('.pricing-plan-unit');
         const bookLink = pricingCard.querySelector('a.btn-primary');
 
         if (service.is_active === 0 || service.is_active === false) {
@@ -1267,18 +1894,12 @@ async function initServicesAndPricing() {
           if (bookLink) {
             bookLink.classList.add('disabled');
             bookLink.removeAttribute('href');
-            bookLink.textContent = 'Tạm ngưng nhận đơn';
+            bookLink.textContent = currentLang === 'en' ? 'Unavailable' : 'Tạm ngưng nhận đơn';
             bookLink.setAttribute('disabled', 'true');
             bookLink.onclick = (e) => e.preventDefault();
           }
         } else {
           pricingCard.style.opacity = '1';
-          if (amountEl && service.base_price) {
-            amountEl.textContent = Number(service.base_price).toLocaleString('vi-VN');
-          }
-          if (unitEl && (service.price_unit || service.pricing_unit)) {
-            unitEl.textContent = `VNĐ / ${service.price_unit || service.pricing_unit}`;
-          }
           if (bookLink) {
             const isCare = service.category === 'care' || Number(service.id) >= 6;
             bookLink.setAttribute('href', isCare ? `booking-care.html?service=${service.id}` : `booking.html?service_id=${service.id}`);
@@ -1286,16 +1907,29 @@ async function initServicesAndPricing() {
         }
       }
 
-      // Đồng bộ vào serviceDetailsData
-      if (serviceDetailsData[service.id]) {
+      // Đồng bộ giá vào serviceDetailsData
+      if (serviceDetailsData.vi && serviceDetailsData.vi[service.id]) {
         if (service.base_price) {
-          serviceDetailsData[service.id].price = `Từ ${formatVND(service.base_price)} / ${service.pricing_unit || 'giờ'}`;
+          serviceDetailsData.vi[service.id].price = `Từ ${formatVND(service.base_price)} / ${service.pricing_unit || 'giờ'}`;
+          if (serviceDetailsData[service.id]) {
+            serviceDetailsData[service.id].price = serviceDetailsData.vi[service.id].price;
+          }
+          if (serviceDetailsData.en && serviceDetailsData.en[service.id]) {
+            const unitEN = formatUnitEN(service.price_unit || service.pricing_unit || 'giờ');
+            serviceDetailsData.en[service.id].price = `From ${Number(service.base_price).toLocaleString('en-US')} VND / ${unitEN}`;
+          }
         }
         if (service.description) {
-          serviceDetailsData[service.id].desc = service.description;
+          serviceDetailsData.vi[service.id].desc = service.description;
+          if (serviceDetailsData[service.id]) {
+            serviceDetailsData[service.id].desc = service.description;
+          }
         }
       }
     });
+
+    // Cập nhật giá và đơn vị tính động tức thì theo ngôn ngữ hiện tại
+    updateDynamicPricesLanguage(currentLang);
 
     if (pricingCardsContainer) pricingCardsContainer.style.display = 'grid';
     if (pricingErrorState) pricingErrorState.style.display = 'none';
@@ -1387,7 +2021,9 @@ function initServiceModal() {
   const btnCancel = document.getElementById('service-modal-cancel');
 
   function openModal(serviceId) {
-    const data = serviceDetailsData[serviceId];
+    const isEn = currentLang === 'en';
+    const langData = isEn ? (serviceDetailsData.en || serviceDetailsData.vi) : (serviceDetailsData.vi || serviceDetailsData);
+    const data = (langData && langData[serviceId]) || serviceDetailsData[serviceId];
     if (!data) return;
 
     const badge = document.getElementById('modal-category-badge');
@@ -1400,8 +2036,13 @@ function initServiceModal() {
     const ctaBook = document.getElementById('service-modal-book-cta');
 
     if (badge) {
-      badge.textContent = data.category === 'Vệ sinh' ? '🧹 Vệ sinh' : '🏡 Chăm sóc tại nhà';
-      badge.className = `badge-category ${data.categoryClass}`;
+      const isCare = data.category === 'Chăm sóc tại nhà' || data.category === 'Home Care' || data.category === 'In-Home Care' || Number(serviceId) >= 6;
+      if (isEn) {
+        badge.textContent = isCare ? '🏡 In-Home Care' : '🧹 Cleaning';
+      } else {
+        badge.textContent = isCare ? '🏡 Chăm sóc tại nhà' : '🧹 Vệ sinh';
+      }
+      badge.className = `badge-category ${data.categoryClass || (isCare ? 'badge-category-care' : 'badge-category-cleaning')}`;
     }
     if (title) title.textContent = data.title;
     if (desc) desc.textContent = data.desc;
@@ -1419,7 +2060,13 @@ function initServiceModal() {
     }
 
     if (ctaBook) {
-      ctaBook.setAttribute('href', `booking.html?service_id=${serviceId}`);
+      const isCare = Number(serviceId) >= 6;
+      ctaBook.setAttribute('href', isCare ? `booking-care.html?service=${serviceId}` : `booking.html?service_id=${serviceId}`);
+      ctaBook.textContent = isEn ? 'Book This Service Now' : 'Đặt dịch vụ này ngay';
+    }
+
+    if (btnCancel) {
+      btnCancel.textContent = isEn ? 'Close' : 'Đóng';
     }
 
     modal.style.display = 'flex';
