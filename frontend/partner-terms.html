@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Điều khoản đăng ký và quy chế hợp tác đối tác DabClean — Quy định quyền lợi, nghĩa vụ, quy trình 4 bước, hệ thống hai ví và tiêu chuẩn dịch vụ vệ sinh chuyên nghiệp.">
+  <title>Điều khoản đăng ký đối tác · DabClean Platform</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%230D9488'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3Cpath d='M13 18 Q16 12 19 18' stroke='%230D9488' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="css/pages/partner.css">
+  <style>
+    /* Styling chuyên biệt cho văn bản pháp lý DabClean */
+    .legal-page {
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .legal-hero {
+      background: linear-gradient(135deg, #042f2e 0%, #0f172a 100%);
+      color: #ffffff;
+      padding: 56px 0 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .legal-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(13, 148, 136, 0.28) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .legal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(20, 184, 166, 0.2);
+      border: 1px solid rgba(45, 212, 191, 0.4);
+      color: #5eead4;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .legal-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .legal-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .legal-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legal-container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    /* Sticky Navigation */
+    .legal-toc {
+      position: sticky;
+      top: 92px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    .legal-toc-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f766e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legal-toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .legal-toc-link {
+      display: block;
+      padding: 7px 10px;
+      font-size: 13px;
+      color: #475569;
+      text-decoration: none;
+      border-radius: 8px;
+      line-height: 1.4;
+      transition: all 0.2s ease;
+    }
+    .legal-toc-link:hover, .legal-toc-link.active {
+      color: #0d9488;
+      background: #f0fdfa;
+      font-weight: 700;
+      padding-left: 14px;
+    }
+    /* Document Body */
+    .legal-content {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 40px 48px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    .legal-section {
+      margin-bottom: 44px;
+      scroll-margin-top: 100px;
+    }
+    .legal-section-title {
+      font-size: 1.28rem;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .legal-section-title span.sec-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #0d9488;
+      color: #ffffff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .legal-box-highlight {
+      background: #f0fdfa;
+      border-left: 4px solid #0d9488;
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14px;
+      color: #134e4a;
+    }
+    .legal-box-warning {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14px;
+      color: #78350f;
+    }
+    .legal-step-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .legal-step-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 13.5px;
+    }
+    .legal-step-card strong {
+      display: block;
+      color: #0f766e;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    .wallet-compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13.5px;
+    }
+    .wallet-compare-table th {
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #e2e8f0;
+      font-weight: 700;
+    }
+    .wallet-compare-table td {
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    .wallet-compare-table tr:nth-child(even) td {
+      background: #fafafa;
+    }
+    @media (max-width: 900px) {
+      .legal-container {
+        grid-template-columns: 1fr;
+        padding: 20px 16px 60px;
+        gap: 24px;
+      }
+      .legal-toc {
+        position: static;
+        max-height: none;
+      }
+      .legal-content {
+        padding: 24px 20px;
+      }
+    }
+  </style>
+</head>
+<body class="legal-page">
+
+  <!-- Header Độc lập -->
+  <header class="partner-page-header">
+    <div class="container">
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:32px;height:32px;">
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+        </svg>
+        <span class="logo-text">DabClean</span>
+      </a>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="privacy-policy.html" class="btn-back-home" style="color: #0f766e;" title="Xem Chính sách bảo mật dữ liệu cá nhân">
+          🔒 Chính sách bảo mật
+        </a>
+        <a href="partner-register.html" class="btn-back-home" aria-label="Quay lại trang Đăng ký đối tác">
+          <span>←</span>
+          <span>Đăng ký đối tác</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner Hero Tiêu đề -->
+  <section class="legal-hero">
+    <div class="container" style="max-width: 1180px; margin: 0 auto; padding: 0 20px;">
+      <span class="legal-badge">📋 Văn bản pháp lý nền tảng</span>
+      <h1 class="legal-title">Điều Khoản Đăng Ký Đối Tác DabClean</h1>
+      <p style="font-size: 16px; color: #cbd5e1; max-width: 760px; margin: 0; line-height: 1.6;">
+        Quy chế hợp tác, tiêu chuẩn cung ứng dịch vụ vệ sinh và chính sách tài chính áp dụng cho toàn thể kỹ thuật viên, cộng tác viên và đối tác hoạt động trên nền tảng DabClean.
+      </p>
+
+      <div class="legal-meta-bar">
+        <div class="legal-meta-item">
+          <span>📅 Ngày ban hành & hiệu lực:</span>
+          <strong style="color: #ffffff;">01/01/2026</strong>
+        </div>
+        <div class="legal-meta-item">
+          <span>🔖 Phiên bản:</span>
+          <strong style="color: #5eead4;">1.0 (Chính thức)</strong>
+        </div>
+        <div class="legal-meta-item">
+          <span>⚖️ Cơ quan điều hành:</span>
+          <strong style="color: #ffffff;">CleanNova Platform — Ban Quản Lý DabClean</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Khung nội dung chính -->
+  <main class="legal-container">
+
+    <!-- Thanh mục lục điều hướng (Mục 1 đến 10) -->
+    <aside class="legal-toc" aria-label="Mục lục điều khoản">
+      <div class="legal-toc-title">📑 Mục lục điều khoản</div>
+      <ul class="legal-toc-list">
+        <li><a href="#sec-1" class="legal-toc-link">1. Phạm vi & Đối tượng</a></li>
+        <li><a href="#sec-2" class="legal-toc-link">2. Điều kiện & Xác minh</a></li>
+        <li><a href="#sec-3" class="legal-toc-link">3. Quy trình 4 bước nhận ca</a></li>
+        <li><a href="#sec-4" class="legal-toc-link">4. Bảo vệ tài sản & Thông tin</a></li>
+        <li><a href="#sec-5" class="legal-toc-link">5. Phí, Hai Ví & Thanh toán</a></li>
+        <li><a href="#sec-6" class="legal-toc-link">6. Hủy đơn & Giải quyết tranh chấp</a></li>
+        <li><a href="#sec-7" class="legal-toc-link">7. Hành vi bị nghiêm cấm</a></li>
+        <li><a href="#sec-8" class="legal-toc-link">8. Tạm khóa & Chấm dứt</a></li>
+        <li><a href="#sec-9" class="legal-toc-link">9. Thay đổi điều khoản</a></li>
+        <li><a href="#sec-10" class="legal-toc-link">10. Xác nhận đồng ý & Hiệu lực</a></li>
+      </ul>
+
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px dashed #e2e8f0; font-size: 12px; color: #64748b;">
+        <div>📞 Hỗ trợ đối tác: <strong>1900 6868</strong></div>
+        <div style="margin-top: 4px;">✉️ Email: <strong>support@cleanova.vn</strong></div>
+      </div>
+    </aside>
+
+    <!-- Toàn văn điều khoản -->
+    <article class="legal-content">
+
+      <!-- MỤC 1 -->
+      <section id="sec-1" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">1</span>
+          <span>Phạm vi và đối tượng áp dụng</span>
+        </h2>
+        <p>
+          Văn bản Điều khoản đăng ký đối tác này (sau đây gọi tắt là <strong>"Điều Khoản"</strong>) thiết lập các quyền, nghĩa vụ, tiêu chuẩn nghiệp vụ và trách nhiệm pháp lý giữa <strong>Nền tảng dịch vụ tiện ích DabClean</strong> (thuộc hệ thống CleanNova) và các cá nhân, người lao động tự do hoặc tổ chức đăng ký tham gia cung cấp dịch vụ trên nền tảng (sau đây gọi tắt là <strong>"Đối tác"</strong> hoặc <strong>"Nhân viên"</strong>).
+        </p>
+        <p>
+          Điều khoản này áp dụng xuyên suốt toàn bộ quá trình: từ khi nộp hồ sơ trực tuyến tại website, quá trình xét duyệt hồ sơ, tập huấn nghiệp vụ, tiếp nhận đơn đặt dịch vụ, thực hiện công việc tại địa điểm khách hàng cho đến khi hoàn tất thanh toán và xử lý các sự vụ phát sinh.
+        </p>
+      </section>
+
+      <!-- MỤC 2 -->
+      <section id="sec-2" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">2</span>
+          <span>Điều kiện đăng ký và xác minh đối tác</span>
+        </h2>
+        <p>Để trở thành Đối tác hợp lệ của DabClean, người nộp hồ sơ phải đáp ứng các tiêu chuẩn sau:</p>
+        <ul style="padding-left: 20px; margin-bottom: 12px;">
+          <li><strong>Độ tuổi và tư cách pháp lý:</strong> Là công dân Việt Nam đủ 18 tuổi trở lên, có đầy đủ năng lực hành vi dân sự theo quy định của Bộ luật Dân sự.</li>
+          <li><strong>Lý lịch tư pháp:</strong> Có lý lịch rõ ràng, không có tiền án, tiền sự về các tội danh liên quan đến trộm cắp, cưỡng đoạt tài sản, cố ý gây thương tích, lừa đảo hoặc vi phạm an ninh trật tự.</li>
+          <li><strong>Trang thiết bị làm việc:</strong> Sở hữu điện thoại thông minh (smartphone) có camera chụp ảnh rõ nét, hỗ trợ định vị GPS và kết nối Internet để vận hành ứng dụng Staff Portal; có phương tiện đi lại chủ động.</li>
+          <li><strong>Tính trung thực của hồ sơ:</strong> Cam kết mọi thông tin khai báo (họ tên, số điện thoại, số CCCD/CMND, địa chỉ cư trú, kinh nghiệm) là hoàn toàn chuẩn xác và thuộc quyền sở hữu chính chủ.</li>
+        </ul>
+        <div class="legal-box-highlight">
+          <strong>Quy trình xét duyệt:</strong> Hồ sơ đăng ký sau khi gửi qua biểu mẫu sẽ ở trạng thái <em>"Chờ xét duyệt" (Pending)</em>. Ban quản trị DabClean tiến hành đối soát thông tin, liên hệ phỏng vấn kiểm tra tay nghề và hướng dẫn hoàn thành quy chuẩn an toàn trước khi kích hoạt tài khoản nhận ca.
+        </div>
+      </section>
+
+      <!-- MỤC 3 -->
+      <section id="sec-3" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">3</span>
+          <span>Quy trình 4 bước tiếp nhận và thực hiện đơn hàng</span>
+        </h2>
+        <p>
+          Đối tác bắt buộc phải tuân thủ nghiêm ngặt <strong>Quy trình 4 bước chuẩn</strong> của DabClean trên ứng dụng nhân viên (Staff Portal) nhằm bảo đảm chất lượng đồng nhất và sự minh bạch đối chiếu:
+        </p>
+
+        <div class="legal-step-grid">
+          <div class="legal-step-card">
+            <strong>Bước 1: Đã đến nơi (Arrived)</strong>
+            <span>Nhân viên có mặt tại địa chỉ khách hàng đúng giờ hẹn. Nhấn nút <em>"📍 Đã đến nơi"</em> trên ứng dụng để hệ thống ghi nhận thời điểm và tự động mở khu vực chụp ảnh Trước.</span>
+          </div>
+
+          <div class="legal-step-card">
+            <strong>Bước 2: Ảnh Trước & Bắt đầu làm việc</strong>
+            <span>Mở camera trên điện thoại chụp trực tiếp ảnh hiện trạng từng khu vực. Ứng dụng chỉ kích hoạt nút <em>"▶️ Bắt đầu làm việc"</em> khi đã ghi nhận ít nhất 01 ảnh Trước hợp lệ.</span>
+          </div>
+
+          <div class="legal-step-card">
+            <strong>Bước 3: Ảnh Sau & Hoàn thành</strong>
+            <span>Sau khi hoàn thành công việc, chụp ảnh Sau đối chiếu đúng từng góc chụp Trước để làm cơ sở nghiệm thu cho khách hàng và kích hoạt nút <em>"✅ Hoàn thành công việc"</em>.</span>
+          </div>
+
+          <div class="legal-step-card">
+            <strong>Bước 4: Thu tiền & Quyết toán</strong>
+            <span>Đối với đơn tiền mặt, thợ kiểm đếm đủ tiền từ khách rồi vuốt xác nhận thu tiền mặt. Đối với đơn trực tuyến, tiền công ròng sẽ tự động cộng vào Ví Thu Nhập.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- MỤC 4 -->
+      <section id="sec-4" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">4</span>
+          <span>Trách nhiệm bảo vệ tài sản và thông tin khách hàng</span>
+        </h2>
+        <p>Uy tín và sự an tâm của khách hàng là ưu tiên số 1 của DabClean. Đối tác có các nghĩa vụ sau:</p>
+        <ul style="padding-left: 20px;">
+          <li><strong>Bảo vệ tài sản:</strong> Cẩn trọng tối đa khi lau chùi, vệ sinh xung quanh các thiết bị điện tử, đồ gốm sứ, tranh ảnh và đồ nội thất giá trị. Trường hợp xảy ra rơi vỡ, hư hỏng do lỗi sơ suất hoặc bất cẩn của đối tác, đối tác có trách nhiệm phối hợp DabClean xác định mức thiệt hại và bồi thường thỏa đáng cho khách hàng.</li>
+          <li><strong>Không xâm phạm quyền riêng tư:</strong> Tuyệt đối không tự ý mở tủ, ngăn kéo, phòng ngủ hoặc các khu vực riêng tư nằm ngoài phạm vi dịch vụ đã thỏa thuận.</li>
+          <li><strong>Bảo mật thông tin:</strong> Mọi thông tin của khách hàng (họ tên, số điện thoại, địa chỉ nhà ở, hoàn cảnh sinh hoạt) chỉ được sử dụng cho mục đích thực hiện đơn hàng. Tuyệt đối không lưu trữ trái phép, không tiết lộ cho bên thứ ba và không đăng tải hình ảnh nhà khách lên mạng xã hội.</li>
+        </ul>
+      </section>
+
+      <!-- MỤC 5 -->
+      <section id="sec-5" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">5</span>
+          <span>Phí dịch vụ, hoa hồng, ví đối tác và thanh toán</span>
+        </h2>
+        <p>
+          Hệ thống tài chính của Đối tác tại DabClean được vận hành minh bạch thông qua mô hình <strong>Hệ Thống Hai Ví Độc Lập</strong>:
+        </p>
+
+        <table class="wallet-compare-table">
+          <thead>
+            <tr>
+              <th style="width: 28%;">Hạng mục</th>
+              <th style="width: 36%;">Ví Tín Dụng (Credit Wallet)</th>
+              <th style="width: 36%;">Ví Thu Nhập (Earnings Wallet)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Mục đích sử dụng</strong></td>
+              <td>Dùng để thanh toán khoản chiết khấu nền tảng (Platform Commission) khi nhận ca hoặc khi quyết toán đơn hàng.</td>
+              <td>Nơi tiếp nhận và tích lũy tiền công ròng (Net Wage) từ các đơn hàng khách thanh toán online.</td>
+            </tr>
+            <tr>
+              <td><strong>Điều kiện nhận việc</strong></td>
+              <td>Số dư khả dụng phải đạt từ <strong>100.000 VNĐ trở lên</strong>. Khi số dư dưới 100k hoặc bị âm, tài khoản tạm dừng nhận đơn mới.</td>
+              <td>Không quy định số dư tối thiểu. Toàn quyền quản lý và yêu cầu rút về tài khoản ngân hàng cá nhân.</td>
+            </tr>
+            <tr>
+              <td><strong>Nguồn nạp tiền</strong></td>
+              <td>Chuyển khoản VietQR tự động hoặc chuyển tiền nội bộ từ Ví Thu Nhập sang.</td>
+              <td>Cộng tự động tiền công khi đơn hàng trực tuyến được nghiệm thu hoàn thành.</td>
+            </tr>
+            <tr>
+              <td><strong>Cơ chế chuyển đổi</strong></td>
+              <td colspan="2">
+                Đối tác có quyền <strong>chuyển tiền nội bộ từ Ví Thu Nhập sang Ví Tín Dụng</strong> tức thời và hoàn toàn miễn phí để duy trì điều kiện nhận việc liên tục mà không cần nạp tiền từ ngân hàng ngoài.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="legal-box-highlight">
+          <strong>Cơ chế thanh toán tiền mặt:</strong> Đối với đơn tiền mặt, đối tác trực tiếp thu 100% tiền từ khách hàng. DabClean sẽ khấu trừ khoản chiết khấu tương ứng (ví dụ 20%) trực tiếp trên Ví Tín Dụng của đối tác.
+        </div>
+      </section>
+
+      <!-- MỤC 6 -->
+      <section id="sec-6" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">6</span>
+          <span>Hủy đơn, hoàn phí, khiếu nại và tranh chấp</span>
+        </h2>
+        <ul style="padding-left: 20px;">
+          <li><strong>Khách hàng hủy đơn hợp lệ:</strong> Nếu đơn hàng bị hủy bởi khách hàng hoặc lý do bất khả kháng không xuất phát từ lỗi đối tác, hệ thống tự động hoàn trả 100% chiết khấu đã khấu trừ về Ví Tín Dụng của đối tác.</li>
+          <li><strong>Đối tác tự ý hủy đơn:</strong> Trường hợp đối tác đã nhận ca nhưng tự ý hủy đơn sát giờ, đến muộn quá 30 phút mà không có lý do chính đáng: khoản chiết khấu nhận đơn sẽ không được hoàn lại, đồng thời hệ thống ghi nhận điểm trừ uy tín.</li>
+          <li><strong>Cơ sở phân định tranh chấp:</strong> Trong mọi trường hợp có khiếu nại về chất lượng làm sạch hoặc thời gian làm việc, DabClean căn cứ vào <em>ảnh chụp Trước / Sau</em>, <em>thời gian tải ảnh</em>, <em>tọa độ GPS</em> và <em>lịch sử thao tác trên hệ thống</em> để phân định công bằng.</li>
+        </ul>
+      </section>
+
+      <!-- MỤC 7 -->
+      <section id="sec-7" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">7</span>
+          <span>Hành vi bị nghiêm cấm</span>
+        </h2>
+        <div class="legal-box-warning">
+          <strong>Các hành vi sau đây sẽ dẫn đến việc khóa tài khoản vĩnh viễn và chấm dứt hợp tác ngay lập tức:</strong>
+          <ol style="margin-top: 8px; padding-left: 20px; line-height: 1.6;">
+            <li>Giao dịch chui, câu kéo khách hàng giao dịch ngoài nền tảng DabClean nhằm trốn tránh phí chiết khấu hoặc trách nhiệm bảo hành.</li>
+            <li>Gian lận hình ảnh nghiệm thu: sử dụng ảnh có sẵn từ internet, ảnh chụp màn hình, ảnh không đúng hiện trường nhà khách hoặc chụp đối phó.</li>
+            <li>Tự ý đưa người lạ không có hồ sơ xác minh trên hệ thống đi cùng ca làm việc.</li>
+            <li>Có thái độ khiếm nhã, tranh cãi gay gắt, xúc phạm danh dự hoặc đe dọa khách hàng.</li>
+            <li>Tự ý tăng giá dịch vụ, ép buộc khách hàng phải bồi dưỡng thêm tiền tip.</li>
+            <li>Chuyển nhượng hoặc cho người khác mượn tài khoản đối tác để nhận ca thay.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- MỤC 8 -->
+      <section id="sec-8" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">8</span>
+          <span>Tạm khóa, chấm dứt hợp tác và cơ chế khiếu nại</span>
+        </h2>
+        <p>DabClean áp dụng các mức xử lý vi phạm linh hoạt và nhân văn:</p>
+        <ul style="padding-left: 20px;">
+          <li><strong>Nhắc nhở & Cảnh cáo:</strong> Áp dụng đối với vi phạm lần đầu mức độ nhẹ (quên chụp 1 góc ảnh, chậm giờ dưới 15 phút).</li>
+          <li><strong>Tạm khóa quyền nhận ca (3 - 7 ngày):</strong> Áp dụng khi điểm đánh giá trung bình xuống dưới 4.0 sao, số dư ví tín dụng âm kéo dài hoặc hủy ca không báo trước.</li>
+          <li><strong>Khóa vĩnh viễn & Chấm dứt hợp đồng:</strong> Áp dụng khi vi phạm các hành vi bị nghiêm cấm tại Mục 7 hoặc có hành vi gian lận tài chính.</li>
+        </ul>
+        <p>
+          <strong>Cơ chế khiếu nại:</strong> Đối tác có quyền gửi đơn khiếu nại và cung cấp bằng chứng (ảnh, đoạn tin nhắn, ghi âm) qua email <code>support@cleanova.vn</code> trong vòng <strong>48 giờ</strong> kể từ thời điểm nhận thông báo xử lý kỷ luật. DabClean cam kết phản hồi bằng văn bản trong vòng 03 ngày làm việc.
+        </p>
+      </section>
+
+      <!-- MỤC 9 -->
+      <section id="sec-9" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">9</span>
+          <span>Thay đổi điều khoản</span>
+        </h2>
+        <p>
+          DabClean bảo lưu quyền điều chỉnh, bổ sung các nội dung trong Điều khoản này nhằm đáp ứng sự phát triển của dịch vụ và tuân thủ các quy định pháp luật mới nhất. Mọi thay đổi sẽ được công bố công khai trên website và gửi thông báo đến tài khoản đối tác trước ít nhất <strong>07 ngày</strong> trước khi chính thức áp dụng.
+        </p>
+        <p>
+          Việc Đối tác tiếp tục nhận ca và sử dụng hệ thống sau ngày các sửa đổi có hiệu lực đồng nghĩa với việc Đối tác đã hiểu rõ và đồng ý toàn bộ với nội dung điều chỉnh đó.
+        </p>
+      </section>
+
+      <!-- MỤC 10 -->
+      <section id="sec-10" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">10</span>
+          <span>Cơ chế xác nhận đồng ý và ngày có hiệu lực</span>
+        </h2>
+        <p>
+          Bằng việc chủ động tích chọn vào hộp kiểm <em>"Tôi xác nhận thông tin cung cấp là chính xác và hoàn toàn đồng ý với Điều khoản đăng ký đối tác..."</em> tại biểu mẫu đăng ký, Đối tác xác nhận đã đọc kỹ, hiểu rõ và tự nguyện cam kết tuân thủ đầy đủ các điều khoản trên.
+        </p>
+        <p>
+          Hệ thống kỹ thuật của DabClean ghi nhận tự động phiên bản điều khoản (Version 1.0), thời điểm xác nhận (Timestamp UTC+7) và dữ liệu hồ sơ để làm căn cứ pháp lý ràng buộc giữa hai bên.
+        </p>
+
+        <div style="margin-top: 32px; padding: 20px; border-radius: 12px; background: #f8fafc; border: 1px solid #cbd5e1; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="font-weight: 700; color: #0f172a;">ĐẠI DIỆN NỀN TẢNG DABCLEAN</div>
+            <div style="font-size: 13px; color: #64748b; margin-top: 2px;">Ban Quản lý & Pháp chế CleanNova</div>
+          </div>
+          <div>
+            <a href="partner-register.html" class="btn btn-primary" style="background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);">
+              ✍️ Quay lại trang Đăng ký đối tác
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- Footer Đồng bộ DabClean -->
+  <footer class="footer" style="background: #0f172a; color: #94a3b8; padding: 40px 0 24px; border-top: 1px solid #1e293b; font-size: 13px;">
+    <div class="container" style="max-width: 1180px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <p style="margin: 0; color: #cbd5e1;">© 2026 DabClean Platform — CleanNova Inc. Bảo lưu mọi quyền.</p>
+        <p style="margin: 4px 0 0; font-size: 12px; color: #64748b;">Trụ sở: Tòa nhà DabClean, Duy Tân, Cầu Giấy, Hà Nội · Hotline: 1900 6868</p>
+      </div>
+      <div style="display: flex; gap: 16px;">
+        <a href="partner-terms.html" style="color: #5eead4; font-weight: 700; text-decoration: none;">Điều khoản đối tác</a>
+        <span style="color: #475569;">·</span>
+        <a href="privacy-policy.html" style="color: #94a3b8; text-decoration: none;">Chính sách bảo mật</a>
+        <span style="color: #475569;">·</span>
+        <a href="trangchu.html" style="color: #94a3b8; text-decoration: none;">Trang chủ</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script đồng bộ Active state cho Table of Contents -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const links = document.querySelectorAll('.legal-toc-link');
+      const sections = document.querySelectorAll('.legal-section');
+
+      function updateActiveToc() {
+        let currentSectionId = '';
+        sections.forEach(sec => {
+          const rect = sec.getBoundingClientRect();
+          if (rect.top <= 140) {
+            currentSectionId = sec.id;
+          }
+        });
+        links.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + currentSectionId);
+        });
+      }
+
+      window.addEventListener('scroll', updateActiveToc, { passive: true });
+      updateActiveToc();
+    });
+  </script>
+</body>
+</html>

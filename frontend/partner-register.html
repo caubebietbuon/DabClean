@@ -241,9 +241,17 @@
               <div class="form-field-group">
                 <label class="terms-checkbox-label">
                   <input type="checkbox" id="p-agree" name="agree_terms" required>
-                  <span>Tôi xác nhận thông tin cung cấp là chính xác và đồng ý với <a href="#" style="color: #0d9488; font-weight: 700;">Điều khoản đăng ký đối tác</a> và <a href="#" style="color: #0d9488; font-weight: 700;">Chính sách bảo mật dữ liệu cá nhân</a> của DabClean.</span>
+                  <span><strong style="color: #e11d48;">*</strong> Tôi xác nhận thông tin cung cấp là chính xác và hoàn toàn đồng ý với <a href="partner-terms.html" target="_blank" rel="noopener noreferrer" style="color: #0d9488; font-weight: 700; text-decoration: underline;" title="Xem toàn văn Điều khoản đăng ký đối tác">Điều khoản đăng ký đối tác</a> và <a href="privacy-policy.html" target="_blank" rel="noopener noreferrer" style="color: #0d9488; font-weight: 700; text-decoration: underline;" title="Xem toàn văn Chính sách bảo mật dữ liệu cá nhân">Chính sách bảo mật dữ liệu cá nhân</a> của DabClean (Phiên bản 1.0).</span>
                 </label>
-                <p class="field-error-msg" id="p-agree-error">Vui lòng xác nhận đồng ý với điều khoản.</p>
+                <p class="field-error-msg" id="p-agree-error" style="margin-left: 24px;">Vui lòng đọc và tích chọn đồng ý với điều khoản & chính sách bảo mật trước khi gửi hồ sơ.</p>
+
+                <div style="height: 1px; background: #e2e8f0; margin: 12px 0 10px 24px;"></div>
+
+                <label class="terms-checkbox-label" style="cursor: pointer; align-items: flex-start;">
+                  <input type="checkbox" id="p-marketing" name="marketing_consent" style="margin-top: 3px;">
+                  <span style="font-size: 12.5px; line-height: 1.5; color: var(--color-text-secondary);"><em>(Tùy chọn)</em> Tôi đồng ý cho phép DabClean gửi thông tin về các khóa đào tạo nâng cao tay nghề, chính sách phúc lợi và cơ hội gia tăng thu nhập định kỳ qua Email / Số điện thoại.</span>
+                </label>
+<!-- Consent items updated -->
               </div>
 
               <!-- Nút Nộp hồ sơ -->
@@ -460,7 +468,10 @@
           experience: document.getElementById('p-experience').value,
           available_hours: document.getElementById('p-hours').value,
           bio: document.getElementById('p-bio').value.trim(),
-          agree_terms: true
+          agree_terms: Boolean(agreeInput.checked),
+          terms_version: '1.0',
+          privacy_version: '1.0',
+          marketing_consent: Boolean(document.getElementById('p-marketing')?.checked)
         };
 
         try {

@@ -557,6 +557,10 @@ async function initDatabase() {
         bio TEXT DEFAULT NULL,
         status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
         rejection_reason TEXT DEFAULT NULL,
+        terms_version VARCHAR(20) NOT NULL DEFAULT '1.0',
+        privacy_version VARCHAR(20) NOT NULL DEFAULT '1.0',
+        terms_accepted_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+        marketing_consent TINYINT(1) NOT NULL DEFAULT 0,
         reviewed_by INT DEFAULT NULL,
         reviewed_at TIMESTAMP NULL DEFAULT NULL,
         user_id INT DEFAULT NULL,
@@ -568,6 +572,25 @@ async function initDatabase() {
         CONSTRAINT fk_partner_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
+
+    // Migration: Bổ sung các cột điều khoản và chính sách bảo mật cho partner_applications nếu chưa có
+    const [partnerCols] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'partner_applications'`
+    );
+    const existingPartnerCols = new Set(partnerCols.map(c => c.COLUMN_NAME));
+    if (!existingPartnerCols.has('terms_version')) {
+      await connection.query("ALTER TABLE partner_applications ADD COLUMN terms_version VARCHAR(20) NOT NULL DEFAULT '1.0' COMMENT 'Phiên bản Điều khoản đối tác'");
+    }
+    if (!existingPartnerCols.has('privacy_version')) {
+      await connection.query("ALTER TABLE partner_applications ADD COLUMN privacy_version VARCHAR(20) NOT NULL DEFAULT '1.0' COMMENT 'Phiên bản Chính sách bảo mật'");
+    }
+    if (!existingPartnerCols.has('terms_accepted_at')) {
+      await connection.query("ALTER TABLE partner_applications ADD COLUMN terms_accepted_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Thời điểm xác nhận đồng ý điều khoản'");
+    }
+    if (!existingPartnerCols.has('marketing_consent')) {
+      await connection.query("ALTER TABLE partner_applications ADD COLUMN marketing_consent TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Đồng ý nhận tin tuyển dụng và phúc lợi'");
+    }
 
     // Bảo vệ Bug 9: Tự động khởi tạo dữ liệu mẫu cho partner_applications nếu bảng đang trống
     const [existingPartners] = await connection.query('SELECT COUNT(*) AS count FROM partner_applications');
@@ -2019,7 +2042,12 @@ function queryInMemory(sql, params = []) {
 
   // 14. INSERT INTO partner_applications
   if (normalizedSql.startsWith('insert into partner_applications')) {
-    const [name, email, phone, password, address, work_area, experience, available_hours, bio, status] = params;
+    let name, email, phone, password, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status;
+    if (params.length >= 14) {
+      [name, email, phone, password, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status] = params;
+    } else {
+      [name, email, phone, password, address, work_area, experience, available_hours, bio, status] = params;
+    }
     if (!inMemoryData.partner_applications) inMemoryData.partner_applications = [];
     const newId = inMemoryData.partner_applications.length > 0 
       ? Math.max(...inMemoryData.partner_applications.map(p => p.id)) + 1 
@@ -2035,6 +2063,10 @@ function queryInMemory(sql, params = []) {
       experience: experience || '',
       available_hours: available_hours || '',
       bio: bio || '',
+      terms_version: terms_version || '1.0',
+      privacy_version: privacy_version || '1.0',
+      terms_accepted_at: terms_accepted_at || new Date(),
+      marketing_consent: marketing_consent ? 1 : 0,
       status: status || 'pending',
       rejection_reason: null,
       reviewed_by: null,

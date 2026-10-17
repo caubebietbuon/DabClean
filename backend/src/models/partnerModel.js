@@ -7,7 +7,7 @@ const PartnerModel = {
   // Tìm hồ sơ theo Email
   async findByEmail(email) {
     const rows = await db.query(
-      'SELECT id, name, email, phone, password, address, work_area, experience, available_hours, bio, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE email = ? LIMIT 1',
+      'SELECT id, name, email, phone, password, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE email = ? LIMIT 1',
       [(email || '').trim().toLowerCase()]
     );
     return rows[0] || null;
@@ -16,7 +16,7 @@ const PartnerModel = {
   // Tìm hồ sơ theo Số điện thoại
   async findByPhone(phone) {
     const rows = await db.query(
-      'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, status, created_at FROM partner_applications WHERE phone = ? LIMIT 1',
+      'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status, created_at FROM partner_applications WHERE phone = ? LIMIT 1',
       [(phone || '').trim()]
     );
     return rows[0] || null;
@@ -25,7 +25,7 @@ const PartnerModel = {
   // Tìm hồ sơ theo ID (Không chọn trường password)
   async findById(id) {
     const rows = await db.query(
-      'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE id = ? LIMIT 1',
+      'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE id = ? LIMIT 1',
       [parseInt(id, 10)]
     );
     return rows[0] || null;
@@ -34,16 +34,31 @@ const PartnerModel = {
   // Tìm hồ sơ theo ID kèm mật khẩu (Dùng riêng cho luồng phê duyệt cấp quyền)
   async findByIdWithPassword(id) {
     const rows = await db.query(
-      'SELECT id, name, email, phone, password, address, work_area, experience, available_hours, bio, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE id = ? LIMIT 1',
+      'SELECT id, name, email, phone, password, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE id = ? LIMIT 1',
       [parseInt(id, 10)]
     );
     return rows[0] || null;
   },
 
   // Tạo hồ sơ đối tác mới (Mặc định status: pending)
-  async create({ name, email, phone, password, address, work_area, experience, available_hours, bio, status = 'pending' }) {
+  async create({
+    name,
+    email,
+    phone,
+    password,
+    address,
+    work_area,
+    experience,
+    available_hours,
+    bio,
+    terms_version = '1.0',
+    privacy_version = '1.0',
+    terms_accepted_at = new Date(),
+    marketing_consent = 0,
+    status = 'pending'
+  }) {
     const result = await db.query(
-      'INSERT INTO partner_applications (name, email, phone, password, address, work_area, experience, available_hours, bio, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO partner_applications (name, email, phone, password, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [
         (name || '').trim(),
         (email || '').trim().toLowerCase(),
@@ -54,6 +69,10 @@ const PartnerModel = {
         experience || '',
         available_hours || '',
         bio || '',
+        terms_version || '1.0',
+        privacy_version || '1.0',
+        terms_accepted_at || new Date(),
+        marketing_consent ? 1 : 0,
         status
       ]
     );
@@ -64,13 +83,13 @@ const PartnerModel = {
   async getAll(status = '') {
     if (status && status !== 'all') {
       const rows = await db.query(
-        'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE status = ? ORDER BY id DESC',
+        'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications WHERE status = ? ORDER BY id DESC',
         [status]
       );
       return rows;
     }
     const rows = await db.query(
-      'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications ORDER BY id DESC'
+      'SELECT id, name, email, phone, address, work_area, experience, available_hours, bio, terms_version, privacy_version, terms_accepted_at, marketing_consent, status, rejection_reason, reviewed_by, reviewed_at, user_id, created_at FROM partner_applications ORDER BY id DESC'
     );
     return rows;
   },

@@ -21,7 +21,10 @@ const partnerController = {
         experience,
         available_hours,
         bio,
-        agree_terms
+        agree_terms,
+        terms_version = '1.0',
+        privacy_version = '1.0',
+        marketing_consent = false
       } = req.body;
 
       // 1. Kiểm tra trường bắt buộc
@@ -100,6 +103,7 @@ const partnerController = {
 
       // 6. Lưu hồ sơ ứng tuyển với trạng thái mặc định 'pending'
       // Tuyệt đối không cấp quyền Admin hoặc Staff hoạt động tự động
+      const termsAcceptedAt = new Date();
       const applicationId = await PartnerModel.create({
         name: sanitizeInput(name),
         email: email.trim().toLowerCase(),
@@ -110,6 +114,10 @@ const partnerController = {
         experience: experience ? sanitizeInput(experience) : '',
         available_hours: available_hours ? sanitizeInput(available_hours) : '',
         bio: bio ? sanitizeInput(bio) : '',
+        terms_version: String(terms_version || '1.0').trim().slice(0, 20),
+        privacy_version: String(privacy_version || '1.0').trim().slice(0, 20),
+        terms_accepted_at: termsAcceptedAt,
+        marketing_consent: marketing_consent === true || marketing_consent === 'true' || marketing_consent === 1 ? 1 : 0,
         status: 'pending'
       });
 
@@ -122,7 +130,11 @@ const partnerController = {
           email: email.trim().toLowerCase(),
           phone: cleanPhone,
           work_area: work_area.trim(),
-          status: 'pending'
+          status: 'pending',
+          terms_version: terms_version || '1.0',
+          privacy_version: privacy_version || '1.0',
+          terms_accepted_at: termsAcceptedAt,
+          marketing_consent: Boolean(marketing_consent)
         }
       });
     } catch (err) {

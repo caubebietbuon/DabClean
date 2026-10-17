@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chính sách bảo mật dữ liệu cá nhân DabClean — Tuân thủ Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15 (hiệu lực từ 01/01/2026) và Nghị định 13/2023/NĐ-CP.">
+  <title>Chính sách bảo mật dữ liệu cá nhân · DabClean Platform</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%230D9488'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3Cpath d='M13 18 Q16 12 19 18' stroke='%230D9488' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="css/pages/partner.css">
+  <style>
+    /* Styling chuyên biệt cho văn bản pháp lý DabClean */
+    .legal-page {
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .legal-hero {
+      background: linear-gradient(135deg, #064e3b 0%, #0f172a 100%);
+      color: #ffffff;
+      padding: 56px 0 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .legal-hero::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      right: -10%;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .legal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #6ee7b7;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .legal-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+    .legal-meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .legal-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legal-container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 40px;
+      align-items: flex-start;
+    }
+    /* Sticky Navigation */
+    .legal-toc {
+      position: sticky;
+      top: 92px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    .legal-toc-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #059669;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legal-toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .legal-toc-link {
+      display: block;
+      padding: 6px 10px;
+      font-size: 12.5px;
+      color: #475569;
+      text-decoration: none;
+      border-radius: 8px;
+      line-height: 1.4;
+      transition: all 0.2s ease;
+    }
+    .legal-toc-link:hover, .legal-toc-link.active {
+      color: #059669;
+      background: #ecfdf5;
+      font-weight: 700;
+      padding-left: 14px;
+    }
+    /* Document Body */
+    .legal-content {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 40px 48px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+    .legal-section {
+      margin-bottom: 44px;
+      scroll-margin-top: 100px;
+    }
+    .legal-section-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .legal-section-title span.sec-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #059669;
+      color: #ffffff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .legal-box-highlight {
+      background: #ecfdf5;
+      border-left: 4px solid #059669;
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14px;
+      color: #064e3b;
+    }
+    .legal-box-warning {
+      background: #fffbe8;
+      border-left: 4px solid #d97706;
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 14px;
+      color: #78350f;
+    }
+    .legal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13.5px;
+    }
+    .legal-table th {
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #e2e8f0;
+      font-weight: 700;
+    }
+    .legal-table td {
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    .legal-table tr:nth-child(even) td {
+      background: #fafafa;
+    }
+    @media (max-width: 900px) {
+      .legal-container {
+        grid-template-columns: 1fr;
+        padding: 20px 16px 60px;
+        gap: 24px;
+      }
+      .legal-toc {
+        position: static;
+        max-height: none;
+      }
+      .legal-content {
+        padding: 24px 20px;
+      }
+    }
+  </style>
+</head>
+<body class="legal-page">
+
+  <!-- Header Độc lập -->
+  <header class="partner-page-header">
+    <div class="container">
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="width:32px;height:32px;">
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+        </svg>
+        <span class="logo-text">DabClean</span>
+      </a>
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <a href="partner-terms.html" class="btn-back-home" style="color: #0f766e;" title="Xem Điều khoản đăng ký đối tác">
+          📋 Điều khoản đối tác
+        </a>
+        <a href="partner-register.html" class="btn-back-home" aria-label="Quay lại trang Đăng ký đối tác">
+          <span>←</span>
+          <span>Đăng ký đối tác</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner Hero Tiêu đề -->
+  <section class="legal-hero">
+    <div class="container" style="max-width: 1180px; margin: 0 auto; padding: 0 20px;">
+      <span class="legal-badge">🔒 Tuân thủ Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15</span>
+      <h1 class="legal-title">Chính Sách Bảo Mật Dữ Liệu Cá Nhân DabClean</h1>
+      <p style="font-size: 16px; color: #cbd5e1; max-width: 780px; margin: 0; line-height: 1.6;">
+        Cam kết bảo mật thông tin, bảo vệ quyền riêng tư và minh bạch mục đích xử lý dữ liệu của khách hàng và đối tác theo đúng quy định pháp luật Việt Nam.
+      </p>
+
+      <div class="legal-meta-bar">
+        <div class="legal-meta-item">
+          <span>📅 Ngày hiệu lực:</span>
+          <strong style="color: #ffffff;">01/01/2026</strong>
+        </div>
+        <div class="legal-meta-item">
+          <span>🔖 Phiên bản:</span>
+          <strong style="color: #6ee7b7;">1.0 (Ban hành chính thức)</strong>
+        </div>
+        <div class="legal-meta-item">
+          <span>⚖️ Căn cứ pháp lý:</span>
+          <strong style="color: #ffffff;">Luật 91/2025/QH15 & Nghị định 13/2023/NĐ-CP</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Khung nội dung chính -->
+  <main class="legal-container">
+
+    <!-- Thanh mục lục điều hướng (12 mục) -->
+    <aside class="legal-toc" aria-label="Mục lục chính sách bảo mật">
+      <div class="legal-toc-title">🛡️ Nội dung chính sách</div>
+      <ul class="legal-toc-list">
+        <li><a href="#sec-1" class="legal-toc-link">1. Đơn vị xử lý & Liên hệ</a></li>
+        <li><a href="#sec-2" class="legal-toc-link">2. Các nhóm dữ liệu thu thập</a></li>
+        <li><a href="#sec-3" class="legal-toc-link">3. Mục đích & Căn cứ xử lý</a></li>
+        <li><a href="#sec-4" class="legal-toc-link">4. Cách thức thu thập</a></li>
+        <li><a href="#sec-5" class="legal-toc-link">5. Chia sẻ dữ liệu</a></li>
+        <li><a href="#sec-6" class="legal-toc-link">6. Quy định riêng về Ảnh trước/sau</a></li>
+        <li><a href="#sec-7" class="legal-toc-link">7. Lưu trữ, Bảo vệ & Thời hạn</a></li>
+        <li><a href="#sec-8" class="legal-toc-link">8. Quyền của chủ thể dữ liệu</a></li>
+        <li><a href="#sec-9" class="legal-toc-link">9. Rút đồng ý & Ngoại lệ xóa</a></li>
+        <li><a href="#sec-10" class="legal-toc-link">10. Cookie & Nhật ký Audit Logs</a></li>
+        <li><a href="#sec-11" class="legal-toc-link">11. Quy trình xử lý sự cố dữ liệu</a></li>
+        <li><a href="#sec-12" class="legal-toc-link">12. Thay đổi chính sách & Hiệu lực</a></li>
+      </ul>
+
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px dashed #e2e8f0; font-size: 12px; color: #64748b;">
+        <div>🔒 Bộ phận DPO: <strong>privacy@cleanova.vn</strong></div>
+        <div style="margin-top: 4px;">📞 Đường dây nóng: <strong>1900 6868</strong></div>
+      </div>
+    </aside>
+
+    <!-- Toàn văn chính sách -->
+    <article class="legal-content">
+
+      <!-- MỤC 1 -->
+      <section id="sec-1" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">1</span>
+          <span>Đơn vị chịu trách nhiệm xử lý dữ liệu và thông tin liên hệ</span>
+        </h2>
+        <p>
+          Chính sách bảo mật dữ liệu cá nhân này (sau đây gọi tắt là <strong>"Chính Sách"</strong>) mô tả cách thức <strong>Nền tảng DabClean</strong> (thuộc hệ thống CleanNova Platform) thu thập, lưu trữ, sử dụng và bảo vệ thông tin của Đối tác và Khách hàng theo đúng tinh thần <strong>Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15</strong> (có hiệu lực từ ngày 01/01/2026).
+        </p>
+        <div class="legal-box-highlight">
+          <strong>Thông tin Tổ chức Kiểm soát & Xử lý dữ liệu cá nhân:</strong>
+          <ul style="margin: 6px 0 0; padding-left: 18px;">
+            <li><strong>Tên đơn vị:</strong> CleanNova Platform — Bộ phận Điều hành Nền tảng DabClean</li>
+            <li><strong>Trụ sở chính:</strong> Tòa nhà văn phòng DabClean, Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, TP. Hà Nội, Việt Nam</li>
+            <li><strong>Cán bộ phụ trách bảo vệ dữ liệu (Data Protection Officer - DPO):</strong> Bộ phận Pháp chế & An toàn thông tin CleanNova</li>
+            <li><strong>Email chuyên trách bảo vệ dữ liệu:</strong> <code>privacy@cleanova.vn</code></li>
+            <li><strong>Tổng đài hỗ trợ pháp lý & đối tác:</strong> <code>1900 6868</code> (08:00 – 18:00 các ngày trong tuần)</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- MỤC 2 -->
+      <section id="sec-2" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">2</span>
+          <span>Các nhóm dữ liệu được thu thập</span>
+        </h2>
+        <p>Hệ thống chỉ thu thập các trường dữ liệu cần thiết phục vụ vận hành, bao gồm:</p>
+        <table class="legal-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Nhóm dữ liệu</th>
+              <th style="width: 75%;">Chi tiết các trường dữ liệu được thu thập</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>1. Dữ liệu định danh cơ bản</strong></td>
+              <td>Họ và tên, địa chỉ email, số điện thoại, mật khẩu (được mã hóa một chiều bằng bcrypt), địa chỉ liên hệ hiện tại, khu vực làm việc mong muốn, kinh nghiệm và mô tả bản thân.</td>
+            </tr>
+            <tr>
+              <td><strong>2. Dữ liệu xác minh đối tác</strong></td>
+              <td>Số Căn cước công dân (CCCD), ảnh chụp chân dung và thông tin phương tiện di chuyển (phục vụ xác thực lý lịch tư pháp và phỏng vấn nhận việc).</td>
+            </tr>
+            <tr>
+              <td><strong>3. Dữ liệu tài chính & Ví</strong></td>
+              <td>Số tài khoản ngân hàng, tên chủ tài khoản, tên chi nhánh ngân hàng (phục vụ rút tiền công về tài khoản), số dư Ví Tín Dụng, số dư Ví Thu Nhập và lịch sử giao dịch đối soát chiết khấu.</td>
+            </tr>
+            <tr>
+              <td><strong>4. Dữ liệu ảnh công việc & GPS</strong></td>
+              <td>Ảnh chụp Trước và Sau khi làm việc (Job Photos), thời gian chụp ảnh chính xác và tọa độ định vị GPS tại thời điểm tải ảnh lên hệ thống.</td>
+            </tr>
+            <tr>
+              <td><strong>5. Dữ liệu kỹ thuật & Nhật ký</strong></td>
+              <td>Địa chỉ IP, loại trình duyệt (User-Agent), lịch sử phiên đăng nhập và nhật ký kiểm toán (Audit Logs) khi thực hiện các tác vụ nhạy cảm trên hệ thống.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- MỤC 3 -->
+      <section id="sec-3" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">3</span>
+          <span>Mục đích và căn cứ xử lý dữ liệu</span>
+        </h2>
+        <p>Mọi hoạt động xử lý dữ liệu cá nhân tại DabClean đều dựa trên căn cứ pháp lý rõ ràng theo quy định của Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15:</p>
+        <ul style="padding-left: 20px;">
+          <li><strong>Xác lập và thực hiện hợp đồng hợp tác:</strong> Thẩm định hồ sơ đối tác, tạo tài khoản kỹ thuật viên, phân công ca làm việc và điều phối đơn hàng dọn dẹp/chăm sóc phù hợp với khu vực đăng ký.</li>
+          <li><strong>Quyết toán thù lao và nghĩa vụ thuế:</strong> Quản lý dòng tiền chiết khấu sàn, ghi nhận tiền công thực nhận vào Ví Thu Nhập và hỗ trợ thực hiện nghĩa vụ tài chính theo quy định nhà nước.</li>
+          <li><strong>Nghiệm thu chất lượng dịch vụ và bảo vệ an toàn:</strong> Sử dụng ảnh chụp hiện trường và tọa độ GPS để nghiệm thu chất lượng làm việc, bảo vệ đối tác khỏi các tranh chấp vô căn cứ và hỗ trợ bảo hiểm trong trường hợp xảy ra sự cố.</li>
+          <li><strong>Phân tách mục đích tiếp thị (Opt-in riêng):</strong> DabClean cam kết <strong>không gộp chung</strong> mục đích quảng cáo/tiếp thị vào sự đồng ý cung cấp dịch vụ bắt buộc. Chỉ khi đối tác chủ động tích chọn vào ô đồng ý nhận thông tin tiếp thị/phúc lợi thì hệ thống mới gửi các bản tin chương trình đào tạo hoặc cơ hội gia tăng thu nhập.</li>
+        </ul>
+      </section>
+
+      <!-- MỤC 4 -->
+      <section id="sec-4" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">4</span>
+          <span>Cách thức thu thập dữ liệu</span>
+        </h2>
+        <ul style="padding-left: 20px;">
+          <li><strong>Thu thập trực tiếp từ đối tác:</strong> Khi người dùng điền biểu mẫu nộp hồ sơ đăng ký tại <code>partner-register.html</code> hoặc cập nhật thông tin trong trang quản lý cá nhân.</li>
+          <li><strong>Thu thập tự động thông qua vận hành ứng dụng:</strong> Khi nhân viên bấm nút nhận ca, bấm <em>"Đã đến nơi"</em>, chụp ảnh nghiệm thu qua camera điện thoại hoặc thực hiện các lệnh chuyển ví nội bộ.</li>
+          <li><strong>Không sử dụng phương thức thu thập ngầm trái phép:</strong> Nền tảng tuyệt đối không truy cập danh bạ, tin nhắn riêng tư, lịch sử duyệt web hoặc micro của thiết bị mà không có thông báo và sự cấp quyền rõ ràng từ người dùng.</li>
+        </ul>
+      </section>
+
+      <!-- MỤC 5 -->
+      <section id="sec-5" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">5</span>
+          <span>Chia sẻ dữ liệu với khách hàng, nhà cung cấp và bên liên quan</span>
+        </h2>
+        <p>DabClean áp dụng nguyên tắc tối thiểu hóa (Data Minimization) khi chia sẻ thông tin:</p>
+        <ul style="padding-left: 20px;">
+          <li><strong>Chia sẻ với khách hàng đặt đơn:</strong> Khách hàng chỉ được xem các thông tin công vụ cần thiết của đối tác phụ trách ca: Họ tên hiển thị, ảnh đại diện, số điện thoại liên lạc công việc, đánh giá sao trung bình và vị trí tiến độ ca làm việc.</li>
+          <li><strong>Chia sẻ với đối tác tài chính & cổng thanh toán:</strong> Tên chủ tài khoản và số tài khoản ngân hàng được mã hóa chuyển sang hệ thống VietQR / ngân hàng đối tác khi đối tác tạo lệnh rút tiền công.</li>
+          <li><strong>Chia sẻ với cơ quan nhà nước có thẩm quyền:</strong> Chỉ cung cấp dữ liệu khi có văn bản yêu cầu chính thức theo quy định tố tụng pháp luật.</li>
+        </ul>
+        <div class="legal-box-highlight">
+          <strong>Cam kết bảo mật thương mại:</strong> DabClean <strong>tuyệt đối không bán, không cho thuê, không chia sẻ</strong> danh sách dữ liệu cá nhân của đối tác cho bất kỳ bên thứ ba nào vì mục đích quảng cáo hoặc khai thác dữ liệu độc lập.
+        </div>
+      </section>
+
+      <!-- MỤC 6 -->
+      <section id="sec-6" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">6</span>
+          <span>Quy định riêng đối với ảnh trước/sau khi làm việc (Job Photos)</span>
+        </h2>
+        <p>Ảnh chụp hiện trường trước và sau khi làm việc là thành phần dữ liệu mang tính nhạy cảm về không gian sống của khách hàng:</p>
+        <ul style="padding-left: 20px;">
+          <li><strong>Mục đích duy nhất:</strong> Ảnh chỉ được sử dụng làm cơ sở nghiệm thu đối chiếu trực quan 1-1 giữa khách hàng và thợ, đồng thời làm bằng chứng bảo vệ quyền lợi hai bên khi xảy ra tranh chấp mất mát hoặc hư hỏng tài sản.</li>
+          <li><strong>Bảo vệ lưu trữ:</strong> Ảnh chụp được tải lên thư mục bảo mật riêng trên máy chủ <code>backend/uploads/job-photos/</code>, loại bỏ mã độc thông qua kiểm tra Magic Byte (JPEG/PNG/WebP), và chỉ truy cập được khi có token xác thực JWT hợp lệ của nhân viên phụ trách hoặc Admin hệ thống.</li>
+          <li><strong>Nghiêm cấm chia sẻ ra ngoài:</strong> Nghiêm cấm nhân viên sao lưu ảnh không gian nhà khách hàng vào thư viện cá nhân hoặc đăng tải lên mạng xã hội. Vi phạm sẽ bị xử lý kỷ luật và bồi thường tổn hại danh dự cho khách hàng theo quy định pháp luật.</li>
+        </ul>
+      </section>
+
+      <!-- MỤC 7 -->
+      <section id="sec-7" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">7</span>
+          <span>Lưu trữ, bảo vệ và thời hạn lưu giữ dữ liệu</span>
+        </h2>
+        <ul style="padding-left: 20px;">
+          <li><strong>Mã hóa mật khẩu:</strong> 100% mật khẩu được băm một chiều bằng thuật toán an toàn <code>bcrypt</code> với độ phức tạp cao (salt rounds = 10). Máy chủ tuyệt đối không lưu mật khẩu dạng văn bản thô (plain text).</li>
+          <li><strong>Kiểm soát truy cập RBAC:</strong> Phân quyền nghiêm ngặt theo vai trò (Customer, Staff, Admin). Tài khoản nhân viên không thể xem dữ liệu tài chính hoặc hồ sơ cá nhân của nhân viên khác.</li>
+          <li><strong>Bảo vệ chống Stored XSS & Injection:</strong> Mọi dữ liệu đầu vào đều được khử độc (sanitize) nghiêm ngặt trước khi lưu vào cơ sở dữ liệu MySQL.</li>
+          <li><strong>Thời hạn lưu giữ:</strong> Dữ liệu hồ sơ đối tác được duy trì trong suốt thời gian hợp tác. Dữ liệu hóa đơn, chứng từ giao dịch hai ví và đối soát kế toán được lưu trữ tối thiểu <strong>05 năm</strong> theo Luật Kế toán Việt Nam.</li>
+        </ul>
+      </section>
+
+      <!-- MỤC 8 -->
+      <section id="sec-8" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">8</span>
+          <span>Quyền của chủ thể dữ liệu và cách gửi yêu cầu</span>
+        </h2>
+        <p>Căn cứ <strong>Điều 9 Luật Bảo vệ dữ liệu cá nhân số 91/2025/QH15</strong>, Đối tác có đầy đủ các quyền hợp pháp sau:</p>
+        <ul style="padding-left: 20px;">
+          <li><strong>Quyền được biết và Quyền đồng ý:</strong> Được biết rõ các thông tin thu thập và có quyền từ chối hoặc rút lại sự đồng ý đối với các mục đích xử lý dữ liệu không mang tính bắt buộc.</li>
+          <li><strong>Quyền truy cập và yêu cầu chỉnh sửa:</strong> Trực tiếp xem và cập nhật thông tin cá nhân (SĐT, địa chỉ, ảnh đại diện) trên trang quản trị cá nhân hoặc yêu cầu Ban Quản trị hỗ trợ.</li>
+          <li><strong>Quyền xóa dữ liệu (Right to be Forgotten):</strong> Yêu cầu xóa hồ sơ khi chấm dứt hợp đồng hợp tác, trừ các dữ liệu bắt buộc lưu giữ theo quy định pháp luật.</li>
+          <li><strong>Quyền khiếu nại và tố cáo:</strong> Khiếu nại khi phát hiện dữ liệu bị sử dụng sai mục đích cam kết.</li>
+        </ul>
+        <div class="legal-box-highlight">
+          <strong>Cách thức gửi yêu cầu:</strong> Gửi thư điện tử đến địa chỉ <code>privacy@cleanova.vn</code> kèm bản sao CCCD để xác minh chủ thể. DabClean cam kết tiếp nhận và phản hồi bằng văn bản trong vòng <strong>72 giờ làm việc</strong>.
+        </div>
+      </section>
+
+      <!-- MỤC 9 -->
+      <section id="sec-9" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">9</span>
+          <span>Rút lại sự đồng ý, xóa dữ liệu và các ngoại lệ theo pháp luật</span>
+        </h2>
+        <p>
+          Đối tác có quyền rút lại sự đồng ý đối với việc nhận thông tin tiếp thị, tin nhắn tuyển dụng bất kỳ lúc nào bằng cách bỏ tích chọn trong trang cá nhân hoặc phản hồi <em>"STOP"</em> qua email.
+        </p>
+        <div class="legal-box-warning">
+          <strong>Các ngoại lệ không được xóa dữ liệu ngay lập tức theo quy định pháp luật:</strong>
+          <ul style="margin: 6px 0 0; padding-left: 18px;">
+            <li>Hồ sơ giao dịch tài chính, lịch sử chiết khấu ví đang trong thời kỳ quyết toán hoặc kiểm toán tài chính nhà nước.</li>
+            <li>Dữ liệu ca làm việc đang trong quá trình điều tra, thụ lý giải quyết khiếu nại đền bù thiệt hại tài sản hoặc tranh chấp pháp lý chưa kết luận.</li>
+            <li>Dữ liệu phải lưu giữ để phục vụ yêu cầu từ cơ quan bảo vệ pháp luật.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- MỤC 10 -->
+      <section id="sec-10" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">10</span>
+          <span>Cookie, nhật ký hệ thống và dữ liệu kỹ thuật</span>
+        </h2>
+        <p>
+          Trang web DabClean sử dụng <code>LocalStorage</code> và <code>SessionStorage</code> nhằm duy trì trạng thái đăng nhập bảo mật (JWT Auth Token) và lưu trữ ngôn ngữ hiển thị. Nền tảng ghi nhận nhật ký hệ thống (Audit Logs) gồm: IP, mốc thời gian, loại hành động khi Quản trị viên duyệt hồ sơ, nạp tiền ví hoặc khóa tài khoản nhằm ngăn chặn gian lận và phục vụ đối soát an ninh.
+        </p>
+      </section>
+
+      <!-- MỤC 11 -->
+      <section id="sec-11" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">11</span>
+          <span>Quy trình xử lý sự cố an ninh dữ liệu</span>
+        </h2>
+        <p>
+          Trong trường hợp phát hiện sự cố rò rỉ dữ liệu hoặc xâm nhập trái phép vào máy chủ, DabClean sẽ lập tức kích hoạt <strong>Quy trình phản ứng sự cố khẩn cấp (Incident Response Plan)</strong>:
+        </p>
+        <ol style="padding-left: 20px;">
+          <li>Cô lập hệ thống và ngăn chặn rò rỉ dữ liệu trong vòng <strong>24 giờ</strong> kể từ thời điểm phát hiện.</li>
+          <li>Báo cáo bằng văn bản cho Cục An ninh mạng và phòng, chống tội phạm sử dụng công nghệ cao (Bộ Công an) theo đúng quy định của Luật 91/2025/QH15.</li>
+          <li>Gửi thông báo chính thức đến các chủ thể dữ liệu bị ảnh hưởng kèm theo các hướng dẫn bảo vệ tài khoản (đổi mật khẩu, cảnh giác tin nhắn lừa đảo).</li>
+        </ol>
+      </section>
+
+      <!-- MỤC 12 -->
+      <section id="sec-12" class="legal-section">
+        <h2 class="legal-section-title">
+          <span class="sec-num">12</span>
+          <span>Thay đổi chính sách, ngày hiệu lực và thông tin liên hệ</span>
+        </h2>
+        <p>
+          Chính sách này có hiệu lực chính thức từ ngày <strong>01/01/2026 (Phiên bản 1.0)</strong>. DabClean định kỳ rà soát và cập nhật nội dung Chính Sách để đảm bảo phù hợp với các thông tư, nghị định hướng dẫn thi hành Luật Bảo vệ dữ liệu cá nhân.
+        </p>
+        <p>
+          Khi có thay đổi trọng yếu, DabClean sẽ thông báo nổi bật trên trang chủ và gửi thông báo trực tiếp đến email đối tác.
+        </p>
+
+        <div style="margin-top: 32px; padding: 20px; border-radius: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div style="font-weight: 700; color: #064e3b;">BỘ PHẬN BẢO VỆ DỮ LIỆU CÁ NHÂN (DPO)</div>
+            <div style="font-size: 13px; color: #047857; margin-top: 2px;">Email: privacy@cleanova.vn · Hotline: 1900 6868</div>
+          </div>
+          <div>
+            <a href="partner-register.html" class="btn btn-primary" style="background: linear-gradient(135deg, #059669 0%, #2563eb 100%);">
+              ✍️ Quay lại trang Đăng ký đối tác
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- Footer Đồng bộ DabClean -->
+  <footer class="footer" style="background: #0f172a; color: #94a3b8; padding: 40px 0 24px; border-top: 1px solid #1e293b; font-size: 13px;">
+    <div class="container" style="max-width: 1180px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div>
+        <p style="margin: 0; color: #cbd5e1;">© 2026 DabClean Platform — CleanNova Inc. Bảo lưu mọi quyền.</p>
+        <p style="margin: 4px 0 0; font-size: 12px; color: #64748b;">Trụ sở: Tòa nhà DabClean, Duy Tân, Cầu Giấy, Hà Nội · Hotline: 1900 6868</p>
+      </div>
+      <div style="display: flex; gap: 16px;">
+        <a href="partner-terms.html" style="color: #94a3b8; text-decoration: none;">Điều khoản đối tác</a>
+        <span style="color: #475569;">·</span>
+        <a href="privacy-policy.html" style="color: #6ee7b7; font-weight: 700; text-decoration: none;">Chính sách bảo mật</a>
+        <span style="color: #475569;">·</span>
+        <a href="trangchu.html" style="color: #94a3b8; text-decoration: none;">Trang chủ</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script đồng bộ Active state cho Table of Contents -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const links = document.querySelectorAll('.legal-toc-link');
+      const sections = document.querySelectorAll('.legal-section');
+
+      function updateActiveToc() {
+        let currentSectionId = '';
+        sections.forEach(sec => {
+          const rect = sec.getBoundingClientRect();
+          if (rect.top <= 140) {
+            currentSectionId = sec.id;
+          }
+        });
+        links.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + currentSectionId);
+        });
+      }
+
+      window.addEventListener('scroll', updateActiveToc, { passive: true });
+      updateActiveToc();
+    });
+  </script>
+</body>
+</html>
