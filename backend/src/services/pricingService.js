@@ -67,6 +67,25 @@ const pricingService = {
   standardAddons,
 
   /**
+   * Tính toán chiết khấu hoa hồng CleanNova từ tiền công nhân viên
+   * platform_commission = employee_gross_earnings * commission_rate
+   * employee_net_earnings = employee_gross_earnings - platform_commission
+   */
+  calculateCommission(grossWage, commissionRate = 0.20) {
+    const gross = Math.max(0, Math.round(Number(grossWage) || 0));
+    const rate = Number(commissionRate);
+    const validRate = isNaN(rate) ? 0.20 : Math.max(0, Math.min(1, rate));
+    const platformCommission = Math.min(gross, Math.round(gross * validRate));
+    const netWage = Math.max(0, gross - platformCommission);
+    return {
+      grossWage: gross,
+      commissionRate: validRate,
+      platformCommission,
+      netWage
+    };
+  },
+
+  /**
    * Tính toán báo giá dịch vụ vệ sinh sau xây dựng
    * Hỗ trợ 3 hình thức: m2, package (trọn gói), labor_daily (nhân công ngày)
    */
@@ -298,12 +317,16 @@ const pricingService = {
     }
 
     const totalPrice = Math.max(subtotal - discountAmount, 0);
+    const commission = this.calculateCommission(staffWage, options.commission_rate);
 
     return {
       subtotal: Math.round(subtotal),
       discountAmount: Math.round(discountAmount),
       totalPrice: Math.round(totalPrice),
-      staffWage: Math.round(staffWage),
+      staffWage: commission.grossWage,
+      commissionRate: commission.commissionRate,
+      platformCommission: commission.platformCommission,
+      staffNetWage: commission.netWage,
       durationHours: null,
       packageType: 'post_construction',
       pricingType: pricing_type,
@@ -468,6 +491,7 @@ const pricingService = {
 
     const minFloor = isCareService ? (subtotal * 0.5) : 50000;
     const totalPrice = Math.max(subtotal - discountAmount, minFloor);
+    const commission = this.calculateCommission(staffWage, options.commission_rate);
 
     return {
       subtotal: Math.round(subtotal),
@@ -475,7 +499,10 @@ const pricingService = {
       addons: appliedAddons,
       discountAmount: Math.round(discountAmount),
       totalPrice: Math.round(totalPrice),
-      staffWage: Math.round(staffWage),
+      staffWage: commission.grossWage,
+      commissionRate: commission.commissionRate,
+      platformCommission: commission.platformCommission,
+      staffNetWage: commission.netWage,
       durationHours: actualDurationHours,
       packageType: isCareService ? (package_type || 'hourly') : 'standard',
       promoCode: normalizedPromo

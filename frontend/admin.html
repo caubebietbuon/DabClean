@@ -409,54 +409,238 @@
       <!-- Thông báo alert -->
       <div id="admin-alert" class="alert" style="display: none; margin-bottom: var(--space-xl);" role="alert"></div>
 
-      <!-- Thống kê Dashboard -->
-      <section class="stats-grid" aria-label="Thống kê tổng quan">
-        <div class="stat-card revenue">
-          <div class="stat-title">Doanh thu hoàn tất</div>
-          <div class="stat-value" id="stat-revenue">0 đ</div>
-          <div class="stat-desc">Đơn hàng hoàn thành thực tế</div>
+      <!-- ============================================================
+           DASHBOARD HEADER, BỘ LỌC THỜI GIAN & CẤU HÌNH CHIẾT KHẤU
+           ============================================================ -->
+      <div style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-lg) var(--space-xl); margin-bottom: var(--space-xl); box-shadow: var(--shadow-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-md);">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h2 style="font-size: 20px; font-weight: 800; color: var(--color-text); margin: 0;">📊 Báo Cáo Doanh Thu & Tài Chính Minh Bạch</h2>
+              <span id="stats-period-badge" style="background: #EFF6FF; color: #1D4ED8; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid #BFDBFE;">Phạm vi: Tháng này</span>
+            </div>
+            <p style="font-size: 13px; color: var(--color-text-secondary); margin: 4px 0 0 0;">
+              Phân tách rõ ràng tiền khách thanh toán, tiền hoàn, tiền công gộp, chiết khấu hoa hồng CleanNova, thực nhận nhân viên và lợi nhuận ước tính.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-outline btn-sm" id="btn-open-commission-modal" style="border-color: #818CF8; color: #4338CA; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+              ⚙️ Cấu Hình Chiết Khấu NV (<span id="btn-commission-badge">20%</span>)
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm" id="btn-refresh-stats" style="border: 1px solid var(--color-border);">
+              🔄 Làm mới số liệu
+            </button>
+          </div>
         </div>
-        <div class="stat-card bookings">
-          <div class="stat-title">Tổng đơn đặt lịch</div>
-          <div class="stat-value" id="stat-bookings">0</div>
-          <div class="stat-desc">Bao gồm mọi trạng thái</div>
+
+        <!-- Thanh lọc thời gian -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 12px; border-top: 1px dashed var(--color-border);">
+          <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; margin-right: 4px;">Khoảng thời gian:</span>
+            <button type="button" class="btn btn-ghost btn-sm btn-stats-period" data-period="all" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Tất cả</button>
+            <button type="button" class="btn btn-ghost btn-sm btn-stats-period" data-period="today" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Hôm nay</button>
+            <button type="button" class="btn btn-ghost btn-sm btn-stats-period" data-period="7days" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">7 ngày qua</button>
+            <button type="button" class="btn btn-primary btn-sm btn-stats-period active" data-period="month" style="border-radius: var(--radius-full); font-size: 12px; padding: 4px 12px;">Tháng này</button>
+          </div>
+
+          <!-- Bộ chọn tùy chỉnh ngày -->
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 12px; color: var(--color-text-secondary); font-weight: 600;">Tùy chỉnh:</span>
+            <input type="date" id="filter-stats-from" class="form-control" style="font-size: 12px; padding: 4px 8px; width: auto;" title="Từ ngày">
+            <span style="color: var(--color-text-tertiary); font-size: 12px;">➔</span>
+            <input type="date" id="filter-stats-to" class="form-control" style="font-size: 12px; padding: 4px 8px; width: auto;" title="Đến ngày">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-apply-custom-stats" style="font-size: 12px; padding: 5px 12px;">Áp dụng</button>
+          </div>
         </div>
-        <div class="stat-card users">
-          <div class="stat-title">Khách hàng</div>
-          <div class="stat-value" id="stat-users">0</div>
-          <div class="stat-desc">Tài khoản khách đăng ký</div>
+      </div>
+
+      <!-- LƯỚI 10 CHỈ SỐ TÀI CHÍNH BẮT BUỘC -->
+      <section style="margin-bottom: var(--space-xl);" aria-label="10 Chỉ số tài chính bắt buộc">
+        <div style="font-size: 12px; font-weight: 800; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+          💵 1. Dòng Tiền Khách Hàng & Nền Tảng (Cash In & Out)
         </div>
-        <div class="stat-card staff">
-          <div class="stat-title">Đội ngũ nhân viên</div>
-          <div class="stat-value" id="stat-staff">0</div>
-          <div class="stat-desc">Chuyên viên đang hoạt động</div>
+        <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: var(--space-lg);">
+          <!-- 1. Tổng tiền khách đã thanh toán -->
+          <div class="stat-card" style="border-left: 4px solid #10B981; padding: 14px 16px;">
+            <div class="stat-title" style="color: #065F46;">1. Tiền Khách Đã Trả (Gross)</div>
+            <div class="stat-value" id="stat-gross-payments" style="color: #059669; font-size: 20px;">0 đ</div>
+            <div class="stat-desc" id="stat-payments-breakdown">Thực thu thành công từ đơn</div>
+            <span id="stat-revenue" style="display:none;">0 đ</span>
+            <span id="stat-collected" style="display:none;">0 đ</span>
+          </div>
+
+          <!-- 2. Tiền hoàn cho khách -->
+          <div class="stat-card" style="border-left: 4px solid #EF4444; padding: 14px 16px;">
+            <div class="stat-title" style="color: #991B1B;">2. Tiền Hoàn Cho Khách</div>
+            <div class="stat-value" id="stat-refund-amount" style="color: #DC2626; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">Đã hoàn tiền do hủy/sự cố</div>
+          </div>
+
+          <!-- 3. Tiền thu ròng -->
+          <div class="stat-card" style="border-left: 4px solid #0D9488; padding: 14px 16px;">
+            <div class="stat-title" style="color: #115E59;">3. Tiền Thu Ròng (Net)</div>
+            <div class="stat-value" id="stat-net-receipts" style="color: #0D9488; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">= Tiền đã trả - Tiền hoàn</div>
+          </div>
+
+          <!-- 9. Lợi nhuận ước tính của nền tảng -->
+          <div class="stat-card" style="border-left: 4px solid #0284C7; padding: 14px 16px;">
+            <div class="stat-title" style="color: #075985;">4. Lợi Nhuận Ước Tính</div>
+            <div class="stat-value" id="stat-platform-profit" style="color: #0284C7; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">= Thu ròng - Tiền công NV</div>
+            <span id="stat-net-profit" style="display:none;">0 đ</span>
+          </div>
+
+          <!-- 10. Nghĩa vụ ví khách hàng (Customer Wallet Liabilities) -->
+          <div class="stat-card" style="border-left: 4px solid #64748B; padding: 14px 16px;">
+            <div class="stat-title" style="color: #334155;">5. Tiền Nạp Ví Khách Hàng</div>
+            <div class="stat-value" id="stat-wallet-liability" style="color: #475569; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">Tiền cọc/nạp chưa dùng (Nợ phải trả)</div>
+            <span id="stat-wallet-bal" style="display:none;">0 đ</span>
+          </div>
         </div>
-        <div class="stat-card partners">
-          <div class="stat-title">Hồ sơ đối tác mới</div>
-          <div class="stat-value" id="stat-partners">0</div>
-          <div class="stat-desc">Đơn ứng tuyển chờ duyệt</div>
+
+        <div style="font-size: 12px; font-weight: 800; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+          👷 2. Thù Lao Nhân Viên & Chiết Khấu CleanNova
         </div>
-        <div class="stat-card" style="border-left: 4px solid #0d9488;">
-          <div class="stat-title">Số tiền đã thu</div>
-          <div class="stat-value" id="stat-collected" style="color: #0f766e;">0 đ</div>
-          <div class="stat-desc">Khách đã trả (Ví/Thẻ/CK)</div>
+        <div class="stats-grid" style="grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: var(--space-lg);">
+          <!-- 4. Tiền công gộp nhân viên -->
+          <div class="stat-card" style="border-left: 4px solid #3B82F6; padding: 14px 16px;">
+            <div class="stat-title" style="color: #1E40AF;">6. Tiền Công Gộp (Gross)</div>
+            <div class="stat-value" id="stat-gross-wages" style="color: #2563EB; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">Định mức tiền công trước CK</div>
+            <span id="stat-staff-wages" style="display:none;">0 đ</span>
+          </div>
+
+          <!-- 5. Chiết khấu/hoa hồng CleanNova -->
+          <div class="stat-card" style="border-left: 4px solid #8B5CF6; padding: 14px 16px;">
+            <div class="stat-title" style="color: #5B21B6;">7. Chiết Khấu CleanNova</div>
+            <div class="stat-value" id="stat-platform-commission" style="color: #7C3AED; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">Khấu trừ từ tiền công nhân viên</div>
+          </div>
+
+          <!-- 6. Tiền công thực nhận -->
+          <div class="stat-card" style="border-left: 4px solid #F59E0B; padding: 14px 16px;">
+            <div class="stat-title" style="color: #92400E;">8. Tiền Công Thực Nhận (Net)</div>
+            <div class="stat-value" id="stat-net-wages" style="color: #D97706; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">= Tiền công gộp - Chiết khấu</div>
+          </div>
+
+          <!-- 7. Khoản phải trả nhân viên -->
+          <div class="stat-card" style="border-left: 4px solid #EA580C; padding: 14px 16px;">
+            <div class="stat-title" style="color: #9A3412;">9. Phải Trả Nhân Viên</div>
+            <div class="stat-value" id="stat-staff-payable" style="color: #EA580C; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">Đơn đã hoàn thành chờ duyệt</div>
+          </div>
+
+          <!-- 8. Khoản đã chi trả nhân viên -->
+          <div class="stat-card" style="border-left: 4px solid #16A34A; padding: 14px 16px;">
+            <div class="stat-title" style="color: #166534;">10. Đã Chi Trả Nhân Viên</div>
+            <div class="stat-value" id="stat-staff-settled" style="color: #16A34A; font-size: 20px;">0 đ</div>
+            <div class="stat-desc">Đã ghi có vào ví nhân viên</div>
+          </div>
         </div>
-        <div class="stat-card" style="border-left: 4px solid #f59e0b;">
-          <div class="stat-title">Tiền công nhân viên</div>
-          <div class="stat-value" id="stat-staff-wages" style="color: #b45309;">0 đ</div>
-          <div class="stat-desc">Thù lao hoàn tất & đã duyệt</div>
+
+        <div style="font-size: 12px; font-weight: 800; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+          🛵 3. Quản Trị Hệ Thống Hai Ví Đối Tác (Mô Hình Grab Driver)
         </div>
-        <div class="stat-card" style="border-left: 4px solid #6366f1;">
-          <div class="stat-title">Số dư Ví CleanNova</div>
-          <div class="stat-value" id="stat-wallet-bal" style="color: #4338ca;">0 đ</div>
-          <div class="stat-desc">Tổng số dư người dùng</div>
+        <div class="stats-grid" style="grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: var(--space-lg);">
+          <div class="stat-card" style="border-left: 4px solid #3B82F6; padding: 12px 14px;">
+            <div class="stat-title" style="color: #1E40AF; font-size: 11px;">Tổng Dư Ví Tín Dụng</div>
+            <div class="stat-value" id="stat-staff-credit-total" style="color: #2563EB; font-size: 18px;">0 đ</div>
+            <div class="stat-desc">Duy trì quyền nhận việc</div>
+          </div>
+          <div class="stat-card" style="border-left: 4px solid #EF4444; padding: 12px 14px;">
+            <div class="stat-title" style="color: #991B1B; font-size: 11px;">Nợ Tín Dụng (Âm)</div>
+            <div class="stat-value" id="stat-staff-credit-debt" style="color: #DC2626; font-size: 18px;">0 đ</div>
+            <div class="stat-desc" id="stat-negative-credit-count">0 thợ nợ tín dụng</div>
+          </div>
+          <div class="stat-card" style="border-left: 4px solid #F59E0B; padding: 12px 14px;">
+            <div class="stat-title" style="color: #92400E; font-size: 11px;">Chưa Đủ ĐK Nhận Đơn</div>
+            <div class="stat-value" id="stat-staff-ineligible" style="color: #D97706; font-size: 18px;">0</div>
+            <div class="stat-desc">Số dư ≤ 100.000 đ</div>
+          </div>
+          <div class="stat-card" style="border-left: 4px solid #10B981; padding: 12px 14px;">
+            <div class="stat-title" style="color: #065F46; font-size: 11px;">Tổng Dư Ví Thu Nhập</div>
+            <div class="stat-value" id="stat-staff-earnings-total" style="color: #059669; font-size: 18px;">0 đ</div>
+            <div class="stat-desc">Tiền công ròng khả dụng</div>
+          </div>
+          <div class="stat-card" style="border-left: 4px solid #0284C7; padding: 12px 14px;">
+            <div class="stat-title" style="color: #075985; font-size: 11px;">Tổng Nạp Tín Dụng</div>
+            <div class="stat-value" id="stat-staff-credit-topup" style="color: #0284C7; font-size: 18px;">0 đ</div>
+            <div class="stat-desc">Không tính vào doanh thu</div>
+          </div>
+          <div class="stat-card" style="border-left: 4px solid #6366F1; padding: 12px 14px;">
+            <div class="stat-title" style="color: #3730A3; font-size: 11px;">Chuyển Giữa Hai Ví</div>
+            <div class="stat-value" id="stat-staff-interwallet-transfer" style="color: #4F46E5; font-size: 18px;">0 đ</div>
+            <div class="stat-desc">Luân chuyển nội bộ</div>
+          </div>
         </div>
-        <div class="stat-card" style="border-left: 4px solid #10b981;">
-          <div class="stat-title">Lợi nhuận gộp ước tính</div>
-          <div class="stat-value" id="stat-net-profit" style="color: #047857;">0 đ</div>
-          <div class="stat-desc">Doanh thu - Lương - Hoàn tiền</div>
+
+        <div style="font-size: 12px; font-weight: 800; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+          👥 4. Thống Kê Vận Hành & Khách Hàng
+        </div>
+        <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); gap: 12px;">
+          <div class="stat-card bookings" style="padding: 14px 16px;">
+            <div class="stat-title">Đơn Đặt Lịch & Trạng Thái</div>
+            <div class="stat-value" id="stat-bookings" style="font-size: 20px;">0</div>
+            <div class="stat-desc" id="stat-orders-breakdown-desc">Đang tải trạng thái đơn...</div>
+          </div>
+          <div class="stat-card users" style="padding: 14px 16px;">
+            <div class="stat-title">Khách Hàng Đăng Ký</div>
+            <div class="stat-value" id="stat-users" style="font-size: 20px;">0</div>
+            <div class="stat-desc">Tài khoản khách hàng</div>
+          </div>
+          <div class="stat-card staff" style="padding: 14px 16px;">
+            <div class="stat-title">Đội Ngũ Nhân Viên</div>
+            <div class="stat-value" id="stat-staff" style="font-size: 20px;">0</div>
+            <div class="stat-desc">Chuyên viên đang hoạt động</div>
+          </div>
+          <div class="stat-card partners" style="padding: 14px 16px;">
+            <div class="stat-title">Hồ Sơ Đối Tác Mới</div>
+            <div class="stat-value" id="stat-partners" style="font-size: 20px;">0</div>
+            <div class="stat-desc">Đơn ứng tuyển chờ duyệt</div>
+          </div>
         </div>
       </section>
+
+      <!-- BẢNG BÁO CÁO TÀI CHÍNH TỪNG NGÀY (DAILY FINANCIAL BREAKDOWN) -->
+      <div class="card" style="margin-bottom: var(--space-xl); padding: var(--space-lg) var(--space-xl);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: var(--space-md);">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 800; color: var(--color-text); margin: 0;">📅 Bảng Đối Soát Doanh Thu Từng Ngày (Daily Financial Ledger)</h3>
+            <p style="font-size: 12px; color: var(--color-text-secondary); margin: 2px 0 0 0;">
+              Tổng hợp độc lập từng ngày, không bị nhân đôi do JOIN, hiển thị chính xác dòng tiền vào/ra và hoa hồng nền tảng.
+            </p>
+          </div>
+          <span style="font-size: 11px; background: #FEF3C7; color: #92400E; padding: 4px 10px; border-radius: 6px; font-weight: 700; border: 1px solid #FCD34D;">
+            🛡️ Dữ liệu tổng hợp độc lập
+          </span>
+        </div>
+        <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+          <table class="table" style="font-size: 12px; margin: 0;">
+            <thead>
+              <tr style="background: #F8FAFC; position: sticky; top: 0; z-index: 1;">
+                <th>Ngày</th>
+                <th style="text-align: center;">Đơn thu / Đơn hủy</th>
+                <th style="text-align: right;">Tiền khách trả</th>
+                <th style="text-align: right;">Hoàn tiền</th>
+                <th style="text-align: right;">Tiền công gộp</th>
+                <th style="text-align: right;">Chiết khấu CleanNova</th>
+                <th style="text-align: right;">Thực nhận NV</th>
+                <th style="text-align: right;">Lợi nhuận ngày</th>
+              </tr>
+            </thead>
+            <tbody id="daily-financial-table-body">
+              <tr>
+                <td colspan="8" style="text-align: center; padding: var(--space-lg); color: var(--color-text-secondary);">
+                  Đang tải bảng đối soát tài chính từng ngày...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <!-- Tabs điều hướng quản trị -->
       <nav class="admin-tabs" role="tablist">
@@ -850,6 +1034,34 @@
           <button id="btn-refresh-wallets" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách ví</button>
         </div>
 
+        <!-- Danh sách Hai Ví Nhân Viên (Mô hình Grab Driver) -->
+        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+            <span>🛵</span> Quản Lý Hai Ví Nhân Viên / Đối Tác (Mô Hình Grab Driver)
+          </h3>
+          <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
+            <table class="table" style="margin: 0; font-size: 13px;">
+              <thead>
+                <tr>
+                  <th>Nhân viên</th>
+                  <th>Email / SĐT</th>
+                  <th style="text-align: right;">Ví Tín Dụng (Ví trên)</th>
+                  <th style="text-align: center;">Điều kiện nhận việc</th>
+                  <th style="text-align: right;">Ví Thu Nhập (Ví dưới)</th>
+                  <th style="text-align: right;">Tiền công gộp</th>
+                  <th style="text-align: right;">Tổng đã rút</th>
+                </tr>
+              </thead>
+              <tbody id="staff-wallets-table-body">
+                <tr><td colspan="7" style="text-align: center; padding: 24px;">Đang tải danh sách ví nhân viên...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <span>👤</span> Ví Khách Hàng (Customer Wallets)
+        </h3>
         <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; margin-bottom: 24px;">
           <table class="table" style="margin: 0;">
             <thead>
@@ -1303,6 +1515,48 @@
     </div>
   </div>
 
+  <!-- ============================================================
+       MODAL: CẤU HÌNH TỶ LỆ CHIẾT KHẤU NHÂN VIÊN
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-commission-config" style="display: none;">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header" style="border-bottom: 2px solid #E0E7FF; background: #EEF2FF;">
+        <h3 class="modal-title" style="color: #3730A3; display: flex; align-items: center; gap: 8px;">
+          <span>⚙️</span> Cấu Hình Tỷ Lệ Chiết Khấu Nhân Viên
+        </h3>
+        <button class="modal-close" data-close="modal-commission-config">&times;</button>
+      </div>
+      <form id="form-commission-config" style="padding: var(--space-xl);">
+        <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: var(--space-lg); font-size: 13px; color: #1E40AF; line-height: 1.6;">
+          <div style="font-weight: 700; margin-bottom: 4px;">🛡️ Nguyên tắc tài chính & snapshot bất biến:</div>
+          • Tỷ lệ chiết khấu (%) được áp dụng để khấu trừ hoa hồng CleanNova từ <strong>tiền công gộp</strong> của nhân viên.<br>
+          • Khi cập nhật, tỷ lệ mới chỉ áp dụng cho các đơn đặt lịch tạo mới hoặc khảo sát báo giá sau thời điểm này. <strong>Các đơn hàng đã hoàn tất hoặc đã có báo giá sẽ giữ nguyên tỷ lệ snapshot</strong>, đảm bảo tính bất biến của sổ cái kế toán.
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-lg);">
+          <label class="form-label" style="font-weight: 700;">Tỷ lệ chiết khấu hiện tại: <span id="current-commission-display" style="color: #4F46E5; font-size: 16px;">20%</span></label>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+            <input type="number" id="input-commission-rate" class="form-control" required min="0" max="100" step="0.5" style="font-size: 18px; font-weight: 700; width: 140px;" placeholder="VD: 20">
+            <span style="font-size: 18px; font-weight: 700; color: #4B5563;">%</span>
+          </div>
+          <div style="font-size: 12px; color: var(--color-text-tertiary); margin-top: 4px;">Giá trị từ 0% đến 100% (VD: nhập 20 tương đương tỷ lệ 0.20 = 20%).</div>
+        </div>
+
+        <div class="form-group" style="margin-bottom: var(--space-xl);">
+          <label class="form-label" style="font-weight: 700;">Lý do điều chỉnh (Audit Trail) <span style="color: red;">*</span></label>
+          <textarea id="input-commission-reason" class="form-control" rows="3" required placeholder="Ghi rõ căn cứ quyết định điều chỉnh tỷ lệ chiết khấu (VD: Quyết định chính sách thù lao đối tác quý 4/2026)..."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: var(--space-md);">
+          <button type="button" class="btn btn-ghost" data-close="modal-commission-config">Hủy bỏ</button>
+          <button type="submit" id="btn-save-commission-config" class="btn btn-primary" style="font-weight: 700; padding: 10px 24px;">
+            💾 Lưu Cấu Hình Tỷ Lệ
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- JavaScript xử lý Bảng điều khiển Admin -->
   <script>
     'use strict';
@@ -1398,36 +1652,318 @@
       let allPartners = [];
       let currentViewingPartner = null;
       let currentUsersPage = 1;
+      let currentStatsFilter = {
+        period: 'month',
+        from_date: '',
+        to_date: ''
+      };
+
+      function formatPriceVND(val) {
+        return Math.round(Number(val) || 0).toLocaleString('vi-VN') + ' đ';
+      }
 
       // ------------------------------------------------------------
-      // 1. TẢI THỐNG KÊ DASHBOARD
+      // 1. TẢI THỐNG KÊ DASHBOARD (10 CHỈ SỐ MINH BẠCH & SỔ CÁI NGÀY)
       // ------------------------------------------------------------
-      async function loadStats() {
+      async function loadStats(customParams = null) {
         try {
-          const res = await CleanovaAPI.admin.getStats();
-          const s = res.data;
-          document.getElementById('stat-revenue').textContent = Number(s.totalRevenue || s.total_revenue || 0).toLocaleString('vi-VN') + ' đ';
-          document.getElementById('stat-bookings').textContent = s.totalBookings || s.total_bookings || 0;
-          document.getElementById('stat-users').textContent = s.totalUsers || s.total_users || 0;
-          document.getElementById('stat-staff').textContent = s.activeStaff || s.total_staff || 0;
-          const pendingPartners = (s.pendingPartners !== undefined ? s.pendingPartners : (s.pending_partners !== undefined ? s.pending_partners : 0));
-          document.getElementById('stat-partners').textContent = pendingPartners;
+          if (customParams) {
+            currentStatsFilter = { ...currentStatsFilter, ...customParams };
+          }
+          const res = await CleanovaAPI.admin.getStats(currentStatsFilter);
+          const s = res.data || {};
 
-          if (document.getElementById('stat-collected')) {
-            document.getElementById('stat-collected').textContent = Number(s.collected_revenue || 0).toLocaleString('vi-VN') + ' đ';
+          // Cập nhật nhãn khoảng thời gian
+          const badgeEl = document.getElementById('stats-period-badge');
+          if (badgeEl) {
+            if (currentStatsFilter.period === 'all') badgeEl.textContent = 'Phạm vi: Tất cả thời gian';
+            else if (currentStatsFilter.period === 'today') badgeEl.textContent = 'Phạm vi: Hôm nay';
+            else if (currentStatsFilter.period === '7days') badgeEl.textContent = 'Phạm vi: 7 ngày qua';
+            else if (currentStatsFilter.period === 'month') badgeEl.textContent = 'Phạm vi: Tháng này';
+            else if (currentStatsFilter.from_date && currentStatsFilter.to_date) {
+              badgeEl.textContent = `Phạm vi: ${currentStatsFilter.from_date} đến ${currentStatsFilter.to_date}`;
+            }
           }
-          if (document.getElementById('stat-staff-wages')) {
-            document.getElementById('stat-staff-wages').textContent = Number(s.total_staff_wages || s.settled_staff_wages || 0).toLocaleString('vi-VN') + ' đ';
+
+          // 1. Tiền khách đã trả (Gross Payments)
+          const grossPay = Number(s.gross_payments !== undefined ? s.gross_payments : (s.collected_revenue || s.total_revenue || 0));
+          if (document.getElementById('stat-gross-payments')) {
+            document.getElementById('stat-gross-payments').textContent = formatPriceVND(grossPay);
           }
-          if (document.getElementById('stat-wallet-bal')) {
-            document.getElementById('stat-wallet-bal').textContent = Number(s.total_wallet_balance || 0).toLocaleString('vi-VN') + ' đ';
+          if (document.getElementById('stat-revenue')) document.getElementById('stat-revenue').textContent = formatPriceVND(grossPay);
+          if (document.getElementById('stat-collected')) document.getElementById('stat-collected').textContent = formatPriceVND(grossPay);
+
+          // Phân tách chi tiết dòng tiền khách trả: Tiền mặt vs Trực tuyến
+          const cashPayments = Number(s.cash_payments || 0);
+          const onlinePayments = Number(s.online_payments || 0);
+          if (document.getElementById('stat-payments-breakdown')) {
+            document.getElementById('stat-payments-breakdown').innerHTML = `
+              💵 Tiền mặt: <strong>${formatPriceVND(cashPayments)}</strong> · 💳 Trực tuyến: <strong>${formatPriceVND(onlinePayments)}</strong>
+            `;
           }
-          if (document.getElementById('stat-net-profit')) {
-            document.getElementById('stat-net-profit').textContent = Number(s.estimated_net_profit || 0).toLocaleString('vi-VN') + ' đ';
+
+          // 2. Tiền hoàn cho khách (Refunds)
+          const refundAmt = Number(s.refund_amount || 0);
+          if (document.getElementById('stat-refund-amount')) {
+            document.getElementById('stat-refund-amount').textContent = formatPriceVND(refundAmt);
+          }
+
+          // 3. Tiền thu ròng (Net Receipts = Gross - Refund)
+          const netReceipts = Number(s.net_receipts !== undefined ? s.net_receipts : (grossPay - refundAmt));
+          if (document.getElementById('stat-net-receipts')) {
+            document.getElementById('stat-net-receipts').textContent = formatPriceVND(netReceipts);
+          }
+
+          // 4. Tiền công gộp nhân viên (Gross Wages)
+          const grossWages = Number(s.staff_gross_wages !== undefined ? s.staff_gross_wages : (s.total_staff_wages || 0));
+          if (document.getElementById('stat-gross-wages')) {
+            document.getElementById('stat-gross-wages').textContent = formatPriceVND(grossWages);
+          }
+          if (document.getElementById('stat-staff-wages')) document.getElementById('stat-staff-wages').textContent = formatPriceVND(grossWages);
+
+          // 5. Chiết khấu CleanNova (Platform Commission)
+          const platformComm = Number(s.platform_commission || 0);
+          if (document.getElementById('stat-platform-commission')) {
+            document.getElementById('stat-platform-commission').textContent = formatPriceVND(platformComm);
+          }
+
+          // 6. Tiền công thực nhận của nhân viên (Net Wages = Gross - Comm)
+          const netWages = Number(s.staff_net_wages !== undefined ? s.staff_net_wages : (grossWages - platformComm));
+          if (document.getElementById('stat-net-wages')) {
+            document.getElementById('stat-net-wages').textContent = formatPriceVND(netWages);
+          }
+
+          // 7. Khoản phải trả nhân viên (chờ duyệt)
+          const staffPayable = Number(s.staff_payable || 0);
+          if (document.getElementById('stat-staff-payable')) {
+            document.getElementById('stat-staff-payable').textContent = formatPriceVND(staffPayable);
+          }
+
+          // 8. Khoản đã chi trả nhân viên (đã vào ví)
+          const staffSettled = Number(s.staff_settled !== undefined ? s.staff_settled : (s.settled_staff_wages || 0));
+          if (document.getElementById('stat-staff-settled')) {
+            document.getElementById('stat-staff-settled').textContent = formatPriceVND(staffSettled);
+          }
+
+          // 9. Lợi nhuận ước tính nền tảng (Platform Profit)
+          const platformProfit = Number(s.platform_profit !== undefined ? s.platform_profit : (s.estimated_net_profit || (netReceipts - netWages)));
+          if (document.getElementById('stat-platform-profit')) {
+            document.getElementById('stat-platform-profit').textContent = formatPriceVND(platformProfit);
+          }
+          if (document.getElementById('stat-net-profit')) document.getElementById('stat-net-profit').textContent = formatPriceVND(platformProfit);
+
+          // 10. Nghĩa vụ số dư ví khách hàng (Customer Wallet Liabilities)
+          const walletLiab = Number(s.customer_wallet_liability !== undefined ? s.customer_wallet_liability : (s.total_wallet_balance || 0));
+          if (document.getElementById('stat-wallet-liability')) {
+            document.getElementById('stat-wallet-liability').textContent = formatPriceVND(walletLiab);
+          }
+          if (document.getElementById('stat-wallet-bal')) document.getElementById('stat-wallet-bal').textContent = formatPriceVND(walletLiab);
+
+          // 11. Quản trị Hệ thống Hai Ví Đối Tác (Mô Hình Grab Driver)
+          if (document.getElementById('stat-staff-credit-total')) {
+            const creditTotal = Number(s.staff_credit_balance_total || 0);
+            const el = document.getElementById('stat-staff-credit-total');
+            el.textContent = formatPriceVND(creditTotal);
+            el.style.color = creditTotal < 0 ? '#DC2626' : '#2563EB';
+          }
+          if (document.getElementById('stat-staff-credit-debt')) {
+            document.getElementById('stat-staff-credit-debt').textContent = formatPriceVND(Number(s.staff_credit_debt_total || 0));
+          }
+          if (document.getElementById('stat-negative-credit-count')) {
+            document.getElementById('stat-negative-credit-count').textContent = `${s.staff_negative_credit_count || 0} đối tác nợ tín dụng (< 0đ)`;
+          }
+          if (document.getElementById('stat-staff-ineligible')) {
+            document.getElementById('stat-staff-ineligible').textContent = `${s.staff_ineligible_count || 0} đối tác`;
+          }
+          if (document.getElementById('stat-staff-earnings-total')) {
+            document.getElementById('stat-staff-earnings-total').textContent = formatPriceVND(Number(s.staff_earnings_balance_total || 0));
+          }
+          if (document.getElementById('stat-staff-credit-topup')) {
+            document.getElementById('stat-staff-credit-topup').textContent = formatPriceVND(Number(s.staff_credit_topup_total || 0));
+          }
+          if (document.getElementById('stat-staff-interwallet-transfer')) {
+            document.getElementById('stat-staff-interwallet-transfer').textContent = formatPriceVND(Number(s.staff_interwallet_transfer_total || 0));
+          }
+
+          // Vận hành & Số lượng đơn
+          const totalBookings = s.total_bookings || s.totalBookings || 0;
+          const paidOrders = s.paid_bookings_count || 0;
+          const cancelOrders = s.cancelled_bookings_count || 0;
+          if (document.getElementById('stat-bookings')) document.getElementById('stat-bookings').textContent = totalBookings;
+          if (document.getElementById('stat-orders-breakdown-desc')) {
+            document.getElementById('stat-orders-breakdown-desc').innerHTML = `
+              <span style="color: #059669; font-weight: 700;">${paidOrders} đã thu tiền</span> · <span style="color: #DC2626; font-weight: 700;">${cancelOrders} đã hủy</span>
+            `;
+          }
+
+          if (document.getElementById('stat-users')) document.getElementById('stat-users').textContent = s.total_users || s.totalUsers || 0;
+          if (document.getElementById('stat-staff')) document.getElementById('stat-staff').textContent = s.total_staff || s.activeStaff || 0;
+          const pendingPartners = (s.pending_partners !== undefined ? s.pending_partners : (s.pendingPartners !== undefined ? s.pendingPartners : 0));
+          if (document.getElementById('stat-partners')) document.getElementById('stat-partners').textContent = pendingPartners;
+
+          // Render Bảng đối soát tài chính từng ngày (Daily Financial Ledger)
+          const dailyTbody = document.getElementById('daily-financial-table-body');
+          if (dailyTbody) {
+            const daily = s.daily_breakdown || [];
+            if (daily.length === 0) {
+              dailyTbody.innerHTML = `
+                <tr>
+                  <td colspan="8" style="text-align: center; padding: var(--space-lg); color: var(--color-text-secondary);">
+                    Không có giao dịch tài chính nào trong khoảng thời gian đã chọn.
+                  </td>
+                </tr>
+              `;
+            } else {
+              dailyTbody.innerHTML = daily.map(d => {
+                const dateStr = d.date ? new Date(d.date).toLocaleDateString('vi-VN') : '---';
+                const dGross = Number(d.gross_payments) || 0;
+                const dRefund = Number(d.refunds) || 0;
+                const dGrossWage = Number(d.gross_wages) || 0;
+                const dComm = Number(d.commission) || 0;
+                const dNetWage = Number(d.net_wages) || 0;
+                const dProfit = Number(d.profit) || 0;
+
+                return `
+                  <tr>
+                    <td style="font-weight: 700; color: #1E40AF;">${dateStr}</td>
+                    <td style="text-align: center;">
+                      <span style="color:#059669; font-weight:700;">${d.paid_orders}</span> / <span style="color:#DC2626;">${d.cancelled_orders}</span>
+                    </td>
+                    <td style="text-align: right; font-weight: 600; color: #059669;">${formatPriceVND(dGross)}</td>
+                    <td style="text-align: right; color: ${dRefund > 0 ? '#DC2626' : 'var(--color-text-tertiary)'};">${dRefund > 0 ? '-' + formatPriceVND(dRefund) : '0 đ'}</td>
+                    <td style="text-align: right;">${formatPriceVND(dGrossWage)}</td>
+                    <td style="text-align: right; font-weight: 700; color: #7C3AED;">+${formatPriceVND(dComm)}</td>
+                    <td style="text-align: right; font-weight: 600; color: #D97706;">${formatPriceVND(dNetWage)}</td>
+                    <td style="text-align: right; font-weight: 800; color: ${dProfit >= 0 ? '#059669' : '#DC2626'};">${formatPriceVND(dProfit)}</td>
+                  </tr>
+                `;
+              }).join('');
+            }
           }
         } catch (err) {
-          console.warn('Lỗi tải thống kê:', err);
+          console.warn('Lỗi tải thống kê tài chính:', err);
         }
+      }
+
+      // Xử lý nút bộ lọc thời gian
+      const periodBtns = document.querySelectorAll('.btn-stats-period');
+      periodBtns.forEach(btn => {
+        btn.addEventListener('click', async function () {
+          periodBtns.forEach(b => {
+            b.classList.remove('active', 'btn-primary');
+            b.classList.add('btn-ghost');
+          });
+          this.classList.remove('btn-ghost');
+          this.classList.add('active', 'btn-primary');
+
+          const period = this.dataset.period;
+          currentStatsFilter.period = period;
+          currentStatsFilter.from_date = '';
+          currentStatsFilter.to_date = '';
+          document.getElementById('filter-stats-from').value = '';
+          document.getElementById('filter-stats-to').value = '';
+          await loadStats();
+        });
+      });
+
+      // Xử lý bộ lọc tùy chỉnh ngày
+      const btnApplyCustom = document.getElementById('btn-apply-custom-stats');
+      if (btnApplyCustom) {
+        btnApplyCustom.addEventListener('click', async function () {
+          const fromDate = document.getElementById('filter-stats-from').value;
+          const toDate = document.getElementById('filter-stats-to').value;
+          if (!fromDate || !toDate) {
+            alert('Vui lòng chọn đầy đủ ngày bắt đầu và ngày kết thúc.');
+            return;
+          }
+          if (fromDate > toDate) {
+            alert('Ngày bắt đầu không được lớn hơn ngày kết thúc.');
+            return;
+          }
+
+          periodBtns.forEach(b => {
+            b.classList.remove('active', 'btn-primary');
+            b.classList.add('btn-ghost');
+          });
+
+          currentStatsFilter.period = 'custom';
+          currentStatsFilter.from_date = fromDate;
+          currentStatsFilter.to_date = toDate;
+          await loadStats();
+        });
+      }
+
+      // Nút làm mới số liệu thống kê
+      const btnRefreshStats = document.getElementById('btn-refresh-stats');
+      if (btnRefreshStats) {
+        btnRefreshStats.addEventListener('click', async function () {
+          this.textContent = '🔄 Đang làm mới...';
+          await loadStats();
+          this.textContent = '🔄 Làm mới số liệu';
+          showAlert('success', 'Đã cập nhật các chỉ số doanh thu và báo cáo tài chính mới nhất!');
+        });
+      }
+
+      // Cấu hình tỷ lệ chiết khấu (Commission Config)
+      async function loadCommissionConfig() {
+        try {
+          const res = await CleanovaAPI.admin.getCommissionConfig();
+          const rate = res.data ? Number(res.data.rate) : 0.20;
+          const pct = Math.round(rate * 100 * 10) / 10;
+          const btnBadge = document.getElementById('btn-commission-badge');
+          if (btnBadge) btnBadge.textContent = `${pct}%`;
+          const currentDisplay = document.getElementById('current-commission-display');
+          if (currentDisplay) currentDisplay.textContent = `${pct}%`;
+          const inputRate = document.getElementById('input-commission-rate');
+          if (inputRate) inputRate.value = pct;
+        } catch (err) {
+          console.warn('Lỗi tải cấu hình chiết khấu:', err);
+        }
+      }
+
+      const btnOpenCommissionModal = document.getElementById('btn-open-commission-modal');
+      if (btnOpenCommissionModal) {
+        btnOpenCommissionModal.addEventListener('click', async () => {
+          await loadCommissionConfig();
+          document.getElementById('input-commission-reason').value = '';
+          document.getElementById('modal-commission-config').style.display = 'flex';
+        });
+      }
+
+      const formCommissionConfig = document.getElementById('form-commission-config');
+      if (formCommissionConfig) {
+        formCommissionConfig.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const pct = parseFloat(document.getElementById('input-commission-rate').value);
+          const reason = document.getElementById('input-commission-reason').value.trim();
+
+          if (isNaN(pct) || pct < 0 || pct > 100) {
+            alert('Tỷ lệ chiết khấu phải là số hợp lệ từ 0% đến 100%.');
+            return;
+          }
+          if (!reason || reason.length < 5) {
+            alert('Vui lòng nhập lý do điều chỉnh tỷ lệ chiết khấu (tối thiểu 5 ký tự để lưu vết kiểm toán).');
+            return;
+          }
+
+          const rateDecimal = Math.round((pct / 100) * 10000) / 10000;
+          const saveBtn = document.getElementById('btn-save-commission-config');
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Đang lưu cấu hình...';
+
+          try {
+            const res = await CleanovaAPI.admin.updateCommissionConfig({ rate: rateDecimal, reason });
+            showAlert('success', res.message || `Cập nhật tỷ lệ chiết khấu thành ${pct}% thành công!`);
+            document.getElementById('modal-commission-config').style.display = 'none';
+            await loadCommissionConfig();
+            await loadStats();
+          } catch (err) {
+            alert('Lỗi cập nhật cấu hình: ' + err.message);
+          } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = '💾 Lưu Cấu Hình Tỷ Lệ';
+          }
+        });
       }
 
       // ------------------------------------------------------------
@@ -2688,7 +3224,65 @@
       // ------------------------------------------------------------
       async function loadWallets() {
         const tbody = document.getElementById('wallets-table-body');
+        const staffTbody = document.getElementById('staff-wallets-table-body');
         try {
+          // 1. Tải danh sách Hai Ví Nhân Viên (Mô hình Grab Driver)
+          if (staffTbody) {
+            try {
+              const staffWalletsRes = await CleanovaAPI.wallet.getAdminStaffWallets();
+              const staffWallets = staffWalletsRes.data || [];
+              if (staffWallets.length === 0) {
+                staffTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Chưa có nhân viên nào trên hệ thống.</td></tr>`;
+              } else {
+                staffTbody.innerHTML = staffWallets.map(sw => {
+                  const creditBal = Number(sw.credit_balance || 0);
+                  const isNeg = creditBal < 0;
+                  const isEligible = creditBal > 100000;
+                  const creditColor = isNeg ? '#DC2626' : (creditBal <= 100000 ? '#D97706' : '#2563EB');
+                  const earningsBal = Number(sw.earnings_balance || 0);
+                  const grossWages = Number(sw.total_gross_wages || 0);
+                  const withdrawn = Number(sw.total_withdrawn || 0);
+                  const creditDisplay = isNeg ? `-${Number(Math.abs(creditBal)).toLocaleString('vi-VN')} đ` : `${Number(creditBal).toLocaleString('vi-VN')} đ`;
+                  
+                  return `
+                    <tr>
+                      <td>
+                        <strong>${escapeHtml(sw.name || 'Nhân viên')}</strong>
+                        <div style="font-size: 11px; color: #64748b;">Mã NV: #${sw.staff_id}</div>
+                      </td>
+                      <td>
+                        ${escapeHtml(sw.email || '---')}
+                        <div style="font-size: 11px; color: #64748b;">${escapeHtml(sw.phone || '---')}</div>
+                      </td>
+                      <td style="text-align: right;">
+                        <strong style="color: ${creditColor}; font-size: 14px;">${creditDisplay}</strong>
+                        ${isNeg ? '<div style="font-size: 10px; color: #DC2626; font-weight: 700;">Nợ chiết khấu sàn</div>' : ''}
+                      </td>
+                      <td style="text-align: center;">
+                        <span class="badge" style="background: ${isEligible ? '#dcfce7' : '#fee2e2'}; color: ${isEligible ? '#15803d' : '#b91c1c'}; font-size: 11px; font-weight: 700;">
+                          ${isEligible ? '✅ Đủ điều kiện (>100k)' : '❌ Không đủ ĐK (≤100k)'}
+                        </span>
+                      </td>
+                      <td style="text-align: right;">
+                        <strong style="color: #059669; font-size: 14px;">${Number(earningsBal).toLocaleString('vi-VN')} đ</strong>
+                      </td>
+                      <td style="text-align: right;">
+                        <span style="font-weight: 600; color: #0f172a;">${Number(grossWages).toLocaleString('vi-VN')} đ</span>
+                      </td>
+                      <td style="text-align: right;">
+                        <span style="color: #64748b;">${Number(withdrawn).toLocaleString('vi-VN')} đ</span>
+                      </td>
+                    </tr>
+                  `;
+                }).join('');
+              }
+            } catch (err) {
+              console.warn('Lỗi tải danh sách ví nhân viên:', err);
+              staffTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: #dc2626;">Lỗi tải dữ liệu ví nhân viên.</td></tr>`;
+            }
+          }
+
+          // 2. Tải danh sách Ví Khách Hàng (Customer Wallets)
           const res = await CleanovaAPI.wallet.getAdminWallets();
           const wallets = res.data || [];
           document.getElementById('tab-count-wallets').textContent = wallets.length;
@@ -2784,6 +3378,7 @@
       // KHỞI CHẠY TẢI TOÀN BỘ DỮ LIỆU
       // ------------------------------------------------------------
       await loadStats();
+      await loadCommissionConfig();
       await loadStaff();
       await loadBookings();
       await loadUsers();

@@ -7,14 +7,15 @@ const BookingModel = require('../models/bookingModel');
 const ServiceModel = require('../models/serviceModel');
 const UserModel = require('../models/userModel');
 const PartnerModel = require('../models/partnerModel');
+const WalletModel = require('../models/walletModel');
 const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
 const { sanitizeInput } = require('../utils/sanitize');
 
 const adminController = {
-  // 1. Thống kê tổng quan Dashboard (GET /api/admin/stats)
+  // 1. Thống kê tổng quan Dashboard với bộ lọc thời gian (GET /api/admin/stats)
   async getStats(req, res, next) {
     try {
-      const stats = await BookingModel.getStats();
+      const stats = await BookingModel.getStats(req.query);
       res.json({
         success: true,
         data: stats
@@ -94,9 +95,24 @@ const adminController = {
       // Ghi nhật ký thao tác
       await UserModel.logAudit(req.user.id, 'UPDATE_BOOKING_STATUS', id, 'booking', `Cập nhật trạng thái đơn #${booking.booking_code} thành ${status}`);
 
+      // Quyết toán thù lao và chiết khấu hai ví khi đơn hoàn thành
+      let settlementResult = null;
+      if (status === 'completed' && booking.status !== 'completed') {
+        try {
+          settlementResult = await WalletModel.settleBookingCommissionAndWage({
+            bookingId: id,
+            adminId: req.user.id,
+            note: 'Quyết toán tự động khi Quản trị viên cập nhật trạng thái đơn thành hoàn thành'
+          });
+        } catch (settleErr) {
+          console.error(`[AdminController] Settlement error for booking #${id}:`, settleErr.message || settleErr);
+        }
+      }
+
       res.json({
         success: true,
-        message: `Đã cập nhật trạng thái đơn ${booking.booking_code} thành "${status}".`
+        message: `Đã cập nhật trạng thái đơn ${booking.booking_code} thành "${status}".`,
+        settlement: settlementResult
       });
     } catch (err) {
       next(err);
@@ -107,40 +123,56 @@ const adminController = {
   async payoutStaffWage(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
-      const booking = await BookingModel.getById(id);
-      if (!booking) {
-        return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
-      }
-      if (booking.status !== 'completed') {
-        return res.status(400).json({ success: false, message: 'Chỉ có thể quyết toán tiền công cho đơn hàng đã hoàn thành.' });
-      }
-      if (booking.wage_status === 'paid') {
-        return res.status(409).json({ success: false, message: 'Đơn hàng này đã được quyết toán tiền công trước đó.' });
-      }
-      if (!booking.staff_id) {
-        return res.status(400).json({ success: false, message: 'Đơn hàng chưa có nhân viên phụ trách.' });
-      }
-
-      await db.query(
-        `UPDATE bookings SET wage_status = 'paid', wage_settled_at = NOW(), wage_settled_by = ? WHERE id = ? AND wage_status != 'paid'`,
-        [req.user.id, id]
-      );
-
-      await db.query(
-        `INSERT INTO staff_payout_logs (booking_id, staff_id, admin_id, amount, action, note) VALUES (?, ?, ?, ?, 'pay', ?)`,
-        [id, booking.staff_id, req.user.id, booking.staff_wage || 0, `Quyết toán thù lao cho đơn #${booking.booking_code}`]
-      );
-
-      await UserModel.logAudit(req.user.id, 'PAYOUT_STAFF_WAGE', id, 'booking', `Quyết toán ${booking.staff_wage} VND cho nhân viên ID ${booking.staff_id}`);
+      const { note } = req.body;
+      const result = await WalletModel.payoutWage({
+        bookingId: id,
+        adminId: req.user.id,
+        note
+      });
 
       res.json({
         success: true,
-        message: `Đã quyết toán thành công tiền công cho đơn #${booking.booking_code}.`,
-        data: {
-          booking_id: id,
-          wage_status: 'paid',
-          staff_wage: booking.staff_wage
-        }
+        message: `Đã quyết toán thành công thù lao đơn #${result.booking_code}. Khấu trừ chiết khấu CleanNova: ${result.platform_commission.toLocaleString('vi-VN')} đ, Thực nhận vào ví: ${result.net_wage.toLocaleString('vi-VN')} đ.`,
+        data: result
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 3b-2. Lấy cấu hình tỷ lệ chiết khấu CleanNova (GET /api/admin/config/commission)
+  async getCommissionConfig(req, res, next) {
+    try {
+      const config = await BookingModel.getCommissionConfig();
+      res.json({
+        success: true,
+        data: config
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  // 3b-3. Cập nhật cấu hình tỷ lệ chiết khấu CleanNova (PUT /api/admin/config/commission)
+  async updateCommissionConfig(req, res, next) {
+    try {
+      const { rate, reason } = req.body;
+      if (rate === undefined || rate === null) {
+        return res.status(400).json({ success: false, message: 'Vui lòng cung cấp tỷ lệ chiết khấu (rate).' });
+      }
+      await BookingModel.updateCommissionConfig(rate, reason, req.user.id);
+      const updated = await BookingModel.getCommissionConfig();
+      await UserModel.logAudit(
+        req.user.id,
+        'UPDATE_COMMISSION_CONFIG',
+        null,
+        'system_config',
+        `Cập nhật tỷ lệ chiết khấu CleanNova thành ${Math.round(updated.rate * 100)}%: ${reason || ''}`
+      );
+      res.json({
+        success: true,
+        message: `Đã cập nhật tỷ lệ chiết khấu CleanNova thành ${Math.round(updated.rate * 100)}% (${updated.rate}).`,
+        data: updated
       });
     } catch (err) {
       next(err);
@@ -229,6 +261,16 @@ const adminController = {
         }
         if (staff.status === 'inactive') {
           return res.status(400).json({ success: false, message: 'Nhân viên này đang bị vô hiệu hóa, không thể phân công việc mới.' });
+        }
+        // Kiểm tra điều kiện ví tín dụng: creditBalance > 100000
+        const eligibility = await WalletModel.checkStaffBookingEligibility(staff.id);
+        if (!eligibility.eligible) {
+          return res.status(400).json({
+            success: false,
+            code: 'STAFF_INELIGIBLE_CREDIT',
+            message: `Không thể phân công: Số dư ví tín dụng của nhân viên ${staff.name} là ${eligibility.creditBalance.toLocaleString('vi-VN')} đ (yêu cầu > 100.000 đ). Nhân viên cần nạp hoặc chuyển thêm ít nhất ${eligibility.amountNeeded.toLocaleString('vi-VN')} đ để đủ điều kiện nhận đơn.`,
+            data: eligibility
+          });
         }
         staffName = staff.name;
         await BookingModel.assignStaff(bookingId, staff.id);

@@ -320,6 +320,44 @@
           method: 'POST',
           body: JSON.stringify({ booking_id, reason })
         });
+      },
+
+      async withdraw(withdrawData) {
+        return await request('/wallet/withdraw', {
+          method: 'POST',
+          body: JSON.stringify(withdrawData)
+        });
+      },
+
+      async getStaffSummary() {
+        return await request('/wallet/staff/summary');
+      },
+
+      // Hai ví nhân viên (Mô hình Grab Driver: Ví tín dụng & Ví thu nhập)
+      async getStaffWallets() {
+        return await request('/wallet/staff/wallets');
+      },
+
+      async checkStaffEligibility() {
+        return await request('/wallet/staff/eligibility');
+      },
+
+      async topupStaffCredit(topupData) {
+        return await request('/wallet/staff/topup-credit', {
+          method: 'POST',
+          body: JSON.stringify(topupData)
+        });
+      },
+
+      async transferToCredit(transferData) {
+        return await request('/wallet/staff/transfer', {
+          method: 'POST',
+          body: JSON.stringify(transferData)
+        });
+      },
+
+      async getAdminStaffWallets() {
+        return await request('/wallet/admin/staff-wallets');
       }
     },
 
@@ -455,8 +493,20 @@
 
     // Module Quản trị viên (Admin)
     admin: {
-      async getStats() {
-        return await request('/admin/stats');
+      async getStats(params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await request(`/admin/stats${query ? '?' + query : ''}`);
+      },
+
+      async getCommissionConfig() {
+        return await request('/admin/config/commission');
+      },
+
+      async updateCommissionConfig(configData) {
+        return await request('/admin/config/commission', {
+          method: 'PUT',
+          body: JSON.stringify(configData)
+        });
       },
 
       // Quản lý đơn & Phân công

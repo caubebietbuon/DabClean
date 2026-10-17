@@ -523,6 +523,9 @@
         <button type="button" class="staff-tab-btn" data-tab="tab-schedule">
           📅 Lịch Trình Sắp Tới
         </button>
+        <button type="button" class="staff-tab-btn" data-tab="tab-wallet">
+          👛 Ví & Thù Lao
+        </button>
         <button type="button" class="staff-tab-btn" data-tab="tab-profile">
           👤 Hồ Sơ & Bảo Mật
         </button>
@@ -532,6 +535,9 @@
            TAB 1: DANH SÁCH CÔNG VIỆC CỦA TÔI
            ============================================================ -->
       <div class="tab-pane" id="tab-tasks" style="display: block;">
+        <!-- Banner cảnh báo điều kiện nhận việc ví tín dụng (Grab Driver Model) -->
+        <div id="staff-eligibility-banner" style="display: none; margin-bottom: var(--space-lg);"></div>
+
         <!-- Bộ lọc & Tìm kiếm -->
         <div class="card" style="margin-bottom: var(--space-lg); padding: var(--space-md) var(--space-xl);">
           <div style="display: flex; justify-content: space-between; align-items: center; gap: var(--space-md); flex-wrap: wrap;">
@@ -669,8 +675,406 @@
         </div>
       </div>
 
+      <!-- ============================================================
+           TAB 4: VÍ & THÙ LAO NHÂN VIÊN (STAFF WALLET & COMMISSION)
+           ============================================================ -->
+      <!-- ============================================================
+           TAB 4: HỆ THỐNG HAI VÍ ĐỐI TÁC (VÍ TÍN DỤNG & VÍ THU NHẬP)
+           ============================================================ -->
+      <div class="tab-pane" id="tab-wallet" style="display: none;">
+        <!-- Header Banner -->
+        <div class="card" style="margin-bottom: var(--space-lg); background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); color: #fff; border: 1px solid #334155; padding: var(--space-xl); border-radius: var(--radius-xl);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+            <div>
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                <span style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; background: rgba(59, 130, 246, 0.2); color: #60A5FA; border: 1px solid rgba(59, 130, 246, 0.4); padding: 3px 10px; border-radius: var(--radius-full); font-weight: 700;">Mô hình Grab Driver</span>
+                <span style="font-size: 12px; color: #94A3B8;">Hệ thống tài chính đối tác CleanNova</span>
+              </div>
+              <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 6px 0; color: #fff; display: flex; align-items: center; gap: 10px;">
+                💳 Hệ Thống Hai Ví Nhân Viên
+              </h2>
+              <p style="font-size: 13px; color: #94A3B8; margin: 0; max-width: 650px;">
+                Ví tín dụng nạp trước để duy trì quyền nhận đơn & thanh toán chiết khấu; Ví thu nhập tích lũy tiền công từ đơn khách thanh toán trực tuyến.
+              </p>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-refresh-staff-wallet" style="color: #94A3B8; border-color: #334155;">
+                🔄 Cập nhật số dư
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VÍ 1: VÍ TÍN DỤNG — CREDIT WALLET (VÍ TRÊN)
+             ========================================== -->
+        <div class="card" style="margin-bottom: var(--space-xl); border: 2px solid #3B82F6; border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);">
+          <div style="background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%); color: #fff; padding: var(--space-lg) var(--space-xl); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="font-size: 28px; background: rgba(255, 255, 255, 0.15); width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">💳</div>
+              <div>
+                <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; font-weight: 700;">Ví Trên (Duy trì quyền nhận việc & Thu chiết khấu)</div>
+                <h3 style="font-size: 20px; font-weight: 800; margin: 0; color: #fff;">Ví Tín Dụng — Credit Wallet</h3>
+              </div>
+            </div>
+            <div id="credit-eligibility-badge">
+              <span class="status-badge" style="background: rgba(255, 255, 255, 0.2); color: #fff; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: var(--radius-full);">
+                ⏳ Đang kiểm tra điều kiện...
+              </span>
+            </div>
+          </div>
+
+          <div style="padding: var(--space-xl); background: #fff;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-lg); align-items: center; margin-bottom: var(--space-lg);">
+              <div>
+                <div style="font-size: 12px; font-weight: 700; color: var(--color-text-secondary); text-transform: uppercase; margin-bottom: 4px;">Số Dư Ví Tín Dụng Hiện Tại</div>
+                <div id="staff-credit-balance" style="font-size: 32px; font-weight: 900; line-height: 1.2;">0 đ</div>
+                <div id="staff-credit-notice" style="font-size: 12px; margin-top: 4px; color: var(--color-text-secondary);">Ngưỡng nhận đơn: > 100.000 đ</div>
+              </div>
+
+              <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 12px 16px;">
+                <div style="font-size: 12px; color: var(--color-text-secondary); font-weight: 600;">Tổng tiền đã nạp</div>
+                <div id="staff-credit-deposited" style="font-size: 18px; font-weight: 800; color: #0284C7;">0 đ</div>
+                <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px;">Từ cổng thanh toán & nạp sandbox</div>
+              </div>
+
+              <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 12px 16px;">
+                <div style="font-size: 12px; color: var(--color-text-secondary); font-weight: 600;">Tổng chiết khấu đã khấu trừ</div>
+                <div id="staff-credit-deducted" style="font-size: 18px; font-weight: 800; color: #DC2626;">0 đ</div>
+                <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px;">Áp dụng cho cả đơn tiền mặt & trực tuyến</div>
+              </div>
+
+              <div>
+                <button type="button" class="btn btn-primary" id="btn-open-topup-credit-modal" style="width: 100%; padding: 12px 20px; font-weight: 700; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  💳 Nạp Ví Tín Dụng
+                </button>
+              </div>
+            </div>
+
+            <div style="font-size: 12px; background: #EFF6FF; border-left: 4px solid #3B82F6; padding: 10px 14px; border-radius: 4px; color: #1E40AF; line-height: 1.5;">
+              📌 <strong>Quy tắc Ví Tín Dụng:</strong> Trừ khoản chiết khấu CleanNova khi đơn hoàn thành (cả tiền mặt & trực tuyến). Cho phép số dư âm khi chiết khấu vượt số dư. Số dư phải <strong>lớn hơn 100.000 VNĐ</strong> để được phân công và xác nhận đơn mới.
+            </div>
+          </div>
+        </div>
+
+        <!-- ==========================================
+             VÍ 2: VÍ THU NHẬP — EARNINGS WALLET (VÍ DƯỚI)
+             ========================================== -->
+        <div class="card" style="margin-bottom: var(--space-xl); border: 2px solid #10B981; border-radius: var(--radius-xl); overflow: hidden; box-shadow: 0 4px 20px rgba(16, 185, 129, 0.08);">
+          <div style="background: linear-gradient(135deg, #065F46 0%, #059669 100%); color: #fff; padding: var(--space-lg) var(--space-xl); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div style="font-size: 28px; background: rgba(255, 255, 255, 0.15); width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px;">💰</div>
+              <div>
+                <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.85; font-weight: 700;">Ví Dưới (Tiền công thực nhận từ đơn trực tuyến)</div>
+                <h3 style="font-size: 20px; font-weight: 800; margin: 0; color: #fff;">Ví Thu Nhập — Earnings Wallet</h3>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn" id="btn-open-transfer-modal" style="background: #3B82F6; color: #fff; border: none; font-weight: 700; padding: 10px 18px; border-radius: var(--radius-md); font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                🔄 Chuyển sang Ví Tín Dụng
+              </button>
+              <button type="button" class="btn" id="btn-open-withdraw-modal" style="background: #10B981; color: #fff; border: 1px solid rgba(255,255,255,0.4); font-weight: 700; padding: 10px 18px; border-radius: var(--radius-md); font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                💸 Rút Về Ngân Hàng
+              </button>
+            </div>
+          </div>
+
+          <div style="padding: var(--space-xl); background: #fff;">
+            <div class="staff-stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-md); margin-bottom: var(--space-lg);">
+              <div class="staff-stat-card" style="border-left: 4px solid #10B981;">
+                <div class="stat-label"><span>Số Dư Khả Dụng</span><span>💵</span></div>
+                <div class="stat-number" id="staff-earnings-balance" style="color: #059669; font-size: 24px;">0 đ</div>
+                <div class="stat-subtext">Có thể rút hoặc chuyển sang Ví Tín Dụng</div>
+              </div>
+
+              <div class="staff-stat-card" style="border-left: 4px solid #3B82F6;">
+                <div class="stat-label"><span>Tiền Công Gộp (Gross)</span><span>📊</span></div>
+                <div class="stat-number" id="staff-gross-earnings" style="color: #2563EB; font-size: 22px;">0 đ</div>
+                <div class="stat-subtext">Toàn bộ đơn đã hoàn thành</div>
+              </div>
+
+              <div class="staff-stat-card" style="border-left: 4px solid #8B5CF6;">
+                <div class="stat-label"><span>Thù Lao Thực Nhận</span><span>✨</span></div>
+                <div class="stat-number" id="staff-net-earnings" style="color: #7C3AED; font-size: 22px;">0 đ</div>
+                <div class="stat-subtext">Sau khi trừ chiết khấu CleanNova</div>
+              </div>
+
+              <div class="staff-stat-card" style="border-left: 4px solid #F59E0B;">
+                <div class="stat-label"><span>Tổng Đã Rút</span><span>🏦</span></div>
+                <div class="stat-number" id="staff-total-withdrawn" style="color: #D97706; font-size: 22px;">0 đ</div>
+                <div class="stat-subtext">Rút về tài khoản ngân hàng</div>
+              </div>
+
+              <div class="staff-stat-card" style="border-left: 4px solid #6366F1;">
+                <div class="stat-label"><span>Đã Chuyển Sang Ví TD</span><span>🔁</span></div>
+                <div class="stat-number" id="staff-transferred-to-credit" style="color: #4F46E5; font-size: 22px;">0 đ</div>
+                <div class="stat-subtext">Bù âm hoặc duy trì nhận việc</div>
+              </div>
+            </div>
+
+            <div style="font-size: 12px; background: #ECFDF5; border-left: 4px solid #10B981; padding: 10px 14px; border-radius: 4px; color: #065F46; line-height: 1.5;">
+              📌 <strong>Quy tắc Dòng Tiền & Ví Thu Nhập:</strong><br>
+              • <strong>Đơn trực tuyến:</strong> Thù lao thực nhận (Net) được tự động cộng vào Ví Thu Nhập sau khi đơn hoàn tất.<br>
+              • <strong>Đơn tiền mặt:</strong> Nhân viên giữ 100% tiền mặt từ khách, do đó hệ thống <em>không cộng lại vào Ví Thu Nhập</em> để tránh ghi nhận thu nhập 2 lần; chỉ trừ chiết khấu từ Ví Tín Dụng.
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng 1: Bảng kê chi tiết tiền công từng đơn hàng -->
+        <div class="card" style="margin-bottom: var(--space-xl);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: 8px;">
+            <h3 style="font-size: 17px; font-weight: 800; color: var(--color-text); margin: 0;">📋 Bảng Đối Soát Thù Lao Từng Đơn Hàng</h3>
+            <span style="font-size: 12px; color: var(--color-text-secondary);">Minh bạch phương thức thanh toán & luồng tiền</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table" style="font-size: 13px;">
+              <thead>
+                <tr>
+                  <th>Mã đơn</th>
+                  <th>Dịch vụ</th>
+                  <th>Ngày làm</th>
+                  <th>Thanh toán</th>
+                  <th style="text-align: right;">Tiền công gộp</th>
+                  <th style="text-align: center;">Tỷ lệ CK</th>
+                  <th style="text-align: right;">Chiết khấu CleanNova</th>
+                  <th style="text-align: right;">Thực nhận (Net)</th>
+                  <th style="text-align: center;">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="staff-wage-table-body">
+                <tr>
+                  <td colspan="9" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
+                    Đang tải dữ liệu đối soát thù lao...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bảng 2: Lịch sử biến động số dư ví (Ledger) với bộ lọc -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-md); flex-wrap: wrap; gap: 12px;">
+            <div>
+              <h3 style="font-size: 17px; font-weight: 800; color: var(--color-text); margin: 0 0 4px 0;">📜 Lịch Sử Giao Dịch & Sổ Cái Hai Ví</h3>
+              <p style="font-size: 12px; color: var(--color-text-secondary); margin: 0;">Ghi nhận minh bạch mọi biến động trên Ví Tín Dụng và Ví Thu Nhập</p>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <select id="staff-tx-filter-wallet" class="form-control" style="font-size: 12px; padding: 6px 12px; width: auto;">
+                <option value="all">Tất cả ví</option>
+                <option value="credit">Ví Tín Dụng</option>
+                <option value="earnings">Ví Thu Nhập</option>
+              </select>
+              <select id="staff-tx-filter-type" class="form-control" style="font-size: 12px; padding: 6px 12px; width: auto;">
+                <option value="all">Tất cả loại giao dịch</option>
+                <option value="topup">Nạp tiền tín dụng</option>
+                <option value="commission_deduction">Khấu trừ chiết khấu</option>
+                <option value="wage">Thù lao trực tuyến</option>
+                <option value="transfer">Chuyển tiền nội bộ</option>
+                <option value="withdrawal">Rút tiền</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table" style="font-size: 13px;">
+              <thead>
+                <tr>
+                  <th>Mã giao dịch</th>
+                  <th>Ví</th>
+                  <th>Loại GD</th>
+                  <th style="text-align: right;">Số tiền</th>
+                  <th style="text-align: right;">Số dư sau GD</th>
+                  <th>Thời gian</th>
+                  <th>Nội dung diễn giải</th>
+                </tr>
+              </thead>
+              <tbody id="staff-wallet-tx-table-body">
+                <tr>
+                  <td colspan="7" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
+                    Đang tải lịch sử giao dịch ví...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </main>
+
+  <!-- ============================================================
+       MODAL 1: NẠP TIỀN VÍ TÍN DỤNG (CREDIT WALLET TOPUP)
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-staff-topup-credit" style="display: none;">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">💳 Nạp Tiền Ví Tín Dụng CleanNova</h3>
+        <button class="modal-close" data-close="modal-staff-topup-credit">&times;</button>
+      </div>
+      <div style="padding: var(--space-xl);">
+        <form id="form-staff-topup-credit">
+          <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: var(--space-lg);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 11px; color: #1E40AF; text-transform: uppercase; font-weight: 700;">Số dư ví tín dụng hiện tại:</div>
+                <div style="font-size: 22px; font-weight: 800;" id="topup-modal-current-balance">0 đ</div>
+              </div>
+              <div id="topup-modal-needed-box" style="text-align: right; display: none;">
+                <div style="font-size: 11px; color: #DC2626; font-weight: 700;">Cần nạp tối thiểu để nhận đơn:</div>
+                <div style="font-size: 14px; font-weight: 800; color: #DC2626;" id="topup-modal-needed-amount">0 đ</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label" style="font-weight: 700;">Chọn nhanh số tiền nạp</label>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px;">
+              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="100000" style="font-size: 12px; font-weight: 700;">100k</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="200000" style="font-size: 12px; font-weight: 700;">200k</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="500000" style="font-size: 12px; font-weight: 700;">500k</button>
+              <button type="button" class="btn btn-ghost btn-sm btn-preset-topup" data-amount="1000000" style="font-size: 12px; font-weight: 700;">1.000k</button>
+            </div>
+            <label class="form-label" style="font-weight: 700;">Hoặc nhập số tiền (VNĐ) <span style="color: red;">*</span></label>
+            <input type="number" id="topup-credit-amount-input" class="form-control" required min="10000" step="10000" placeholder="Tối thiểu 10.000 VNĐ">
+            <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px;">Tiền nạp tự động bù khoản âm (nếu có) trước khi tạo số dư dương.</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label" style="font-weight: 700;">Phương thức nạp tiền <span style="color: red;">*</span></label>
+            <select id="topup-credit-gateway" class="form-control" required>
+              <option value="sandbox_vietqr">VietQR / Chuyển khoản tức thì (Sandbox Gateway)</option>
+              <option value="sandbox_momo">Ví điện tử MoMo (Sandbox Gateway)</option>
+              <option value="sandbox_vnpay">Cổng VNPAY (Sandbox Gateway)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-lg);">
+            <label class="form-label" style="font-weight: 700;">Ghi chú giao dịch</label>
+            <input type="text" id="topup-credit-description" class="form-control" placeholder="VD: Nạp tiền duy trì nhận việc">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+            <button type="button" class="btn btn-ghost" data-close="modal-staff-topup-credit">Hủy bỏ</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-topup-credit">
+              ⚡ Xác Nhận Nạp Tiền
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 2: CHUYỂN TIỀN TỪ VÍ THU NHẬP SANG VÍ TÍN DỤNG
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-staff-transfer" style="display: none;">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">🔄 Chuyển Tiền Sang Ví Tín Dụng</h3>
+        <button class="modal-close" data-close="modal-staff-transfer">&times;</button>
+      </div>
+      <div style="padding: var(--space-xl);">
+        <form id="form-staff-transfer">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: var(--space-lg);">
+            <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: var(--radius-lg); padding: 10px 14px;">
+              <div style="font-size: 11px; color: #065F46; text-transform: uppercase; font-weight: 700;">Ví Thu Nhập (Nguồn):</div>
+              <div style="font-size: 18px; font-weight: 800; color: #059669;" id="transfer-modal-earnings-balance">0 đ</div>
+              <div style="font-size: 10px; color: #065F46; margin-top: 2px;">Khả dụng để chuyển</div>
+            </div>
+            <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 10px 14px;">
+              <div style="font-size: 11px; color: #1E40AF; text-transform: uppercase; font-weight: 700;">Ví Tín Dụng (Đích):</div>
+              <div style="font-size: 18px; font-weight: 800;" id="transfer-modal-credit-balance">0 đ</div>
+              <div style="font-size: 10px; color: #1E40AF; margin-top: 2px;">Yêu cầu: > 100.000 đ</div>
+            </div>
+          </div>
+
+          <div id="transfer-quick-suggest-box" style="display: none; background: #FFFBEB; border: 1px solid #FCD34D; border-radius: var(--radius-md); padding: 8px 12px; margin-bottom: var(--space-md); font-size: 12px; color: #92400E;">
+            <span>💡 Cần chuyển thêm: <strong id="transfer-suggested-amount">0 đ</strong> để đạt ngưỡng nhận việc.</span>
+            <button type="button" class="btn btn-ghost btn-xs" id="btn-fill-suggested-transfer" style="margin-left: 8px; font-weight: 700; color: #1D4ED8; text-decoration: underline; padding: 0;">Điền số này</button>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label" style="font-weight: 700;">Số tiền muốn chuyển (VNĐ) <span style="color: red;">*</span></label>
+            <input type="number" id="transfer-amount-input" class="form-control" required min="1000" step="1000" placeholder="Nhập số tiền muốn chuyển">
+            <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px;">Chuyển tiền nội bộ giữa 2 ví diễn ra tức thì, an toàn và không mất phí.</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-lg);">
+            <label class="form-label" style="font-weight: 700;">Ghi chú</label>
+            <input type="text" id="transfer-note-input" class="form-control" placeholder="VD: Bù âm ví tín dụng để nhận đơn">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+            <button type="button" class="btn btn-ghost" data-close="modal-staff-transfer">Hủy bỏ</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-transfer">
+              🔁 Thực Hiện Chuyển Tiền
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL 3: YÊU CẦU RÚT TIỀN VỀ TÀI KHOẢN NGÂN HÀNG
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-staff-withdraw" style="display: none;">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title">💸 Yêu Cầu Rút Tiền Về Ngân Hàng</h3>
+        <button class="modal-close" data-close="modal-staff-withdraw">&times;</button>
+      </div>
+      <div style="padding: var(--space-xl);">
+        <form id="form-staff-withdraw">
+          <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: var(--space-lg);">
+            <div style="font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Số dư khả dụng Ví Thu Nhập:</div>
+            <div style="font-size: 22px; font-weight: 800; color: #059669;" id="withdraw-modal-available-balance">0 đ</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label" style="font-weight: 700;">Số tiền muốn rút (VNĐ) <span style="color: red;">*</span></label>
+            <input type="number" id="withdraw-amount-input" class="form-control" required min="50000" step="10000" placeholder="Tối thiểu 50.000 VNĐ">
+            <div style="font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px;">Hạn mức rút tối thiểu: 50.000 đ/lần. Rút trực tiếp từ Ví Thu Nhập.</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label" style="font-weight: 700;">Ngân hàng thụ hưởng <span style="color: red;">*</span></label>
+            <select id="withdraw-bank-name" class="form-control" required>
+              <option value="">-- Chọn ngân hàng thụ hưởng --</option>
+              <option value="Vietcombank">Vietcombank (Ngoại thương Việt Nam)</option>
+              <option value="MB Bank">MB Bank (Quân Đội)</option>
+              <option value="Techcombank">Techcombank (Kỹ Thương)</option>
+              <option value="ACB">ACB (Á Châu)</option>
+              <option value="BIDV">BIDV (Đầu tư & Phát triển)</option>
+              <option value="Vietinbank">Vietinbank (Công Thương)</option>
+              <option value="TPBank">TPBank (Tiên Phong)</option>
+              <option value="VPBank">VPBank (Việt Nam Thịnh Vượng)</option>
+              <option value="MoMo">Ví điện tử MoMo</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-md);">
+            <label class="form-label" style="font-weight: 700;">Số tài khoản / SĐT MoMo <span style="color: red;">*</span></label>
+            <input type="text" id="withdraw-account-number" class="form-control" required placeholder="Nhập số tài khoản ngân hàng">
+          </div>
+
+          <div class="form-group" style="margin-bottom: var(--space-lg);">
+            <label class="form-label" style="font-weight: 700;">Tên chủ tài khoản (In hoa không dấu) <span style="color: red;">*</span></label>
+            <input type="text" id="withdraw-account-name" class="form-control" required placeholder="VD: NGUYEN VAN A" style="text-transform: uppercase;">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+            <button type="button" class="btn btn-ghost" data-close="modal-staff-withdraw">Hủy bỏ</button>
+            <button type="submit" class="btn btn-primary" id="btn-submit-withdraw">
+              🚀 Xác Nhận Rút Tiền
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- ============================================================
        MODAL: CHI TIẾT & CẬP NHẬT TIẾN ĐỘ CÔNG VIỆC
@@ -802,6 +1206,9 @@
           this.classList.add('active');
           const target = document.getElementById(this.dataset.tab);
           if (target) target.style.display = 'block';
+          if (this.dataset.tab === 'tab-wallet') {
+            loadStaffWallet();
+          }
         });
       });
 
@@ -1139,8 +1546,62 @@
       // ------------------------------------------------------------
       // 2. TẢI DANH SÁCH CÔNG VIỆC CỦA NHÂN VIÊN
       // ------------------------------------------------------------
+      let staffCreditEligibility = { eligible: true, creditBalance: 0, minRequiredBalance: 100000, amountNeeded: 0 };
+
+      async function refreshStaffEligibility() {
+        try {
+          const res = await CleanovaAPI.wallet.checkStaffEligibility();
+          if (res && res.data) {
+            staffCreditEligibility = {
+              eligible: res.data.eligible,
+              creditBalance: Number(res.data.creditBalance !== undefined ? res.data.creditBalance : res.data.credit_balance) || 0,
+              minRequiredBalance: Number(res.data.minRequiredBalance || 100000),
+              amountNeeded: Number(res.data.amountNeeded !== undefined ? res.data.amountNeeded : res.data.amount_needed) || 0
+            };
+          }
+        } catch (err) {
+          console.warn('Lỗi kiểm tra điều kiện nhận đơn:', err);
+        }
+
+        const banner = document.getElementById('staff-eligibility-banner');
+        if (banner) {
+          if (!staffCreditEligibility.eligible) {
+            banner.style.display = 'block';
+            banner.innerHTML = `
+              <div style="background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: var(--radius-lg); padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.08);">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <span style="font-size: 26px;">⚠️</span>
+                  <div>
+                    <div style="font-weight: 800; color: #991B1B; font-size: 14px;">Chưa Đủ Điều Kiện Nhận Đơn Mới (Mô Hình Grab Driver)</div>
+                    <div style="font-size: 13px; color: #B91C1C; margin-top: 2px;">
+                      Số dư Ví Tín Dụng hiện tại: <strong style="${staffCreditEligibility.creditBalance < 0 ? 'color:#DC2626;' : ''}">${formatPriceVND(staffCreditEligibility.creditBalance)}</strong> (yêu cầu phải <strong>lớn hơn 100.000 đ</strong>). Bạn cần nạp hoặc chuyển thêm ít nhất <strong>${formatPriceVND(staffCreditEligibility.amountNeeded)}</strong>.
+                    </div>
+                  </div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button type="button" class="btn btn-sm btn-primary" id="btn-banner-topup" style="background: #DC2626; border-color: #DC2626; font-size: 12px; font-weight: 700;">💳 Nạp Tín Dụng</button>
+                  <button type="button" class="btn btn-sm btn-ghost" id="btn-banner-transfer" style="color: #991B1B; border-color: #FCA5A5; font-size: 12px; font-weight: 700;">🔄 Chuyển Từ Ví TN</button>
+                </div>
+              </div>
+            `;
+            const bTopup = document.getElementById('btn-banner-topup');
+            if (bTopup) bTopup.addEventListener('click', () => {
+              if (typeof openTopupModal === 'function') openTopupModal();
+            });
+            const bXfer = document.getElementById('btn-banner-transfer');
+            if (bXfer) bXfer.addEventListener('click', () => {
+              if (typeof openTransferModal === 'function') openTransferModal();
+            });
+          } else {
+            banner.style.display = 'none';
+            banner.innerHTML = '';
+          }
+        }
+      }
+
       async function loadStaffTasks() {
         try {
+          await refreshStaffEligibility();
           const res = await CleanovaAPI.staff.getMyTasks(currentFilterStatus);
           myTasksList = res.data || [];
 
@@ -1243,11 +1704,19 @@
           // Action buttons theo luồng quy trình
           let quickActionsHtml = '';
           if (task.status === 'assigned') {
-            quickActionsHtml = `
-              <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="confirmed">
-                ✅ Xác nhận nhận ca
-              </button>
-            `;
+            if (staffCreditEligibility && !staffCreditEligibility.eligible) {
+              quickActionsHtml = `
+                <button type="button" class="btn btn-sm btn-quick-action" data-id="${task.id}" data-action="confirmed" style="background:#EF4444;border-color:#EF4444;color:#fff;" title="Số dư ví tín dụng không đủ (> 100.000 đ)">
+                  ⚠️ Chưa đủ số dư tín dụng
+                </button>
+              `;
+            } else {
+              quickActionsHtml = `
+                <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="confirmed">
+                  ✅ Xác nhận nhận ca
+                </button>
+              `;
+            }
           } else if (task.status === 'confirmed') {
             quickActionsHtml = `
               <button type="button" class="btn btn-sm btn-primary btn-quick-action" data-id="${task.id}" data-action="arrived" style="background:#2563EB;border-color:#2563EB;">
@@ -1441,6 +1910,13 @@
           btn.addEventListener('click', function () {
             const taskId = parseInt(this.dataset.id, 10);
             const action = this.dataset.action;
+
+            if (action === 'confirmed' && staffCreditEligibility && !staffCreditEligibility.eligible) {
+              alert(`Không thể xác nhận nhận việc: Số dư ví tín dụng hiện tại (${formatPriceVND(staffCreditEligibility.creditBalance)}) chưa đạt điều kiện tối thiểu > 100.000 đ. Vui lòng nạp thêm tối thiểu ${formatPriceVND(staffCreditEligibility.amountNeeded)} hoặc chuyển từ Ví Thu Nhập.`);
+              if (typeof openTopupModal === 'function') openTopupModal();
+              return;
+            }
+
             if (action === 'before' || action === 'after') {
               openPhotoChecklist(taskId, action);
               return;
@@ -1765,9 +2241,466 @@
         }
       });
 
+      // ------------------------------------------------------------
+      // 6. QUẢN LÝ HAI VÍ NHÂN VIÊN THEO MÔ HÌNH GRAB DRIVER
+      // Ví tín dụng (Ví trên) & Ví thu nhập (Ví dưới)
+      // ------------------------------------------------------------
+      let staffTwoWallets = null;
+      let staffAllTransactions = [];
+
+      window.openTopupModal = function () {
+        const creditBal = staffTwoWallets && staffTwoWallets.credit_wallet ? Number(staffTwoWallets.credit_wallet.balance) : 0;
+        const isEligible = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.is_eligible : (creditBal > 100000);
+        const amountNeeded = staffTwoWallets && staffTwoWallets.credit_wallet ? staffTwoWallets.credit_wallet.amount_needed : (isEligible ? 0 : Math.max(1, 100000 - creditBal + 1));
+
+        const curBalEl = document.getElementById('topup-modal-current-balance');
+        if (curBalEl) {
+          curBalEl.textContent = formatPriceVND(creditBal);
+          curBalEl.style.color = creditBal < 0 ? '#DC2626' : (isEligible ? '#059669' : '#D97706');
+        }
+
+        const neededBox = document.getElementById('topup-modal-needed-box');
+        const neededAmtEl = document.getElementById('topup-modal-needed-amount');
+        if (neededBox && neededAmtEl) {
+          if (!isEligible && amountNeeded > 0) {
+            neededBox.style.display = 'block';
+            neededAmtEl.textContent = formatPriceVND(amountNeeded);
+          } else {
+            neededBox.style.display = 'none';
+          }
+        }
+
+        const amtInput = document.getElementById('topup-credit-amount-input');
+        if (amtInput) {
+          amtInput.value = (!isEligible && amountNeeded > 0) ? Math.max(10000, Math.ceil(amountNeeded / 10000) * 10000) : '200000';
+        }
+
+        document.getElementById('modal-staff-topup-credit').style.display = 'flex';
+      };
+
+      window.openTransferModal = function () {
+        const creditBal = staffTwoWallets && staffTwoWallets.credit_wallet ? Number(staffTwoWallets.credit_wallet.balance) : 0;
+        const earningsBal = staffTwoWallets && staffTwoWallets.earnings_wallet ? Number(staffTwoWallets.earnings_wallet.balance) : 0;
+        const isEligible = creditBal > 100000;
+        const amountNeeded = isEligible ? 0 : Math.max(1, 100000 - creditBal + 1);
+
+        document.getElementById('transfer-modal-earnings-balance').textContent = formatPriceVND(earningsBal);
+        const credEl = document.getElementById('transfer-modal-credit-balance');
+        credEl.textContent = formatPriceVND(creditBal);
+        credEl.style.color = creditBal < 0 ? '#DC2626' : (isEligible ? '#059669' : '#D97706');
+
+        const suggestBox = document.getElementById('transfer-quick-suggest-box');
+        const suggestAmtEl = document.getElementById('transfer-suggested-amount');
+        if (suggestBox && suggestAmtEl) {
+          if (!isEligible && amountNeeded > 0) {
+            suggestBox.style.display = 'block';
+            suggestAmtEl.textContent = formatPriceVND(amountNeeded);
+          } else {
+            suggestBox.style.display = 'none';
+          }
+        }
+
+        const amtInput = document.getElementById('transfer-amount-input');
+        if (amtInput) {
+          amtInput.value = (!isEligible && amountNeeded > 0 && earningsBal >= amountNeeded) ? amountNeeded : '';
+          amtInput.max = earningsBal;
+        }
+
+        document.getElementById('modal-staff-transfer').style.display = 'flex';
+      };
+
+      window.openWithdrawModal = function () {
+        const earningsBal = staffTwoWallets && staffTwoWallets.earnings_wallet ? Number(staffTwoWallets.earnings_wallet.balance) : 0;
+        document.getElementById('withdraw-modal-available-balance').textContent = formatPriceVND(earningsBal);
+        const amtInput = document.getElementById('withdraw-amount-input');
+        if (amtInput) amtInput.max = earningsBal;
+        document.getElementById('form-staff-withdraw').reset();
+        document.getElementById('modal-staff-withdraw').style.display = 'flex';
+      };
+
+      async function loadStaffWallet() {
+        try {
+          // 1. Lấy thông tin hai ví độc lập (Ví Tín Dụng & Ví Thu Nhập)
+          const [walletRes, summaryRes, txRes] = await Promise.all([
+            CleanovaAPI.wallet.getStaffWallets(),
+            CleanovaAPI.wallet.getStaffSummary(),
+            CleanovaAPI.wallet.getTransactions({ limit: 100 })
+          ]);
+
+          staffTwoWallets = walletRes.data || {};
+          const { credit_wallet, earnings_wallet } = staffTwoWallets;
+
+          // Cập nhật biến điều kiện toàn cục
+          if (credit_wallet) {
+            staffCreditEligibility = {
+              eligible: credit_wallet.is_eligible,
+              creditBalance: Number(credit_wallet.balance) || 0,
+              minRequiredBalance: Number(credit_wallet.min_threshold) || 100000,
+              amountNeeded: Number(credit_wallet.amount_needed) || 0
+            };
+          }
+
+          // A. HIỂN THỊ VÍ TÍN DỤNG (CREDIT WALLET - VÍ TRÊN)
+          if (credit_wallet) {
+            const cBal = Number(credit_wallet.balance) || 0;
+            const balEl = document.getElementById('staff-credit-balance');
+            const noticeEl = document.getElementById('staff-credit-notice');
+            const badgeEl = document.getElementById('credit-eligibility-badge');
+
+            if (balEl) {
+              balEl.textContent = (cBal < 0 ? '-' : '') + formatPriceVND(Math.abs(cBal));
+              balEl.style.color = cBal < 0 ? '#DC2626' : (credit_wallet.is_eligible ? '#059669' : '#D97706');
+            }
+
+            if (noticeEl) {
+              if (cBal < 0) {
+                noticeEl.innerHTML = `<span style="color:#DC2626;font-weight:700;">⚠️ Đang nợ tín dụng: -${formatPriceVND(Math.abs(cBal))}. Tiền nạp sẽ tự động bù âm trước.</span>`;
+              } else if (!credit_wallet.is_eligible) {
+                noticeEl.innerHTML = `<span style="color:#D97706;font-weight:700;">⚠️ Chưa đạt ngưỡng nhận việc: Cần thêm tối thiểu ${formatPriceVND(credit_wallet.amount_needed)}.</span>`;
+              } else {
+                noticeEl.innerHTML = `<span style="color:#059669;font-weight:700;">✅ Số dư đạt chuẩn (> 100.000 đ), sẵn sàng nhận đơn mới.</span>`;
+              }
+            }
+
+            if (badgeEl) {
+              if (credit_wallet.is_eligible) {
+                badgeEl.innerHTML = `<span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;font-size:13px;font-weight:700;padding:6px 14px;border-radius:var(--radius-full);">🟢 ĐỦ ĐIỀU KIỆN NHẬN ĐƠN (> 100k)</span>`;
+              } else {
+                badgeEl.innerHTML = `<span class="status-badge" style="background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5;font-size:13px;font-weight:700;padding:6px 14px;border-radius:var(--radius-full);">🔴 CHƯA ĐỦ ĐIỀU KIỆN (Thiếu ${formatPriceVND(credit_wallet.amount_needed)})</span>`;
+              }
+            }
+
+            document.getElementById('staff-credit-deposited').textContent = formatPriceVND(credit_wallet.total_deposited || 0);
+            document.getElementById('staff-credit-deducted').textContent = formatPriceVND(credit_wallet.total_commission_deducted || 0);
+          }
+
+          // B. HIỂN THỊ VÍ THU NHẬP (EARNINGS WALLET - VÍ DƯỚI)
+          if (earnings_wallet) {
+            const eBal = Number(earnings_wallet.balance) || 0;
+            document.getElementById('staff-earnings-balance').textContent = formatPriceVND(eBal);
+            document.getElementById('staff-gross-earnings').textContent = formatPriceVND(earnings_wallet.total_gross_earnings || 0);
+            document.getElementById('staff-net-earnings').textContent = formatPriceVND(earnings_wallet.total_net_earnings || 0);
+            document.getElementById('staff-total-withdrawn').textContent = formatPriceVND(earnings_wallet.total_withdrawn || 0);
+            document.getElementById('staff-transferred-to-credit').textContent = formatPriceVND(earnings_wallet.total_transferred_to_credit || 0);
+          }
+
+          // C. BẢNG ĐỐI SOÁT THÙ LAO TỪNG ĐƠN HÀNG
+          const summaryData = summaryRes.data || {};
+          const bookings = summaryData.bookings || [];
+          const wageTbody = document.getElementById('staff-wage-table-body');
+          if (wageTbody) {
+            if (bookings.length === 0) {
+              wageTbody.innerHTML = `
+                <tr>
+                  <td colspan="9" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
+                    Chưa có dữ liệu thù lao đơn hàng nào được ghi nhận.
+                  </td>
+                </tr>
+              `;
+            } else {
+              wageTbody.innerHTML = bookings.map(b => {
+                const gross = Number(b.gross_wage) || 0;
+                const rate = Number(b.commission_rate) || 0.20;
+                const comm = Number(b.platform_commission) || 0;
+                const net = Number(b.net_wage) || 0;
+                const dateStr = b.booking_date ? new Date(b.booking_date).toLocaleDateString('vi-VN') : '---';
+                const ratePct = Math.round(rate * 100) + '%';
+                const isCash = b.payment_method === 'cash';
+
+                let paymentBadge = isCash
+                  ? `<span style="background:#FFFBEB;color:#92400E;padding:2px 6px;border-radius:4px;font-weight:700;font-size:11px;">💵 Tiền mặt</span>`
+                  : `<span style="background:#EFF6FF;color:#1E40AF;padding:2px 6px;border-radius:4px;font-weight:700;font-size:11px;">💳 Trực tuyến</span>`;
+
+                let statusBadge = '';
+                if (b.payout_status === 'settled' || b.wage_status === 'paid') {
+                  statusBadge = isCash
+                    ? '<span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;font-size:11px;">✅ Thợ giữ TM</span>'
+                    : '<span class="status-badge" style="background:#D1FAE5;color:#065F46;border:1px solid #A7F3D0;font-size:11px;">✅ Đã vào ví TN</span>';
+                } else if (b.status === 'completed') {
+                  statusBadge = '<span class="status-badge" style="background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;font-size:11px;">⏳ Chờ quyết toán</span>';
+                } else {
+                  statusBadge = '<span class="status-badge" style="background:#F3F4F6;color:#6B7280;font-size:11px;">Chờ hoàn thành</span>';
+                }
+
+                return `
+                  <tr>
+                    <td style="font-weight: 700; color: #1D4ED8;">#${escapeHtml(b.booking_code)}</td>
+                    <td>${escapeHtml(b.service_name || 'Vệ sinh')}</td>
+                    <td>${dateStr}</td>
+                    <td>${paymentBadge}</td>
+                    <td style="text-align: right; font-weight: 600;">${formatPriceVND(gross)}</td>
+                    <td style="text-align: center;"><span style="background:#F1F5F9; color:#334155; padding:2px 6px; border-radius:4px; font-weight:700; font-size:12px;">${ratePct}</span></td>
+                    <td style="text-align: right; color: #DC2626; font-weight: 600;">-${formatPriceVND(comm)}</td>
+                    <td style="text-align: right; font-weight: 800; color: #059669;">${formatPriceVND(net)}</td>
+                    <td style="text-align: center;">${statusBadge}</td>
+                  </tr>
+                `;
+              }).join('');
+            }
+          }
+
+          // D. SỔ CÁI BẤT BIẾN HAI VÍ (LEDGER)
+          staffAllTransactions = (txRes.data && txRes.data.transactions) ? txRes.data.transactions : [];
+          renderTransactionsTable(staffAllTransactions);
+
+        } catch (err) {
+          console.error('Lỗi tải dữ liệu hai ví đối tác:', err);
+          showAlert('danger', 'Không thể tải dữ liệu ví đối tác: ' + err.message);
+        }
+      }
+
+      function renderTransactionsTable(transactions) {
+        const walletFilter = document.getElementById('staff-tx-filter-wallet') ? document.getElementById('staff-tx-filter-wallet').value : 'all';
+        const typeFilter = document.getElementById('staff-tx-filter-type') ? document.getElementById('staff-tx-filter-type').value : 'all';
+
+        let filtered = transactions;
+        if (walletFilter !== 'all') {
+          filtered = filtered.filter(t => (t.wallet_type || 'credit') === walletFilter);
+        }
+        if (typeFilter !== 'all') {
+          filtered = filtered.filter(t => t.type === typeFilter);
+        }
+
+        const txTbody = document.getElementById('staff-wallet-tx-table-body');
+        if (!txTbody) return;
+
+        if (!filtered || filtered.length === 0) {
+          txTbody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; padding: var(--space-xl); color: var(--color-text-secondary);">
+                Không có giao dịch nào phù hợp với bộ lọc đã chọn.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        txTbody.innerHTML = filtered.map(tx => {
+          const amt = Number(tx.amount) || 0;
+          const balAfter = Number(tx.balance_after) || 0;
+          const timeStr = tx.created_at ? new Date(tx.created_at).toLocaleString('vi-VN') : '---';
+          const isDebit = tx.entry_type === 'debit' || tx.type === 'commission_deduction' || tx.type === 'withdrawal' || (tx.type === 'transfer' && tx.transaction_code.endsWith('-OUT'));
+          const sign = isDebit ? '-' : '+';
+          const amtColor = isDebit ? '#DC2626' : '#059669';
+
+          // Wallet Badge
+          const wType = tx.wallet_type || (tx.type === 'wage' ? 'earnings' : 'credit');
+          const walletBadge = wType === 'earnings'
+            ? `<span style="background:#ECFDF5;color:#065F46;border:1px solid #A7F3D0;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;">Ví Thu Nhập</span>`
+            : `<span style="background:#EFF6FF;color:#1E40AF;border:1px solid #BFDBFE;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700;">Ví Tín Dụng</span>`;
+
+          // Transaction Type Badge
+          let typeBadge = '';
+          if (tx.type === 'topup') {
+            typeBadge = '<span style="background:#EFF6FF; color:#1E40AF; padding:3px 8px; border-radius:4px; font-weight:700; font-size:12px;">💳 Nạp tín dụng</span>';
+          } else if (tx.type === 'commission_deduction') {
+            typeBadge = '<span style="background:#FEF2F2; color:#991B1B; padding:3px 8px; border-radius:4px; font-weight:700; font-size:12px;">🏷️ Trừ chiết khấu</span>';
+          } else if (tx.type === 'wage') {
+            typeBadge = '<span style="background:#ECFDF5; color:#065F46; padding:3px 8px; border-radius:4px; font-weight:700; font-size:12px;">💵 Thù lao</span>';
+          } else if (tx.type === 'transfer') {
+            typeBadge = '<span style="background:#EEF2FF; color:#4338CA; padding:3px 8px; border-radius:4px; font-weight:700; font-size:12px;">🔄 Chuyển nội bộ</span>';
+          } else if (tx.type === 'withdrawal') {
+            typeBadge = '<span style="background:#FFFBEB; color:#92400E; padding:3px 8px; border-radius:4px; font-weight:700; font-size:12px;">💸 Rút tiền</span>';
+          } else {
+            typeBadge = `<span style="background:#F3F4F6; color:#4B5563; padding:3px 8px; border-radius:4px; font-size:12px;">${escapeHtml(tx.type)}</span>`;
+          }
+
+          return `
+            <tr>
+              <td style="font-family: monospace; font-weight: 600; color: #4B5563;">#${escapeHtml(tx.transaction_code || tx.id || '')}</td>
+              <td>${walletBadge}</td>
+              <td>${typeBadge}</td>
+              <td style="text-align: right; font-weight: 700; color: ${amtColor};">${sign}${formatPriceVND(amt)}</td>
+              <td style="text-align: right; font-weight: 600;">${(balAfter < 0 ? '-' : '') + formatPriceVND(Math.abs(balAfter))}</td>
+              <td style="font-size: 12px; color: var(--color-text-secondary);">${timeStr}</td>
+              <td style="font-size: 13px;">${escapeHtml(tx.description || tx.reference_note || '---')}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Bộ lọc Sổ cái giao dịch
+      const filterWalletEl = document.getElementById('staff-tx-filter-wallet');
+      if (filterWalletEl) {
+        filterWalletEl.addEventListener('change', () => renderTransactionsTable(staffAllTransactions));
+      }
+      const filterTypeEl = document.getElementById('staff-tx-filter-type');
+      if (filterTypeEl) {
+        filterTypeEl.addEventListener('change', () => renderTransactionsTable(staffAllTransactions));
+      }
+
+      // Nút mở các modal
+      const btnOpenTopup = document.getElementById('btn-open-topup-credit-modal');
+      if (btnOpenTopup) {
+        btnOpenTopup.addEventListener('click', openTopupModal);
+      }
+      const btnOpenTransfer = document.getElementById('btn-open-transfer-modal');
+      if (btnOpenTransfer) {
+        btnOpenTransfer.addEventListener('click', openTransferModal);
+      }
+      const btnOpenWithdraw = document.getElementById('btn-open-withdraw-modal');
+      if (btnOpenWithdraw) {
+        btnOpenWithdraw.addEventListener('click', openWithdrawModal);
+      }
+
+      // Nút làm mới dữ liệu ví
+      const btnRefreshWallet = document.getElementById('btn-refresh-staff-wallet');
+      if (btnRefreshWallet) {
+        btnRefreshWallet.addEventListener('click', async () => {
+          btnRefreshWallet.textContent = '🔄 Đang cập nhật...';
+          await loadStaffWallet();
+          await refreshStaffEligibility();
+          btnRefreshWallet.textContent = '🔄 Cập nhật số dư';
+          showAlert('success', 'Đã cập nhật số liệu hai ví mới nhất!');
+        });
+      }
+
+      // Preset buttons trong modal nạp tiền
+      document.querySelectorAll('.btn-preset-topup').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const amt = this.dataset.amount;
+          const input = document.getElementById('topup-credit-amount-input');
+          if (input) input.value = amt;
+        });
+      });
+
+      // Nút điền số tiền gợi ý trong modal chuyển tiền
+      const btnFillSuggested = document.getElementById('btn-fill-suggested-transfer');
+      if (btnFillSuggested) {
+        btnFillSuggested.addEventListener('click', function () {
+          const creditBal = staffTwoWallets && staffTwoWallets.credit_wallet ? Number(staffTwoWallets.credit_wallet.balance) : 0;
+          const needed = Math.max(1, 100000 - creditBal + 1);
+          const input = document.getElementById('transfer-amount-input');
+          if (input) input.value = needed;
+        });
+      }
+
+      // Xử lý nạp tiền Ví Tín Dụng (POST /api/wallet/staff/topup-credit)
+      const formTopupCredit = document.getElementById('form-staff-topup-credit');
+      if (formTopupCredit) {
+        formTopupCredit.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const amount = parseInt(document.getElementById('topup-credit-amount-input').value, 10);
+          const gateway = document.getElementById('topup-credit-gateway').value;
+          const description = document.getElementById('topup-credit-description').value.trim() || 'Nạp tiền vào Ví tín dụng CleanNova';
+
+          if (isNaN(amount) || amount < 10000) {
+            alert('Số tiền nạp tối thiểu là 10.000 VNĐ.');
+            return;
+          }
+
+          const submitBtn = document.getElementById('btn-submit-topup-credit');
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Đang xử lý giao dịch...';
+
+          try {
+            const idempotencyKey = `TOPUP-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+            const res = await CleanovaAPI.wallet.topupStaffCredit({
+              amount,
+              description,
+              reference_type: gateway,
+              idempotency_key: idempotencyKey
+            });
+
+            showAlert('success', res.message || 'Nạp tiền Ví Tín Dụng thành công!');
+            document.getElementById('modal-staff-topup-credit').style.display = 'none';
+            await loadStaffWallet();
+            await loadStaffTasks();
+          } catch (err) {
+            alert('Lỗi nạp tiền: ' + err.message);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '⚡ Xác Nhận Nạp Tiền';
+          }
+        });
+      }
+
+      // Xử lý chuyển tiền từ Ví Thu Nhập sang Ví Tín Dụng (POST /api/wallet/staff/transfer)
+      const formTransfer = document.getElementById('form-staff-transfer');
+      if (formTransfer) {
+        formTransfer.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const amount = parseInt(document.getElementById('transfer-amount-input').value, 10);
+          const note = document.getElementById('transfer-note-input').value.trim() || 'Chuyển tiền sang Ví tín dụng';
+
+          const earningsBal = staffTwoWallets && staffTwoWallets.earnings_wallet ? Number(staffTwoWallets.earnings_wallet.balance) : 0;
+          if (isNaN(amount) || amount <= 0) {
+            alert('Số tiền chuyển phải lớn hơn 0 VNĐ.');
+            return;
+          }
+          if (amount > earningsBal) {
+            alert(`Số dư Ví Thu Nhập khả dụng không đủ! Hiện tại bạn có ${formatPriceVND(earningsBal)}, không thể chuyển ${formatPriceVND(amount)}.`);
+            return;
+          }
+
+          const submitBtn = document.getElementById('btn-submit-transfer');
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Đang thực hiện chuyển tiền...';
+
+          try {
+            const idempotencyKey = `XFER-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+            const res = await CleanovaAPI.wallet.transferToCredit({
+              amount,
+              note,
+              idempotency_key: idempotencyKey
+            });
+
+            showAlert('success', res.message || 'Chuyển tiền sang Ví Tín Dụng thành công! Số dư hai ví đã được cập nhật.');
+            document.getElementById('modal-staff-transfer').style.display = 'none';
+            await loadStaffWallet();
+            await loadStaffTasks();
+          } catch (err) {
+            alert('Lỗi chuyển tiền: ' + err.message);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🔁 Thực Hiện Chuyển Tiền';
+          }
+        });
+      }
+
+      // Xử lý rút tiền từ Ví Thu Nhập (POST /api/wallet/withdraw)
+      const formWithdraw = document.getElementById('form-staff-withdraw');
+      if (formWithdraw) {
+        formWithdraw.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          const amount = parseInt(document.getElementById('withdraw-amount-input').value, 10);
+          const bankName = document.getElementById('withdraw-bank-name').value;
+          const accountNumber = document.getElementById('withdraw-account-number').value.trim();
+          const accountName = document.getElementById('withdraw-account-name').value.trim().toUpperCase();
+
+          const earningsBal = staffTwoWallets && staffTwoWallets.earnings_wallet ? Number(staffTwoWallets.earnings_wallet.balance) : 0;
+          if (amount > earningsBal) {
+            alert(`Số dư khả dụng Ví Thu Nhập không đủ! Hiện tại bạn có ${formatPriceVND(earningsBal)}, không thể rút ${formatPriceVND(amount)}.`);
+            return;
+          }
+
+          const submitBtn = document.getElementById('btn-submit-withdraw');
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Đang xử lý rút tiền...';
+
+          try {
+            const res = await CleanovaAPI.wallet.withdraw({
+              amount,
+              bankName,
+              accountNumber,
+              accountName
+            });
+            showAlert('success', res.message || 'Yêu cầu rút tiền thành công! Tiền đã được trừ khỏi Ví Thu Nhập và chuyển về tài khoản thụ hưởng.');
+            document.getElementById('modal-staff-withdraw').style.display = 'none';
+            await loadStaffWallet();
+          } catch (err) {
+            alert('Lỗi rút tiền: ' + err.message);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = '🚀 Xác Nhận Rút Tiền';
+          }
+        });
+      }
+
       // Khởi chạy nạp dữ liệu ban đầu
       await loadStaffTasks();
       await loadStaffProfile();
+      await loadStaffWallet();
     });
   </script>
 </body>

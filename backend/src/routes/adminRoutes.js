@@ -18,11 +18,16 @@ router.get('/bookings', adminController.getAllBookings);
 router.put('/bookings/:id/status', adminController.updateBookingStatus);
 router.put('/bookings/:id/assign', adminController.assignBookingStaff);
 router.patch('/bookings/:id/payout', adminController.payoutStaffWage);
+router.post('/bookings/:id/payout', adminController.payoutStaffWage);
 router.put('/bookings/:id/confirm-quote', adminController.confirmQuote);
 
 // 2b. Cấu hình bảng giá dịch vụ vệ sinh sau xây dựng
 router.get('/post-construction/config', adminController.getPostConstructionConfig);
 router.put('/post-construction/config', adminController.updatePostConstructionConfig);
+
+// 2c. Cấu hình tỷ lệ chiết khấu thù lao CleanNova
+router.get('/config/commission', adminController.getCommissionConfig);
+router.put('/config/commission', adminController.updateCommissionConfig);
 
 // 3. Quản lý dịch vụ vệ sinh
 router.get('/services', serviceController.getAllServices);

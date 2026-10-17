@@ -6,6 +6,7 @@ const fs = require('fs/promises');
 const path = require('path');
 const BookingModel = require('../models/bookingModel');
 const UserModel = require('../models/userModel');
+const WalletModel = require('../models/walletModel');
 const { uploadDirectory } = require('../middleware/jobPhotoUpload');
 const { getRequiredAreas, getPhotoProgress } = require('../utils/jobChecklist');
 const { sanitizeInput } = require('../utils/sanitize');
@@ -330,8 +331,20 @@ const staffController = {
       const isSameStatus = status === booking.status;
 
       // Bảo vệ Bug 7: Nhân viên không thể lùi trạng thái hoặc xác nhận công việc chưa được giao
-      if (!isSameStatus && status === 'confirmed' && booking.status !== 'assigned') {
-        return res.status(409).json({ success: false, message: 'Chỉ có thể xác nhận công việc vừa được quản trị viên phân công.' });
+      if (!isSameStatus && status === 'confirmed') {
+        if (booking.status !== 'assigned') {
+          return res.status(409).json({ success: false, message: 'Chỉ có thể xác nhận công việc vừa được quản trị viên phân công.' });
+        }
+        // Kiểm tra điều kiện ví tín dụng: creditBalance > 100000
+        const eligibility = await WalletModel.checkStaffBookingEligibility(req.user.id);
+        if (!eligibility.eligible) {
+          return res.status(403).json({
+            success: false,
+            code: 'INSUFFICIENT_CREDIT_BALANCE',
+            message: `Số dư ví tín dụng hiện tại (${eligibility.creditBalance.toLocaleString('vi-VN')} đ) không đủ điều kiện nhận việc (yêu cầu > 100.000 đ). Bạn cần nạp hoặc chuyển thêm ít nhất ${eligibility.amountNeeded.toLocaleString('vi-VN')} đ.`,
+            data: eligibility
+          });
+        }
       }
       if (!isSameStatus && status === 'arrived' && booking.status !== 'confirmed') {
         return res.status(409).json({ success: false, message: 'Hãy xác nhận nhận việc trước khi báo đã đến nhà khách hàng.' });
@@ -421,10 +434,24 @@ const staffController = {
         });
       }
 
+      let settlementResult = null;
+      if (status === 'completed' && booking.status !== 'completed') {
+        try {
+          settlementResult = await WalletModel.settleBookingCommissionAndWage({
+            bookingId: taskId,
+            adminId: null,
+            note: 'Tự động quyết toán khi nhân viên hoàn thành đơn'
+          });
+        } catch (settleErr) {
+          console.error(`[StaffController] Settlement error for booking #${taskId}:`, settleErr.message || settleErr);
+        }
+      }
+
       res.json({
         success: true,
         message: `Đã cập nhật trạng thái công việc #${booking.booking_code} thành "${status}".`,
-        data: updated
+        data: updated,
+        settlement: settlementResult
       });
     } catch (err) {
       next(err);

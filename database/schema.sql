@@ -141,6 +141,9 @@ CREATE TABLE bookings (
   tip_created_at DATETIME DEFAULT NULL COMMENT 'Thời điểm khách ghi nhận tiền tip',
   duration_hours DECIMAL(4, 1) DEFAULT NULL COMMENT 'Thời lượng dịch vụ theo giờ (áp dụng cho dịch vụ tính theo giờ / chăm sóc)',
   staff_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền công chi trả cho nhân viên thực hiện (VNĐ)',
+  commission_rate DECIMAL(5, 4) NOT NULL DEFAULT 0.2000 COMMENT 'Tỷ lệ chiết khấu CleanNova khấu trừ từ tiền công (VD: 0.2000 = 20%)',
+  platform_commission DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Khoản chiết khấu hoa hồng CleanNova khấu trừ từ tiền công nhân viên (VNĐ)',
+  staff_net_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền công thực nhận của nhân viên sau khi trừ chiết khấu CleanNova (VNĐ)',
   wage_status ENUM('pending', 'approved', 'paid', 'cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái đối soát tiền công: pending (chờ hoàn thành), approved (đã chốt), paid (đã chi trả), cancelled (hủy)',
   wage_settled_at DATETIME DEFAULT NULL COMMENT 'Thời điểm quản trị viên chi trả tiền công',
   wage_settled_by INT DEFAULT NULL COMMENT 'Admin ID đã duyệt chi trả tiền công',
@@ -267,7 +270,11 @@ CREATE TABLE staff_payout_logs (
   booking_id INT NOT NULL COMMENT 'Đơn đặt lịch được đối soát chi trả',
   staff_id INT NOT NULL COMMENT 'Nhân viên nhận tiền công',
   admin_id INT NOT NULL COMMENT 'Quản trị viên thực hiện thao tác',
-  amount DECIMAL(12, 2) NOT NULL COMMENT 'Số tiền công thanh toán (VNĐ)',
+  gross_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền công gộp trước khấu trừ (VNĐ)',
+  commission_rate DECIMAL(5, 4) NOT NULL DEFAULT 0.2000 COMMENT 'Tỷ lệ chiết khấu CleanNova snapshot lúc quyết toán',
+  platform_commission DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Khoản chiết khấu hoa hồng CleanNova khấu trừ (VNĐ)',
+  net_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền công thực nhận cộng vào ví nhân viên (VNĐ)',
+  amount DECIMAL(12, 2) NOT NULL COMMENT 'Số tiền thực nhận chi trả vào ví (VNĐ)',
   action ENUM('approve', 'pay', 'adjust') NOT NULL DEFAULT 'pay' COMMENT 'Hành động: approve (chốt), pay (chi trả), adjust (điều chỉnh)',
   note TEXT DEFAULT NULL COMMENT 'Ghi chú đối soát hoặc mã giao dịch ngân hàng',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -291,18 +298,20 @@ CREATE TABLE post_construction_configs (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
--- BẢNG 9: wallets (Ví điện tử CleanNova của khách hàng)
+-- BẢNG 9: wallets (Hệ thống ví: Khách hàng & Hai Ví Nhân Viên)
 -- ------------------------------------------------------------
 CREATE TABLE wallets (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id INT NOT NULL UNIQUE COMMENT 'Khóa ngoại duy nhất liên kết 1-1 với bảng users',
-  balance DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Số dư khả dụng hiện tại (VNĐ)',
+  user_id INT NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng users',
+  wallet_type ENUM('customer', 'credit', 'earnings') NOT NULL DEFAULT 'customer' COMMENT 'Loại ví: customer (khách hàng), credit (ví tín dụng thợ), earnings (ví thu nhập thợ)',
+  balance DECIMAL(15, 2) NOT NULL DEFAULT 0.00 COMMENT 'Số dư khả dụng hiện tại (VNĐ, ví tín dụng có thể âm)',
   currency VARCHAR(10) NOT NULL DEFAULT 'VND' COMMENT 'Đơn vị tiền tệ (mặc định VND)',
-  status ENUM('active', 'locked') NOT NULL DEFAULT 'active' COMMENT 'Trạng thái ví: active (hoạt động), locked (khóa)',
+  status ENUM('active', 'locked', 'suspended') NOT NULL DEFAULT 'active' COMMENT 'Trạng thái ví: active (hoạt động), locked (khóa)',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_wallets_user (user_id),
-  CONSTRAINT fk_wallets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT
+  UNIQUE KEY uq_user_wallet_type (user_id, wallet_type),
+  CONSTRAINT fk_wallets_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -311,20 +320,25 @@ CREATE TABLE wallets (
 CREATE TABLE wallet_transactions (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   wallet_id INT NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng wallets',
-  transaction_code VARCHAR(32) NOT NULL UNIQUE COMMENT 'Mã giao dịch duy nhất (VD: WTX-202610-8A9F1B)',
-  type ENUM('topup', 'payment', 'refund', 'adjustment') NOT NULL COMMENT 'Loại giao dịch: topup (nạp tiền), payment (thanh toán đơn), refund (hoàn tiền), adjustment (điều chỉnh kiểm toán)',
-  amount DECIMAL(12, 2) NOT NULL COMMENT 'Số tiền giao dịch (luôn là số dương)',
-  status ENUM('pending', 'completed', 'failed', 'cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái: pending, completed, failed, cancelled',
+  user_id INT NOT NULL COMMENT 'Khóa ngoại liên kết tới bảng users',
+  transaction_code VARCHAR(50) NOT NULL UNIQUE COMMENT 'Mã giao dịch duy nhất (VD: WTX-202610-8A9F1B)',
+  type ENUM('topup', 'payment', 'refund', 'adjustment', 'wage', 'commission_deduction', 'transfer', 'withdrawal') NOT NULL COMMENT 'Loại giao dịch: topup, payment, refund, adjustment, wage, commission_deduction, transfer, withdrawal',
+  amount DECIMAL(15, 2) NOT NULL COMMENT 'Số tiền giao dịch (luôn là số dương)',
+  balance_before DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+  balance_after DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+  status ENUM('pending', 'completed', 'failed', 'cancelled') NOT NULL DEFAULT 'completed' COMMENT 'Trạng thái: pending, completed, failed, cancelled',
   description VARCHAR(255) NOT NULL COMMENT 'Mô tả nội dung giao dịch',
-  reference_type VARCHAR(50) DEFAULT NULL COMMENT 'Loại tham chiếu: booking, sandbox_topup, bank_transfer, admin_adjustment',
-  reference_id VARCHAR(50) DEFAULT NULL COMMENT 'Mã tham chiếu (booking_id, mã đơn hàng, hoặc mã ngân hàng)',
+  reference_type VARCHAR(50) DEFAULT NULL COMMENT 'Loại tham chiếu: booking, sandbox_topup, bank_transfer, interwallet_transfer, admin_adjustment',
+  reference_id VARCHAR(100) DEFAULT NULL COMMENT 'Mã tham chiếu (booking_id, mã đơn hàng, hoặc mã ngân hàng)',
   idempotency_key VARCHAR(100) DEFAULT NULL UNIQUE COMMENT 'Khóa chống lặp giao dịch (Idempotency Key)',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   completed_at DATETIME DEFAULT NULL,
   INDEX idx_wallet_tx_wallet (wallet_id),
+  INDEX idx_wallet_tx_user (user_id),
   INDEX idx_wallet_tx_code (transaction_code),
   INDEX idx_wallet_tx_ref (reference_type, reference_id),
-  CONSTRAINT fk_wallet_tx_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE
+  CONSTRAINT fk_wallet_tx_wallet FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE,
+  CONSTRAINT fk_wallet_tx_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
@@ -388,6 +402,19 @@ CREATE TABLE voucher_usages (
   CONSTRAINT fk_vu_voucher FOREIGN KEY (voucher_id) REFERENCES vouchers(id) ON DELETE RESTRICT,
   CONSTRAINT fk_vu_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT,
   CONSTRAINT fk_vu_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- BẢNG 14: system_configs (Cấu hình chính sách hệ thống CleanNova)
+-- ------------------------------------------------------------
+CREATE TABLE system_configs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  config_key VARCHAR(100) NOT NULL UNIQUE COMMENT 'Khóa cấu hình hệ thống (VD: staff_commission_rate)',
+  config_value JSON NOT NULL COMMENT 'Giá trị cấu hình dạng JSON',
+  description VARCHAR(255) DEFAULT NULL COMMENT 'Mô tả mục đích cấu hình',
+  updated_by INT DEFAULT NULL COMMENT 'Admin ID đã cập nhật',
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_sys_configs_admin FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 

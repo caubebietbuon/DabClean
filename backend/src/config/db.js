@@ -281,6 +281,13 @@ const inMemoryData = {
       paid_at: null,
       tip_amount: 0,
       tip_created_at: null,
+      staff_wage: 105000,
+      commission_rate: 0.20,
+      platform_commission: 21000,
+      staff_net_wage: 84000,
+      wage_status: 'pending',
+      wage_settled_at: null,
+      wage_settled_by: null,
       assigned_at: new Date('2026-10-14T10:00:00Z'),
       created_at: new Date('2026-10-14T10:00:00Z')
     },
@@ -311,6 +318,13 @@ const inMemoryData = {
       paid_at: new Date('2026-10-22T16:00:00Z'),
       tip_amount: 0,
       tip_created_at: null,
+      staff_wage: 280000,
+      commission_rate: 0.20,
+      platform_commission: 56000,
+      staff_net_wage: 224000,
+      wage_status: 'approved',
+      wage_settled_at: null,
+      wage_settled_by: null,
       assigned_at: new Date('2026-10-12T15:30:00Z'),
       created_at: new Date('2026-10-12T15:20:00Z')
     },
@@ -336,6 +350,13 @@ const inMemoryData = {
       staff_id: 4,
       staff_name: 'Lê Thị Mai',
       staff_notes: 'Đang xử lý tẩy cặn canxi và lau kính tầng 2.',
+      staff_wage: 770000,
+      commission_rate: 0.20,
+      platform_commission: 154000,
+      staff_net_wage: 616000,
+      wage_status: 'pending',
+      wage_settled_at: null,
+      wage_settled_by: null,
       assigned_at: new Date('2026-10-14T14:00:00Z'),
       created_at: new Date('2026-10-14T14:00:00Z')
     },
@@ -366,6 +387,13 @@ const inMemoryData = {
       paid_at: null,
       tip_amount: 0,
       tip_created_at: null,
+      staff_wage: 210000,
+      commission_rate: 0.20,
+      platform_commission: 42000,
+      staff_net_wage: 168000,
+      wage_status: 'pending',
+      wage_settled_at: null,
+      wage_settled_by: null,
       assigned_at: null,
       created_at: new Date('2026-10-15T01:00:00Z')
     }
@@ -710,6 +738,15 @@ async function initDatabase() {
     if (!existingBCols.has('staff_wage')) {
       await connection.query("ALTER TABLE bookings ADD COLUMN staff_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền công chi trả cho nhân viên'");
     }
+    if (!existingBCols.has('commission_rate')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN commission_rate DECIMAL(5, 4) NOT NULL DEFAULT 0.2000 COMMENT 'Tỷ lệ chiết khấu CleanNova'");
+    }
+    if (!existingBCols.has('platform_commission')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN platform_commission DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Khoản chiết khấu CleanNova'");
+    }
+    if (!existingBCols.has('staff_net_wage')) {
+      await connection.query("ALTER TABLE bookings ADD COLUMN staff_net_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tiền công thực nhận của nhân viên'");
+    }
     if (!existingBCols.has('wage_status')) {
       await connection.query("ALTER TABLE bookings ADD COLUMN wage_status ENUM('pending', 'approved', 'paid', 'cancelled') NOT NULL DEFAULT 'pending' COMMENT 'Trạng thái tiền công'");
     }
@@ -856,6 +893,10 @@ async function initDatabase() {
         booking_id INT NOT NULL,
         staff_id INT NOT NULL,
         admin_id INT NOT NULL,
+        gross_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+        commission_rate DECIMAL(5, 4) NOT NULL DEFAULT 0.2000,
+        platform_commission DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
+        net_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
         amount DECIMAL(12, 2) NOT NULL,
         action ENUM('approve', 'pay', 'adjust') NOT NULL DEFAULT 'pay',
         note TEXT DEFAULT NULL,
@@ -867,6 +908,25 @@ async function initDatabase() {
         CONSTRAINT fk_payout_admin FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
+
+    // Kiểm tra và bổ sung cột cho staff_payout_logs nếu bảng đã tồn tại từ trước
+    const [payoutCols] = await connection.query(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'staff_payout_logs'`
+    );
+    const existingPayoutCols = new Set(payoutCols.map(c => c.COLUMN_NAME));
+    if (!existingPayoutCols.has('gross_wage')) {
+      await connection.query("ALTER TABLE staff_payout_logs ADD COLUMN gross_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 AFTER admin_id");
+    }
+    if (!existingPayoutCols.has('commission_rate')) {
+      await connection.query("ALTER TABLE staff_payout_logs ADD COLUMN commission_rate DECIMAL(5, 4) NOT NULL DEFAULT 0.2000 AFTER gross_wage");
+    }
+    if (!existingPayoutCols.has('platform_commission')) {
+      await connection.query("ALTER TABLE staff_payout_logs ADD COLUMN platform_commission DECIMAL(12, 2) NOT NULL DEFAULT 0.00 AFTER commission_rate");
+    }
+    if (!existingPayoutCols.has('net_wage')) {
+      await connection.query("ALTER TABLE staff_payout_logs ADD COLUMN net_wage DECIMAL(12, 2) NOT NULL DEFAULT 0.00 AFTER platform_commission");
+    }
 
     // ------------------------------------------------------------
     // Migration: Mở rộng Phương thức thanh toán Wallet & Addons cho bảng bookings
@@ -911,7 +971,7 @@ async function initDatabase() {
         transaction_code VARCHAR(50) NOT NULL UNIQUE,
         wallet_id INT NOT NULL,
         user_id INT NOT NULL,
-        type ENUM('topup', 'payment', 'refund', 'adjustment') NOT NULL,
+        type ENUM('topup', 'payment', 'refund', 'adjustment', 'wage', 'withdrawal') NOT NULL,
         amount DECIMAL(15, 2) NOT NULL,
         balance_before DECIMAL(15, 2) NOT NULL,
         balance_after DECIMAL(15, 2) NOT NULL,
@@ -929,6 +989,72 @@ async function initDatabase() {
         CONSTRAINT fk_wallet_txn_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     `);
+
+    // Đồng bộ kiểu dữ liệu type cho wallet_transactions nếu bảng đã có từ trước
+    await connection.query(`
+      ALTER TABLE wallet_transactions 
+      MODIFY COLUMN type ENUM('topup', 'payment', 'refund', 'adjustment', 'wage', 'commission_deduction', 'transfer', 'withdrawal') NOT NULL
+    `);
+
+    // ------------------------------------------------------------
+    // Migration: Hệ thống Hai Ví Nhân Viên (Credit Wallet & Earnings Wallet theo mô hình Grab Driver)
+    // ------------------------------------------------------------
+    const [wCols] = await connection.query(`
+      SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'wallets'
+    `);
+    const existingWCols = new Set(wCols.map(c => c.COLUMN_NAME));
+    if (!existingWCols.has('wallet_type')) {
+      await connection.query(`
+        ALTER TABLE wallets 
+        ADD COLUMN wallet_type ENUM('customer', 'credit', 'earnings') NOT NULL DEFAULT 'customer' AFTER user_id
+      `);
+    }
+
+    const [wIndices] = await connection.query(`SHOW INDEX FROM wallets`);
+    const oldUserUnique = wIndices.find(idx => idx.Key_name === 'user_id' && idx.Non_unique === 0);
+    if (oldUserUnique) {
+      await connection.query(`ALTER TABLE wallets DROP INDEX user_id`);
+    }
+    const hasCompositeWUnique = wIndices.some(idx => idx.Key_name === 'uq_user_wallet_type');
+    if (!hasCompositeWUnique) {
+      await connection.query(`
+        ALTER TABLE wallets ADD UNIQUE KEY uq_user_wallet_type (user_id, wallet_type)
+      `);
+    }
+
+    // Backfill: Đối với nhân viên (role = staff):
+    // 1. Nếu đã có ví 'earnings' rồi, dọn dẹp các ví 'customer' rỗng phát sinh
+    await connection.query(`
+      DELETE w FROM wallets w
+      JOIN users u ON w.user_id = u.id
+      WHERE u.role = 'staff' AND w.wallet_type = 'customer'
+      AND EXISTS (
+        SELECT 1 FROM (SELECT user_id FROM wallets WHERE wallet_type = 'earnings') ew 
+        WHERE ew.user_id = w.user_id
+      )
+    `);
+
+    // 2. Nếu chưa có ví 'earnings', chuyển đổi ví 'customer' cũ thành 'earnings'
+    await connection.query(`
+      UPDATE wallets w
+      JOIN users u ON w.user_id = u.id
+      SET w.wallet_type = 'earnings'
+      WHERE u.role = 'staff' AND w.wallet_type = 'customer'
+    `);
+
+    // Đảm bảo mọi nhân viên đều có đủ 2 ví: Ví Tín Dụng ('credit') và Ví Thu Nhập ('earnings')
+    const [staffUsersList] = await connection.query(`SELECT id FROM users WHERE role = 'staff'`);
+    for (const st of staffUsersList) {
+      await connection.query(`
+        INSERT IGNORE INTO wallets (user_id, wallet_type, balance, currency, status)
+        VALUES (?, 'credit', 0.00, 'VND', 'active')
+      `, [st.id]);
+      await connection.query(`
+        INSERT IGNORE INTO wallets (user_id, wallet_type, balance, currency, status)
+        VALUES (?, 'earnings', 0.00, 'VND', 'active')
+      `, [st.id]);
+    }
 
     await connection.query(`
       CREATE TABLE IF NOT EXISTS wallet_ledger_entries (
@@ -1005,10 +1131,10 @@ async function initDatabase() {
       `);
     }
 
-    // Tự động khởi tạo ví cho toàn bộ người dùng hiện có nếu chưa có ví
+    // Tự động khởi tạo ví cho toàn bộ khách hàng hiện có nếu chưa có ví
     await connection.query(`
-      INSERT IGNORE INTO wallets (user_id, balance, currency, status)
-      SELECT id, 0.00, 'VND', 'active' FROM users
+      INSERT IGNORE INTO wallets (user_id, wallet_type, balance, currency, status)
+      SELECT id, 'customer', 0.00, 'VND', 'active' FROM users WHERE role IN ('customer', 'user')
     `);
 
     // Khởi tạo số dư trải nghiệm 1.000.000 VND cho tài khoản demo (user_id = 2) nếu ví đang có số dư 0
@@ -1032,11 +1158,50 @@ async function initDatabase() {
       }
     }
 
+    // ------------------------------------------------------------
+    // Migration: Bảng cấu hình chính sách hệ thống CleanNova (system_configs)
+    // ------------------------------------------------------------
+    await connection.query(`
+      CREATE TABLE IF NOT EXISTS system_configs (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        config_key VARCHAR(100) NOT NULL UNIQUE COMMENT 'Khóa cấu hình hệ thống',
+        config_value JSON NOT NULL COMMENT 'Giá trị cấu hình dạng JSON',
+        description VARCHAR(255) NULL COMMENT 'Mô tả mục đích cấu hình',
+        updated_by INT DEFAULT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        CONSTRAINT fk_system_configs_user FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+    `);
+
+    const [existingSysConfigs] = await connection.query('SELECT config_key FROM system_configs');
+    const sysKeys = new Set(existingSysConfigs.map(c => c.config_key));
+    if (!sysKeys.has('staff_commission_rate')) {
+      await connection.query(
+        `INSERT INTO system_configs (config_key, config_value, description)
+         VALUES (?, ?, ?)`,
+        [
+          'staff_commission_rate',
+          JSON.stringify({ rate: 0.20, description: 'Tỷ lệ chiết khấu CleanNova mặc định khấu trừ từ tiền công nhân viên (20%)' }),
+          'Tỷ lệ chiết khấu CleanNova khấu trừ từ tiền công nhân viên'
+        ]
+      );
+    }
+
+    // Đồng bộ dữ liệu lịch sử cho các đơn hàng cũ đã có staff_wage: tính platform_commission & staff_net_wage
+    await connection.query(`
+      UPDATE bookings 
+      SET platform_commission = ROUND(staff_wage * COALESCE(NULLIF(commission_rate, 0), 0.2000)),
+          staff_net_wage = staff_wage - ROUND(staff_wage * COALESCE(NULLIF(commission_rate, 0), 0.2000)),
+          commission_rate = COALESCE(NULLIF(commission_rate, 0), 0.2000)
+      WHERE staff_wage > 0 AND (staff_net_wage = 0 OR staff_net_wage IS NULL)
+    `);
+
     console.log(`[Database] Đã kết nối thành công tới MySQL Server (${dbConfig.host}:${dbConfig.port}/${dbConfig.database})`);
     isConnectedToMySQL = true;
   } catch (err) {
     console.error('====================================================');
     console.error(`[DATABASE ERROR CRITICAL] Không thể kết nối tới MySQL (${err.code || err.message})!`);
+    console.error('Migration error detail:', err);
     console.error(`- Host: ${dbConfig.host}:${dbConfig.port} | Database: ${dbConfig.database} | User: ${dbConfig.user}`);
     
     // Trong môi trường Production, không được phép âm thầm chuyển sang in-memory, từ chối khởi động
