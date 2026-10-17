@@ -5,9 +5,16 @@
 (function () {
   'use strict';
 
-  const API_BASE_URL = window.location.origin.includes(':5000') 
+  const host = (typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== '') 
+    ? window.location.hostname 
+    : 'localhost';
+  const protocol = (typeof window !== 'undefined' && window.location.protocol && window.location.protocol.startsWith('http')) 
+    ? window.location.protocol 
+    : 'http:';
+
+  const API_BASE_URL = (typeof window !== 'undefined' && (window.location.port === '5000' || window.location.port === '')) 
     ? `${window.location.origin}/api` 
-    : 'http://localhost:5000/api';
+    : `${protocol}//${host}:5000/api`;
 
   async function request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
