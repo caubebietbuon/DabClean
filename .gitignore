@@ -8,6 +8,17 @@
 # Dependencies — KHÔNG commit (nặng ~280MB, cài lại bằng: npm install)
 node_modules/
 
+# Dataset ảnh huấn luyện — KHÔNG commit (nặng ~174MB, 1057 ảnh).
+# Muốn train lại: đặt ảnh vào ai-module/dataset/{sach,hoi-ban,rat-ban}/
+# rồi chạy: node train.js
+ai-module/dataset/
+
+# Model thử nghiệm & kết quả test tạm
+ai-module/_smoke/
+ai-module/_smoke.log
+ai-module/_test-model/
+ai-module/compare-result.json
+
 # Environment variables (chứa mật khẩu MySQL, JWT secret)
 .env
 backend/.env
