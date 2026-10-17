@@ -32,10 +32,11 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  max-width: 1440px;
-  padding-left: var(--space-lg);
-  padding-right: var(--space-lg);
-  gap: 10px;
+  max-width: 1600px;
+  padding-left: 18px;
+  padding-right: 18px;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
 /* --- LOGO CLEANOVA --- */
@@ -74,11 +75,12 @@
   align-items: center;
   gap: 2px;
   flex-shrink: 1;
+  min-width: 0;
 }
 
 .nav-link {
-  padding: 6px 11px;
-  font-size: 13px;
+  padding: 5px 8px;
+  font-size: 12.5px;
   font-weight: var(--font-weight-medium);
   color: var(--color-text-body);
   border-radius: var(--radius-full);
@@ -104,8 +106,9 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
+  min-width: 0;
 }
 
 /* Language Toggle Switch */
