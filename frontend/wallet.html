@@ -338,34 +338,84 @@
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
       transform: translateY(20px);
       transition: transform 0.25s ease;
+      /* Nội dung dài -> cuộn BÊN TRONG modal, không tràn ra ngoài */
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      /* Gốc định vị cho nút X (absolute) */
+      position: relative;
+      box-sizing: border-box;
     }
     .modal-overlay.active .modal-dialog {
       transform: translateY(0);
     }
+    /* Modal mini trên màn hình nhỏ: giảm padding, giữ mọi thứ trong khung */
+    @media (max-width: 520px) {
+      .modal-dialog {
+        margin: 10px;
+        padding: 20px 16px;
+        border-radius: 16px;
+        max-height: calc(100vh - 20px);
+      }
+      .modal-title {
+        font-size: 1.05rem;
+        padding-right: 32px; /* chừa chỗ cho nút X, tiêu đề không đè lên */
+      }
+      .topup-presets {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+      .btn-preset {
+        padding: 9px 6px;
+        font-size: 0.85rem;
+      }
+    }
     .modal-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      gap: 12px;
       margin-bottom: 20px;
+      /* KHÔNG đặt position: relative ở đây — nếu đặt, nút X (absolute)
+         sẽ neo vào header và bị lệch xuống dưới. Để nó neo vào
+         .modal-dialog (đã có position: relative) => đúng góc phải trên. */
     }
     .modal-title {
       font-size: 1.25rem;
       font-weight: 700;
       color: #0f172a;
+      padding-right: 36px; /* chừa chỗ nút X */
+      min-width: 0;
     }
     .btn-close-modal {
+      /* Ghim đúng góc phải trên của khung modal, nằm BÊN TRONG */
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: transparent;
       border: none;
+      border-radius: 8px;
       font-size: 1.5rem;
+      line-height: 1;
       color: #94a3b8;
       cursor: pointer;
-      line-height: 1;
+      padding: 0;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-close-modal:hover {
+      background: #f1f5f9;
+      color: #334155;
     }
     .topup-presets {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       margin-bottom: 20px;
+      min-width: 0;
     }
     .btn-preset {
       padding: 10px;
@@ -377,6 +427,10 @@
       color: #334155;
       cursor: pointer;
       transition: all 0.15s;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .btn-preset:hover, .btn-preset.active {
       background: #f0fdfa;
@@ -811,18 +865,38 @@
 
       function openModal() {
         modal.classList.add('active');
-        inputAmount.focus();
+        document.body.style.overflow = 'hidden';  // chặn scroll nền phía sau
+        // Chờ transition mở xong rồi focus để tránh nhảy scroll trên mobile
+        setTimeout(() => inputAmount.focus(), 50);
       }
       function closeModal() {
         modal.classList.remove('active');
+        document.body.style.overflow = '';
+        // Trả focus về nút mở modal (tốt cho bàn phím / screen reader)
+        if (btnOpenTopup) btnOpenTopup.focus();
       }
+
+      // Đóng bằng phím Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
+      });
 
       if (btnOpenTopup) btnOpenTopup.addEventListener('click', openModal);
       if (btnCloseTopup) btnCloseTopup.addEventListener('click', closeModal);
       if (btnCancelTopup) btnCancelTopup.addEventListener('click', closeModal);
+
+      // Click vào BACKDROP (nền tối bên ngoài khung) thì đóng modal.
+      // Chỉ đóng khi click ĐÚNG vào overlay, không phải phần tử con.
       modal.addEventListener('click', (e) => {
         if (e.target === modal) closeModal();
       });
+
+      // Click BÊN TRONG khung modal thì KHÔNG đóng.
+      // Chặn sự kiện lan ra overlay để tránh đóng nhầm khi bấm vào nội dung.
+      const modalDialog = modal.querySelector('.modal-dialog');
+      if (modalDialog) {
+        modalDialog.addEventListener('click', (e) => e.stopPropagation());
+      }
 
       // Chọn số tiền preset
       document.querySelectorAll('#topup-preset-group .btn-preset').forEach(btn => {
