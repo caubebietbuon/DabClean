@@ -1,4 +1,4 @@
-# 🤖 Cleanova AI Module — Quét độ bẩn bằng AI (Transfer Learning)
+# 🤖 DabClean AI Module — Quét độ bẩn bằng AI (Transfer Learning)
 
 Phân tích ảnh chụp căn phòng → trả về **điểm bẩn 0–100**, **phân loại**
 (`sach` / `hoi-ban` / `rat-ban`) kèm **độ tin cậy từng loại**, và (tuỳ chọn)

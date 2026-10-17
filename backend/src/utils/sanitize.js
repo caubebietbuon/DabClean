@@ -17,4 +17,28 @@ function sanitizeObject(obj, fields) {
   return obj;
 }
 
-module.exports = { sanitizeInput, sanitizeObject };
+function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/`/g, '&#96;');
+}
+
+function sanitizeReviewComment(val) {
+  if (typeof val !== 'string') return '';
+  let clean = val.trim();
+  // Strip null bytes
+  clean = clean.replace(/\0/g, '');
+  // Disallow pseudo-protocols like javascript:, vbscript:, data:
+  clean = clean.replace(/(?:javascript|vbscript|data):/gi, '');
+  // Disallow inline event handlers like onerror=, onload=, onclick=
+  clean = clean.replace(/on\w+\s*=/gi, '');
+  // Escape HTML entities to prevent Stored XSS
+  return escapeHtml(clean);
+}
+
+module.exports = { sanitizeInput, sanitizeObject, escapeHtml, sanitizeReviewComment };

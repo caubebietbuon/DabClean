@@ -12,7 +12,7 @@ const os = require('os');
 
 const { sniffFormat, decodeImageAsync, bufferToTensor } = require('../src/ml/imageUtils');
 
-const dir = path.join(os.tmpdir(), 'cleanova-fmt-test');
+const dir = path.join(os.tmpdir(), 'dabclean-fmt-test');
 fs.mkdirSync(dir, { recursive: true });
 
 // Mẫu ảnh đơn giản: nền nâu + một khối tối, để mọi định dạng đều mã hoá được

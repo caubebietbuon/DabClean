@@ -18,9 +18,9 @@ const pageDescription = document.querySelector('meta[name="description"]');
 
 const translations = {
   vi: {
-    pageTitle: "Đăng nhập · Cleanova",
-    pageDescription: "Đặt lịch và quản lý dịch vụ vệ sinh nhà cửa cùng Cleanova.",
-    brandHome: "Cleanova - Trang chủ",
+    pageTitle: "Đăng nhập · DabClean",
+    pageDescription: "Đặt lịch và quản lý dịch vụ vệ sinh nhà cửa cùng DabClean.",
+    brandHome: "DabClean - Trang chủ",
     brandEyebrow: "CHĂM SÓC NHÀ CỬA, NHẸ NHÀNG HƠN",
     brandTitle: "Nhà sạch, ngày thêm vui.",
     brandDescription: "Đặt lịch và quản lý dịch vụ vệ sinh nhà cửa thật dễ dàng.",
@@ -50,27 +50,27 @@ const translations = {
     signUp: "Đăng ký",
     securityNote: "Chỉ là bản minh họa · Không xác thực thật",
     dashboardEyebrow: "KHÔNG GIAN CỦA BẠN",
-    dashboardTitle: "Chào mừng bạn đến với Cleanova!",
+    dashboardTitle: "Chào mừng bạn đến với DabClean!",
     dashboardDescription: "Sẵn sàng đặt lịch và chăm sóc ngôi nhà theo cách thật nhẹ nhàng.",
     dashboardPreview: "Không gian sạch sẽ, tâm trí thảnh thơi",
     logout: "Đăng xuất",
     dashboardSecurity: "Bản demo giao diện · Không có phiên đăng nhập thật",
-    contentFooter: "© 2026 Cleanova. Nhà sạch, lòng an yên.",
+    contentFooter: "© 2026 DabClean. Nhà sạch, lòng an yên.",
     emailRequired: "Vui lòng nhập địa chỉ email.",
     emailInvalid: "Vui lòng nhập địa chỉ email hợp lệ, ví dụ ban@example.com.",
     passwordRequired: "Vui lòng nhập mật khẩu.",
     signInSuccess: "Đăng nhập thành công! Đang chuyển hướng đến trang chủ...",
     signInFailure: "Đăng nhập chưa thành công. Kiểm tra thông tin hoặc dùng tài khoản demo trong README.",
-    goToHomepage: "Vào Trang chủ Cleanova →",
+    goToHomepage: "Vào Trang chủ DabClean →",
     forgotDemo: "Tính năng khôi phục mật khẩu chưa được kết nối trong bản demo này.",
     signupDemo: "Tính năng tạo tài khoản chưa được kết nối trong bản demo này.",
     googleDemo: "Đăng nhập Google chỉ là minh họa và chưa được kết nối.",
     rememberChecked: "Tùy chọn ghi nhớ chỉ để minh họa. Thông tin sẽ không được lưu."
   },
   en: {
-    pageTitle: "Sign in · Cleanova",
-    pageDescription: "Book and manage home cleaning services with Cleanova.",
-    brandHome: "Cleanova home",
+    pageTitle: "Sign in · DabClean",
+    pageDescription: "Book and manage home cleaning services with DabClean.",
+    brandHome: "DabClean home",
     brandEyebrow: "A FRESHER WAY TO CARE FOR HOME",
     brandTitle: "A cleaner home, a brighter day.",
     brandDescription: "Book and manage home cleaning services with ease.",
@@ -99,19 +99,19 @@ const translations = {
     signupPrompt: "Don't have an account?",
     signUp: "Sign up",
     securityNote: "Demo experience only · No real authentication",
-    dashboardEyebrow: "YOUR CLEANOVA SPACE",
-    dashboardTitle: "Welcome to Cleanova!",
+    dashboardEyebrow: "YOUR DABCLEAN SPACE",
+    dashboardTitle: "Welcome to DabClean!",
     dashboardDescription: "You're ready to book a little more care and calm for your home.",
     dashboardPreview: "A fresh home and a little more breathing room",
     logout: "Log out",
     dashboardSecurity: "Front-end demo · No real account session",
-    contentFooter: "© 2026 Cleanova. A fresh start feels good.",
+    contentFooter: "© 2026 DabClean. A fresh start feels good.",
     emailRequired: "Please enter your email address.",
     emailInvalid: "Enter a valid email address, such as you@example.com.",
     passwordRequired: "Please enter your password.",
     signInSuccess: "Sign-in successful! Redirecting to homepage...",
     signInFailure: "Sign-in failed. Check your details or use the demo account in the README.",
-    goToHomepage: "Go to Cleanova Homepage →",
+    goToHomepage: "Go to DabClean Homepage →",
     forgotDemo: "Password recovery isn't connected in this front-end demo.",
     signupDemo: "Account creation isn't connected in this front-end demo.",
     googleDemo: "Google sign-in is a visual demo only and is not connected.",
@@ -132,7 +132,7 @@ const errorElements = {
 
 let isSubmitting = false;
 let isPasswordVisible = false;
-let currentLanguage = localStorage.getItem("cleanova_lang") || "vi";
+let currentLanguage = localStorage.getItem("dabclean_lang") || localStorage.getItem("cleanova_lang") || "vi";
 let formStatusKey = "";
 let formStatusState = "";
 let socialNoteKey = "";
@@ -166,7 +166,7 @@ function renderDynamicText() {
 
 function setLanguage(language) {
   currentLanguage = language;
-  localStorage.setItem("cleanova_lang", language);
+  localStorage.setItem("dabclean_lang", language); localStorage.setItem("cleanova_lang", language);
   const dictionary = translations[currentLanguage];
   document.documentElement.lang = currentLanguage;
   document.title = dictionary.pageTitle;
@@ -252,8 +252,8 @@ function showDashboard() {
 }
 
 function showLogin() {
-  sessionStorage.removeItem("cleanova_logged_in");
-  sessionStorage.removeItem("cleanova_user_email");
+  sessionStorage.removeItem("dabclean_logged_in"); sessionStorage.removeItem("cleanova_logged_in");
+  sessionStorage.removeItem("dabclean_user_email"); sessionStorage.removeItem("cleanova_user_email");
   dashboardView.hidden = true;
   loginView.hidden = false;
   loginForm.reset();
@@ -327,13 +327,13 @@ loginForm.addEventListener("submit", async (event) => {
   setStatus("", "");
 
   try {
-    if (window.CleanovaAPI && window.CleanovaAPI.auth) {
-      const res = await window.CleanovaAPI.auth.login(email, password);
+    if (window.DabCleanAPI && window.DabCleanAPI.auth) {
+      const res = await window.DabCleanAPI.auth.login(email, password);
       setStatus("signInSuccess", "success");
 
       window.setTimeout(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        const user = window.CleanovaAPI.auth.getUser();
+        const user = window.DabCleanAPI.auth.getUser();
         const role = user ? user.role : 'customer';
 
         const rawRedirect = urlParams.get("redirect") || urlParams.get("returnUrl");
@@ -352,8 +352,8 @@ loginForm.addEventListener("submit", async (event) => {
       // Fallback nếu api.js chưa nạp
       if (email === demoAccount.email && password === demoAccount.password) {
         setStatus("signInSuccess", "success");
-        sessionStorage.setItem("cleanova_logged_in", "true");
-        sessionStorage.setItem("cleanova_user_email", email);
+        sessionStorage.setItem("dabclean_logged_in", "true"); sessionStorage.setItem("cleanova_logged_in", "true");
+        sessionStorage.setItem("dabclean_user_email", email); sessionStorage.setItem("cleanova_user_email", email);
         window.setTimeout(() => { window.location.href = "trangchu.html"; }, 600);
       } else {
         setStatus("signInFailure", "error");
@@ -413,8 +413,8 @@ logoutButton.addEventListener("click", showLogin);
 // Kiểm tra tham số URL và hiển thị thông báo thân thiện cho khách
 const urlParams = new URLSearchParams(window.location.search);
 if (urlParams.get("logout") === "true") {
-  sessionStorage.removeItem("cleanova_logged_in");
-  sessionStorage.removeItem("cleanova_user_email");
+  sessionStorage.removeItem("dabclean_logged_in"); sessionStorage.removeItem("cleanova_logged_in");
+  sessionStorage.removeItem("dabclean_user_email"); sessionStorage.removeItem("cleanova_user_email");
   showLogin();
 } else {
   // Hiển thị thông báo nếu được chuyển hướng từ việc đặt lịch hoặc chức năng yêu cầu tài khoản

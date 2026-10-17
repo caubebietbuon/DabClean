@@ -35,7 +35,8 @@ const partnerController = {
       }
 
       const cleanPhone = (phone || '').replace(/[\s.-]/g, '');
-      const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
+      // Bug 12: Character class đúng chuẩn SĐT Việt Nam (không chứa ký tự |)
+      const phoneRegex = /^(0|\+84)[35789][0-9]{8}$/;
       if (!cleanPhone || !phoneRegex.test(cleanPhone)) {
         return res.status(400).json({ success: false, message: 'Vui lòng nhập số điện thoại Việt Nam hợp lệ (10 chữ số).' });
       }

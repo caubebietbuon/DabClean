@@ -413,11 +413,12 @@ const pricingService = {
         subtotal = service.monthly_price ? parseFloat(service.monthly_price) : (basePrice * actualDurationHours * 0.85);
         staffWage = service.staff_monthly_wage ? parseFloat(service.staff_monthly_wage) : Math.round(subtotal * 0.75);
       } else {
-        // Mặc định: Gói theo giờ (hourly)
+        // Mặc định: Gói theo giờ (hourly) - Bug 6: Giới hạn trên tối đa 24 giờ / ca
         const minHours = service.min_duration_hours || 2;
+        const maxHours = 24;
         const parsedHours = parseFloat(duration_hours);
-        if (isNaN(parsedHours) || parsedHours < minHours) {
-          const error = new Error(`Dịch vụ ${service.name} yêu cầu thời lượng tối thiểu là ${minHours} giờ.`);
+        if (!Number.isFinite(parsedHours) || isNaN(parsedHours) || parsedHours < minHours || parsedHours > maxHours) {
+          const error = new Error(`Dịch vụ ${service.name} yêu cầu thời lượng từ ${minHours} đến ${maxHours} giờ.`);
           error.statusCode = 400;
           throw error;
         }

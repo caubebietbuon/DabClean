@@ -143,16 +143,58 @@ const VoucherModel = {
     };
   },
 
-  // Ghi nhận lượt sử dụng voucher khi tạo đơn thành công
+  // Ghi nhận lượt sử dụng voucher nguyên tử chống race condition (Bug 8)
   async recordUsage(voucherId, userId, bookingId, discountApplied) {
+    // 1. Chống ghi nhận trùng cho cùng một đơn (Idempotency)
+    if (bookingId) {
+      const existing = await db.query(
+        'SELECT id FROM voucher_usages WHERE booking_id = ? AND voucher_id = ? LIMIT 1',
+        [bookingId, voucherId]
+      );
+      if (existing && existing.length > 0) {
+        return { success: true, isIdempotent: true };
+      }
+    }
+
+    // 2. Cập nhật nguyên tử used_count có kiểm tra usage_limit chống Race Condition
+    const updateResult = await db.query(
+      `UPDATE vouchers 
+       SET used_count = used_count + 1 
+       WHERE id = ? 
+         AND is_active = 1
+         AND (usage_limit IS NULL OR usage_limit = 0 OR used_count < usage_limit)`,
+      [voucherId]
+    );
+
+    if (!updateResult || updateResult.affectedRows === 0) {
+      const error = new Error('Mã ưu đãi đã hết lượt sử dụng do có khách hàng khác vừa áp dụng thành công.');
+      error.statusCode = 400;
+      error.code = 'VOUCHER_LIMIT_EXCEEDED';
+      throw error;
+    }
+
+    // 3. Ghi log lịch sử sử dụng voucher
     await db.query(
       `INSERT INTO voucher_usages (voucher_id, user_id, booking_id, discount_applied) VALUES (?, ?, ?, ?)`,
       [voucherId, userId, bookingId, discountApplied]
     );
-    await db.query(
-      `UPDATE vouchers SET used_count = used_count + 1 WHERE id = ?`,
-      [voucherId]
+
+    return { success: true, isIdempotent: false };
+  },
+
+  // Bù trừ / Hoàn trả lượt sử dụng voucher nếu thanh toán hoặc tạo đơn thất bại (Bug 8 & Bug 10)
+  async rollbackUsage(voucherId, bookingId) {
+    if (!voucherId || !bookingId) return;
+    const deleteResult = await db.query(
+      'DELETE FROM voucher_usages WHERE voucher_id = ? AND booking_id = ?',
+      [voucherId, bookingId]
     );
+    if (deleteResult && deleteResult.affectedRows > 0) {
+      await db.query(
+        'UPDATE vouchers SET used_count = GREATEST(0, used_count - ?) WHERE id = ?',
+        [deleteResult.affectedRows, voucherId]
+      );
+    }
   },
 
   // Admin: Lấy danh sách tất cả voucher
@@ -160,7 +202,7 @@ const VoucherModel = {
     return await db.query(`SELECT * FROM vouchers ORDER BY id DESC`);
   },
 
-  // Admin: Tạo voucher mới
+  // Admin: Tạo voucher mới - Bảo vệ các invariant nghiệp vụ (Bug 7)
   async createVoucher(data) {
     const {
       code,
@@ -177,21 +219,106 @@ const VoucherModel = {
       description = ''
     } = data;
 
+    if (!code || typeof code !== 'string' || !code.trim()) {
+      const err = new Error('Mã voucher không được để trống.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+    if (!/^[A-Z0-9_-]{2,50}$/.test(cleanCode)) {
+      const err = new Error('Mã voucher chỉ được chứa chữ cái, số, dấu gạch ngang hoặc gạch dưới (từ 2 đến 50 ký tự).');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const validTypes = ['percentage', 'fixed'];
+    if (!validTypes.includes(discount_type)) {
+      const err = new Error('Loại giảm giá không hợp lệ. Chỉ chấp nhận "percentage" hoặc "fixed".');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const numVal = parseFloat(discount_value);
+    if (!Number.isFinite(numVal) || numVal <= 0) {
+      const err = new Error('Giá trị giảm giá phải là số dương lớn hơn 0.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (discount_type === 'percentage' && numVal > 100) {
+      const err = new Error('Voucher giảm theo phần trăm không được vượt quá 100%.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (discount_type === 'fixed' && numVal > 100000000) {
+      const err = new Error('Giá trị giảm cố định không được vượt quá 100.000.000 VNĐ.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (!start_date || isNaN(Date.parse(start_date))) {
+      const err = new Error('Ngày bắt đầu không hợp lệ.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (!end_date || isNaN(Date.parse(end_date))) {
+      const err = new Error('Ngày kết thúc không hợp lệ.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (new Date(start_date) > new Date(end_date)) {
+      const err = new Error('Ngày bắt đầu không được sau ngày kết thúc.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const parsedMinOrder = parseFloat(min_order_amount) || 0;
+    if (parsedMinOrder < 0) {
+      const err = new Error('Giá trị đơn hàng tối thiểu không được âm.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const parsedMaxDisc = max_discount_amount ? parseFloat(max_discount_amount) : null;
+    if (parsedMaxDisc !== null && (isNaN(parsedMaxDisc) || parsedMaxDisc <= 0)) {
+      const err = new Error('Mức giảm tối đa phải là số dương lớn hơn 0.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const parsedUsageLimit = usage_limit !== null && usage_limit !== undefined ? parseInt(usage_limit, 10) : 100;
+    if (isNaN(parsedUsageLimit) || parsedUsageLimit < 1) {
+      const err = new Error('Giới hạn lượt sử dụng phải là số nguyên >= 1.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const parsedPerUserLimit = per_user_limit !== null && per_user_limit !== undefined ? parseInt(per_user_limit, 10) : 1;
+    if (isNaN(parsedPerUserLimit) || parsedPerUserLimit < 1) {
+      const err = new Error('Giới hạn số lần dùng mỗi khách hàng phải là số nguyên >= 1.');
+      err.statusCode = 400;
+      throw err;
+    }
+
     const result = await db.query(
       `INSERT INTO vouchers 
        (code, discount_type, discount_value, max_discount_amount, min_order_amount, applicable_services, start_date, end_date, usage_limit, per_user_limit, is_active, description)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        code.trim().toUpperCase(),
+        cleanCode,
         discount_type,
-        parseFloat(discount_value),
-        max_discount_amount ? parseFloat(max_discount_amount) : null,
-        parseFloat(min_order_amount) || 0,
+        numVal,
+        parsedMaxDisc,
+        parsedMinOrder,
         applicable_services ? JSON.stringify(applicable_services) : null,
         start_date,
         end_date,
-        parseInt(usage_limit, 10) || 100,
-        parseInt(per_user_limit, 10) || 1,
+        parsedUsageLimit,
+        parsedPerUserLimit,
         is_active ? 1 : 0,
         description
       ]

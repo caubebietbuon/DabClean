@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Danh mục Dịch vụ Vệ sinh · Cleanova</title>
+  <title>Danh mục Dịch vụ Vệ sinh · DabClean</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
@@ -15,14 +15,21 @@
        ============================================================ -->
   <header class="header scrolled" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
-        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
-          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
-          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
-          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
         </svg>
-        <span class="logo-text">Cleanova</span>
+        <span class="logo-text">DabClean</span>
       </a>
 
       <nav class="nav">
@@ -31,7 +38,7 @@
         <a href="khampha.html" class="nav-link">Khám phá</a>
         <a href="booking.html" class="nav-link" data-action="book">Đặt lịch</a>
         <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" style="display: none;">Đơn của tôi</a>
-        <a href="wallet.html" class="nav-link" id="nav-link-wallet" style="display: none; color: #0f766e; font-weight: 700;">Ví CleanNova</a>
+        <a href="wallet.html" class="nav-link" id="nav-link-wallet" style="display: none; color: #0f766e; font-weight: 700;">Ví DabClean</a>
       </nav>
 
       <div class="header-actions">
@@ -84,7 +91,7 @@
       <div id="services-grid" class="services-catalog-grid">
         <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-4xl) var(--space-xl);">
           <div style="font-size: 40px; margin-bottom: var(--space-sm);">⏳</div>
-          <p style="color: var(--color-text-secondary); font-weight: 600;">Đang tải danh mục dịch vụ từ hệ thống Cleanova...</p>
+          <p style="color: var(--color-text-secondary); font-weight: 600;">Đang tải danh mục dịch vụ từ hệ thống DabClean...</p>
         </div>
       </div>
 
@@ -122,19 +129,26 @@
 
         <!-- Cột 1: Thương hiệu -->
         <div class="footer-brand reveal reveal-up">
-          <a href="trangchu.html" class="logo" aria-label="Cleanova">
+          <a href="trangchu.html" class="logo" aria-label="DabClean">
             <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/>
-              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
-              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
-              <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="dabCleanGradFoot" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#10B981"/>
+                  <stop offset="1" stop-color="#06B6D4"/>
+                </linearGradient>
+              </defs>
+              <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradFoot)" opacity="0.16"/>
+              <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradFoot)"/>
+              <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+              <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
             </svg>
-            <span class="logo-text">Cleanova</span>
+            <span class="logo-text">DabClean</span>
           </a>
           <p>Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ dọn vệ sinh thông minh & tin cậy hàng đầu.</p>
           <div class="footer-contact">
             <a href="tel:19008888" aria-label="Gọi điện">📞 <span>1900-8888 (8:00 - 20:00)</span></a>
-            <a href="mailto:contact@cleanova.vn" aria-label="Gửi email">📧 <span>contact@cleanova.vn</span></a>
+            <a href="mailto:contact@dabclean.vn" aria-label="Gửi email">📧 <span>contact@dabclean.vn</span></a>
             <span style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">📍 123 Đường Cầu Giấy, Hà Nội</span>
           </div>
         </div>
@@ -156,10 +170,10 @@
         <div class="footer-column reveal reveal-up stagger-3">
           <h4>Khám phá</h4>
           <div class="footer-links">
-            <a href="khampha.html">Giới thiệu CleanNova</a>
+            <a href="khampha.html">Giới thiệu DabClean</a>
             <a href="khampha.html#workflow">Quy trình dọn dẹp 6 bước</a>
             <a href="khampha.html#ai-technology">Công nghệ AI Quét độ bẩn</a>
-            <a href="trangchu.html#why-cleanova">Vì sao chọn CleanNova?</a>
+            <a href="trangchu.html#why-dabclean">Vì sao chọn DabClean?</a>
             <a href="partner-register.html">Trở thành đối tác</a>
             <a href="khampha.html#faq">Câu hỏi thường gặp (FAQ)</a>
           </div>
@@ -173,7 +187,7 @@
             <a href="my-bookings.html">Theo dõi đơn hàng của tôi</a>
             <a href="profile.html">Sổ địa chỉ & Tài khoản</a>
             <a href="login.html">Đăng nhập / Đăng ký</a>
-            <a href="khampha.html#standards">Cam kết Cleanova Care</a>
+            <a href="khampha.html#standards">Cam kết DabClean Care</a>
           </div>
         </div>
 
@@ -181,7 +195,7 @@
 
       <!-- Footer Bottom -->
       <div class="footer-bottom">
-        <p>© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
+        <p>© 2026 DabClean Inc. Bảo lưu mọi quyền.</p>
         <div class="footer-bottom-links">
           <a href="khampha.html#standards">Chính sách bảo mật</a>
           <a href="khampha.html#standards">Điều khoản dịch vụ</a>
@@ -193,7 +207,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', async function () {
       // 1. Kiểm tra trạng thái đăng nhập
-      const user = CleanovaAPI.auth.getUser();
+      const user = DabCleanAPI.auth.getUser();
       const authSlot = document.getElementById('auth-header-slot');
       if (user) {
         authSlot.innerHTML = `
@@ -203,7 +217,7 @@
           </a>
           <button id="btn-logout" class="btn btn-ghost btn-sm">Đăng xuất</button>
         `;
-        document.getElementById('btn-logout').addEventListener('click', () => CleanovaAPI.auth.logout());
+        document.getElementById('btn-logout').addEventListener('click', () => DabCleanAPI.auth.logout());
       }
 
       let allServices = [];
@@ -213,7 +227,7 @@
       async function fetchServices(keyword = '') {
         const grid = document.getElementById('services-grid');
         try {
-          const res = await CleanovaAPI.services.getAll(keyword);
+          const res = await DabCleanAPI.services.getAll(keyword);
           allServices = res.data || [];
           renderServices();
         } catch (err) {
@@ -258,7 +272,7 @@
           return;
         }
 
-        const favs = CleanovaAPI.favorites ? CleanovaAPI.favorites.getAll() : [];
+        const favs = DabCleanAPI.favorites ? DabCleanAPI.favorites.getAll() : [];
 
         grid.innerHTML = filtered.map(s => {
           const price = parseFloat(s.base_price || s.price || 0);
@@ -276,7 +290,7 @@
               </div>
 
               <h3 class="catalog-card-title">${s.name}</h3>
-              <p class="catalog-card-desc">${s.short_description || s.description || 'Dịch vụ vệ sinh cao cấp chuẩn Cleanova.'}</p>
+              <p class="catalog-card-desc">${s.short_description || s.description || 'Dịch vụ vệ sinh cao cấp chuẩn DabClean.'}</p>
 
               <div class="catalog-meta-row">
                 <div class="catalog-meta-item"><span>⏱️</span> ${duration}</div>
@@ -337,7 +351,7 @@
               <div class="service-features-list">
                 <div class="service-feature-item">
                   <span class="service-feature-check">✓</span>
-                  <span>Nhân viên Cleanova chuẩn hóa tác phong, mang đầy đủ đồng phục & dụng cụ chuyên dụng.</span>
+                  <span>Nhân viên DabClean chuẩn hóa tác phong, mang đầy đủ đồng phục & dụng cụ chuyên dụng.</span>
                 </div>
                 <div class="service-feature-item">
                   <span class="service-feature-check">✓</span>
@@ -362,7 +376,7 @@
           btn.addEventListener('click', function (e) {
             e.stopPropagation();
             const id = parseInt(this.dataset.favId, 10);
-            const isNowFav = CleanovaAPI.favorites.toggle(id);
+            const isNowFav = DabCleanAPI.favorites.toggle(id);
             this.classList.toggle('active', isNowFav);
             this.innerHTML = isNowFav ? '❤️' : '🤍';
             showToast(isNowFav ? 'success' : 'info', isNowFav ? 'Đã lưu vào danh sách yêu thích!' : 'Đã bỏ yêu thích.');
@@ -407,8 +421,8 @@
       }
 
       // Đồng bộ thanh điều hướng theo trạng thái đăng nhập
-      if (window.CleanovaAPI && window.CleanovaAPI.auth) {
-        const isLogged = window.CleanovaAPI.auth.isLoggedIn();
+      if (window.DabCleanAPI && window.DabCleanAPI.auth) {
+        const isLogged = window.DabCleanAPI.auth.isLoggedIn();
         const myBookingsLink = document.getElementById('nav-link-my-bookings');
         const walletLink = document.getElementById('nav-link-wallet');
         const notifBtn = document.getElementById('btn-notifications-header');
@@ -431,7 +445,7 @@
               <button class="btn btn-ghost btn-sm" id="btn-logout" title="Đăng xuất">Đăng xuất</button>
             `;
             document.getElementById('btn-logout')?.addEventListener('click', () => {
-              window.CleanovaAPI.auth.logout();
+              window.DabCleanAPI.auth.logout();
             });
           }
         } else {

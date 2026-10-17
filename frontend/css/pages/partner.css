@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA - PARTNER, CUSTOMER GUIDE & ENHANCED SECTIONS
+   DABCLEAN - PARTNER, CUSTOMER GUIDE & ENHANCED SECTIONS
    Design System: Royal Blue + Teal/Emerald SaaS Clean Architecture
    ============================================================ */
 
@@ -99,14 +99,14 @@
 }
 
 /* ------------------------------------------------------------
-   2. SECTION: VÌ SAO CHỌN CLEANOVA (7 Practical Benefits)
+   2. SECTION: VÌ SAO CHỌN DABCLEAN (7 Practical Benefits)
    ------------------------------------------------------------ */
-.why-cleanova {
+.why-dabclean {
   background: #ffffff;
   position: relative;
 }
 
-.why-cleanova-grid {
+.why-dabclean-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-xl);
@@ -200,7 +200,7 @@
   font-size: 26px;
 }
 
-.why-cleanova-actions {
+.why-dabclean-actions {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1034,7 +1034,7 @@
    7. RESPONSIVE BREAKPOINTS (Mobile & Tablet)
    ------------------------------------------------------------ */
 @media (max-width: 992px) {
-  .why-cleanova-grid,
+  .why-dabclean-grid,
   .guide-steps-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1086,7 +1086,7 @@
     max-width: 100%;
   }
 
-  .why-cleanova-grid,
+  .why-dabclean-grid,
   .guide-steps-grid {
     grid-template-columns: 1fr;
   }

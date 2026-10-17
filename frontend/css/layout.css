@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA - LAYOUT: HEADER, NAVIGATION, MOBILE DRAWER & FOOTER
+   DABCLEAN - LAYOUT: HEADER, NAVIGATION, MOBILE DRAWER & FOOTER
    ============================================================ */
 
 /* ------------------------------------------------------------
@@ -39,7 +39,7 @@
   box-sizing: border-box;
 }
 
-/* --- LOGO CLEANOVA --- */
+/* --- LOGO DABCLEAN --- */
 .logo {
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Tiện ích đọc ảnh -> Tensor
+// DABCLEAN AI MODULE - Tiện ích đọc ảnh -> Tensor
 // ============================================================
 // VÌ SAO KHÔNG DÙNG tf.node.decodeImage?
 // Bản @tensorflow/tfjs thuần JavaScript KHÔNG có đối tượng `tf.node`

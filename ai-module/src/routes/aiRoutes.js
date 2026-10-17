@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Routes API
+// DABCLEAN AI MODULE - Routes API
 // ============================================================
 // Endpoint chính: POST /api/ai/scan      -> quét ảnh, trả độ bẩn
 // Endpoint phụ  : POST /api/ai/estimate  -> quét ảnh + báo giá
@@ -277,7 +277,7 @@ router.get('/services', (req, res) => {
 router.get('/health', (req, res) => {
   res.json({
     success: true,
-    service: 'Cleanova AI Module',
+    service: 'DabClean AI Module',
     engine: 'tensorflow.js - MobileNet transfer learning',
     modelTrained: modelExists(),
     timestamp: new Date().toISOString()

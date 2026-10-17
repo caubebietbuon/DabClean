@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Server Entry Point
+// DABCLEAN AI MODULE - Server Entry Point
 // ============================================================
 const path = require('path');
 const os = require('os');
@@ -28,7 +28,7 @@ app.listen(PORT, HOST, () => {
   const meta = readMetadata();
 
   console.log('====================================================');
-  console.log('  CLEANOVA AI MODULE IS RUNNING');
+  console.log('  DABCLEAN AI MODULE IS RUNNING');
   console.log(`  - Local URL:  http://localhost:${PORT}`);
   console.log(`  - Health:     http://localhost:${PORT}/api/ai/health`);
   console.log(`  - Demo UI:    http://localhost:${PORT}/index.html`);

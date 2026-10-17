@@ -444,7 +444,24 @@ const staffController = {
             note: 'Tự động quyết toán khi nhân viên hoàn thành đơn'
           });
         } catch (settleErr) {
-          console.error(`[StaffController] Settlement error for booking #${taskId}:`, settleErr.message || settleErr);
+          // Khôi phục lại trạng thái cũ của công việc nếu quyết toán thất bại
+          await BookingModel.updateStaffTaskStatus(
+            taskId, req.user.id, booking.status, booking.staff_notes || '', '', 'completed'
+          );
+          return res.status(settleErr.statusCode || 400).json({
+            success: false,
+            message: `Quyết toán thù lao thất bại: ${settleErr.message || 'Lỗi hệ thống ví'}. Trạng thái công việc chưa được cập nhật.`
+          });
+        }
+
+        if (!settlementResult || !settlementResult.success) {
+          await BookingModel.updateStaffTaskStatus(
+            taskId, req.user.id, booking.status, booking.staff_notes || '', '', 'completed'
+          );
+          return res.status(400).json({
+            success: false,
+            message: 'Quyết toán thù lao không thành công. Trạng thái công việc chưa được cập nhật.'
+          });
         }
       }
 

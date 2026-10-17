@@ -7,7 +7,7 @@ const ServiceModel = require('../models/serviceModel');
 const WalletModel = require('../models/walletModel');
 const VoucherModel = require('../models/voucherModel');
 const pricingService = require('../services/pricingService');
-const { sanitizeInput } = require('../utils/sanitize');
+const { sanitizeInput, sanitizeReviewComment } = require('../utils/sanitize');
 
 // Bảng hệ số tính giá theo quy mô diện tích
 const areaMultipliers = {
@@ -177,19 +177,53 @@ const bookingController = {
         });
       }
 
-      // Kiểm tra nếu là dịch vụ chăm sóc tại nhà gói giờ thì bắt buộc kiểm tra thời lượng tối thiểu
+      // Bug 6: Kiểm tra nếu là dịch vụ chăm sóc tại nhà gói giờ thì bắt buộc kiểm tra thời lượng từ min đến tối đa 24 giờ
       if (isCareService && normalizedPackage === 'hourly') {
         const minHours = service.min_duration_hours || 2;
+        const maxHours = 24;
         const hours = parseFloat(duration_hours);
-        if (isNaN(hours) || hours < minHours) {
+        if (!Number.isFinite(hours) || isNaN(hours) || hours < minHours || hours > maxHours) {
           return res.status(400).json({
             success: false,
-            message: `Dịch vụ ${service.name} yêu cầu thời lượng tối thiểu là ${minHours} giờ.`
+            message: `Dịch vụ ${service.name} yêu cầu thời lượng từ ${minHours} đến ${maxHours} giờ.`
           });
         }
       }
 
-      // Kiểm tra mã ưu đãi voucher động
+      // Bug 5: Tính subtotal sơ bộ đáng tin cậy ở backend trước khi kiểm tra min_order_amount của voucher
+      let preCalculation;
+      try {
+        preCalculation = pricingService.calculatePrice(service, {
+          area_size: isCareService ? 'care' : (isNumericArea ? area_size : String(area_size)),
+          frequency,
+          duration_hours: isCareService ? parseFloat(duration_hours) : null,
+          package_type: normalizedPackage,
+          discount_code: null,
+          voucher_discount: null,
+          hasUsedPromo: false,
+          addons: addons || extras || null,
+          pricing_type: isPostConstruction ? (pricing_type || 'm2') : null,
+          building_type: isPostConstruction ? building_type : null,
+          area_m2: isPostConstruction ? area_m2 : null,
+          floors: isPostConstruction ? floors : 1,
+          construction_status: isPostConstruction ? construction_status : null,
+          dirt_severity: isPostConstruction ? dirt_severity : null,
+          glass_cleaning: isPostConstruction ? glass_cleaning : null,
+          stubborn_stains: isPostConstruction ? stubborn_stains : null,
+          furniture_status: isPostConstruction ? furniture_status : null,
+          worker_count: isPostConstruction ? worker_count : null,
+          work_days: isPostConstruction ? work_days : null
+        });
+      } catch (calcErr) {
+        return res.status(calcErr.statusCode || 400).json({
+          success: false,
+          message: calcErr.message
+        });
+      }
+
+      const reliableSubtotal = preCalculation.subtotal;
+
+      // Kiểm tra mã ưu đãi voucher động dựa trên subtotal tin cậy (Bug 5: Không bỏ qua min_order_amount)
       const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
       let appliedVoucher = null;
       let voucherDiscountAmount = null;
@@ -199,19 +233,17 @@ const bookingController = {
           code: normalizedPromo,
           userId: req.user.id,
           serviceId: service.id,
-          subtotal: 0,
+          subtotal: reliableSubtotal,
           frequency
         });
-        if (!vCheck.valid && !vCheck.reason.includes('từ')) {
+        if (!vCheck.valid) {
           return res.status(400).json({ success: false, message: vCheck.reason });
         }
-        if (vCheck.valid) {
-          appliedVoucher = vCheck.voucher;
-          voucherDiscountAmount = vCheck.discountAmount;
-        }
+        appliedVoucher = vCheck.voucher;
+        voucherDiscountAmount = vCheck.discountAmount;
       }
 
-      // Tính giá & tiền công thống nhất qua Pricing Service (kèm phụ phí Add-ons)
+      // Tính giá & tiền công thống nhất chính thức qua Pricing Service (kèm phụ phí Add-ons & Voucher)
       let calculation;
       try {
         calculation = pricingService.calculatePrice(service, {
@@ -321,17 +353,35 @@ const bookingController = {
         }
       }
 
-      // Nếu thanh toán bằng Ví DabClean, tiến hành trừ tiền nguyên tử
-      if (payment_method === 'wallet' && bookingId) {
-        await WalletModel.payBooking({
-          userId: req.user.id,
-          bookingId
-        });
-      }
+      // Bug 8 & Bug 10: Xử lý ghi nhận voucher và thanh toán ví có rollback an toàn
+      let voucherRecorded = false;
+      try {
+        // Ghi nhận lượt sử dụng voucher nguyên tử nếu có áp dụng (Bug 8: atomic update usage_limit)
+        if (appliedVoucher && calculation.discountAmount > 0 && bookingId) {
+          await VoucherModel.recordUsage(appliedVoucher.id, req.user.id, bookingId, calculation.discountAmount);
+          voucherRecorded = true;
+        }
 
-      // Ghi nhận lượt sử dụng voucher nếu có áp dụng
-      if (appliedVoucher && calculation.discountAmount > 0 && bookingId) {
-        await VoucherModel.recordUsage(appliedVoucher.id, req.user.id, bookingId, calculation.discountAmount);
+        // Nếu thanh toán bằng Ví DabClean, tiến hành trừ tiền nguyên tử (Bug 10: rollback nếu thất bại)
+        if (payment_method === 'wallet' && bookingId) {
+          await WalletModel.payBooking({
+            userId: req.user.id,
+            bookingId
+          });
+        }
+      } catch (txErr) {
+        // Rollback hoàn toàn: Xóa booking mồ côi và hoàn lại voucher nếu thanh toán thất bại
+        if (bookingId) {
+          await BookingModel.deleteById(bookingId);
+        }
+        if (voucherRecorded && appliedVoucher) {
+          await VoucherModel.rollbackUsage(appliedVoucher.id, bookingId);
+        }
+        return res.status(txErr.statusCode || 400).json({
+          success: false,
+          code: txErr.code || 'BOOKING_PAYMENT_FAILED',
+          message: `Xử lý đơn đặt lịch thất bại: ${txErr.message}. Đơn hàng đã được hủy an toàn và không ghi nhận.`
+        });
       }
 
       const newBooking = await BookingModel.getById(bookingId);
@@ -392,9 +442,59 @@ const bookingController = {
       const isNumericArea = typeof area_size === 'number' && area_size > 0;
       const normalizedPromo = discount_code && typeof discount_code === 'string' ? discount_code.trim().toUpperCase() : null;
 
+      // Bug 6: Validate duration_hours trong getQuote
+      if (isCareService && (package_type || 'hourly') === 'hourly') {
+        const minHours = service.min_duration_hours || 2;
+        const maxHours = 24;
+        const hours = parseFloat(duration_hours);
+        if (!Number.isFinite(hours) || isNaN(hours) || hours < minHours || hours > maxHours) {
+          return res.status(400).json({
+            success: false,
+            message: `Dịch vụ ${service.name} yêu cầu thời lượng từ ${minHours} đến ${maxHours} giờ.`
+          });
+        }
+      }
+
       let alreadyUsedPromo = false;
       if (req.user && (normalizedPromo === 'CLEANOVA20' || normalizedPromo === 'DABCLEAN20')) {
         alreadyUsedPromo = (await BookingModel.hasUsedPromoCode(req.user.id, 'CLEANOVA20')) || (await BookingModel.hasUsedPromoCode(req.user.id, 'DABCLEAN20'));
+      }
+
+      // Bug 5: Validate voucher động kiểm tra min_order_amount đồng bộ
+      let voucherDiscountAmount = null;
+      if (normalizedPromo && !['CLEANOVA20', 'DABCLEAN20', 'CLEAN50K'].includes(normalizedPromo)) {
+        const preCalc = pricingService.calculatePrice(service, {
+          area_size: isCareService ? 'care' : (isNumericArea ? area_size : String(area_size)),
+          frequency,
+          duration_hours: isCareService ? parseFloat(duration_hours) : null,
+          package_type: isCareService ? (package_type || 'hourly') : 'hourly',
+          discount_code: null,
+          voucher_discount: null,
+          addons: addons || extras || null,
+          pricing_type: isPostConstruction ? (pricing_type || 'm2') : null,
+          building_type: isPostConstruction ? (building_type || 'apartment') : null,
+          area_m2: isPostConstruction ? area_m2 : null,
+          floors: isPostConstruction ? floors : 1,
+          construction_status: isPostConstruction ? construction_status : null,
+          dirt_severity: isPostConstruction ? dirt_severity : null,
+          glass_cleaning: isPostConstruction ? glass_cleaning : null,
+          stubborn_stains: isPostConstruction ? stubborn_stains : null,
+          furniture_status: isPostConstruction ? furniture_status : null,
+          worker_count: isPostConstruction ? worker_count : null,
+          work_days: isPostConstruction ? work_days : null
+        });
+
+        const vCheck = await VoucherModel.validateAndCalculateDiscount({
+          code: normalizedPromo,
+          userId: req.user ? req.user.id : null,
+          serviceId: service.id,
+          subtotal: preCalc.subtotal,
+          frequency
+        });
+        if (!vCheck.valid) {
+          return res.status(400).json({ success: false, message: vCheck.reason });
+        }
+        voucherDiscountAmount = vCheck.discountAmount;
       }
 
       const calculation = pricingService.calculatePrice(service, {
@@ -403,6 +503,7 @@ const bookingController = {
         duration_hours: isCareService ? parseFloat(duration_hours) : null,
         package_type: isCareService ? (package_type || 'hourly') : 'hourly',
         discount_code: normalizedPromo,
+        voucher_discount: voucherDiscountAmount,
         hasUsedPromo: alreadyUsedPromo,
         addons: addons || extras || null,
         pricing_type: isPostConstruction ? (pricing_type || 'm2') : null,
@@ -615,7 +716,22 @@ const bookingController = {
   async createReview(req, res, next) {
     try {
       const id = parseInt(req.params.id, 10);
-      const { rating = 5, staff_rating = 5, comment = '' } = req.body;
+      const { rating = 5, staff_rating = 5 } = req.body;
+      const rawComment = req.body.comment;
+
+      // Bug 3: Validate kiểu dữ liệu và giới hạn độ dài comment
+      if (rawComment !== undefined && rawComment !== null && typeof rawComment !== 'string') {
+        return res.status(400).json({ success: false, message: 'Nội dung nhận xét phải là chuỗi văn bản.' });
+      }
+      const commentStr = typeof rawComment === 'string' ? rawComment.trim() : '';
+      if (commentStr.length > 1000) {
+        return res.status(400).json({ success: false, message: 'Nội dung đánh giá không được vượt quá 1000 ký tự.' });
+      }
+
+      const parsedRating = parseInt(rating, 10);
+      if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+        return res.status(400).json({ success: false, message: 'Điểm đánh giá dịch vụ phải từ 1 đến 5 sao.' });
+      }
 
       const booking = await BookingModel.getById(id);
       if (!booking) {
@@ -635,21 +751,32 @@ const bookingController = {
         return res.status(400).json({ success: false, message: 'Bạn đã gửi đánh giá cho đơn này rồi. Cảm ơn bạn!' });
       }
 
+      let parsedStaffRating = null;
+      if (booking.staff_id && staff_rating !== undefined && staff_rating !== null) {
+        const sr = parseInt(staff_rating, 10);
+        if (!isNaN(sr) && sr >= 1 && sr <= 5) {
+          parsedStaffRating = sr;
+        } else {
+          parsedStaffRating = 5;
+        }
+      }
+
+      // Xử lý an toàn HTML entities và loại bỏ các payload XSS trong comment
+      const cleanComment = sanitizeReviewComment(commentStr);
+
       const reviewId = await BookingModel.createReview({
         booking_id: id,
         user_id: req.user.id,
         service_id: booking.service_id,
-        rating: Math.min(5, Math.max(1, parseInt(rating, 10) || 5)),
-        staff_rating: booking.staff_id
-          ? Math.min(5, Math.max(1, parseInt(staff_rating, 10) || 5))
-          : null,
-        comment
+        rating: parsedRating,
+        staff_rating: parsedStaffRating,
+        comment: cleanComment
       });
 
       res.status(201).json({
         success: true,
         message: 'Cảm ơn bạn đã gửi đánh giá chất lượng dịch vụ cho DabClean!',
-        data: { id: reviewId, rating, comment }
+        data: { id: reviewId, rating: parsedRating, staff_rating: parsedStaffRating, comment: cleanComment }
       });
     } catch (err) {
       next(err);

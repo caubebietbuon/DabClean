@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Đánh giá chất lượng model đã train
+// DABCLEAN AI MODULE - Đánh giá chất lượng model đã train
 // Chạy: node test/evaluate.js [--dataset "D:\folder anh\dataset"] [--sample 30]
 // ============================================================
 // Script này lấy mẫu N ảnh ngẫu nhiên từ MỖI lớp trong dataset, chạy dự đoán
@@ -57,7 +57,7 @@ async function main() {
   const args = parseArgs(process.argv);
 
   line();
-  console.log('  ĐÁNH GIÁ CHẤT LƯỢNG MODEL - CLEANOVA AI');
+  console.log('  ĐÁNH GIÁ CHẤT LƯỢNG MODEL - DABCLEAN AI');
   line();
   console.log(`  Dataset : ${args.dataset}`);
   console.log(`  Mẫu/lớp : ${args.sample}`);

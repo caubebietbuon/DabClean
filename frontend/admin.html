@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bảng Quản Trị Hệ Thống · Cleanova Admin</title>
+  <title>Bảng Quản Trị Hệ Thống · DabClean Admin</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
@@ -407,14 +407,22 @@
     <div class="container">
       <div class="admin-navbar-inner">
         <div style="display: flex; align-items: center; gap: var(--space-md);">
-          <a href="trangchu.html" class="logo" style="text-decoration: none;">
-            <svg viewBox="0 0 36 36" fill="none" style="width: 28px; height: 28px;">
-              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3" />
-              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" />
-              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981" />
-            </svg>
-            <span class="logo-text">Cleanova</span>
-          </a>
+          <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+        </svg>
+        <span class="logo-text">DabClean</span>
+      </a>
           <span class="admin-badge">Admin Portal</span>
         </div>
 
@@ -447,7 +455,7 @@
               <span id="stats-period-badge" style="background: #EFF6FF; color: #1D4ED8; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid #BFDBFE;">Phạm vi: Tháng này</span>
             </div>
             <p style="font-size: 13px; color: var(--color-text-secondary); margin: 4px 0 0 0;">
-              Phân tách rõ ràng tiền khách thanh toán, tiền hoàn, tiền công gộp, chiết khấu hoa hồng CleanNova, thực nhận nhân viên và lợi nhuận ước tính.
+              Phân tách rõ ràng tiền khách thanh toán, tiền hoàn, tiền công gộp, chiết khấu hoa hồng DabClean, thực nhận nhân viên và lợi nhuận ước tính.
             </p>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
@@ -538,7 +546,7 @@
         </div>
 
         <div style="font-size: 12px; font-weight: 800; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-          👷 2. Thù Lao Nhân Viên & Chiết Khấu CleanNova
+          👷 2. Thù Lao Nhân Viên & Chiết Khấu DabClean
         </div>
         <div class="stats-grid" style="grid-template-columns: minmax(0, 1fr); gap: 12px; margin-bottom: var(--space-lg);">
           <!-- 6. Tiền công gộp nhân viên -->
@@ -551,10 +559,10 @@
             <span id="stat-staff-wages" style="display:none;">0 đ</span>
           </div>
 
-          <!-- 7. Chiết khấu/hoa hồng CleanNova -->
+          <!-- 7. Chiết khấu/hoa hồng DabClean -->
           <div class="stat-card" style="border-left: 4px solid #8B5CF6;">
             <div class="stat-info-wrap">
-              <div class="stat-title" style="color: #5B21B6;">7. Chiết Khấu CleanNova</div>
+              <div class="stat-title" style="color: #5B21B6;">7. Chiết Khấu DabClean</div>
               <div class="stat-desc">Khấu trừ từ tiền công nhân viên</div>
             </div>
             <div class="stat-value" id="stat-platform-commission" style="color: #7C3AED;">0 đ</div>
@@ -589,7 +597,7 @@
         </div>
 
         <div style="font-size: 12px; font-weight: 800; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-          💼 3. Quản Trị Hệ Thống Hai Ví Nhân Viên CleanNova
+          💼 3. Quản Trị Hệ Thống Hai Ví Nhân Viên DabClean
         </div>
         <div class="stats-grid" style="grid-template-columns: minmax(0, 1fr); gap: 12px; margin-bottom: var(--space-lg);">
           <div class="stat-card" style="border-left: 4px solid #3B82F6;">
@@ -693,7 +701,7 @@
                 <th style="text-align: right;">Tiền khách trả</th>
                 <th style="text-align: right;">Hoàn tiền</th>
                 <th style="text-align: right;">Tiền công gộp</th>
-                <th style="text-align: right;">Chiết khấu CleanNova</th>
+                <th style="text-align: right;">Chiết khấu DabClean</th>
                 <th style="text-align: right;">Thực nhận NV</th>
                 <th style="text-align: right;">Lợi nhuận ngày</th>
               </tr>
@@ -851,7 +859,7 @@
       <section id="tab-staff" class="tab-pane" style="display: none;" role="tabpanel">
         <div class="table-controls">
           <div>
-            <h3 style="margin: 0 0 4px; font-size: var(--font-size-lg);">Danh Sách Chuyên Viên Vệ Sinh Cleanova</h3>
+            <h3 style="margin: 0 0 4px; font-size: var(--font-size-lg);">Danh Sách Chuyên Viên Vệ Sinh DabClean</h3>
             <p style="margin: 0; font-size: 13px; color: var(--color-text-secondary);">Quản lý đội ngũ kỹ thuật viên,
               theo dõi công việc được phân công và tạo tài khoản an toàn.</p>
           </div>
@@ -1097,14 +1105,14 @@
       <!-- TAB 7: QUẢN LÝ VÍ & GIAO DỊCH SỔ CÁI -->
       <section id="tab-wallets" class="tab-pane" style="display: none;" role="tabpanel">
         <div class="table-controls">
-          <div style="font-weight: 700; font-size: 15px; color: #0f766e;">👛 Quản lý Ví CleanNova & Đối soát sổ cái người dùng</div>
+          <div style="font-weight: 700; font-size: 15px; color: #0f766e;">👛 Quản lý Ví DabClean & Đối soát sổ cái người dùng</div>
           <button id="btn-refresh-wallets" class="btn btn-ghost btn-sm">🔄 Làm mới danh sách ví</button>
         </div>
 
-        <!-- Danh sách Hai Ví Nhân Viên CleanNova -->
+        <!-- Danh sách Hai Ví Nhân Viên DabClean -->
         <div style="margin-bottom: 24px;">
           <h3 style="font-size: 1.15rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-            <span>💼</span> Quản Lý Hai Ví Nhân Viên CleanNova
+            <span>💼</span> Quản Lý Hai Ví Nhân Viên DabClean
           </h3>
           <div class="table-responsive" style="background: var(--color-white); border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden;">
             <table class="table" style="margin: 0; font-size: 13px;">
@@ -1318,7 +1326,7 @@
   <div class="modal-backdrop" id="modal-create-staff" style="display: none;">
     <div class="modal-box" style="max-width: 520px;">
       <div class="modal-header">
-        <h3 class="modal-title">Tạo Tài Khoản Nhân Viên Cleanova</h3>
+        <h3 class="modal-title">Tạo Tài Khoản Nhân Viên DabClean</h3>
         <button class="modal-close" data-close="modal-create-staff">&times;</button>
       </div>
       <form id="form-create-staff" style="padding: var(--space-xl);">
@@ -1331,7 +1339,7 @@
         </div>
         <div class="form-group" style="margin-bottom: var(--space-md);">
           <label class="form-label">Email đăng nhập <span style="color: red;">*</span></label>
-          <input type="email" id="staff-email" class="form-control" required placeholder="nhanvien@cleanova.vn">
+          <input type="email" id="staff-email" class="form-control" required placeholder="nhanvien@dabclean.vn">
         </div>
         <div class="form-group" style="margin-bottom: var(--space-md);">
           <label class="form-label">Mật khẩu khởi tạo <span style="color: red;">*</span> (Tối thiểu 8 ký tự, gồm chữ và
@@ -1407,7 +1415,7 @@
               <label class="form-label">Vai trò (Role) <span style="color: red;">*</span></label>
               <select id="edit-user-role-select" class="form-control">
                 <option value="customer">Khách hàng (Customer)</option>
-                <option value="staff">Nhân viên Cleanova (Staff)</option>
+                <option value="staff">Nhân viên DabClean (Staff)</option>
                 <option value="admin">Quản trị viên (Admin)</option>
               </select>
             </div>
@@ -1464,7 +1472,7 @@
   <div class="modal-backdrop" id="modal-partner-detail" style="display: none;">
     <div class="modal-box" style="max-width: 680px;">
       <div class="modal-header">
-        <h3 id="modal-partner-title" class="modal-title">Chi tiết hồ sơ đối tác / Ứng viên Cleanova</h3>
+        <h3 id="modal-partner-title" class="modal-title">Chi tiết hồ sơ đối tác / Ứng viên DabClean</h3>
         <button class="modal-close" data-close="modal-partner-detail">&times;</button>
       </div>
       <div style="padding: var(--space-xl);">
@@ -1500,7 +1508,7 @@
         <input type="hidden" id="lock-target-type" value="user">
 
         <div style="background: #fef2f2; border: 1px solid #fecaca; padding: 12px 16px; border-radius: var(--radius-md); margin-bottom: var(--space-lg); font-size: 13px; color: #991b1b; line-height: 1.5;">
-          ⚠️ Bạn đang khóa tài khoản của <strong><span id="lock-target-user-name">Người dùng</span></strong> (<span id="lock-target-user-email">email</span>). Khi bị khóa, tài khoản sẽ <strong>không thể đăng nhập</strong> vào hệ thống Cleanova.
+          ⚠️ Bạn đang khóa tài khoản của <strong><span id="lock-target-user-name">Người dùng</span></strong> (<span id="lock-target-user-email">email</span>). Khi bị khóa, tài khoản sẽ <strong>không thể đăng nhập</strong> vào hệ thống DabClean.
         </div>
 
         <div class="form-group" style="margin-bottom: var(--space-lg);">
@@ -1515,7 +1523,7 @@
             <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Thông tin liên hệ hoặc địa chỉ không chính xác / số điện thoại ảo">SĐT / Thông tin ảo</button>
             <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Tạm ngừng hoạt động theo yêu cầu của chủ tài khoản">Theo yêu cầu</button>
             <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Vi phạm quy tắc ứng xử / chất lượng phục vụ không đạt tiêu chuẩn">Vi phạm ứng xử</button>
-            <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Nghỉ việc / Chấm dứt hợp đồng lao động với Cleanova">Nghỉ việc</button>
+            <button type="button" class="btn btn-ghost btn-xs btn-quick-reason" data-reason="Nghỉ việc / Chấm dứt hợp đồng lao động với DabClean">Nghỉ việc</button>
           </div>
         </div>
 
@@ -1596,7 +1604,7 @@
       <form id="form-commission-config" style="padding: var(--space-xl);">
         <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: var(--space-lg); font-size: 13px; color: #1E40AF; line-height: 1.6;">
           <div style="font-weight: 700; margin-bottom: 4px;">🛡️ Nguyên tắc tài chính & snapshot bất biến:</div>
-          • Tỷ lệ chiết khấu (%) được áp dụng để khấu trừ hoa hồng CleanNova từ <strong>tiền công gộp</strong> của nhân viên.<br>
+          • Tỷ lệ chiết khấu (%) được áp dụng để khấu trừ hoa hồng DabClean từ <strong>tiền công gộp</strong> của nhân viên.<br>
           • Khi cập nhật, tỷ lệ mới chỉ áp dụng cho các đơn đặt lịch tạo mới hoặc khảo sát báo giá sau thời điểm này. <strong>Các đơn hàng đã hoàn tất hoặc đã có báo giá sẽ giữ nguyên tỷ lệ snapshot</strong>, đảm bảo tính bất biến của sổ cái kế toán.
         </div>
 
@@ -1630,16 +1638,16 @@
 
     document.addEventListener('DOMContentLoaded', async function () {
       // 1. Kiểm tra xác thực & quyền Quản trị viên
-      if (!window.CleanovaAPI || !CleanovaAPI.auth.isLoggedIn()) {
+      if (!window.DabCleanAPI || !DabCleanAPI.auth.isLoggedIn()) {
         alert('Vui lòng đăng nhập với tài khoản Quản trị viên để truy cập trang này.');
         window.location.href = 'login.html';
         return;
       }
 
-      const currentUser = CleanovaAPI.auth.getUser();
+      const currentUser = DabCleanAPI.auth.getUser();
       if (!currentUser || currentUser.role !== 'admin') {
         alert('Truy cập bị từ chối: Tài khoản của bạn không có quyền Quản trị viên (Admin).');
-        window.location.href = CleanovaAPI.auth.getRedirectUrlByRole();
+        window.location.href = DabCleanAPI.auth.getRedirectUrlByRole();
         return;
       }
 
@@ -1647,7 +1655,7 @@
 
       // Nút Đăng xuất
       document.getElementById('btn-admin-logout').addEventListener('click', () => {
-        CleanovaAPI.auth.logout();
+        DabCleanAPI.auth.logout();
       });
 
       // Utility hiển thị thông báo
@@ -1737,7 +1745,7 @@
           if (customParams) {
             currentStatsFilter = { ...currentStatsFilter, ...customParams };
           }
-          const res = await CleanovaAPI.admin.getStats(currentStatsFilter);
+          const res = await DabCleanAPI.admin.getStats(currentStatsFilter);
           const s = res.data || {};
 
           // Cập nhật nhãn khoảng thời gian
@@ -1788,7 +1796,7 @@
           }
           if (document.getElementById('stat-staff-wages')) document.getElementById('stat-staff-wages').textContent = formatPriceVND(grossWages);
 
-          // 5. Chiết khấu CleanNova (Platform Commission)
+          // 5. Chiết khấu DabClean (Platform Commission)
           const platformComm = Number(s.platform_commission || 0);
           if (document.getElementById('stat-platform-commission')) {
             document.getElementById('stat-platform-commission').textContent = formatPriceVND(platformComm);
@@ -1826,7 +1834,7 @@
           }
           if (document.getElementById('stat-wallet-bal')) document.getElementById('stat-wallet-bal').textContent = formatPriceVND(walletLiab);
 
-          // 11. Quản trị Hệ thống Hai Ví Nhân Viên CleanNova
+          // 11. Quản trị Hệ thống Hai Ví Nhân Viên DabClean
           if (document.getElementById('stat-staff-credit-total')) {
             const creditTotal = Number(s.staff_credit_balance_total || 0);
             const el = document.getElementById('stat-staff-credit-total');
@@ -1974,7 +1982,7 @@
       // Cấu hình tỷ lệ chiết khấu (Commission Config)
       async function loadCommissionConfig() {
         try {
-          const res = await CleanovaAPI.admin.getCommissionConfig();
+          const res = await DabCleanAPI.admin.getCommissionConfig();
           const rate = res.data ? Number(res.data.rate) : 0.20;
           const pct = Math.round(rate * 100 * 10) / 10;
           const btnBadge = document.getElementById('btn-commission-badge');
@@ -2019,7 +2027,7 @@
           saveBtn.textContent = 'Đang lưu cấu hình...';
 
           try {
-            const res = await CleanovaAPI.admin.updateCommissionConfig({ rate: rateDecimal, reason });
+            const res = await DabCleanAPI.admin.updateCommissionConfig({ rate: rateDecimal, reason });
             showAlert('success', res.message || `Cập nhật tỷ lệ chiết khấu thành ${pct}% thành công!`);
             document.getElementById('modal-commission-config').style.display = 'none';
             await loadCommissionConfig();
@@ -2038,7 +2046,7 @@
       // ------------------------------------------------------------
       async function loadBookings() {
         try {
-          const res = await CleanovaAPI.admin.getAllBookings();
+          const res = await DabCleanAPI.admin.getAllBookings();
           allBookings = res.data || [];
           document.getElementById('tab-count-bookings').textContent = allBookings.length;
           renderBookingsTable();
@@ -2270,7 +2278,7 @@
               }
             }
             try {
-              await CleanovaAPI.admin.updateBookingStatus(id, this.value, reason.trim());
+              await DabCleanAPI.admin.updateBookingStatus(id, this.value, reason.trim());
               showAlert('success', `Cập nhật trạng thái đơn #${id} thành '${this.value}'!`);
               await loadStats();
               await loadBookings();
@@ -2286,7 +2294,7 @@
             const id = parseInt(this.dataset.id, 10);
             const staffId = this.value ? parseInt(this.value, 10) : null;
             try {
-              const res = await CleanovaAPI.admin.assignStaff(id, staffId);
+              const res = await DabCleanAPI.admin.assignStaff(id, staffId);
               showAlert('success', res.message || 'Phân công nhân viên thành công!');
               await loadBookings();
               await loadStaff();
@@ -2320,7 +2328,7 @@
         btn.textContent = 'Đang lưu...';
 
         try {
-          await CleanovaAPI.admin.confirmQuote(bookingId, { confirmed_price, quote_notes });
+          await DabCleanAPI.admin.confirmQuote(bookingId, { confirmed_price, quote_notes });
           showAlert('success', `Đã xác nhận báo giá chính thức (${confirmed_price.toLocaleString('vi-VN')} đ) cho đơn #${bookingId}!`);
           document.getElementById('modal-confirm-quote').style.display = 'none';
           await loadBookings();
@@ -2337,7 +2345,7 @@
       // ------------------------------------------------------------
       async function loadPostConstructionConfig() {
         try {
-          const res = await CleanovaAPI.admin.getPostConstructionConfig();
+          const res = await DabCleanAPI.admin.getPostConstructionConfig();
           const configs = res.data || {};
 
           // 1. m2_rates
@@ -2398,7 +2406,7 @@
               applied: parseInt(document.getElementById('pc-m2-villa-applied').value, 10)
             }
           };
-          await CleanovaAPI.admin.updatePostConstructionConfig('m2_rates', config_data);
+          await DabCleanAPI.admin.updatePostConstructionConfig('m2_rates', config_data);
           showAlert('success', 'Đã cập nhật bảng giá theo m² thành công!');
         } catch (err) {
           showAlert('danger', 'Lỗi lưu bảng giá m²: ' + err.message);
@@ -2424,7 +2432,7 @@
               standard: parseInt(document.getElementById('pc-pkg-villa-std').value, 10)
             }
           };
-          await CleanovaAPI.admin.updatePostConstructionConfig('package_rates', config_data);
+          await DabCleanAPI.admin.updatePostConstructionConfig('package_rates', config_data);
           showAlert('success', 'Đã cập nhật bảng giá trọn gói thành công!');
         } catch (err) {
           showAlert('danger', 'Lỗi lưu bảng giá trọn gói: ' + err.message);
@@ -2439,7 +2447,7 @@
             applied: parseInt(document.getElementById('pc-labor-applied').value, 10),
             worker_wage: parseInt(document.getElementById('pc-labor-wage').value, 10)
           };
-          await CleanovaAPI.admin.updatePostConstructionConfig('labor_daily_rates', config_data);
+          await DabCleanAPI.admin.updatePostConstructionConfig('labor_daily_rates', config_data);
           showAlert('success', 'Đã cập nhật bảng giá nhân công ngày thành công!');
         } catch (err) {
           showAlert('danger', 'Lỗi lưu giá nhân công: ' + err.message);
@@ -2457,7 +2465,7 @@
         const status = document.getElementById('filter-user-status').value;
 
         try {
-          const res = await CleanovaAPI.admin.getUsers({
+          const res = await DabCleanAPI.admin.getUsers({
             search,
             role,
             status,
@@ -2544,7 +2552,7 @@
             } else {
               if (confirm(`Bạn có chắc chắn muốn kích hoạt lại tài khoản "${name}" (#${id}) không?`)) {
                 try {
-                  const res = await CleanovaAPI.admin.toggleUserStatus(id, 'active');
+                  const res = await DabCleanAPI.admin.toggleUserStatus(id, 'active');
                   showAlert('success', res.message);
                   await loadUsers();
                   await loadStats();
@@ -2609,7 +2617,7 @@
 
         // 2. Lấy dữ liệu chi tiết từ server
         try {
-          const res = await CleanovaAPI.admin.getUserDetail(id);
+          const res = await DabCleanAPI.admin.getUserDetail(id);
           if (res && res.data && res.data.user) {
             populateUserEditModal(res.data.user, res.data.total_bookings);
             document.getElementById('modal-user-detail').style.display = 'flex';
@@ -2652,7 +2660,7 @@
         }
 
         try {
-          const res = await CleanovaAPI.admin.updateUser(id, { name, phone, address, role, status, lock_reason });
+          const res = await DabCleanAPI.admin.updateUser(id, { name, phone, address, role, status, lock_reason });
           showAlert('success', res.message || 'Cập nhật tài khoản thành công!');
           document.getElementById('modal-user-detail').style.display = 'none';
           await loadUsers();
@@ -2668,7 +2676,7 @@
         const id = parseInt(document.getElementById('edit-user-id').value, 10);
         if (confirm('CẢNH BÁO: Thao tác này sẽ xóa tài khoản khỏi hệ thống. Bạn có chắc chắn muốn tiếp tục không?')) {
           try {
-            const res = await CleanovaAPI.admin.deleteUser(id);
+            const res = await DabCleanAPI.admin.deleteUser(id);
             showAlert('success', res.message);
             document.getElementById('modal-user-detail').style.display = 'none';
             await loadUsers();
@@ -2684,7 +2692,7 @@
       // ------------------------------------------------------------
       async function loadStaff() {
         try {
-          const res = await CleanovaAPI.admin.getStaff();
+          const res = await DabCleanAPI.admin.getStaff();
           allStaff = res.data || [];
           document.getElementById('tab-count-staff').textContent = allStaff.length;
           renderStaffGrid();
@@ -2769,7 +2777,7 @@
             } else {
               if (confirm(`Bạn có chắc chắn muốn kích hoạt lại nhân viên "${name}" không?`)) {
                 try {
-                  const res = await CleanovaAPI.admin.toggleUserStatus(id, 'active');
+                  const res = await DabCleanAPI.admin.toggleUserStatus(id, 'active');
                   showAlert('success', res.message);
                   await loadStaff();
                   await loadUsers();
@@ -2822,7 +2830,7 @@
         submitBtn.textContent = 'Đang xử lý...';
 
         try {
-          const res = await CleanovaAPI.admin.toggleUserStatus(id, 'inactive', reason);
+          const res = await DabCleanAPI.admin.toggleUserStatus(id, 'inactive', reason);
           showAlert('success', res.message || 'Đã khóa tài khoản thành công!');
           document.getElementById('modal-lock-user').style.display = 'none';
           await loadUsers();
@@ -2851,7 +2859,7 @@
         const address = document.getElementById('staff-address').value.trim();
 
         try {
-          const res = await CleanovaAPI.admin.createStaff({ name, email, password, phone, address });
+          const res = await DabCleanAPI.admin.createStaff({ name, email, password, phone, address });
           showAlert('success', res.message || 'Thêm nhân viên thành công!');
           document.getElementById('modal-create-staff').style.display = 'none';
           await loadStaff();
@@ -2870,7 +2878,7 @@
         document.getElementById('modal-staff-tasks').style.display = 'flex';
 
         try {
-          const res = await CleanovaAPI.admin.getStaffTasks(staffId);
+          const res = await DabCleanAPI.admin.getStaffTasks(staffId);
           const tasks = res.data || [];
           if (tasks.length === 0) {
             container.innerHTML = '<p style="text-align: center; color: var(--color-text-secondary); padding: 20px;">Nhân viên này hiện chưa được phân công công việc nào.</p>';
@@ -2915,7 +2923,7 @@
       // ------------------------------------------------------------
       async function loadServices() {
         try {
-          const res = await CleanovaAPI.services.getAll();
+          const res = await DabCleanAPI.services.getAll();
           allServices = res.data || [];
           document.getElementById('tab-count-services').textContent = allServices.length;
           renderServicesTable();
@@ -2984,7 +2992,7 @@
             const id = parseInt(this.dataset.id, 10);
             if (confirm(`Bạn có chắc chắn muốn xóa dịch vụ này không?`)) {
               try {
-                await CleanovaAPI.admin.deleteService(id);
+                await DabCleanAPI.admin.deleteService(id);
                 showAlert('success', 'Xóa dịch vụ thành công!');
                 await loadServices();
                 await loadStats();
@@ -3054,10 +3062,10 @@
 
         try {
           if (id) {
-            await CleanovaAPI.admin.updateService(parseInt(id, 10), serviceData);
+            await DabCleanAPI.admin.updateService(parseInt(id, 10), serviceData);
             showAlert('success', 'Cập nhật dịch vụ thành công!');
           } else {
-            await CleanovaAPI.admin.createService(serviceData);
+            await DabCleanAPI.admin.createService(serviceData);
             showAlert('success', 'Thêm dịch vụ mới thành công!');
           }
           document.getElementById('modal-service').style.display = 'none';
@@ -3073,7 +3081,7 @@
       // ------------------------------------------------------------
       async function loadPartners() {
         try {
-          const res = await CleanovaAPI.admin.getPartners();
+          const res = await DabCleanAPI.admin.getPartners();
           allPartners = res.data || [];
           const pendingCount = allPartners.filter(p => p.status === 'pending').length;
           document.getElementById('tab-count-partners').textContent = pendingCount;
@@ -3154,7 +3162,7 @@
         tbody.querySelectorAll('.btn-quick-approve').forEach(btn => {
           btn.addEventListener('click', async () => {
             const id = parseInt(btn.dataset.id, 10);
-            if (confirm(`Bạn có chắc muốn phê duyệt ứng viên #APP-${id} thành Nhân viên chính thức của Cleanova?`)) {
+            if (confirm(`Bạn có chắc muốn phê duyệt ứng viên #APP-${id} thành Nhân viên chính thức của DabClean?`)) {
               await approvePartnerApplication(id);
             }
           });
@@ -3242,8 +3250,8 @@
 
       async function approvePartnerApplication(id) {
         try {
-          await CleanovaAPI.admin.approvePartner(id);
-          showAlert('success', `Đã phê duyệt hồ sơ #APP-${id}! Tài khoản nhân viên Cleanova đã được tạo/kích hoạt thành công.`);
+          await DabCleanAPI.admin.approvePartner(id);
+          showAlert('success', `Đã phê duyệt hồ sơ #APP-${id}! Tài khoản nhân viên DabClean đã được tạo/kích hoạt thành công.`);
           document.getElementById('modal-partner-detail').style.display = 'none';
           await loadPartners();
           await loadStaff();
@@ -3255,10 +3263,10 @@
       }
 
       async function rejectPartnerApplication(id) {
-        const reason = prompt('Nhập lý do từ chối hồ sơ này (để lưu vào hệ thống):', 'Hồ sơ chưa đạt yêu cầu tiêu chuẩn Cleanova');
+        const reason = prompt('Nhập lý do từ chối hồ sơ này (để lưu vào hệ thống):', 'Hồ sơ chưa đạt yêu cầu tiêu chuẩn DabClean');
         if (reason === null) return;
         try {
-          await CleanovaAPI.admin.rejectPartner(id, reason);
+          await DabCleanAPI.admin.rejectPartner(id, reason);
           showAlert('info', `Hồ sơ #APP-${id} đã được chuyển sang trạng thái Từ chối.`);
           document.getElementById('modal-partner-detail').style.display = 'none';
           await loadPartners();
@@ -3293,10 +3301,10 @@
         const tbody = document.getElementById('wallets-table-body');
         const staffTbody = document.getElementById('staff-wallets-table-body');
         try {
-          // 1. Tải danh sách Hai Ví Nhân Viên CleanNova
+          // 1. Tải danh sách Hai Ví Nhân Viên DabClean
           if (staffTbody) {
             try {
-              const staffWalletsRes = await CleanovaAPI.wallet.getAdminStaffWallets();
+              const staffWalletsRes = await DabCleanAPI.wallet.getAdminStaffWallets();
               const staffWallets = staffWalletsRes.data || [];
               if (staffWallets.length === 0) {
                 staffTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 24px; color: var(--color-text-secondary);">Chưa có nhân viên nào trên hệ thống.</td></tr>`;
@@ -3350,7 +3358,7 @@
           }
 
           // 2. Tải danh sách Ví Khách Hàng (Customer Wallets)
-          const res = await CleanovaAPI.wallet.getAdminWallets();
+          const res = await DabCleanAPI.wallet.getAdminWallets();
           const wallets = res.data || [];
           document.getElementById('tab-count-wallets').textContent = wallets.length;
 
@@ -3370,7 +3378,7 @@
           }
 
           // Tải danh sách giao dịch
-          const txRes = await CleanovaAPI.wallet.getAdminTransactions({ limit: 50 });
+          const txRes = await DabCleanAPI.wallet.getAdminTransactions({ limit: 50 });
           const txList = txRes.data || [];
           const txBody = document.getElementById('admin-tx-table-body');
           if (txList.length === 0) {
@@ -3408,7 +3416,7 @@
       async function loadVouchers() {
         const tbody = document.getElementById('vouchers-table-body');
         try {
-          const res = await CleanovaAPI.vouchers.getAllAdmin();
+          const res = await DabCleanAPI.vouchers.getAllAdmin();
           const vouchers = res.data || [];
           document.getElementById('tab-count-vouchers').textContent = vouchers.length;
 

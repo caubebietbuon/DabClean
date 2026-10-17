@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA - main.js
+   DABCLEAN - main.js
    Xử lý logic tương tác: Đa ngôn ngữ, Calculator, UI/UX & Phiên đăng nhập
    ============================================================ */
 
@@ -25,7 +25,7 @@ const translations = {
     nav_partner: 'Trở thành đối tác',
     nav_explore: 'Khám phá',
     nav_my_bookings: 'Đơn của tôi',
-    nav_wallet: 'Ví CleanNova',
+    nav_wallet: 'Ví DabClean',
     nav_admin: 'Quản trị',
     nav_staff: 'Nhân viên',
     nav_profile: 'Hồ sơ cá nhân',
@@ -36,17 +36,17 @@ const translations = {
     btn_learn_more: 'Tìm hiểu dịch vụ',
 
     /* --- Notification Dropdown --- */
-    notif_header_title: 'Thông báo Cleanova',
+    notif_header_title: 'Thông báo DabClean',
     notif_mark_read: 'Đã đọc',
     notif_1_title: '🎉 Mã ưu đãi 20% đã sẵn sàng',
-    notif_1_desc: 'Nhập mã CLEANOVA20 khi đặt lịch để giảm trực tiếp 20%.',
+    notif_1_desc: 'Nhập mã DABCLEAN20 khi đặt lịch để giảm trực tiếp 20%.',
     notif_just_now: 'Vừa xong',
     notif_2_title: '⚡ Đơn đặt gần nhất',
     notif_2_desc: 'Đơn CNV-2026-0001 đang ở trạng thái xác nhận.',
     notif_1_hour_ago: '1 giờ trước',
 
     /* --- Mobile Drawer Card --- */
-    mobile_partner_title: 'Trở thành đối tác Cleanova',
+    mobile_partner_title: 'Trở thành đối tác DabClean',
     mobile_partner_desc: 'Đăng ký tham gia đội ngũ & nhận việc',
 
     /* --- Badges & Chips --- */
@@ -74,7 +74,7 @@ const translations = {
     hero_title: 'Chăm sóc ngôi nhà, an tâm chăm sóc gia đình',
     hero_title_1: 'Chăm sóc ngôi nhà,',
     hero_title_highlight: 'an tâm chăm sóc gia đình',
-    hero_subtitle: 'Từ không gian sống sạch sẽ đến sự chăm sóc tận tâm dành cho những người thân yêu. CleanNova giúp bạn tìm dịch vụ phù hợp ngay tại nhà.',
+    hero_subtitle: 'Từ không gian sống sạch sẽ đến sự chăm sóc tận tâm dành cho những người thân yêu. DabClean giúp bạn tìm dịch vụ phù hợp ngay tại nhà.',
     hero_cta_explore: 'Khám phá dịch vụ',
     hero_cta_book: 'Đặt lịch ngay',
     trust_rating_value: '4.9/5★',
@@ -89,7 +89,7 @@ const translations = {
     hero_float_2_text: 'Chăm sóc chu đáo, tận tâm!',
 
     /* --- Services Section --- */
-    services_badge: '✨ Dịch vụ của CleanNova',
+    services_badge: '✨ Dịch vụ của DabClean',
     services_title: 'Dịch vụ Vệ sinh & Chăm sóc tại nhà',
     services_subtitle: 'Giải pháp toàn diện từ chăm sóc không gian sống sạch sẽ đến hỗ trợ tận tình cho trẻ nhỏ, người lớn tuổi và người bệnh.',
     tab_all_services: 'Tất cả dịch vụ',
@@ -124,7 +124,7 @@ const translations = {
 
     /* --- Why CleanNova Section --- */
     why_badge: '✨ Vì sao chọn chúng tôi',
-    why_title: 'Vì sao chọn CleanNova?',
+    why_title: 'Vì sao chọn DabClean?',
     why_subtitle: 'Cam kết đem lại trải nghiệm dịch vụ tiện lợi, minh bạch và an tâm cho từng tổ ấm gia đình.',
     why_point_1_title: '1. Dễ dàng đặt dịch vụ tại nhà',
     why_point_1_desc: 'Khách hàng có thể xem dịch vụ, chọn thời gian phù hợp và gửi yêu cầu ngay trên website nhanh chóng chỉ trong vài thao tác.',
@@ -140,7 +140,7 @@ const translations = {
 
     /* --- Booking Workflow Section (4 Bước) --- */
     workflow_badge: '⚡ Quy trình đặt dịch vụ',
-    workflow_title: '4 bước đặt lịch dịch vụ tại CleanNova',
+    workflow_title: '4 bước đặt lịch dịch vụ tại DabClean',
     workflow_subtitle: 'Từ đặt lịch đến khi hoàn thành, mọi công đoạn diễn ra minh bạch, an tâm và thuận tiện.',
     workflow_step_badge_1: 'Bước 01',
     workflow_step_1_title: 'Chọn dịch vụ phù hợp',
@@ -161,7 +161,7 @@ const translations = {
 
     /* --- Pricing Section (Section 5) --- */
     pricing_badge: '💰 Bảng giá minh bạch',
-    pricing_title: 'Bảng giá dịch vụ CleanNova',
+    pricing_title: 'Bảng giá dịch vụ DabClean',
     pricing_subtitle: 'Bảng giá niêm yết công khai, đồng bộ trực tiếp từ hệ thống, không phụ phí phát sinh ngoài thỏa thuận.',
     pricing_tab_all: '✨ Tất cả gói',
     pricing_tab_cleaning: '🧹 Dịch vụ vệ sinh',
@@ -273,11 +273,11 @@ const translations = {
 
     scope_5_title: 'Cách thức liên hệ hỗ trợ',
     scope_5_f1: 'Tổng đài hỗ trợ khách hàng: 1900-8888 (Hoạt động từ 8:00 - 20:00 hàng ngày).',
-    scope_5_f2: 'Hộp thư điện tử tiếp nhận: contact@cleanova.vn.',
+    scope_5_f2: 'Hộp thư điện tử tiếp nhận: contact@dabclean.vn.',
     scope_5_f3: 'Gửi yêu cầu hỗ trợ trực tiếp từ giao diện tài khoản cá nhân.',
 
     scope_disclaimer_title: 'LƯU Ý QUAN TRỌNG VỀ DỊCH VỤ CHĂM SÓC NGƯỜI BỆNH:',
-    scope_disclaimer_desc: 'Dịch vụ chăm sóc người bệnh tại nhà của CleanNova là dịch vụ hỗ trợ sinh hoạt đời sống và thể chất thông thường, KHÔNG PHẢI dịch vụ điều trị y tế. Nhân viên CleanNova tuyệt đối không thực hiện các thủ thuật can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn thuốc, thay băng vết mổ phức tạp). Các nghiệp vụ chuyên môn y khoa chỉ được phép thực hiện khi có nhân sự có chứng chỉ hành nghề y tế hợp lệ theo quy định pháp luật và quy trình chuyên trách.',
+    scope_disclaimer_desc: 'Dịch vụ chăm sóc người bệnh tại nhà của DabClean là dịch vụ hỗ trợ sinh hoạt đời sống và thể chất thông thường, KHÔNG PHẢI dịch vụ điều trị y tế. Nhân viên DabClean tuyệt đối không thực hiện các thủ thuật can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn thuốc, thay băng vết mổ phức tạp). Các nghiệp vụ chuyên môn y khoa chỉ được phép thực hiện khi có nhân sự có chứng chỉ hành nghề y tế hợp lệ theo quy định pháp luật và quy trình chuyên trách.',
 
     /* --- Calculator Section --- */
     calc_badge: '💰 Báo giá nhanh',
@@ -307,13 +307,13 @@ const translations = {
 
     /* --- Partner Section (Section 8) --- */
     partner_badge: 'Đồng hành phát triển',
-    partner_title: 'Cùng CleanNova mang đến không gian sạch hơn',
-    partner_desc: 'Tham gia đội ngũ đối tác cung cấp dịch vụ chuyên nghiệp, chủ động thời gian và phát triển thu nhập ổn định theo chính sách minh bạch của CleanNova.',
+    partner_title: 'Cùng DabClean mang đến không gian sạch hơn',
+    partner_desc: 'Tham gia đội ngũ đối tác cung cấp dịch vụ chuyên nghiệp, chủ động thời gian và phát triển thu nhập ổn định theo chính sách minh bạch của DabClean.',
     partner_step_1: 'Gửi hồ sơ đăng ký trực tuyến trên trang riêng biệt',
-    partner_step_2: 'Chờ Cleanova thẩm định và xét duyệt hồ sơ',
+    partner_step_2: 'Chờ DabClean thẩm định và xét duyệt hồ sơ',
     partner_step_3: 'Hoàn thiện quy trình tiếp nhận & hướng dẫn tiêu chuẩn',
     partner_step_4: 'Bắt đầu nhận công việc sau khi hồ sơ được phê duyệt',
-    btn_partner_action: 'Trở thành đối tác Cleanova',
+    btn_partner_action: 'Trở thành đối tác DabClean',
     partner_card_eyebrow: '⭐ Cơ hội nghề nghiệp linh hoạt',
     partner_card_status: 'Đang mở đơn',
     partner_feature_1_title: 'Chủ động thời gian',
@@ -328,28 +328,28 @@ const translations = {
     /* --- Testimonials Section --- */
     reviews_badge: '💬 Đánh giá khách hàng',
     reviews_title: 'Khách hàng nói gì về chúng tôi',
-    reviews_subtitle: 'Hàng ngàn khách hàng đã tin tưởng và hài lòng với dịch vụ của Cleanova.',
+    reviews_subtitle: 'Hàng ngàn khách hàng đã tin tưởng và hài lòng với dịch vụ của DabClean.',
     review_1_text: '"Dịch vụ tuyệt vời! Nhân viên đến đúng giờ, làm việc rất cẩn thận. Nhà tôi sạch bóng sau 3 tiếng. Chắc chắn sẽ đặt lại!"',
     review_1_name: 'Nguyễn Thị Mai Anh',
     review_1_service: 'Tổng vệ sinh Deep Cleaning',
     review_2_text: '"Dịch vụ chăm sóc người cao tuổi rất chu đáo. Cô chăm sóc nhiệt tình, trò chuyện vui vẻ giúp bố tôi tinh thần phấn chấn hẳn."',
     review_2_name: 'Trần Văn Hùng',
     review_2_service: 'Chăm sóc người cao tuổi tại nhà',
-    review_3_text: '"Gia đình bận rộn nên đặt bảo mẫu theo giờ bên CleanNova hỗ trợ đón và kèm con học bài. Rất an tâm và hài lòng!"',
+    review_3_text: '"Gia đình bận rộn nên đặt bảo mẫu theo giờ bên DabClean hỗ trợ đón và kèm con học bài. Rất an tâm và hài lòng!"',
     review_3_name: 'Lê Phương Thảo',
     review_3_service: 'Chăm sóc trẻ em tại nhà',
 
     /* --- Promo Banner --- */
     promo_title: 'Nhận ngay ưu đãi 20% cho lần đặt lịch đầu tiên!',
     promo_subtitle: 'Áp dụng cho tất cả dịch vụ. Ưu đãi có giới hạn — Đặt ngay hôm nay!',
-    promo_btn: 'Đặt ngay — Nhập mã CLEANOVA20',
+    promo_btn: 'Đặt ngay — Nhập mã DABCLEAN20',
 
     /* --- FAQ Section --- */
     faq_badge: '❓ Câu hỏi thường gặp',
     faq_title: 'Giải đáp thắc mắc của bạn',
-    faq_subtitle: 'Tìm câu trả lời cho những câu hỏi phổ biến về dịch vụ của Cleanova.',
+    faq_subtitle: 'Tìm câu trả lời cho những câu hỏi phổ biến về dịch vụ của DabClean.',
     faq_1_q: 'Giá dịch vụ được tính như thế nào?',
-    faq_1_a: 'Giá dịch vụ tại CleanNova được tính toán tự động và thống nhất từ backend theo loại hình dịch vụ: theo giờ (dọn dẹp cơ bản, chăm sóc trẻ em, người cao tuổi, người bệnh) hoặc theo khối lượng/diện tích (giặt sofa, vệ sinh sâu, sau xây dựng). Hệ thống áp dụng chính sách ưu đãi tần suất (giảm 15% khi đặt hàng tuần, giảm 10% khi đặt hàng tháng) và mã khuyến mãi hợp lệ mà không có chi phí ẩn.',
+    faq_1_a: 'Giá dịch vụ tại DabClean được tính toán tự động và thống nhất từ backend theo loại hình dịch vụ: theo giờ (dọn dẹp cơ bản, chăm sóc trẻ em, người cao tuổi, người bệnh) hoặc theo khối lượng/diện tích (giặt sofa, vệ sinh sâu, sau xây dựng). Hệ thống áp dụng chính sách ưu đãi tần suất (giảm 15% khi đặt hàng tuần, giảm 10% khi đặt hàng tháng) và mã khuyến mãi hợp lệ mà không có chi phí ẩn.',
     faq_2_q: 'Có thể đặt dịch vụ tối thiểu bao nhiêu giờ?',
     faq_2_a: 'Đối với dịch vụ dọn dẹp vệ sinh nhà cửa theo giờ, thời lượng đặt tối thiểu là 1 giờ. Đối với các dịch vụ chăm sóc tại nhà (chăm sóc trẻ em, người cao tuổi và người bệnh), thời lượng đặt tối thiểu quy định là 2 giờ mỗi ca làm việc để đảm bảo nhân sự có đủ thời gian hoàn thành chu đáo các công việc hỗ trợ sinh hoạt.',
     faq_3_q: 'Có thể đổi hoặc hủy lịch không?',
@@ -357,14 +357,14 @@ const translations = {
     faq_4_q: 'Làm thế nào để theo dõi lịch đặt?',
     faq_4_a: 'Sau khi đặt lịch thành công, bạn chỉ cần đăng nhập tài khoản và chọn "Đơn của tôi" trên menu điều hướng. Tại đây, bạn có thể xem chi tiết mã đơn, thời gian thực hiện, trạng thái xử lý theo thời gian thực (Chờ xử lý, Đã xác nhận, Đang thực hiện, Hoàn thành) và thông tin nhân viên phụ trách khi được hệ thống điều phối.',
     faq_5_q: 'Tiền dịch vụ được thanh toán như thế nào?',
-    faq_5_a: 'CleanNova hỗ trợ nhiều hình thức thanh toán an toàn và tiện lợi: thanh toán tiền mặt trực tiếp cho nhân viên sau khi hoàn thành dịch vụ, chuyển khoản ngân hàng hoặc thanh toán trực tuyến qua các ví điện tử được tích hợp sẵn. Mọi đơn thanh toán đều có biên lai xác nhận điện tử minh bạch trong tài khoản của bạn.',
+    faq_5_a: 'DabClean hỗ trợ nhiều hình thức thanh toán an toàn và tiện lợi: thanh toán tiền mặt trực tiếp cho nhân viên sau khi hoàn thành dịch vụ, chuyển khoản ngân hàng hoặc thanh toán trực tuyến qua các ví điện tử được tích hợp sẵn. Mọi đơn thanh toán đều có biên lai xác nhận điện tử minh bạch trong tài khoản của bạn.',
     faq_6_q: 'Nhân viên chăm sóc có thể thực hiện những công việc gì?',
-    faq_6_a: 'Nhân viên chăm sóc tại nhà hỗ trợ các công việc sinh hoạt đời sống hàng ngày: hỗ trợ ăn uống, chuẩn bị thức ăn nhẹ, vệ sinh cá nhân, hỗ trợ di chuyển an toàn, nhắc uống thuốc đúng giờ theo đơn bác sĩ và trò chuyện tâm lý. CleanNova KHÔNG cung cấp các can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn, điều trị chuyên khoa) vì đây là dịch vụ hỗ trợ sinh hoạt đời sống.',
+    faq_6_a: 'Nhân viên chăm sóc tại nhà hỗ trợ các công việc sinh hoạt đời sống hàng ngày: hỗ trợ ăn uống, chuẩn bị thức ăn nhẹ, vệ sinh cá nhân, hỗ trợ di chuyển an toàn, nhắc uống thuốc đúng giờ theo đơn bác sĩ và trò chuyện tâm lý. DabClean KHÔNG cung cấp các can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn, điều trị chuyên khoa) vì đây là dịch vụ hỗ trợ sinh hoạt đời sống.',
 
     /* --- Footer --- */
     footer_slogan: 'Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ vệ sinh & chăm sóc gia đình tiện lợi, tin cậy.',
     footer_phone: '1900-8888 (8:00 - 20:00)',
-    footer_email: 'contact@cleanova.vn',
+    footer_email: 'contact@dabclean.vn',
     footer_address: '123 Đường Cầu Giấy, Hà Nội',
     footer_col2_title: 'Dịch vụ',
     footer_link_hourly: 'Dọn dẹp theo giờ',
@@ -380,7 +380,7 @@ const translations = {
     footer_link_patient_care: 'Chăm sóc người bệnh tại nhà',
     footer_link_pricing: 'Bảng giá dịch vụ',
     footer_col3_title: 'Khám phá',
-    footer_link_about: 'Giới thiệu CleanNova',
+    footer_link_about: 'Giới thiệu DabClean',
     footer_link_career: 'Tuyển dụng',
     footer_link_partner: 'Trở thành đối tác',
     footer_link_blog: 'Blog',
@@ -388,7 +388,7 @@ const translations = {
     footer_link_login: 'Đăng nhập / Đăng ký',
     footer_link_steps: 'Quy trình dọn dẹp 6 bước',
     footer_link_ai: 'Công nghệ AI Quét độ bẩn',
-    footer_link_why: 'Vì sao chọn CleanNova?',
+    footer_link_why: 'Vì sao chọn DabClean?',
     footer_link_faq: 'Câu hỏi thường gặp (FAQ)',
     footer_newsletter_title: 'Hỗ trợ & Đặt lịch',
     footer_link_book_online: '⚡ Đặt lịch trực tuyến',
@@ -399,11 +399,11 @@ const translations = {
     footer_newsletter_desc: 'Nhận mã ưu đãi giảm 20% định kỳ:',
     footer_newsletter_placeholder: 'Nhập email của bạn...',
     footer_newsletter_btn: 'Đăng ký',
-    footer_copyright: '© 2026 Cleanova Inc. Bảo lưu mọi quyền.',
+    footer_copyright: '© 2026 DabClean Inc. Bảo lưu mọi quyền.',
     footer_privacy: 'Chính sách bảo mật',
     footer_terms: 'Điều khoản dịch vụ',
-    footer_link_commitments: 'Cam kết Cleanova Care',
-    footer_commitment: 'Cam kết Cleanova Care',
+    footer_link_commitments: 'Cam kết DabClean Care',
+    footer_commitment: 'Cam kết DabClean Care',
 
     /* --- Modal Dialog --- */
     modal_service_title: 'Chi tiết dịch vụ',
@@ -418,9 +418,9 @@ const translations = {
     toast_booking_title: 'Đặt lịch thành công!',
     toast_booking_text: 'Chúng tôi sẽ liên hệ bạn trong ít phút để xác nhận.',
     toast_newsletter_title: 'Đăng ký thành công!',
-    toast_newsletter_text: 'Cảm ơn bạn đã đăng ký nhận thông báo từ Cleanova.',
+    toast_newsletter_text: 'Cảm ơn bạn đã đăng ký nhận thông báo từ DabClean.',
     toast_promo_title: 'Mã giảm giá đã được sao chép!',
-    toast_promo_text: 'Sử dụng mã CLEANOVA20 khi đặt lịch.',
+    toast_promo_text: 'Sử dụng mã DABCLEAN20 khi đặt lịch.',
     toast_logout_title: 'Đã đăng xuất thành công!',
     toast_logout_text: 'Đang chuyển bạn về trang đăng nhập...'
   },
@@ -433,7 +433,7 @@ const translations = {
     nav_pricing: 'Pricing',
     nav_reviews: 'Reviews',
     nav_faq: 'FAQ',
-    nav_why: 'Why Cleanova',
+    nav_why: 'Why DabClean',
     nav_guide: 'How It Works',
     nav_timeline: 'Process',
     nav_workflow: 'Workflow',
@@ -442,7 +442,7 @@ const translations = {
     nav_partner: 'Become a Partner',
     nav_explore: 'Explore',
     nav_my_bookings: 'My Bookings',
-    nav_wallet: 'CleanNova Wallet',
+    nav_wallet: 'DabClean Wallet',
     nav_admin: 'Admin Portal',
     nav_staff: 'Staff Portal',
     nav_profile: 'My Profile',
@@ -453,17 +453,17 @@ const translations = {
     btn_learn_more: 'Learn More',
 
     /* --- Notification Dropdown --- */
-    notif_header_title: 'Cleanova Notifications',
+    notif_header_title: 'DabClean Notifications',
     notif_mark_read: 'Mark read',
     notif_1_title: '🎉 20% Promo Code Ready',
-    notif_1_desc: 'Use promo code CLEANOVA20 to save 20% on your next booking.',
+    notif_1_desc: 'Use promo code DABCLEAN20 to save 20% on your next booking.',
     notif_just_now: 'Just now',
     notif_2_title: '⚡ Latest Booking',
     notif_2_desc: 'Booking CNV-2026-0001 is currently in confirmed status.',
     notif_1_hour_ago: '1 hour ago',
 
     /* --- Mobile Drawer Card --- */
-    mobile_partner_title: 'Become a CleanNova Partner',
+    mobile_partner_title: 'Become a DabClean Partner',
     mobile_partner_desc: 'Register to join our team & receive jobs',
 
     /* --- Badges & Chips --- */
@@ -491,7 +491,7 @@ const translations = {
     hero_title: 'Caring for your home, peace of mind for your family',
     hero_title_1: 'Caring for your home,',
     hero_title_highlight: 'peace of mind for your family',
-    hero_subtitle: 'From pristine living spaces to dedicated care for your loved ones. CleanNova helps you find the right service right at home.',
+    hero_subtitle: 'From pristine living spaces to dedicated care for your loved ones. DabClean helps you find the right service right at home.',
     hero_cta_explore: 'Explore Services',
     hero_cta_book: 'Book Now',
     trust_rating_value: '4.9/5★',
@@ -506,7 +506,7 @@ const translations = {
     hero_float_2_text: 'Attentive and caring!',
 
     /* --- Services Section --- */
-    services_badge: '✨ CleanNova Services',
+    services_badge: '✨ DabClean Services',
     services_title: 'Cleaning & In-Home Care Services',
     services_subtitle: 'Comprehensive solutions from keeping your home pristine to caring attentively for children, seniors, and patients.',
     tab_all_services: 'All Services',
@@ -541,7 +541,7 @@ const translations = {
 
     /* --- Why CleanNova Section --- */
     why_badge: '✨ Why Choose Us',
-    why_title: 'Why Choose CleanNova?',
+    why_title: 'Why Choose DabClean?',
     why_subtitle: 'Real, transparent, and dependable benefits for every home.',
     why_point_1_title: '1. Convenient In-Home Booking',
     why_point_1_desc: 'Browse services, select convenient times, and submit requests on our website in just a few clicks.',
@@ -557,7 +557,7 @@ const translations = {
 
     /* --- Booking Workflow Section --- */
     workflow_badge: '⚡ Booking Process',
-    workflow_title: '4 Steps to Book with CleanNova',
+    workflow_title: '4 Steps to Book with DabClean',
     workflow_subtitle: 'From scheduling to completion, everything is transparent, reliable, and convenient.',
     workflow_step_badge_1: 'Step 01',
     workflow_step_1_title: 'Choose the Right Service',
@@ -578,7 +578,7 @@ const translations = {
 
     /* --- Pricing Section (Section 5) --- */
     pricing_badge: '💰 Transparent Pricing',
-    pricing_title: 'CleanNova Service Pricing',
+    pricing_title: 'DabClean Service Pricing',
     pricing_subtitle: 'Public rates synchronized directly from system backend without hidden fees.',
     pricing_tab_all: '✨ All Packages',
     pricing_tab_cleaning: '🧹 Cleaning Services',
@@ -690,11 +690,11 @@ const translations = {
 
     scope_5_title: 'Customer Support Channels',
     scope_5_f1: 'Customer hotline: 1900-8888 (Operating 8:00 AM - 8:00 PM daily).',
-    scope_5_f2: 'Official support email: contact@cleanova.vn.',
+    scope_5_f2: 'Official support email: contact@dabclean.vn.',
     scope_5_f3: 'Submit support requests directly from your personal account portal.',
 
     scope_disclaimer_title: 'IMPORTANT NOTICE ON IN-HOME PATIENT CARE:',
-    scope_disclaimer_desc: 'CleanNova in-home patient care is a standard living and physical support service, NOT medical treatment. CleanNova staff strictly DO NOT perform invasive medical procedures (such as injections, intravenous drips, prescription medications, or surgical wound dressing). Specialized medical tasks may only be performed by licensed healthcare practitioners in compliance with applicable laws.',
+    scope_disclaimer_desc: 'DabClean in-home patient care is a standard living and physical support service, NOT medical treatment. DabClean staff strictly DO NOT perform invasive medical procedures (such as injections, intravenous drips, prescription medications, or surgical wound dressing). Specialized medical tasks may only be performed by licensed healthcare practitioners in compliance with applicable laws.',
 
     /* --- Calculator Section --- */
     calc_badge: '💰 Quick Quote',
@@ -724,13 +724,13 @@ const translations = {
 
     /* --- Partner Section (Section 8) --- */
     partner_badge: 'Grow With Us',
-    partner_title: 'Create Cleaner Spaces Together with CleanNova',
-    partner_desc: 'Join our professional service partner network, enjoy flexible hours, and grow dependable income under transparent CleanNova policies.',
+    partner_title: 'Create Cleaner Spaces Together with DabClean',
+    partner_desc: 'Join our professional service partner network, enjoy flexible hours, and grow dependable income under transparent DabClean policies.',
     partner_step_1: 'Submit your online application on the dedicated portal',
-    partner_step_2: 'Wait for CleanNova application review and background verification',
+    partner_step_2: 'Wait for DabClean application review and background verification',
     partner_step_3: 'Complete orientation and standard quality guidelines',
     partner_step_4: 'Start receiving job assignments upon approval',
-    btn_partner_action: 'Become a CleanNova Partner',
+    btn_partner_action: 'Become a DabClean Partner',
     partner_card_eyebrow: '⭐ Flexible Career Opportunity',
     partner_card_status: 'Open for Applications',
     partner_feature_1_title: 'Flexible Hours',
@@ -745,7 +745,7 @@ const translations = {
     /* --- Testimonials Section --- */
     reviews_badge: '💬 Customer Reviews',
     reviews_title: 'What Our Customers Say',
-    reviews_subtitle: 'Thousands of customers have trusted and are satisfied with Cleanova services.',
+    reviews_subtitle: 'Thousands of customers have trusted and are satisfied with DabClean services.',
     review_1_text: '"Excellent service! Staff arrived on time and worked very carefully. My house was spotless after 3 hours. Will definitely book again!"',
     review_1_name: 'Mai Anh Nguyen',
     review_1_service: 'Deep Cleaning',
@@ -759,14 +759,14 @@ const translations = {
     /* --- Promo Banner --- */
     promo_title: 'Get 20% off your first booking!',
     promo_subtitle: 'Valid for all services. Limited offer — Book today!',
-    promo_btn: 'Book Now — Use code CLEANOVA20',
+    promo_btn: 'Book Now — Use code DABCLEAN20',
 
     /* --- FAQ Section --- */
     faq_badge: '❓ Frequently Asked Questions',
     faq_title: 'Got Questions? We Have Answers',
-    faq_subtitle: 'Find answers to common questions about Cleanova services.',
+    faq_subtitle: 'Find answers to common questions about DabClean services.',
     faq_1_q: 'How is service pricing calculated?',
-    faq_1_a: 'Service rates at CleanNova are unified and calculated via backend logic based on hourly duration or scale/area. Regular schedule discounts (15% for weekly, 10% for monthly) and valid promo codes are automatically applied with zero hidden fees.',
+    faq_1_a: 'Service rates at DabClean are unified and calculated via backend logic based on hourly duration or scale/area. Regular schedule discounts (15% for weekly, 10% for monthly) and valid promo codes are automatically applied with zero hidden fees.',
     faq_2_q: 'What is the minimum booking duration?',
     faq_2_a: 'For hourly house cleaning, the minimum booking duration is 1 hour. For in-home care services (child care, elderly care, patient care), the minimum duration is 2 hours per shift to ensure quality care.',
     faq_3_q: 'Can I cancel or reschedule my booking?',
@@ -774,14 +774,14 @@ const translations = {
     faq_4_q: 'How do I track my booking status?',
     faq_4_a: 'Once booked, sign in and go to "My Bookings" in the navigation bar to track live order states (Pending, Confirmed, In Progress, Completed) and view assigned staff details.',
     faq_5_q: 'What payment methods are supported?',
-    faq_5_a: 'CleanNova supports convenient cash payment to staff upon completion, direct bank transfer, or online payment via supported e-wallets. Electronic receipts are stored in your account history.',
+    faq_5_a: 'DabClean supports convenient cash payment to staff upon completion, direct bank transfer, or online payment via supported e-wallets. Electronic receipts are stored in your account history.',
     faq_6_q: 'What tasks can in-home caregivers perform?',
-    faq_6_a: 'Caregivers assist with standard daily living needs: personal hygiene, meal assistance, safe mobility support, reminding medication on schedule, and companionship. CleanNova does NOT provide invasive medical treatments or clinical care.',
+    faq_6_a: 'Caregivers assist with standard daily living needs: personal hygiene, meal assistance, safe mobility support, reminding medication on schedule, and companionship. DabClean does NOT provide invasive medical treatments or clinical care.',
 
     /* --- Footer --- */
     footer_slogan: 'A Cleaner Space, A Better Life. Convenient & trusted cleaning and family care services.',
     footer_phone: '1900-8888 (8:00 - 20:00)',
-    footer_email: 'contact@cleanova.vn',
+    footer_email: 'contact@dabclean.vn',
     footer_address: '123 Cau Giay Street, Hanoi',
     footer_col2_title: 'Services',
     footer_link_hourly: 'Hourly Cleaning',
@@ -796,8 +796,8 @@ const translations = {
     footer_link_patient: 'In-Home Patient Care',
     footer_link_patient_care: 'In-Home Patient Care',
     footer_link_pricing: 'Service Pricing',
-    footer_col3_title: 'About Cleanova',
-    footer_link_about: 'About CleanNova',
+    footer_col3_title: 'About DabClean',
+    footer_link_about: 'About DabClean',
     footer_link_career: 'Careers',
     footer_link_partner: 'Become a Partner',
     footer_link_blog: 'Blog',
@@ -816,11 +816,11 @@ const translations = {
     footer_newsletter_desc: 'Get 20% off promo codes periodically:',
     footer_newsletter_placeholder: 'Enter your email...',
     footer_newsletter_btn: 'Subscribe',
-    footer_copyright: '© 2026 Cleanova Inc. All rights reserved.',
+    footer_copyright: '© 2026 DabClean Inc. All rights reserved.',
     footer_privacy: 'Privacy Policy',
     footer_terms: 'Terms of Service',
-    footer_link_commitments: 'Cleanova Care Commitments',
-    footer_commitment: 'Cleanova Care Commitments',
+    footer_link_commitments: 'DabClean Care Commitments',
+    footer_commitment: 'DabClean Care Commitments',
 
     /* --- Modal Dialog --- */
     modal_service_title: 'Service Details',
@@ -835,9 +835,9 @@ const translations = {
     toast_booking_title: 'Booking Received!',
     toast_booking_text: 'We will contact you shortly to confirm.',
     toast_newsletter_title: 'Subscribed Successfully!',
-    toast_newsletter_text: 'Thank you for subscribing to Cleanova updates.',
+    toast_newsletter_text: 'Thank you for subscribing to DabClean updates.',
     toast_promo_title: 'Promo Code Copied!',
-    toast_promo_text: 'Use code CLEANOVA20 when booking.',
+    toast_promo_text: 'Use code DABCLEAN20 when booking.',
     toast_logout_title: 'Logged Out Successfully!',
     toast_logout_text: 'Redirecting to login page...'
   }
@@ -846,7 +846,7 @@ const translations = {
 /* ---------------------------------------------------------------
    2. BIẾN TRẠNG THÁI TOÀN CỤC
    --------------------------------------------------------------- */
-let currentLang = localStorage.getItem('cleanova_lang') || 'vi';
+let currentLang = localStorage.getItem('dabclean_lang') || localStorage.getItem('cleanova_lang') || 'vi';
 
 // Chuyển đổi tên đơn vị sang Tiếng Anh
 function formatUnitEN(unit) {
@@ -936,7 +936,7 @@ function updateDynamicPricesLanguage(lang) {
    --------------------------------------------------------------- */
 function switchLanguage(lang) {
   currentLang = lang;
-  localStorage.setItem('cleanova_lang', lang);
+  localStorage.setItem('dabclean_lang', lang); localStorage.setItem('cleanova_lang', lang);
   document.documentElement.lang = lang;
 
   const t = translations[lang] || translations.vi;
@@ -1113,11 +1113,11 @@ function formatUSD(amount) {
    Hiển thị thông tin người dùng và xử lý nút đăng xuất
    --------------------------------------------------------------- */
 function initAuthStatus() {
-  const api = window.CleanovaAPI;
+  const api = window.DabCleanAPI;
   const user = (api && api.auth) ? api.auth.getUser() : null;
   const isLoggedIn = (api && api.auth)
     ? api.auth.isLoggedIn()
-    : Boolean(localStorage.getItem('cleanova_token'));
+    : Boolean(localStorage.getItem('dabclean_token') || localStorage.getItem('cleanova_token'));
 
   const displayName = user ? (user.name || user.email) : 'Khách hàng';
   const isAdmin = (api && api.auth) ? api.auth.isAdmin() : (user && user.role === 'admin');
@@ -1206,8 +1206,8 @@ function initAuthStatus() {
     if (api && api.auth) {
       api.auth.logout();
     } else {
-      localStorage.removeItem('cleanova_token');
-      localStorage.removeItem('cleanova_user');
+      localStorage.removeItem('dabclean_token'); localStorage.removeItem('cleanova_token');
+      localStorage.removeItem('dabclean_user'); localStorage.removeItem('cleanova_user');
       sessionStorage.clear();
       window.location.href = 'trangchu.html';
     }
@@ -1332,7 +1332,7 @@ function initNotifications() {
       btnMarkRead.textContent = '✓ Đã đọc tất cả';
       btnMarkRead.style.color = 'var(--color-text-muted)';
       btnMarkRead.style.cursor = 'default';
-      showToast('success', 'Thông báo Cleanova', 'Tất cả thông báo đã được đánh dấu là đã đọc.');
+      showToast('success', 'Thông báo DabClean', 'Tất cả thông báo đã được đánh dấu là đã đọc.');
     });
   }
 
@@ -1503,10 +1503,10 @@ function initCTAButtons() {
   document.querySelectorAll('[data-action="book"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       const href = btn.getAttribute('href') || 'booking.html';
-      const api = window.CleanovaAPI;
+      const api = window.DabCleanAPI;
       if (api && api.auth && !api.auth.isLoggedIn()) {
         e.preventDefault();
-        api.auth.requireAuth(href, 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova');
+        api.auth.requireAuth(href, 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ DabClean');
         return;
       }
       if (href && (href.startsWith('booking.html') || href.startsWith('services.html'))) {
@@ -1533,7 +1533,7 @@ function initCTAButtons() {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       if (navigator.clipboard) {
-        navigator.clipboard.writeText('CLEANOVA20').then(() => {
+        navigator.clipboard.writeText('DABCLEAN20').then(() => {
           showToast('info', 'toast_promo_title', 'toast_promo_text');
         }).catch(() => {
           showToast('info', 'toast_promo_title', 'toast_promo_text');
@@ -1842,8 +1842,8 @@ async function initServicesAndPricing() {
 
   try {
     let services = [];
-    if (window.CleanovaAPI && window.CleanovaAPI.services && typeof window.CleanovaAPI.services.getAll === 'function') {
-      const res = await window.CleanovaAPI.services.getAll();
+    if (window.DabCleanAPI && window.DabCleanAPI.services && typeof window.DabCleanAPI.services.getAll === 'function') {
+      const res = await window.DabCleanAPI.services.getAll();
       services = res.data || res || [];
     } else {
       const res = await fetch('/api/services');

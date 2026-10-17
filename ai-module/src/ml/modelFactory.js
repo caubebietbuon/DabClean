@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Model Factory (phần "đầu" tự huấn luyện)
+// DABCLEAN AI MODULE - Model Factory (phần "đầu" tự huấn luyện)
 // ============================================================
 // Đây chính là 2 lớp Dense của riêng ta, đúng như yêu cầu:
 //

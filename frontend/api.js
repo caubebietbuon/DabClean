@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA FRONTEND - API Client Adapter (Vanilla JS Fetch Wrapper)
+// DABCLEAN FRONTEND - API Client Adapter (Vanilla JS Fetch Wrapper)
 // Hỗ trợ đầy đủ RESTful API cho Customer, Staff và Admin
 // ============================================================
 (function () {
@@ -19,7 +19,7 @@
       delete headers['Content-Type'];
     }
 
-    const token = localStorage.getItem('cleanova_token') || sessionStorage.getItem('cleanova_token');
+    const token = localStorage.getItem('dabclean_token') || sessionStorage.getItem('dabclean_token') || localStorage.getItem('cleanova_token') || sessionStorage.getItem('cleanova_token');
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
@@ -41,8 +41,7 @@
       if (!response.ok) {
         // Nếu phát hiện phiên đăng nhập đã hết hạn (401 Unauthorized)
         if (response.status === 401) {
-          localStorage.removeItem('cleanova_token');
-          localStorage.removeItem('cleanova_user');
+          localStorage.removeItem('dabclean_token'); localStorage.removeItem('dabclean_user'); localStorage.removeItem('cleanova_token'); localStorage.removeItem('cleanova_user');
           sessionStorage.clear();
           const currentFile = window.location.pathname.split('/').pop() || 'trangchu.html';
           const protectedPages = ['booking.html', 'my-bookings.html', 'profile.html', 'admin.html', 'staff.html'];
@@ -56,8 +55,7 @@
 
         // Nếu phát hiện tài khoản bị vô hiệu hóa
         if (response.status === 403 && data && data.code === 'ACCOUNT_DEACTIVATED') {
-          localStorage.removeItem('cleanova_token');
-          localStorage.removeItem('cleanova_user');
+          localStorage.removeItem('dabclean_token'); localStorage.removeItem('dabclean_user'); localStorage.removeItem('cleanova_token'); localStorage.removeItem('cleanova_user');
           sessionStorage.clear();
           alert('Tài khoản của bạn đã bị vô hiệu hóa bởi Quản trị viên. Hệ thống sẽ chuyển về trang đăng nhập.');
           window.location.href = 'login.html?deactivated=true';
@@ -73,12 +71,12 @@
 
       return data;
     } catch (err) {
-      console.error(`[CleanovaAPI] Lỗi gọi ${endpoint}:`, err.message);
+      console.error(`[DabCleanAPI] Lỗi gọi ${endpoint}:`, err.message);
       throw err;
     }
   }
 
-  window.CleanovaAPI = {
+  window.DabCleanAPI = window.CleanovaAPI = {
     BASE_URL: API_BASE_URL,
 
     // Module Xác thực & Quản lý phiên
@@ -89,10 +87,7 @@
           body: JSON.stringify(userData)
         });
         if (res.data && res.data.token) {
-          localStorage.setItem('cleanova_token', res.data.token);
-          localStorage.setItem('cleanova_user', JSON.stringify(res.data.user));
-          sessionStorage.setItem('cleanova_logged_in', 'true');
-          sessionStorage.setItem('cleanova_user_email', res.data.user.email);
+          localStorage.setItem('dabclean_token', res.data.token); localStorage.setItem('dabclean_user', JSON.stringify(res.data.user)); sessionStorage.setItem('dabclean_logged_in', 'true'); sessionStorage.setItem('dabclean_user_email', res.data.user.email); localStorage.setItem('cleanova_token', res.data.token); localStorage.setItem('dabclean_user', JSON.stringify(res.data.user)); localStorage.setItem('cleanova_user', JSON.stringify(res.data.user));
         }
         return res;
       },
@@ -103,10 +98,7 @@
           body: JSON.stringify({ email, password })
         });
         if (res.data && res.data.token) {
-          localStorage.setItem('cleanova_token', res.data.token);
-          localStorage.setItem('cleanova_user', JSON.stringify(res.data.user));
-          sessionStorage.setItem('cleanova_logged_in', 'true');
-          sessionStorage.setItem('cleanova_user_email', res.data.user.email);
+          localStorage.setItem('dabclean_token', res.data.token); localStorage.setItem('dabclean_user', JSON.stringify(res.data.user)); sessionStorage.setItem('dabclean_logged_in', 'true'); sessionStorage.setItem('dabclean_user_email', res.data.user.email); localStorage.setItem('cleanova_token', res.data.token); localStorage.setItem('dabclean_user', JSON.stringify(res.data.user)); localStorage.setItem('cleanova_user', JSON.stringify(res.data.user));
         }
         return res;
       },
@@ -121,7 +113,7 @@
           body: JSON.stringify(profileData)
         });
         if (res.data && res.data.user) {
-          localStorage.setItem('cleanova_user', JSON.stringify(res.data.user));
+          localStorage.setItem('dabclean_user', JSON.stringify(res.data.user)); localStorage.setItem('cleanova_user', JSON.stringify(res.data.user));
         }
         return res;
       },
@@ -134,14 +126,13 @@
       },
 
       logout() {
-        localStorage.removeItem('cleanova_token');
-        localStorage.removeItem('cleanova_user');
+        localStorage.removeItem('dabclean_token'); localStorage.removeItem('dabclean_user'); localStorage.removeItem('cleanova_token'); localStorage.removeItem('cleanova_user');
         sessionStorage.clear();
         window.location.href = 'trangchu.html';
       },
 
       // Kiểm tra đăng nhập và tự động chuyển hướng kèm returnUrl nếu là khách vãng lai
-      requireAuth(targetUrl = 'booking.html', customMessage = 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova') {
+      requireAuth(targetUrl = 'booking.html', customMessage = 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ DabClean') {
         if (this.isLoggedIn()) {
           return true;
         }
@@ -153,14 +144,14 @@
 
       getUser() {
         try {
-          return JSON.parse(localStorage.getItem('cleanova_user') || 'null');
+          return JSON.parse(localStorage.getItem('dabclean_user') || localStorage.getItem('cleanova_user') || 'null');
         } catch {
           return null;
         }
       },
 
       getToken() {
-        return localStorage.getItem('cleanova_token') || sessionStorage.getItem('cleanova_token');
+        return localStorage.getItem('dabclean_token') || sessionStorage.getItem('dabclean_token') || localStorage.getItem('cleanova_token') || sessionStorage.getItem('cleanova_token');
       },
 
       isLoggedIn() {
@@ -389,12 +380,12 @@
     // Module Sổ địa chỉ khách hàng (Address Book)
     addresses: {
       getStorageKey() {
-        const user = window.CleanovaAPI.auth.getUser();
-        return user ? `cleanova_addresses_${user.id}` : 'cleanova_addresses_guest';
+        const user = (window.DabCleanAPI || window.CleanovaAPI).auth.getUser();
+        return user ? `dabclean_addresses_${user.id}` : `dabclean_addresses_guest`;
       },
 
       getAll() {
-        const user = window.CleanovaAPI.auth.getUser();
+        const user = (window.DabCleanAPI || window.CleanovaAPI).auth.getUser();
         const defaultList = [
           {
             id: 'addr_1',
@@ -461,8 +452,8 @@
     // Module Dịch vụ yêu thích (Favorites)
     favorites: {
       getStorageKey() {
-        const user = window.CleanovaAPI.auth.getUser();
-        return user ? `cleanova_favs_${user.id}` : 'cleanova_favs_guest';
+        const user = (window.DabCleanAPI || window.CleanovaAPI).auth.getUser();
+        return user ? `dabclean_favs_${user.id}` : `dabclean_favs_guest`;
       },
 
       getAll() {
@@ -672,7 +663,7 @@
       }
     },
 
-    // Module Nhân viên Cleanova (Staff Portal)
+    // Module Nhân viên DabClean (Staff Portal)
     staff: {
       async getMyTasks(status = '') {
         const query = status ? `?status=${encodeURIComponent(status)}` : '';
@@ -716,7 +707,7 @@
       },
 
       async getTaskPhoto(imagePath) {
-        const token = window.CleanovaAPI.auth.getToken();
+        const token = (window.DabCleanAPI || window.CleanovaAPI).auth.getToken();
         const response = await fetch(`${API_BASE_URL}${imagePath}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         });
@@ -745,7 +736,7 @@
       }
     },
 
-    // Module Đối tác Cleanova (Partner & Employee Onboarding)
+    // Module Đối tác DabClean (Partner & Employee Onboarding)
     partner: {
       async register(applicationData) {
         return await request('/partner/register', {
@@ -865,7 +856,7 @@
           throw new Error('Không thể kết nối đến máy chủ AI. Vui lòng kiểm tra lại server backend (cổng 5000 hoặc 5100).');
         }
 
-        throw lastError || new Error('Không thể kết nối đến máy chủ AI Cleanova.');
+        throw lastError || new Error('Không thể kết nối đến máy chủ AI DabClean.');
       },
 
       async getServices() {
@@ -1021,7 +1012,7 @@
                        href.startsWith('#calculator');
 
     if ((isBookingLink || isBookingAction || isBookingText) && !isExcluded) {
-      if (!window.CleanovaAPI.auth.isLoggedIn()) {
+      if (!(window.DabCleanAPI || window.CleanovaAPI).auth.isLoggedIn()) {
         e.preventDefault();
         e.stopPropagation();
 
@@ -1039,8 +1030,12 @@
           destination = `booking.html?service_id=${sid}`;
         }
 
-        window.CleanovaAPI.auth.requireAuth(destination, 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova');
+        (window.DabCleanAPI || window.CleanovaAPI).auth.requireAuth(destination, 'Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ DabClean');
       }
     }
   }, true);
 })();
+
+
+// Backward compatibility alias for DabClean
+window.DabCleanAPI = window.CleanovaAPI;

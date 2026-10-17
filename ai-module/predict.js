@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - PREDICT.JS
+// DABCLEAN AI MODULE - PREDICT.JS
 // ============================================================
 // Nạp model đã train (model-do-ban2/) và dự đoán độ bẩn của 1 ảnh.
 //

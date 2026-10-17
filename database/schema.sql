@@ -1,6 +1,6 @@
 -- ============================================================
--- CLEANOVA DATABASE SCHEMA (MySQL 8.0+ / MariaDB)
--- Ứng dụng Quản lý & Đặt lịch Dịch vụ Vệ sinh Cleanova
+-- DABCLEAN DATABASE SCHEMA (MySQL 8.0+ / MariaDB)
+-- Ứng dụng Quản lý & Đặt lịch Dịch vụ Vệ sinh DabClean
 -- ============================================================
 
 -- 1. Tạo Database (nếu chưa có)
@@ -125,7 +125,7 @@ CREATE TABLE bookings (
   quote_notes TEXT DEFAULT NULL COMMENT 'Ghi chú báo giá chính thức của admin',
   construction_notes TEXT DEFAULT NULL COMMENT 'Ghi chú chi tiết công trình từ khách hàng',
   total_price DECIMAL(12, 2) NOT NULL DEFAULT 0.00 COMMENT 'Tổng tiền sau giảm giá (VNĐ)',
-  discount_code VARCHAR(50) DEFAULT NULL COMMENT 'Mã ưu đãi áp dụng (VD: CLEANOVA20)',
+  discount_code VARCHAR(50) DEFAULT NULL COMMENT 'Mã ưu đãi áp dụng (VD: DABCLEAN20)',
   payment_method ENUM('cash', 'bank_transfer', 'momo', 'vnpay', 'wallet') DEFAULT 'cash' COMMENT 'Phương thức thanh toán',
   payment_status ENUM('unpaid', 'paid', 'refunded') DEFAULT 'unpaid' COMMENT 'Trạng thái thanh toán',
   addons JSON DEFAULT NULL COMMENT 'Danh sách addon đã chọn [{ id, name, price }]',
@@ -234,7 +234,7 @@ CREATE TABLE audit_logs (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
--- BẢNG 6: partner_applications (Hồ sơ đăng ký đối tác & nhân viên Cleanova)
+-- BẢNG 6: partner_applications (Hồ sơ đăng ký đối tác & nhân viên DabClean)
 -- ------------------------------------------------------------
 CREATE TABLE partner_applications (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -361,11 +361,11 @@ CREATE TABLE wallet_ledger_entries (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------
--- BẢNG 12: vouchers (Mã khuyến mãi & Ưu đãi CleanNova)
+-- BẢNG 12: vouchers (Mã khuyến mãi & Ưu đãi DabClean)
 -- ------------------------------------------------------------
 CREATE TABLE vouchers (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  code VARCHAR(50) NOT NULL UNIQUE COMMENT 'Mã voucher (VD: CLEANOVA20, CLEAN50K)',
+  code VARCHAR(50) NOT NULL UNIQUE COMMENT 'Mã voucher (VD: DABCLEAN20, CLEAN50K)',
   title VARCHAR(150) NOT NULL COMMENT 'Tên hiển thị của voucher',
   description TEXT DEFAULT NULL COMMENT 'Chi tiết điều kiện áp dụng',
   discount_type ENUM('percent', 'fixed') NOT NULL DEFAULT 'percent' COMMENT 'Loại giảm giá: percent (phần trăm) hoặc fixed (số tiền cố định)',

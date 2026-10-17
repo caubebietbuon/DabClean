@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA - PAGE: EXPLORE (khampha.html)
+   DABCLEAN - PAGE: EXPLORE (khampha.html)
    Phong cách Light / Minimal, Hiện đại, Tinh tế & Đẳng cấp
    ============================================================ */
 
@@ -365,14 +365,14 @@
   color: var(--color-text-main);
 }
 
-.comparison-table th.col-cleanova {
+.comparison-table th.col-dabclean {
   background: #f0fdfa;
   color: #0f766e;
   border-left: 2px solid #0d9488;
   border-right: 2px solid #0d9488;
 }
 
-.comparison-table td.col-cleanova {
+.comparison-table td.col-dabclean {
   background: #fafffc;
   font-weight: 600;
   color: #0f766e;

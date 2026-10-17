@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Đặt lịch dịch vụ chăm sóc tại nhà CleanNova — Chăm sóc trẻ em, người cao tuổi và người bệnh tận tâm, an toàn. Bảng giá tự động, minh bạch.">
-  <title>Đặt lịch chăm sóc tại nhà — CleanNova Care</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232563EB'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3C/svg%3E">
+  <meta name="description"
+    content="Đặt lịch dịch vụ chăm sóc tại nhà DabClean — Chăm sóc trẻ em, người cao tuổi và người bệnh tận tâm, an toàn. Bảng giá tự động, minh bạch.">
+  <title>Đặt lịch chăm sóc tại nhà — DabClean Care</title>
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%232563EB'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="css/pages/care.css">
   <style>
@@ -14,6 +17,7 @@
       background: var(--color-bg);
       min-height: calc(100vh - 160px);
     }
+
     .booking-care-grid {
       display: grid;
       grid-template-columns: 1.3fr 0.7fr;
@@ -22,11 +26,13 @@
       margin: 0 auto;
       align-items: flex-start;
     }
+
     @media (max-width: 900px) {
       .booking-care-grid {
         grid-template-columns: 1fr;
       }
     }
+
     .care-form-card {
       background: #ffffff;
       border-radius: 18px;
@@ -34,25 +40,30 @@
       padding: 2.25rem;
       box-shadow: 0 4px 18px rgba(15, 23, 42, 0.04);
     }
+
     .care-form-header {
       margin-bottom: 2rem;
       padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--color-border);
     }
+
     .care-form-header h1 {
       font-size: 1.75rem;
       font-weight: 800;
       color: var(--color-text-main);
       margin-bottom: 0.5rem;
     }
+
     .care-form-header p {
       color: var(--color-text-body);
       font-size: 0.95rem;
       line-height: 1.5;
     }
+
     .care-field-group {
       margin-bottom: 1.5rem;
     }
+
     .care-field-label {
       display: block;
       font-size: 0.9rem;
@@ -60,7 +71,10 @@
       color: var(--color-text-main);
       margin-bottom: 0.5rem;
     }
-    .care-field-input, .care-field-select, .care-field-textarea {
+
+    .care-field-input,
+    .care-field-select,
+    .care-field-textarea {
       width: 100%;
       padding: 0.75rem 1rem;
       border-radius: 10px;
@@ -71,21 +85,27 @@
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
       font-family: inherit;
     }
-    .care-field-input:focus, .care-field-select:focus, .care-field-textarea:focus {
+
+    .care-field-input:focus,
+    .care-field-select:focus,
+    .care-field-textarea:focus {
       outline: none;
       border-color: var(--color-primary);
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
+
     .care-pkg-radio-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 0.75rem;
     }
+
     @media (max-width: 640px) {
       .care-pkg-radio-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
+
     .care-pkg-radio-label {
       display: flex;
       flex-direction: column;
@@ -99,29 +119,35 @@
       transition: all 0.2s ease;
       background: #ffffff;
     }
+
     .care-pkg-radio-label:hover {
       border-color: #cbd5e1;
       background: #f8fafc;
     }
+
     .care-pkg-radio-label input[type="radio"] {
       position: absolute;
       opacity: 0;
       pointer-events: none;
     }
+
     .care-pkg-radio-label.selected {
       border-color: var(--color-primary);
       background: #eff6ff;
     }
+
     .care-pkg-radio-title {
       font-size: 0.95rem;
       font-weight: 700;
       color: var(--color-text-main);
     }
+
     .care-pkg-radio-sub {
       font-size: 0.75rem;
       color: var(--color-text-muted);
       margin-top: 0.25rem;
     }
+
     /* Summary Card */
     .care-summary-card {
       background: #ffffff;
@@ -132,6 +158,7 @@
       position: sticky;
       top: 90px;
     }
+
     .care-summary-title {
       font-size: 1.15rem;
       font-weight: 800;
@@ -143,6 +170,7 @@
       align-items: center;
       gap: 0.5rem;
     }
+
     .care-summary-row {
       display: flex;
       justify-content: space-between;
@@ -151,6 +179,7 @@
       color: var(--color-text-body);
       margin-bottom: 0.85rem;
     }
+
     .care-summary-row.total {
       padding-top: 1rem;
       margin-top: 1rem;
@@ -159,6 +188,7 @@
       font-weight: 800;
       color: var(--color-primary);
     }
+
     .care-submit-btn {
       width: 100%;
       padding: 0.95rem;
@@ -173,14 +203,17 @@
       transition: all 0.2s ease;
       box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
+
     .care-submit-btn:hover {
       background: var(--color-primary-hover);
       box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
     }
+
     .care-submit-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
+
     .care-alert {
       padding: 0.85rem 1rem;
       border-radius: 10px;
@@ -188,11 +221,13 @@
       margin-bottom: 1.25rem;
       display: none;
     }
+
     .care-alert.error {
       background: #fff1f2;
       color: #e11d48;
       border: 1px solid #fecdd3;
     }
+
     .care-alert.success {
       background: #ecfdf5;
       color: #059669;
@@ -200,18 +235,28 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- HEADER -->
   <header class="header" id="header" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
         <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563EB" opacity="0.15"/>
-          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563EB" stroke-width="2" fill="none" stroke-linejoin="round"/>
-          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#2563EB"/>
+          <defs>
+            <linearGradient id="dabCleanGradCare" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradCare)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradCare)"/>
+          <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
         </svg>
-        <span class="logo-text">Cleanova <span style="font-size: 13px; font-weight: 600; color: #2563eb; background: #eff6ff; padding: 2px 8px; border-radius: 6px; margin-left: 4px;">Care</span></span>
+        <span class="logo-text">DabClean <span
+            style="font-size: 13px; font-weight: 600; color: #10B981; background: #ecfdf5; padding: 2px 8px; border-radius: 6px; margin-left: 4px;">Care</span></span>
       </a>
 
       <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
@@ -234,7 +279,8 @@
       <div class="care-form-card">
         <div class="care-form-header">
           <h1>Đặt lịch chăm sóc tại nhà</h1>
-          <p>Điền thông tin người thân và lịch trình mong muốn. Bảng tính giá hiển thị trực tiếp theo thời gian thực.</p>
+          <p>Điền thông tin người thân và lịch trình mong muốn. Bảng tính giá hiển thị trực tiếp theo thời gian thực.
+          </p>
         </div>
 
         <div id="care-alert" class="care-alert" role="alert"></div>
@@ -242,7 +288,8 @@
         <form id="care-booking-form">
           <!-- 1. CHỌN DỊCH VỤ -->
           <div class="care-field-group">
-            <label class="care-field-label" for="care-service-select">Dịch vụ chăm sóc <span style="color: #e11d48;">*</span></label>
+            <label class="care-field-label" for="care-service-select">Dịch vụ chăm sóc <span
+                style="color: #e11d48;">*</span></label>
             <select id="care-service-select" class="care-field-select" required>
               <option value="7" selected>👵 Chăm sóc người cao tuổi tại nhà (Từ 90.000đ/h)</option>
               <option value="6">👶 Chăm sóc trẻ em tại nhà (Từ 80.000đ/h)</option>
@@ -279,7 +326,8 @@
 
           <!-- KHUNG CHỌN SỐ GIỜ (CHO GÓI THEO GIỜ) -->
           <div class="care-field-group" id="group-duration-hours">
-            <label class="care-field-label" for="care-duration-hours">Thời lượng ca làm việc (Số giờ) <span style="color: #e11d48;">*</span></label>
+            <label class="care-field-label" for="care-duration-hours">Thời lượng ca làm việc (Số giờ) <span
+                style="color: #e11d48;">*</span></label>
             <select id="care-duration-hours" class="care-field-select">
               <option value="2">2 giờ (Tối thiểu)</option>
               <option value="3" selected>3 giờ</option>
@@ -291,7 +339,8 @@
 
           <!-- KHUNG CHỌN CA (CHO GÓI BUỔI) -->
           <div class="care-field-group" id="group-shift-choice" style="display: none;">
-            <label class="care-field-label" for="care-shift-choice">Chọn ca làm việc <span style="color: #e11d48;">*</span></label>
+            <label class="care-field-label" for="care-shift-choice">Chọn ca làm việc <span
+                style="color: #e11d48;">*</span></label>
             <select id="care-shift-choice" class="care-field-select">
               <option value="morning">Ca sáng: 08:00 – 12:00 (4 tiếng)</option>
               <option value="afternoon">Ca chiều: 13:00 – 17:00 (4 tiếng)</option>
@@ -302,7 +351,8 @@
           <!-- 3. NGÀY VÀ GIỜ BẮT ĐẦU -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;" class="care-field-group">
             <div>
-              <label class="care-field-label" for="care-date">Ngày bắt đầu <span style="color: #e11d48;">*</span></label>
+              <label class="care-field-label" for="care-date">Ngày bắt đầu <span
+                  style="color: #e11d48;">*</span></label>
               <input type="date" id="care-date" class="care-field-input" required>
             </div>
             <div>
@@ -314,11 +364,14 @@
           <!-- 4. THÔNG TIN NGƯỜI ĐƯỢC CHĂM SÓC -->
           <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;" class="care-field-group">
             <div>
-              <label class="care-field-label" for="care-recipient-name">Họ tên người được chăm sóc <span style="color: #e11d48;">*</span></label>
-              <input type="text" id="care-recipient-name" class="care-field-input" placeholder="VD: Bà Nguyễn Thị Lan" required>
+              <label class="care-field-label" for="care-recipient-name">Họ tên người được chăm sóc <span
+                  style="color: #e11d48;">*</span></label>
+              <input type="text" id="care-recipient-name" class="care-field-input" placeholder="VD: Bà Nguyễn Thị Lan"
+                required>
             </div>
             <div>
-              <label class="care-field-label" for="care-recipient-age">Tuổi / Năm sinh <span style="color: #e11d48;">*</span></label>
+              <label class="care-field-label" for="care-recipient-age">Tuổi / Năm sinh <span
+                  style="color: #e11d48;">*</span></label>
               <input type="text" id="care-recipient-age" class="care-field-input" placeholder="VD: 75 tuổi" required>
             </div>
           </div>
@@ -326,28 +379,34 @@
           <!-- 5. PHẠM VI CHĂM SÓC & THÓI QUEN SINH HOẠT -->
           <div class="care-field-group">
             <label class="care-field-label" for="care-scope-notes">Ghi chú thói quen & Nhu cầu hỗ trợ cụ thể</label>
-            <textarea id="care-scope-notes" class="care-field-textarea" rows="3" placeholder="VD: Cần hỗ trợ dìu đi vệ sinh, nhắc uống thuốc huyết áp lúc 9h sáng, thích ăn cháo hạt sen nấu mềm..."></textarea>
+            <textarea id="care-scope-notes" class="care-field-textarea" rows="3"
+              placeholder="VD: Cần hỗ trợ dìu đi vệ sinh, nhắc uống thuốc huyết áp lúc 9h sáng, thích ăn cháo hạt sen nấu mềm..."></textarea>
           </div>
 
           <!-- 6. ĐỊA CHỈ & SỐ ĐIỆN THOẠI LIÊN HỆ -->
           <div class="care-field-group">
-            <label class="care-field-label" for="care-address">Địa chỉ nhà thực hiện dịch vụ <span style="color: #e11d48;">*</span></label>
-            <input type="text" id="care-address" class="care-field-input" placeholder="Số nhà, ngõ/phố, phường, quận, thành phố..." required>
+            <label class="care-field-label" for="care-address">Địa chỉ nhà thực hiện dịch vụ <span
+                style="color: #e11d48;">*</span></label>
+            <input type="text" id="care-address" class="care-field-input"
+              placeholder="Số nhà, ngõ/phố, phường, quận, thành phố..." required>
           </div>
 
           <div class="care-field-group">
-            <label class="care-field-label" for="care-phone">Số điện thoại liên hệ người giám hộ <span style="color: #e11d48;">*</span></label>
-            <input type="tel" id="care-phone" class="care-field-input" placeholder="Số điện thoại nhận xác nhận..." required>
+            <label class="care-field-label" for="care-phone">Số điện thoại liên hệ người giám hộ <span
+                style="color: #e11d48;">*</span></label>
+            <input type="tel" id="care-phone" class="care-field-input" placeholder="Số điện thoại nhận xác nhận..."
+              required>
           </div>
 
           <!-- 7. MÃ ƯU ĐÃI & PHƯƠNG THỨC THANH TOÁN -->
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;" class="care-field-group">
             <div>
               <label class="care-field-label" for="care-promo">Mã ưu đãi (nếu có)</label>
-              <input type="text" id="care-promo" class="care-field-input" placeholder="Nhập CLEANOVA20...">
+              <input type="text" id="care-promo" class="care-field-input" placeholder="Nhập DABCLEAN20...">
             </div>
             <div>
-              <label class="care-field-label" for="care-payment">Phương thức thanh toán <span style="color: #e11d48;">*</span></label>
+              <label class="care-field-label" for="care-payment">Phương thức thanh toán <span
+                  style="color: #e11d48;">*</span></label>
               <select id="care-payment" class="care-field-select" required>
                 <option value="cash">Tiền mặt sau khi hoàn thành</option>
                 <option value="bank_transfer">Chuyển khoản ngân hàng</option>
@@ -362,7 +421,10 @@
       <!-- SUMMARY QUOTE CARD (LIVE BẢNG TÍNH GIÁ BACKEND) -->
       <aside class="care-summary-card" aria-labelledby="summary-title">
         <h2 class="care-summary-title" id="summary-title">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
           Chi tiết báo giá dự kiến
         </h2>
 
@@ -411,7 +473,7 @@
   <footer class="footer" role="contentinfo">
     <div class="container">
       <div class="footer-bottom" style="border-top: none; padding-top: 0;">
-        <p>© 2026 Cleanova Inc. Dịch vụ chăm sóc tại nhà uy tín.</p>
+        <p>© 2026 DabClean Inc. Dịch vụ chăm sóc tại nhà uy tín.</p>
       </div>
     </div>
   </footer>
@@ -500,7 +562,7 @@
           if (result.success && result.data) {
             const d = result.data;
             document.getElementById('quote-service-name').textContent = d.service_name || 'Dịch vụ chăm sóc';
-            
+
             let pkgText = 'Theo giờ (' + d.durationHours + 'h)';
             if (packageType === 'shift') pkgText = 'Theo ca buổi (4h)';
             else if (packageType === 'daily') pkgText = 'Theo ngày (8h)';
@@ -509,7 +571,7 @@
 
             document.getElementById('quote-base-price').textContent = Number(d.base_price).toLocaleString('vi-VN') + ' đ';
             document.getElementById('quote-subtotal').textContent = Number(d.subtotal).toLocaleString('vi-VN') + ' đ';
-            
+
             const rowDiscount = document.getElementById('row-discount');
             if (d.discountAmount > 0) {
               rowDiscount.style.display = 'flex';
@@ -619,4 +681,5 @@
     });
   </script>
 </body>
+
 </html>

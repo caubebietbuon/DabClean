@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - MobileNet Backbone (đóng băng)
+// DABCLEAN AI MODULE - MobileNet Backbone (đóng băng)
 // ============================================================
 // MobileNet v1 huấn luyện sẵn trên ImageNet, dùng làm BỘ TRÍCH ĐẶC TRƯNG
 // (feature extractor). Toàn bộ trọng số của nó được ĐÓNG BĂNG — không train.

@@ -1,4 +1,4 @@
-# CLEANOVA BIG UPDATE — BÁO CÁO TIẾN ĐỘ THỰC HIỆN TOÀN DIỆN
+# DABCLEAN BIG UPDATE — BÁO CÁO TIẾN ĐỘ THỰC HIỆN TOÀN DIỆN
 **Ngày hoàn tất:** 2026-10-17  
 **Trạng thái chung:** **COMPLETED** (Hoàn thành 100% tất cả các Phase của Big Update)  
 **Tác giả thực hiện:** Senior Full-stack Developer, Software Architect, Database & Security Engineer  
@@ -13,12 +13,12 @@
 | **Phase 1** | Bảo mật & Ổn định Backend (JWT, Rate limit, SQL fix) | **Completed** | Khắc phục truy vấn quyết toán tiền công (`staff_payout_logs`), bảo vệ JWT secret, chống brute-force registration. |
 | **Phase 2** | Database Schema & Migration an toàn (Ví, Voucher, Addons) | **Completed** | Migration bảng `wallets`, `wallet_transactions`, `wallet_ledger_entries`, `vouchers`, `voucher_usages`, `addons`. |
 | **Phase 3** | Chuẩn hóa Dịch vụ, Add-ons & Dynamic Voucher Engine | **Completed** | Backend `pricingService.js` tính add-on thực tế, `voucherModel.js` xác thực mã động và ghi nhận lịch sử sử dụng. |
-| **Phase 4** | Xây dựng Ví CleanNova (Ledger, Topup, Pay, Refund) | **Completed** | Sổ cái bất biến, khóa hàng `SELECT ... FOR UPDATE`, nạp sandbox, thanh toán đơn, hoàn tiền 100% tự động khi hủy đơn. |
+| **Phase 4** | Xây dựng Ví DabClean (Ledger, Topup, Pay, Refund) | **Completed** | Sổ cái bất biến, khóa hàng `SELECT ... FOR UPDATE`, nạp sandbox, thanh toán đơn, hoàn tiền 100% tự động khi hủy đơn. |
 | **Phase 5** | Hoàn thiện Đặt lịch, State Machine & Phân công Staff | **Completed** | Tích hợp phương thức thanh toán `'wallet'`, tự động chuyển trạng thái `paid`, trừ tiền nguyên tử, hoàn tiền khi hủy. |
 | **Phase 6** | Tiền công, Doanh thu & Báo cáo Dashboard thực | **Completed** | Bổ sung 4 chỉ số tài chính thực tế (`stat-collected`, `stat-staff-wages`, `stat-wallet-bal`, `stat-net-profit`) từ MySQL. |
 | **Phase 8** | Kiểm thử hồi quy toàn diện & Nghiệm thu | **Completed** | Chạy 8 bộ test suite: **169/169 tests PASS (100%)**. |
 | **Phase 9** | Staff Wallet Commission & Admin Revenue Fix | **Completed** | Tích hợp chiết khấu hoa hồng nhân viên (Gross/Net), Sổ cái Staff Wallet, Quyết toán thù lao nguyên tử, Rút tiền thợ, 10 chỉ số tài chính Admin độc lập, Bảng phân rã theo ngày: **27/27 tests PASS**. |
-| **Phase 10** | Hệ thống Hai Ví Nhân Viên CleanNova | **Completed** | Tách bạch Ví Tín Dụng (Credit Wallet - ví trên, khấu trừ hoa hồng, cho phép âm, kiểm tra điều kiện bắt buộc >= 100k) và Ví Thu Nhập (Earnings Wallet - ví dưới, nhận công đơn online, rút tiền, chuyển sang ví trên). Kiểm thử toàn diện 13 kịch bản: **31/31 tests PASS (100%)**. |
+| **Phase 10** | Hệ thống Hai Ví Nhân Viên DabClean | **Completed** | Tách bạch Ví Tín Dụng (Credit Wallet - ví trên, khấu trừ hoa hồng, cho phép âm, kiểm tra điều kiện bắt buộc >= 100k) và Ví Thu Nhập (Earnings Wallet - ví dưới, nhận công đơn online, rút tiền, chuyển sang ví trên). Kiểm thử toàn diện 13 kịch bản: **31/31 tests PASS (100%)**. |
 
 ---
 
@@ -49,7 +49,7 @@
 18. [`backend/src/app.js`](file:///c:/Users/tiend/Downloads/cleannova/backend/src/app.js): Đăng ký routers.
 
 ### D. Frontend & UI/UX:
-19. [`frontend/api.js`](file:///c:/Users/tiend/Downloads/cleannova/frontend/api.js): Bổ sung `CleanovaAPI.admin.getCommissionConfig`, `CleanovaAPI.admin.updateCommissionConfig`, `CleanovaAPI.wallet.withdraw`, `CleanovaAPI.wallet.getStaffSummary`, và bộ lọc tham số trong `CleanovaAPI.admin.getStats`.
+19. [`frontend/api.js`](file:///c:/Users/tiend/Downloads/cleannova/frontend/api.js): Bổ sung `DabCleanAPI.admin.getCommissionConfig`, `DabCleanAPI.admin.updateCommissionConfig`, `DabCleanAPI.wallet.withdraw`, `DabCleanAPI.wallet.getStaffSummary`, và bộ lọc tham số trong `DabCleanAPI.admin.getStats`.
 20. [`frontend/staff.html`](file:///c:/Users/tiend/Downloads/cleannova/frontend/staff.html): Thêm tab "👛 Ví & Thù Lao", 5 thẻ chỉ số tài chính thợ (Số dư khả dụng, Chờ thanh toán, Tiền công gộp, Chiết khấu đã trích, Thực nhận ròng), bảng phân rã thù lao chi tiết theo đơn, bảng lịch sử sổ cái ví, và Modal rút tiền về tài khoản ngân hàng.
 21. [`frontend/admin.html`](file:///c:/Users/tiend/Downloads/cleannova/frontend/admin.html): Tái cấu trúc Dashboard tài chính với 10 chỉ số phân định rõ ràng; thanh công cụ lọc khoảng thời gian (Hôm nay, 7 ngày, Tháng này, Toàn bộ, Tùy chỉnh); bảng phân tích tài chính theo ngày; Modal cấu hình tỷ lệ chiết khấu nhân viên.
 22. [`frontend/wallet.html`](file:///c:/Users/tiend/Downloads/cleannova/frontend/wallet.html): Giao diện Ví khách hàng.
@@ -101,7 +101,7 @@ employee_net_earnings = employee_gross_earnings - platform_commission;
 2. **Hoàn tiền đơn dịch vụ (`service_refunds`):** Tổng số tiền đã hoàn trả cho các đơn dịch vụ bị hủy (`SUM(total_price)` của đơn `cancelled` mà trước đó đã thanh toán).
 3. **Thực thu dịch vụ ròng (`net_receipts`):** `gross_payments - service_refunds`.
 4. **Tổng tiền công gộp thợ (`staff_gross_wages`):** Tổng tiền công thợ trước khi khấu trừ chiết khấu (`SUM(staff_wage)`).
-5. **Chiết khấu nền tảng trích từ thợ (`platform_commission`):** Phần doanh thu CleanNova giữ lại từ thù lao của nhân viên (`SUM(platform_commission)`).
+5. **Chiết khấu nền tảng trích từ thợ (`platform_commission`):** Phần doanh thu DabClean giữ lại từ thù lao của nhân viên (`SUM(platform_commission)`).
 6. **Tổng tiền công ròng thợ (`staff_net_wages`):** Tổng số tiền thợ thực nhận sau chiết khấu (`SUM(staff_net_wage)`).
 7. **Tiền công phải trả thợ (`staff_payable`):** Tiền công ròng của các đơn đã hoàn thành nhưng Admin chưa bấm quyết toán giải ngân vào ví thợ.
 8. **Tiền công đã chi trả thợ (`staff_settled`):** Tổng tiền công ròng đã được chuyển thành công vào Staff Wallet của thợ (`SUM(net_wage)` từ `staff_payout_logs`).
@@ -117,7 +117,7 @@ Tất cả các bộ kiểm thử đã được chạy trên môi trường th�
 | Bộ kiểm thử (Test Suite) | Mục tiêu kiểm thử | Số ca test | Kết quả |
 | :--- | :--- | :---: | :---: |
 | [`backend/test-staff-wallet-commission.js`](file:///c:/Users/tiend/Downloads/cleannova/backend/test-staff-wallet-commission.js) | Chiết khấu hoa hồng thợ, Snapshot bất biến, Sổ cái ví thợ, Rút tiền, 10 chỉ số Admin, Bộ lọc ngày | 27 | **27/27 PASS** |
-| [`test-wallet-system.js`](file:///c:/Users/tiend/Downloads/cleannova/test-wallet-system.js) | Ví CleanNova, Ledger, Idempotency, Pay Booking, Auto-refund, Admin Oversight | 10 | **10/10 PASS** |
+| [`test-wallet-system.js`](file:///c:/Users/tiend/Downloads/cleannova/test-wallet-system.js) | Ví DabClean, Ledger, Idempotency, Pay Booking, Auto-refund, Admin Oversight | 10 | **10/10 PASS** |
 | [`test-care-redesign.js`](file:///c:/Users/tiend/Downloads/cleannova/test-care-redesign.js) | Dịch vụ chăm sóc người già/trẻ em/người bệnh, bảng giá ca/ngày/tháng, điều phối thợ | 35 | **35/35 PASS** |
 | [`test-homepage-verify.js`](file:///c:/Users/tiend/Downloads/cleannova/test-homepage-verify.js) | Giao diện trang chủ, thẻ dịch vụ, bộ lọc danh mục, bảng giá, FAQ, form báo giá | 22 | **22/22 PASS** |
 | [`test-post-construction.js`](file:///c:/Users/tiend/Downloads/cleannova/test-post-construction.js) | Vệ sinh sau xây dựng theo m², trọn gói, công thợ theo ngày, duyệt báo giá Admin | 47 | **47/47 PASS** |
@@ -125,7 +125,7 @@ Tất cả các bộ kiểm thử đã được chạy trên môi trường th�
 | [`backend/test-comprehensive.js`](file:///c:/Users/tiend/Downloads/cleannova/backend/test-comprehensive.js) | Unit pricing, Stored XSS prevention, JWT fail-safe, Anti-bruteforce, Concurrency | 21 | **21/21 PASS** |
 | [`backend/test-guest-access.js`](file:///c:/Users/tiend/Downloads/cleannova/backend/test-guest-access.js) | Khách vãng lai xem dịch vụ công khai, chặn tạo đơn khi chưa login | 12 | **12/12 PASS** |
 | [`backend/test-return-url.js`](file:///c:/Users/tiend/Downloads/cleannova/backend/test-return-url.js) | Chống Open-Redirect, chặn giả mạo URL chuyển hướng sau login | 12 | **12/12 PASS** |
-| **TỔNG CỘNG** | **Toàn bộ hệ thống CleanNova** | **196** | **196/196 PASS (100%)** |
+| **TỔNG CỘNG** | **Toàn bộ hệ thống DabClean** | **196** | **196/196 PASS (100%)** |
 
 ---
 
@@ -138,7 +138,7 @@ Tất cả các bộ kiểm thử đã được chạy trên môi trường th�
 - [x] Dịch vụ chăm sóc tại nhà (Trẻ em, Người cao tuổi, Hỗ trợ người bệnh).
 - [x] Hệ thống Add-ons tính phí chuẩn hóa từ backend (`pricingService.js`).
 - [x] Dynamic Voucher Engine (`vouchers`, `voucher_usages`, hạn mức toàn hệ thống và hạn mức mỗi user).
-- [x] Ví CleanNova (Customer Wallet & Staff Wallet):
+- [x] Ví DabClean (Customer Wallet & Staff Wallet):
   - Sổ cái bất biến (`wallet_ledger_entries`).
   - Giao dịch có mã duy nhất và Idempotency Key chống race condition.
   - Nạp tiền Sandbox tự động ghi có.
@@ -186,13 +186,13 @@ node server.js
 
 ### 3. Chạy toàn bộ kiểm thử xác minh:
 ```powershell
-# Chạy bộ test Hệ thống Hai Ví Nhân Viên CleanNova (Mới nhất)
+# Chạy bộ test Hệ thống Hai Ví Nhân Viên DabClean (Mới nhất)
 node backend/test-two-staff-wallets.js
 
 # Chạy bộ test Chiết khấu thù lao thợ & Doanh thu Admin
 node backend/test-staff-wallet-commission.js
 
-# Chạy bộ test Ví CleanNova
+# Chạy bộ test Ví DabClean
 node test-wallet-system.js
 
 # Chạy các bộ test nghiệp vụ
@@ -207,16 +207,16 @@ node backend/test-return-url.js
 
 ### 4. Tài khoản Demo kiểm thử:
 1. **Khách hàng:** `demo@nova.app` / `NovaDemo2026!` (Đã có sẵn ví số dư kiểm thử).
-2. **Quản trị viên:** `admin@cleanova.vn` / `Admin@Cleanova2026!`.
-3. **Nhân viên:** `staff@cleanova.vn` / `Staff@Cleanova2026!` (Đầy đủ Ví Tín Dụng & Ví Thu Nhập).
+2. **Quản trị viên:** `admin@cleanova.vn` / `Admin@DabClean2026!`.
+3. **Nhân viên:** `staff@cleanova.vn` / `Staff@DabClean2026!` (Đầy đủ Ví Tín Dụng & Ví Thu Nhập).
 
 ---
 
-## 5. CHI TIẾT KỸ THUẬT: HỆ THỐNG HAI VÍ NHÂN VIÊN CLEANOVA
+## 5. CHI TIẾT KỸ THUẬT: HỆ THỐNG HAI VÍ NHÂN VIÊN DABCLEAN
 
 ### A. Kiến trúc Hai Ví (Dual-Wallet Architecture):
 1. **Ví Tín Dụng — Credit Wallet (`wallet_type = 'credit'`):**
-   - **Mục đích:** Nhân viên nạp tiền trước để duy trì quyền nhận đơn và thanh toán chiết khấu hoa hồng cho CleanNova.
+   - **Mục đích:** Nhân viên nạp tiền trước để duy trì quyền nhận đơn và thanh toán chiết khấu hoa hồng cho DabClean.
    - **Điều kiện nhận đơn bắt buộc:** Số dư ví tín dụng phải bằng hoặc lớn hơn 100.000 VNĐ (`creditBalance >= 100000`). Số dư đúng 100.000 VNĐ là **Đủ điều kiện**; 99.999 VNĐ, 0 VNĐ hoặc âm là **KHÔNG đủ điều kiện**.
    - **Xử lý số dư âm:** Cho phép số dư âm khi chiết khấu bị trừ vượt quá số dư hiện tại (ghi nhận nợ chiết khấu sàn). Khi nạp tiền, hệ thống tự động bù khoản âm trước khi tạo số dư dương khả dụng.
    - **Idempotency:** Mỗi đơn hoàn thành chỉ khấu trừ chiết khấu đúng 1 lần với khóa duy nhất `COMMISSION-BOOKING-${booking.id}`.
@@ -241,5 +241,5 @@ node backend/test-return-url.js
   9. Quyết toán lặp lại: Không trừ chiết khấu sàn hai lần.
   10. Concurrency: Khóa hàng ngăn chặn race-condition khi gửi 2 request song song.
   11. Bảo mật RBAC: Nhân viên không thể can thiệp số dư hoặc gọi API duyệt tiền của Admin.
-  12. Dashboard Admin: Tách bạch tiền mặt vs trực tuyến, hiển thị 6 chỉ số Quản trị Hai Ví Nhân Viên CleanNova độc lập.
+  12. Dashboard Admin: Tách bạch tiền mặt vs trực tuyến, hiển thị 6 chỉ số Quản trị Hai Ví Nhân Viên DabClean độc lập.
   13. Đơn hủy/hoàn tiền: Xử lý đúng chính sách, không khấu trừ chiết khấu trên đơn hủy.

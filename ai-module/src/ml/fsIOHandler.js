@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Custom IOHandler đọc/ghi model bằng fs
+// DABCLEAN AI MODULE - Custom IOHandler đọc/ghi model bằng fs
 // ============================================================
 // VÌ SAO CẦN FILE NÀY?
 // Bản @tensorflow/tfjs thuần JavaScript (dùng cho Node 24 vì không có
@@ -51,7 +51,7 @@ function createFsIOHandler(dir) {
       // model.json: kiến trúc + manifest trỏ tới weights.bin
       const modelJson = {
         format: format || 'layers-model',
-        generatedBy: generatedBy || 'cleanova-ai-module',
+        generatedBy: generatedBy || 'dabclean-ai-module',
         convertedBy: convertedBy || null,
         modelTopology,
         weightsManifest: [

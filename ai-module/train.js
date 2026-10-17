@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - TRAIN.JS (Transfer Learning)
+// DABCLEAN AI MODULE - TRAIN.JS (Transfer Learning)
 // ============================================================
 // Huấn luyện model phân loại độ bẩn bằng TRANSFER LEARNING.
 //
@@ -75,7 +75,7 @@ async function main() {
   const args = parseArgs(process.argv);
 
   line();
-  console.log('  CLEANOVA AI - HUẤN LUYỆN MODEL ĐỘ BẨN (TRANSFER LEARNING)');
+  console.log('  DABCLEAN AI - HUẤN LUYỆN MODEL ĐỘ BẨN (TRANSFER LEARNING)');
   line();
   console.log(`  Dataset : ${args.dataset}`);
   console.log(`  Output  : ${args.out}`);

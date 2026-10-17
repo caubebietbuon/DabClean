@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Định nghĩa nhãn & quy đổi điểm
+// DABCLEAN AI MODULE - Định nghĩa nhãn & quy đổi điểm
 // ============================================================
 // THỨ TỰ NHÃN LÀ BẤT BIẾN (immutable):
 //   index 0 -> sach

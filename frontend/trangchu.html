@@ -2,15 +2,15 @@
 <html lang="vi">
 <head>
   <!-- ============================================================
-       CLEANOVA - Trang chủ (Homepage / Landing Page)
+       DABCLEAN - Trang chủ (Homepage / Landing Page)
        Dịch vụ dọn vệ sinh chuyên nghiệp
        ============================================================ -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Cleanova - Nền tảng dịch vụ dọn vệ sinh chuyên nghiệp và chăm sóc tại nhà uy tín. Đặt lịch nhanh chóng, bảng giá minh bạch, an tâm chăm sóc gia đình.">
-  <meta name="keywords" content="dọn vệ sinh, chăm sóc tại nhà, chăm sóc trẻ em, chăm sóc người cao tuổi, chăm sóc người bệnh, deep cleaning, cleanova">
-  <meta name="author" content="Cleanova">
-  <title>Cleanova — Chăm sóc ngôi nhà, an tâm chăm sóc gia đình | Dịch vụ vệ sinh & Chăm sóc tại nhà</title>
+  <meta name="description" content="DabClean - Nền tảng dịch vụ dọn vệ sinh chuyên nghiệp và chăm sóc tại nhà uy tín. Đặt lịch nhanh chóng, bảng giá minh bạch, an tâm chăm sóc gia đình.">
+  <meta name="keywords" content="dọn vệ sinh, chăm sóc tại nhà, chăm sóc trẻ em, chăm sóc người cao tuổi, chăm sóc người bệnh, deep cleaning, dabclean">
+  <meta name="author" content="DabClean">
+  <title>DabClean — Chăm sóc ngôi nhà, an tâm chăm sóc gia đình | Dịch vụ vệ sinh & Chăm sóc tại nhà</title>
 
   <!-- Favicon SVG -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310B981'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3Cpath d='M13 18 Q16 12 19 18' stroke='%2310B981' stroke-width='2' fill='none'/%3E%3C/svg%3E">
@@ -26,33 +26,36 @@
   <header class="header" id="header" role="banner">
     <div class="container">
 
-      <!-- Logo Cleanova: SVG nội tuyến (biểu tượng chiếc lá + ngôi nhà) -->
-      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+      <!-- Logo DabClean: SVG nội tuyến (biểu tượng chiếc lá + ngôi nhà) -->
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
         <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <!-- Ngôi nhà -->
-          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.15"/>
-          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
-          <!-- Chiếc lá bên trong ngôi nhà -->
-          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
-          <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-          <!-- Gân lá nhỏ -->
-          <path d="M16 22C17 20 18 18 20 16" stroke="#059669" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.5"/>
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
         </svg>
-        <span class="logo-text">Cleanova</span>
+        <span class="logo-text">DabClean</span>
       </a>
 
       <!-- Navigation Links (Desktop) -->
       <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
         <a href="trangchu.html" class="nav-link active" data-i18n="nav_home">Trang chủ</a>
         <a href="#services" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
-        <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn?</a>
+        <a href="#why-dabclean" class="nav-link" data-i18n="nav_why">Vì sao chọn?</a>
         <a href="#booking-workflow" class="nav-link" data-i18n="nav_workflow">Quy trình</a>
         <a href="#pricing-table" class="nav-link" data-i18n="nav_pricing">Bảng giá</a>
         <a href="#commitments" class="nav-link" data-i18n="nav_commitments">Cam kết</a>
         <a href="#faq" class="nav-link" data-i18n="nav_faq">FAQ</a>
         <a href="khampha.html" class="nav-link" data-i18n="nav_explore">Khám phá</a>
         <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" data-i18n="nav_my_bookings" style="display: none;">Đơn của tôi</a>
-        <a href="wallet.html" class="nav-link" id="nav-link-wallet" data-i18n="nav_wallet" style="display: none; color: #0f766e; font-weight: 700;">Ví CleanNova</a>
+        <a href="wallet.html" class="nav-link" id="nav-link-wallet" data-i18n="nav_wallet" style="display: none; color: #0f766e; font-weight: 700;">Ví DabClean</a>
         <a href="admin.html" class="nav-link" id="nav-link-admin" data-i18n="nav_admin" style="display: none; color: #B45309; font-weight: 700;">Quản trị</a>
         <a href="staff.html" class="nav-link" id="nav-link-staff" data-i18n="nav_staff" style="display: none; color: #1D4ED8; font-weight: 700;">Nhân viên</a>
       </nav>
@@ -73,13 +76,13 @@
           </button>
           <div id="notification-dropdown" class="card" style="display: none; position: absolute; right: 0; top: 44px; width: 320px; padding: 16px; z-index: 1000; box-shadow: 0 16px 36px rgba(15,23,42,0.14); border-radius: var(--radius-xl);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--color-border);">
-              <strong style="font-size: 13px; color: var(--color-text-main);" data-i18n="notif_header_title">Thông báo Cleanova</strong>
+              <strong style="font-size: 13px; color: var(--color-text-main);" data-i18n="notif_header_title">Thông báo DabClean</strong>
               <span style="font-size: 11px; color: var(--color-primary); cursor: pointer; font-weight: 600;" id="btn-mark-read" data-i18n="notif_mark_read">Đã đọc</span>
             </div>
             <div id="notification-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto;">
               <div style="padding: 10px; background: var(--color-primary-ultra-light); border-radius: var(--radius-md); font-size: 12px; border: 1px solid var(--color-primary-light);">
                 <div style="font-weight: 700; color: var(--color-primary-hover);" data-i18n="notif_1_title">🎉 Mã ưu đãi 20% đã sẵn sàng</div>
-                <div style="color: var(--color-text-secondary); margin-top: 2px;" data-i18n="notif_1_desc">Nhập mã <strong>CLEANOVA20</strong> khi đặt lịch để giảm trực tiếp 20%.</div>
+                <div style="color: var(--color-text-secondary); margin-top: 2px;" data-i18n="notif_1_desc">Nhập mã <strong>DABCLEAN20</strong> khi đặt lịch để giảm trực tiếp 20%.</div>
                 <div style="font-size: 10px; color: var(--color-text-muted); margin-top: 4px;" data-i18n="notif_just_now">Vừa xong</div>
               </div>
               <div style="padding: 10px; background: var(--color-bg-alt); border-radius: var(--radius-md); font-size: 12px;">
@@ -104,8 +107,8 @@
         <a href="login.html" class="btn btn-ghost btn-sm" id="btn-login-header" data-i18n="btn_login" style="display: none;">Đăng nhập</a>
         <a href="register.html" class="btn btn-ghost btn-sm" id="btn-register-header" data-i18n="btn_register" style="display: none;">Đăng ký</a>
 
-        <!-- Nút Trở thành đối tác Cleanova -->
-        <a href="partner-register.html" class="btn-partner-header" id="btn-partner-nav" title="Đăng ký trở thành đối tác Cleanova">
+        <!-- Nút Trở thành đối tác DabClean -->
+        <a href="partner-register.html" class="btn-partner-header" id="btn-partner-nav" title="Đăng ký trở thành đối tác DabClean">
           <span class="btn-partner-icon" aria-hidden="true">🤝</span>
           <span data-i18n="nav_partner">Trở thành đối tác</span>
         </a>
@@ -127,7 +130,7 @@
   <nav class="mobile-nav" id="mobile-nav" role="navigation" aria-label="Menu mobile">
     <a href="trangchu.html" class="nav-link" data-i18n="nav_home">Trang chủ</a>
     <a href="#services" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
-    <a href="#why-cleanova" class="nav-link" data-i18n="nav_why">Vì sao chọn CleanNova</a>
+    <a href="#why-dabclean" class="nav-link" data-i18n="nav_why">Vì sao chọn DabClean</a>
     <a href="#booking-workflow" class="nav-link" data-i18n="nav_workflow">Quy trình đặt lịch</a>
     <a href="#pricing-table" class="nav-link" data-i18n="nav_pricing">Bảng giá dịch vụ</a>
     <a href="#commitments" class="nav-link" data-i18n="nav_commitments">Cam kết & Quy định</a>
@@ -142,7 +145,7 @@
     <a href="partner-register.html" class="mobile-partner-card">
       <span class="card-icon" aria-hidden="true">🤝</span>
       <span class="card-text">
-        <strong data-i18n="mobile_partner_title">Trở thành đối tác Cleanova</strong>
+        <strong data-i18n="mobile_partner_title">Trở thành đối tác DabClean</strong>
         <span data-i18n="mobile_partner_desc">Đăng ký tham gia đội ngũ & nhận việc</span>
       </span>
     </a>
@@ -168,7 +171,7 @@
     <!-- ============================================================
          HERO SECTION (Phần chào mừng ấn tượng)
          ============================================================ -->
-    <section class="hero" id="hero" aria-label="Giới thiệu Cleanova">
+    <section class="hero" id="hero" aria-label="Giới thiệu DabClean">
       <div class="container">
 
         <!-- Nội dung Hero bên trái -->
@@ -190,7 +193,7 @@
 
           <!-- Subheadline -->
           <p class="hero-subtitle" data-i18n="hero_subtitle">
-            Từ không gian sống sạch sẽ đến sự chăm sóc tận tâm dành cho những người thân yêu. CleanNova giúp bạn tìm dịch vụ phù hợp ngay tại nhà.
+            Từ không gian sống sạch sẽ đến sự chăm sóc tận tâm dành cho những người thân yêu. DabClean giúp bạn tìm dịch vụ phù hợp ngay tại nhà.
           </p>
 
           <!-- Nút CTA -->
@@ -315,11 +318,11 @@
     <!-- ============================================================
          SERVICES SECTION (Dịch vụ Vệ sinh & Chăm sóc tại nhà)
          ============================================================ -->
-    <section class="section services" id="services" aria-label="Dịch vụ của CleanNova">
+    <section class="section services" id="services" aria-label="Dịch vụ của DabClean">
       <div class="container">
         <!-- Tiêu đề Section -->
         <div class="section-header reveal reveal-up">
-          <div class="section-badge" data-i18n="services_badge">✨ Dịch vụ của CleanNova</div>
+          <div class="section-badge" data-i18n="services_badge">✨ Dịch vụ của DabClean</div>
           <h2 class="section-title" data-i18n="services_title">Dịch vụ Vệ sinh & Chăm sóc tại nhà</h2>
           <p class="section-subtitle" data-i18n="services_subtitle">Giải pháp toàn diện từ chăm sóc không gian sống sạch sẽ đến hỗ trợ tận tình cho trẻ nhỏ, người lớn tuổi và người bệnh.</p>
         </div>
@@ -512,18 +515,18 @@
     </section>
 
     <!-- ============================================================
-         03. VÌ SAO CHỌN CLEANOVA (Section 3: 5 Tiêu chí thực tế & minh bạch)
+         03. VÌ SAO CHỌN DABCLEAN (Section 3: 5 Tiêu chí thực tế & minh bạch)
          ============================================================ -->
-    <section class="section why-cleanova" id="why-cleanova" aria-label="Vì sao chọn CleanNova">
+    <section class="section why-dabclean" id="why-dabclean" aria-label="Vì sao chọn DabClean">
       <div class="container">
         <div class="section-header reveal reveal-up">
           <div class="section-badge" data-i18n="why_badge">✨ Vì sao chọn chúng tôi</div>
-          <h2 class="section-title" data-i18n="why_title">Vì sao chọn CleanNova?</h2>
+          <h2 class="section-title" data-i18n="why_title">Vì sao chọn DabClean?</h2>
           <p class="section-subtitle" data-i18n="why_subtitle">Cam kết đem lại trải nghiệm dịch vụ tiện lợi, minh bạch và an tâm cho từng tổ ấm gia đình.</p>
         </div>
 
         <!-- Grid 5 lợi ích thực tế -->
-        <div class="why-cleanova-grid">
+        <div class="why-dabclean-grid">
 
           <!-- 1. Dễ dàng đặt dịch vụ tại nhà -->
           <div class="why-benefit-card reveal reveal-up stagger-1">
@@ -565,7 +568,7 @@
         </div>
 
         <!-- Nút CTA cuối section -->
-        <div class="why-cleanova-actions reveal reveal-up">
+        <div class="why-dabclean-actions reveal reveal-up">
           <a href="#services" class="btn btn-primary btn-lg" data-i18n="btn_explore_services">Khám phá dịch vụ</a>
           <a href="booking.html" class="btn btn-secondary btn-lg" data-action="book" data-i18n="hero_cta_book">Đặt lịch ngay</a>
         </div>
@@ -579,7 +582,7 @@
       <div class="container">
         <div class="section-header reveal reveal-up">
           <div class="section-badge" data-i18n="workflow_badge">⚡ Quy trình đặt dịch vụ</div>
-          <h2 class="section-title" data-i18n="workflow_title">4 bước đặt lịch dịch vụ tại CleanNova</h2>
+          <h2 class="section-title" data-i18n="workflow_title">4 bước đặt lịch dịch vụ tại DabClean</h2>
           <p class="section-subtitle" data-i18n="workflow_subtitle">Từ đặt lịch đến khi hoàn thành, mọi công đoạn diễn ra minh bạch, an tâm và thuận tiện.</p>
         </div>
 
@@ -646,11 +649,11 @@
     <!-- ============================================================
          05. BẢNG GIÁ DỊCH VỤ (Section 5: Phân loại & đồng bộ API)
          ============================================================ -->
-    <section class="section pricing-table-section" id="pricing-table" aria-label="Bảng giá dịch vụ CleanNova">
+    <section class="section pricing-table-section" id="pricing-table" aria-label="Bảng giá dịch vụ DabClean">
       <div class="container">
         <div class="section-header reveal reveal-up">
           <div class="section-badge" data-i18n="pricing_badge">💰 Bảng giá minh bạch</div>
-          <h2 class="section-title" data-i18n="pricing_title">Bảng giá dịch vụ CleanNova</h2>
+          <h2 class="section-title" data-i18n="pricing_title">Bảng giá dịch vụ DabClean</h2>
           <p class="section-subtitle" data-i18n="pricing_subtitle">Bảng giá niêm yết công khai, đồng bộ trực tiếp từ hệ thống, không phụ phí phát sinh ngoài thỏa thuận.</p>
         </div>
 
@@ -676,7 +679,7 @@
           </button>
         </div>
 
-        <!-- Cards container: Đầy đủ 8 dịch vụ của hệ thống CleanNova -->
+        <!-- Cards container: Đầy đủ 8 dịch vụ của hệ thống DabClean -->
         <div class="pricing-cards-grid" id="pricing-cards-container">
 
           <!-- 1. Dọn dẹp nhà cửa theo giờ -->
@@ -863,7 +866,7 @@
     <!-- ============================================================
          06. CAM KẾT VÀ PHẠM VI DỊCH VỤ (Section 6)
          ============================================================ -->
-    <section class="section commitments-section" id="commitments" aria-label="Cam kết và phạm vi dịch vụ CleanNova">
+    <section class="section commitments-section" id="commitments" aria-label="Cam kết và phạm vi dịch vụ DabClean">
       <div class="container">
         <div class="section-header reveal reveal-up">
           <div class="section-badge" data-i18n="commitments_badge">🛡️ Cam kết & Quy định</div>
@@ -926,7 +929,7 @@
             <h3 class="scope-card-title" data-i18n="scope_5_title">Cách thức liên hệ hỗ trợ</h3>
             <ul>
               <li data-i18n="scope_5_f1">Tổng đài hỗ trợ khách hàng: 1900-8888 (Hoạt động từ 8:00 - 20:00 hàng ngày).</li>
-              <li data-i18n="scope_5_f2">Hộp thư điện tử tiếp nhận: contact@cleanova.vn.</li>
+              <li data-i18n="scope_5_f2">Hộp thư điện tử tiếp nhận: contact@dabclean.vn.</li>
               <li data-i18n="scope_5_f3">Gửi yêu cầu hỗ trợ trực tiếp từ giao diện tài khoản cá nhân.</li>
             </ul>
           </div>
@@ -938,7 +941,7 @@
           <div class="scope-disclaimer-icon" aria-hidden="true">⚠️</div>
           <div class="scope-disclaimer-content">
             <strong data-i18n="scope_disclaimer_title">LƯU Ý QUAN TRỌNG VỀ DỊCH VỤ CHĂM SÓC NGƯỜI BỆNH:</strong>
-            <p data-i18n="scope_disclaimer_desc">Dịch vụ chăm sóc người bệnh tại nhà của CleanNova là dịch vụ hỗ trợ sinh hoạt đời sống và thể chất thông thường, <strong>KHÔNG PHẢI</strong> dịch vụ điều trị y tế. Nhân viên CleanNova tuyệt đối không thực hiện các thủ thuật can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn thuốc, thay băng vết mổ phức tạp). Các nghiệp vụ chuyên môn y khoa chỉ được phép thực hiện khi có nhân sự có chứng chỉ hành nghề y tế hợp lệ theo quy định pháp luật và quy trình chuyên trách.</p>
+            <p data-i18n="scope_disclaimer_desc">Dịch vụ chăm sóc người bệnh tại nhà của DabClean là dịch vụ hỗ trợ sinh hoạt đời sống và thể chất thông thường, <strong>KHÔNG PHẢI</strong> dịch vụ điều trị y tế. Nhân viên DabClean tuyệt đối không thực hiện các thủ thuật can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn thuốc, thay băng vết mổ phức tạp). Các nghiệp vụ chuyên môn y khoa chỉ được phép thực hiện khi có nhân sự có chứng chỉ hành nghề y tế hợp lệ theo quy định pháp luật và quy trình chuyên trách.</p>
           </div>
         </div>
 
@@ -1022,7 +1025,7 @@
         <div class="section-header reveal reveal-up">
           <div class="section-badge" data-i18n="reviews_badge">💬 Đánh giá khách hàng</div>
           <h2 class="section-title" data-i18n="reviews_title">Khách hàng nói gì về chúng tôi</h2>
-          <p class="section-subtitle" data-i18n="reviews_subtitle">Hàng ngàn khách hàng đã tin tưởng và hài lòng với dịch vụ của Cleanova.</p>
+          <p class="section-subtitle" data-i18n="reviews_subtitle">Hàng ngàn khách hàng đã tin tưởng và hài lòng với dịch vụ của DabClean.</p>
         </div>
 
         <!-- Grid 3 đánh giá -->
@@ -1101,17 +1104,17 @@
           <div class="promo-icon" aria-hidden="true">🎉</div>
           <h2 data-i18n="promo_title">Nhận ngay ưu đãi 20% cho lần đặt lịch đầu tiên!</h2>
           <p data-i18n="promo_subtitle">Áp dụng cho tất cả dịch vụ. Ưu đãi có giới hạn — Đặt ngay hôm nay!</p>
-          <div class="promo-code">🏷️ CLEANOVA20</div>
+          <div class="promo-code">🏷️ DABCLEAN20</div>
           <br><br>
-          <a href="#calculator" class="btn" data-action="promo" data-i18n="promo_btn">Đặt ngay — Nhập mã CLEANOVA20</a>
+          <a href="#calculator" class="btn" data-action="promo" data-i18n="promo_btn">Đặt ngay — Nhập mã DABCLEAN20</a>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-         08. SECTION TRỞ THÀNH ĐỐI TÁC (Tuyển dụng & Đồng hành cùng Cleanova)
+         08. SECTION TRỞ THÀNH ĐỐI TÁC (Tuyển dụng & Đồng hành cùng DabClean)
          ============================================================ -->
-    <section class="partner-hero-banner" id="partner-section" aria-label="Trở thành đối tác Cleanova">
+    <section class="partner-hero-banner" id="partner-section" aria-label="Trở thành đối tác DabClean">
       <div class="container">
         <div class="partner-banner-grid">
 
@@ -1122,10 +1125,10 @@
               <span data-i18n="partner_badge">Đồng hành phát triển</span>
             </div>
             <h2 class="partner-banner-title" data-i18n="partner_title">
-              Cùng CleanNova mang đến không gian sạch hơn
+              Cùng DabClean mang đến không gian sạch hơn
             </h2>
             <p class="partner-banner-desc" data-i18n="partner_desc">
-              Tham gia đội ngũ đối tác cung cấp dịch vụ vệ sinh chuyên nghiệp, chủ động thời gian và phát triển thu nhập ổn định theo chính sách minh bạch của CleanNova.
+              Tham gia đội ngũ đối tác cung cấp dịch vụ vệ sinh chuyên nghiệp, chủ động thời gian và phát triển thu nhập ổn định theo chính sách minh bạch của DabClean.
             </p>
 
             <!-- 4 bước đăng ký đối tác -->
@@ -1136,7 +1139,7 @@
               </div>
               <div class="partner-step-mini">
                 <span class="step-num">2</span>
-                <span data-i18n="partner_step_2">Chờ Cleanova thẩm định và xét duyệt hồ sơ</span>
+                <span data-i18n="partner_step_2">Chờ DabClean thẩm định và xét duyệt hồ sơ</span>
               </div>
               <div class="partner-step-mini">
                 <span class="step-num">3</span>
@@ -1152,7 +1155,7 @@
             <div style="margin-top: 24px;">
               <a href="partner-register.html" class="btn btn-primary btn-lg" style="background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%);">
                 <span>🤝</span>
-                <span data-i18n="btn_partner_action">Trở thành đối tác Cleanova</span>
+                <span data-i18n="btn_partner_action">Trở thành đối tác DabClean</span>
               </a>
             </div>
           </div>
@@ -1211,7 +1214,7 @@
         <div class="section-header reveal reveal-up">
           <div class="section-badge" data-i18n="faq_badge">❓ Câu hỏi thường gặp</div>
           <h2 class="section-title" data-i18n="faq_title">Giải đáp thắc mắc của bạn</h2>
-          <p class="section-subtitle" data-i18n="faq_subtitle">Tìm câu trả lời cho những câu hỏi phổ biến về dịch vụ của Cleanova.</p>
+          <p class="section-subtitle" data-i18n="faq_subtitle">Tìm câu trả lời cho những câu hỏi phổ biến về dịch vụ của DabClean.</p>
         </div>
 
         <!-- Danh sách FAQ Accordion (6 câu hỏi chuẩn theo chính sách) -->
@@ -1223,7 +1226,7 @@
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_1_a">Giá dịch vụ tại CleanNova được tính toán tự động và thống nhất từ backend theo loại hình dịch vụ: theo giờ (dọn dẹp cơ bản, chăm sóc trẻ em, người cao tuổi, người bệnh) hoặc theo khối lượng/diện tích (giặt sofa, vệ sinh sâu, sau xây dựng). Hệ thống áp dụng chính sách ưu đãi tần suất (giảm 15% khi đặt hàng tuần, giảm 10% khi đặt hàng tháng) và mã khuyến mãi hợp lệ mà không có chi phí ẩn.</p>
+              <p data-i18n="faq_1_a">Giá dịch vụ tại DabClean được tính toán tự động và thống nhất từ backend theo loại hình dịch vụ: theo giờ (dọn dẹp cơ bản, chăm sóc trẻ em, người cao tuổi, người bệnh) hoặc theo khối lượng/diện tích (giặt sofa, vệ sinh sâu, sau xây dựng). Hệ thống áp dụng chính sách ưu đãi tần suất (giảm 15% khi đặt hàng tuần, giảm 10% khi đặt hàng tháng) và mã khuyến mãi hợp lệ mà không có chi phí ẩn.</p>
             </div>
           </div>
 
@@ -1267,7 +1270,7 @@
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_5_a">CleanNova hỗ trợ nhiều hình thức thanh toán an toàn và tiện lợi: thanh toán tiền mặt trực tiếp cho nhân viên sau khi hoàn thành dịch vụ, chuyển khoản ngân hàng hoặc thanh toán trực tuyến qua các ví điện tử được tích hợp sẵn. Mọi đơn thanh toán đều có biên lai xác nhận điện tử minh bạch trong tài khoản của bạn.</p>
+              <p data-i18n="faq_5_a">DabClean hỗ trợ nhiều hình thức thanh toán an toàn và tiện lợi: thanh toán tiền mặt trực tiếp cho nhân viên sau khi hoàn thành dịch vụ, chuyển khoản ngân hàng hoặc thanh toán trực tuyến qua các ví điện tử được tích hợp sẵn. Mọi đơn thanh toán đều có biên lai xác nhận điện tử minh bạch trong tài khoản của bạn.</p>
             </div>
           </div>
 
@@ -1278,7 +1281,7 @@
               <span class="faq-icon" aria-hidden="true">▼</span>
             </button>
             <div class="faq-answer">
-              <p data-i18n="faq_6_a">Nhân viên chăm sóc tại nhà hỗ trợ các công việc sinh hoạt đời sống hàng ngày: hỗ trợ ăn uống, chuẩn bị thức ăn nhẹ, vệ sinh cá nhân, hỗ trợ di chuyển an toàn, nhắc uống thuốc đúng giờ theo đơn bác sĩ và trò chuyện tâm lý. CleanNova KHÔNG cung cấp các can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn, điều trị chuyên khoa) vì đây là dịch vụ hỗ trợ sinh hoạt đời sống.</p>
+              <p data-i18n="faq_6_a">Nhân viên chăm sóc tại nhà hỗ trợ các công việc sinh hoạt đời sống hàng ngày: hỗ trợ ăn uống, chuẩn bị thức ăn nhẹ, vệ sinh cá nhân, hỗ trợ di chuyển an toàn, nhắc uống thuốc đúng giờ theo đơn bác sĩ và trò chuyện tâm lý. DabClean KHÔNG cung cấp các can thiệp y tế chuyên sâu (như tiêm truyền, kê đơn, điều trị chuyên khoa) vì đây là dịch vụ hỗ trợ sinh hoạt đời sống.</p>
             </div>
           </div>
         </div>
@@ -1297,19 +1300,26 @@
 
         <!-- Cột 1: Thương hiệu & Liên hệ -->
         <div class="footer-brand reveal reveal-up stagger-1">
-          <a href="trangchu.html" class="logo" aria-label="Cleanova">
+          <a href="trangchu.html" class="logo" aria-label="DabClean">
             <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/>
-              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
-              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
-              <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="dabCleanGradFoot" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#10B981"/>
+                  <stop offset="1" stop-color="#06B6D4"/>
+                </linearGradient>
+              </defs>
+              <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradFoot)" opacity="0.16"/>
+              <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradFoot)"/>
+              <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+              <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
             </svg>
-            <span class="logo-text">Cleanova</span>
+            <span class="logo-text">DabClean</span>
           </a>
           <p data-i18n="footer_slogan">Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ vệ sinh &amp; chăm sóc gia đình tiện lợi, tin cậy.</p>
           <div class="footer-contact">
             <a href="tel:19008888" aria-label="Gọi điện">📞 <span data-i18n="footer_phone">1900-8888 (8:00 - 20:00)</span></a>
-            <a href="mailto:contact@cleanova.vn" aria-label="Gửi email">📧 <span data-i18n="footer_email">contact@cleanova.vn</span></a>
+            <a href="mailto:contact@dabclean.vn" aria-label="Gửi email">📧 <span data-i18n="footer_email">contact@dabclean.vn</span></a>
             <span style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">📍 <span data-i18n="footer_address">123 Đường Cầu Giấy, Hà Nội</span></span>
           </div>
         </div>
@@ -1332,10 +1342,10 @@
         <div class="footer-column reveal reveal-up stagger-3">
           <h4 data-i18n="footer_col3_title">Khám phá</h4>
           <div class="footer-links">
-            <a href="khampha.html" data-i18n="footer_link_about">Giới thiệu CleanNova</a>
+            <a href="khampha.html" data-i18n="footer_link_about">Giới thiệu DabClean</a>
             <a href="khampha.html#workflow" data-i18n="footer_link_steps">Quy trình dọn dẹp 6 bước</a>
             <a href="khampha.html#ai-technology" data-i18n="footer_link_ai">Công nghệ AI Quét độ bẩn</a>
-            <a href="#why-cleanova" data-i18n="footer_link_why">Vì sao chọn CleanNova?</a>
+            <a href="#why-dabclean" data-i18n="footer_link_why">Vì sao chọn DabClean?</a>
             <a href="partner-register.html" data-i18n="footer_link_partner">Trở thành đối tác</a>
             <a href="khampha.html#faq" data-i18n="footer_link_faq">Câu hỏi thường gặp (FAQ)</a>
           </div>
@@ -1361,11 +1371,11 @@
 
       <!-- Footer Bottom -->
       <div class="footer-bottom">
-        <p data-i18n="footer_copyright">© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
+        <p data-i18n="footer_copyright">© 2026 DabClean Inc. Bảo lưu mọi quyền.</p>
         <div class="footer-bottom-links">
           <a href="khampha.html#standards" data-i18n="footer_privacy">Chính sách bảo mật</a>
           <a href="khampha.html#standards" data-i18n="footer_terms">Điều khoản dịch vụ</a>
-          <a href="khampha.html#standards" data-i18n="footer_commitment">Cam kết Cleanova Care</a>
+          <a href="khampha.html#standards" data-i18n="footer_commitment">Cam kết DabClean Care</a>
         </div>
       </div>
     </div>

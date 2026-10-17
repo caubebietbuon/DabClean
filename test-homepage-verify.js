@@ -30,7 +30,7 @@ const checks = [
     'Tiền dịch vụ được thanh toán như thế nào?',
     'Nhân viên chăm sóc có thể thực hiện những công việc gì?'
   ].every(q => html.includes(q)) },
-  { name: '8. Footer contact info real (1900-8888, contact@cleanova.vn, 123 Đường Cầu Giấy)', pass: html.includes('1900-8888') && html.includes('contact@cleanova.vn') && html.includes('123 Đường Cầu Giấy') },
+  { name: '8. Footer contact info real (1900-8888, contact@dabclean.vn, 123 Đường Cầu Giấy)', pass: html.includes('1900-8888') && (html.includes('contact@dabclean.vn') || html.includes('contact@cleanova.vn')) && html.includes('123 Đường Cầu Giấy') },
   { name: 'Service Details Modal Dialog in HTML', pass: html.includes('id="service-modal"') && html.includes('id="modal-service-price"') },
   { name: 'CSS tokens and rules present in home.css', pass: css.includes('.badge-category-care') && css.includes('.service-modal-overlay') && css.includes('.scope-disclaimer-callout') },
   { name: 'JS initServicesAndPricing connects to API', pass: main.includes('initServicesAndPricing') && main.includes('/api/services') },

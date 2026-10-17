@@ -1,4 +1,4 @@
-# 🌿 Cleanova - Nền Tảng Dịch Vụ Dọn Vệ Sinh Chuyên Nghiệp (Full-Stack)
+# 🌿 DabClean - Nền Tảng Dịch Vụ Dọn Vệ Sinh Chuyên Nghiệp (Full-Stack)
 
 > **Slogan:**  
 > 🇬🇧 *A Cleaner Space, A Better Life.*  
@@ -8,7 +8,7 @@
 
 ## 📖 1. Giới Thiệu Dự Án
 
-**Cleanova** là ứng dụng web toàn diện hỗ trợ đặt lịch và quản lý dịch vụ vệ sinh không gian sống và làm việc hiện đại. Dự án được thiết kế theo tiêu chuẩn công nghiệp với kiến trúc phân tầng rõ ràng giữa **Frontend**, **Backend API**, và **Cơ sở dữ liệu (Database)**.
+**DabClean** là ứng dụng web toàn diện hỗ trợ đặt lịch và quản lý dịch vụ vệ sinh không gian sống và làm việc hiện đại. Dự án được thiết kế theo tiêu chuẩn công nghiệp với kiến trúc phân tầng rõ ràng giữa **Frontend**, **Backend API**, và **Cơ sở dữ liệu (Database)**.
 
 Dự án tuân thủ nghiêm ngặt yêu cầu công nghệ giảng dạy và phát triển:
 - **Frontend:** 100% mã nguồn thuần (Pure HTML5, CSS3 hiện đại, Vanilla JavaScript ES6+), hoàn toàn không phụ thuộc vào thư viện bên ngoài (không React/Vue, không Tailwind/Bootstrap, không jQuery).
@@ -22,14 +22,14 @@ Dự án tuân thủ nghiêm ngặt yêu cầu công nghệ giảng dạy và ph
 Dự án được phân chia mô-đun gọn gàng, trực quan và dễ bảo trì:
 
 ```text
-cleannova/
+dabclean/
 ├── frontend/                   # Toàn bộ giao diện & logic phía người dùng
 │   ├── index.html              # Trang cổng Gateway (kiểm tra phiên & điều hướng)
-│   ├── login.html              # Giao diện Đăng nhập Cleanova
+│   ├── login.html              # Giao diện Đăng nhập DabClean
 │   ├── login.css               # Phong cách giao diện Đăng nhập
 │   ├── login.js                # Xử lý logic Đăng nhập & chuyển đổi ngôn ngữ VI/EN
 │   ├── register.html           # Giao diện Đăng ký tài khoản mới
-│   ├── trangchu.html           # Trang chủ (Landing Page) chính thức của Cleanova
+│   ├── trangchu.html           # Trang chủ (Landing Page) chính thức của DabClean
 │   ├── services.html           # Danh mục dịch vụ, tìm kiếm & bộ lọc giá
 │   ├── booking.html            # Trang đặt lịch dọn dẹp & ước tính chi phí trực tiếp
 │   ├── my-bookings.html        # Trang quản lý lịch sử đơn đặt của khách hàng
@@ -80,9 +80,9 @@ Hệ thống đã chuẩn bị sẵn tài khoản kiểm thử cho cả 3 vai tr
 
 | Vai trò | Email đăng nhập | Mật khẩu | Trang tự động chuyển đến | Quyền hạn & Tác vụ |
 | :--- | :--- | :--- | :--- | :--- |
-| **Nhân viên (Staff 1)** | `staff@cleanova.vn` | `Staff@Cleanova2026!` | [`staff.html`](http://localhost:5000/staff.html) | Xem việc được giao, timeline lịch trình, cập nhật tiến độ, báo cáo ca trực & đổi mật khẩu |
-| **Nhân viên (Staff 2)** | `staff2@cleanova.vn` | `Staff@Cleanova2026!` | [`staff.html`](http://localhost:5000/staff.html) | Tài khoản nhân viên thứ hai để kiểm tra bảo mật phân quyền công việc riêng biệt |
-| **Quản trị viên (Admin)** | `admin@cleanova.vn` | `Admin@Cleanova2026!` | [`admin.html`](http://localhost:5000/admin.html) | Toàn quyền xem Dashboard, quản lý tài khoản, phân công việc cho nhân viên, quản lý dịch vụ |
+| **Nhân viên (Staff 1)** | `staff@cleanova.vn` | `Staff@DabClean2026!` | [`staff.html`](http://localhost:5000/staff.html) | Xem việc được giao, timeline lịch trình, cập nhật tiến độ, báo cáo ca trực & đổi mật khẩu |
+| **Nhân viên (Staff 2)** | `staff2@cleanova.vn` | `Staff@DabClean2026!` | [`staff.html`](http://localhost:5000/staff.html) | Tài khoản nhân viên thứ hai để kiểm tra bảo mật phân quyền công việc riêng biệt |
+| **Quản trị viên (Admin)** | `admin@cleanova.vn` | `Admin@DabClean2026!` | [`admin.html`](http://localhost:5000/admin.html) | Toàn quyền xem Dashboard, quản lý tài khoản, phân công việc cho nhân viên, quản lý dịch vụ |
 | **Khách hàng (Customer)** | `demo@nova.app` | `NovaDemo2026!` | [`trangchu.html`](http://localhost:5000/trangchu.html) | Xem bảng giá, đặt lịch, quản lý đơn của mình, hủy đơn và quản lý hồ sơ cá nhân |
 | **Tài khoản bị khóa (Test)** | `locked@cleanova.vn` | `NovaDemo2026!` | — | Tài khoản bị vô hiệu hóa bởi Admin (bị chặn đăng nhập 403 `ACCOUNT_DEACTIVATED`) |
 
@@ -104,8 +104,8 @@ Hệ thống có cơ chế **Fallback thông minh**: nếu MySQL chưa bật, se
 
 #### Bước 1: (Nếu có MySQL) Khởi tạo Cơ sở dữ liệu
 1. Mở **phpMyAdmin** (XAMPP) hoặc **MySQL Workbench**.
-2. Chạy nội dung trong file [`database/schema.sql`](file:///c:/Users/tiend/Downloads/cleannova/database/schema.sql) để tạo cơ sở dữ liệu `cleanova_db` và các bảng.
-3. Chạy nội dung trong file [`database/seed.sql`](file:///c:/Users/tiend/Downloads/cleannova/database/seed.sql) để nạp dữ liệu mẫu ban đầu.
+2. Chạy nội dung trong file [`database/schema.sql`](file:///c:/Users/tiend/Downloads/dabclean/database/schema.sql) để tạo cơ sở dữ liệu `cleanova_db` và các bảng.
+3. Chạy nội dung trong file [`database/seed.sql`](file:///c:/Users/tiend/Downloads/dabclean/database/seed.sql) để nạp dữ liệu mẫu ban đầu.
 
 #### Bước 2: Khởi động Backend Server
 Mở terminal tại thư mục gốc dự án:
@@ -126,7 +126,7 @@ node server.js
 Sau khi chạy thành công, console sẽ thông báo:
 ```text
 ====================================================
-  CLEANOVA BACKEND SERVER IS RUNNING
+  DABCLEAN BACKEND SERVER IS RUNNING
   - Local URL:    http://localhost:5000
   - API Health:   http://localhost:5000/api/health
   - Services API: http://localhost:5000/api/services
@@ -142,8 +142,8 @@ Mở trình duyệt bất kỳ và truy cập:
 ### Cách 2: Mở Giao Diện Bằng VS Code Live Server (Frontend Độc Lập)
 
 Nếu chỉ muốn xem và chỉnh sửa giao diện Frontend:
-1. Mở thư mục `cleannova` bằng **VS Code**.
-2. Nhấp chuột phải vào file [`frontend/index.html`](file:///c:/Users/tiend/Downloads/cleannova/frontend/index.html) hoặc [`frontend/login.html`](file:///c:/Users/tiend/Downloads/cleannova/frontend/login.html).
+1. Mở thư mục `dabclean` bằng **VS Code**.
+2. Nhấp chuột phải vào file [`frontend/index.html`](file:///c:/Users/tiend/Downloads/dabclean/frontend/index.html) hoặc [`frontend/login.html`](file:///c:/Users/tiend/Downloads/dabclean/frontend/login.html).
 3. Chọn **Open with Live Server**.
 4. Frontend sẽ tự động nhận diện nếu Backend chưa chạy và hiển thị thông báo thân thiện.
 
@@ -211,7 +211,7 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 - `POST /api/bookings/:id/review` : Gửi đánh giá dịch vụ và nhân viên (`rating`, `staff_rating`, `comment`) sau khi hoàn thành.
 - `POST /api/bookings/:id/tip` : Ghi nhận tip tự nguyện từ 1.000 đến 1.000.000 VNĐ cho nhân viên được giao; khoản tip được thanh toán trực tiếp với nhân viên.
 
-### Hệ thống Hai Ví & Sổ cái Nhân viên (`/api/wallet`) - *CleanNova Two-Wallet System*
+### Hệ thống Hai Ví & Sổ cái Nhân viên (`/api/wallet`) - *DabClean Two-Wallet System*
 - `GET /api/wallet/staff/wallets` : Lấy số dư chi tiết của Ví Tín Dụng (Credit Wallet) và Ví Thu Nhập (Earnings Wallet), kèm trạng thái điều kiện nhận đơn (`eligible`).
 - `GET /api/wallet/staff/eligibility` : Kiểm tra điều kiện nhận đơn (yêu cầu số dư ví tín dụng `creditBalance >= 100.000 VNĐ`).
 - `POST /api/wallet/staff/topup-credit` : Nạp tiền trực tiếp vào Ví Tín Dụng (hỗ trợ sandbox và bù nợ âm tự động).
@@ -226,7 +226,7 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 - `POST /api/staff/tasks/:id/cash-payment` : Ghi nhận thu tiền mặt sau khi hoàn tất ảnh After; giao diện yêu cầu nhân viên vuốt thanh xác nhận.
 
 ### Quản trị viên (`/api/admin`) - *Yêu cầu Token có quyền Admin*
-- `GET /api/admin/stats` : Lấy số liệu thống kê Dashboard: phân tách Tiền mặt vs Trực tuyến và 6 chỉ số Quản trị Hai Ví Nhân Viên CleanNova.
+- `GET /api/admin/stats` : Lấy số liệu thống kê Dashboard: phân tách Tiền mặt vs Trực tuyến và 6 chỉ số Quản trị Hai Ví Nhân Viên DabClean.
 - `GET /api/admin/staff-wallets` : Lấy danh sách toàn bộ nhân viên kèm số dư Ví Tín Dụng, Ví Thu Nhập, nợ tín dụng và trạng thái đủ điều kiện (`creditBalance >= 100.000 VNĐ`).
 - `PUT /api/admin/bookings/:id/assign` : Gán đơn cho nhân viên (kiểm tra điều kiện `creditBalance >= 100.000 VNĐ`, từ chối nếu không đủ).
 - `POST /api/admin/bookings/:id/payout` : Quyết toán thù lao và khấu trừ hoa hồng đơn hàng idempotent.
@@ -259,13 +259,13 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 
 1. Để chấm bài nhanh nhất, chỉ cần mở terminal tại thư mục `backend` và gõ `node server.js`.
 2. Mở trình duyệt tại **`http://localhost:5000`**.
-3. Đăng nhập bằng tài khoản `admin@cleanova.vn` / `Admin@Cleanova2026!` để kiểm tra toàn bộ quyền Admin Dashboard & Quản trị Hệ thống Hai Ví Nhân Viên CleanNova.
-4. Mở thêm cửa sổ ẩn danh và đăng nhập bằng tài khoản `staff@cleanova.vn` / `Staff@Cleanova2026!` để trải nghiệm Cổng Nhân Viên: Quản lý Hai Ví (Ví Tín Dụng & Ví Thu Nhập), nạp ví tín dụng, chuyển tiền giữa 2 ví, kiểm tra điều kiện nhận đơn (`creditBalance >= 100.000 VNĐ`).
-5. Chạy bộ kiểm thử tự động toàn diện cho hệ thống Hai Ví Nhân Viên CleanNova:
+3. Đăng nhập bằng tài khoản `admin@cleanova.vn` / `Admin@DabClean2026!` để kiểm tra toàn bộ quyền Admin Dashboard & Quản trị Hệ thống Hai Ví Nhân Viên DabClean.
+4. Mở thêm cửa sổ ẩn danh và đăng nhập bằng tài khoản `staff@cleanova.vn` / `Staff@DabClean2026!` để trải nghiệm Cổng Nhân Viên: Quản lý Hai Ví (Ví Tín Dụng & Ví Thu Nhập), nạp ví tín dụng, chuyển tiền giữa 2 ví, kiểm tra điều kiện nhận đơn (`creditBalance >= 100.000 VNĐ`).
+5. Chạy bộ kiểm thử tự động toàn diện cho hệ thống Hai Ví Nhân Viên DabClean:
    ```bash
    node backend/test-two-staff-wallets.js
    ```
 6. Kiểm tra mã nguồn: Tất cả các file trong `frontend/` và `backend/` đều được chú thích tiếng Việt chi tiết, cấu trúc chuẩn mực, không dùng framework cồng kềnh.
 
 ---
-*Cleanova © 2026. All rights reserved. A Cleaner Space, A Better Life.*
+*DabClean © 2026. All rights reserved. A Cleaner Space, A Better Life.*

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Dịch vụ Dọn dẹp nhà cửa theo giờ CleanNova — Lau chùi, dọn phòng khách, phòng ngủ, nhà bếp và khu vực sinh hoạt theo nhu cầu của bạn.">
-  <title>Dọn dẹp nhà cửa theo giờ — CleanNova</title>
+  <meta name="description" content="Dịch vụ Dọn dẹp nhà cửa theo giờ DabClean — Lau chùi, dọn phòng khách, phòng ngủ, nhà bếp và khu vực sinh hoạt theo nhu cầu của bạn.">
+  <title>Dọn dẹp nhà cửa theo giờ — DabClean</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%2310B981'/%3E%3Cpath d='M16 6 L8 14 L10 14 L10 24 L22 24 L22 14 L24 14 Z' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="css/pages/care.css">
@@ -14,13 +14,21 @@
   <!-- HEADER -->
   <header class="header" id="header" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
         <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.15"/>
-          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
-          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
         </svg>
-        <span class="logo-text">Cleanova</span>
+        <span class="logo-text">DabClean</span>
       </a>
 
       <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
@@ -124,9 +132,21 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="trangchu.html" class="logo" style="margin-bottom: 12px;">
-            <svg viewBox="0 0 36 36" fill="none" width="28" height="28"><path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.15"/><path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"/><path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/></svg>
-            <span class="logo-text">Cleanova</span>
+          <a href="trangchu.html" class="logo" aria-label="DabClean">
+            <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="dabCleanGradFoot" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#10B981"/>
+                  <stop offset="1" stop-color="#06B6D4"/>
+                </linearGradient>
+              </defs>
+              <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradFoot)" opacity="0.16"/>
+              <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradFoot)"/>
+              <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+              <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
+            </svg>
+            <span class="logo-text">DabClean</span>
           </a>
           <p class="footer-desc">Dịch vụ dọn vệ sinh chuyên nghiệp và chăm sóc tại nhà uy tín.</p>
         </div>
@@ -151,13 +171,13 @@
           <h4>Liên hệ</h4>
           <div class="footer-links">
             <span>Hotline: 1900-8888</span>
-            <span>Email: contact@cleanova.vn</span>
+            <span>Email: contact@dabclean.vn</span>
             <span>Địa chỉ: 123 Đường Cầu Giấy, Hà Nội</span>
           </div>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
+        <p>© 2026 DabClean Inc. Bảo lưu mọi quyền.</p>
       </div>
     </div>
   </footer>

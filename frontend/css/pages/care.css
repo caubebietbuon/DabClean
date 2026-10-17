@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA — IN-HOME CARE SERVICES STYLESHEET (care.css)
+   DABCLEAN — IN-HOME CARE SERVICES STYLESHEET (care.css)
    Light / Minimal & Premium Aesthetics for Dedicated Care Services
    ============================================================ */
 
@@ -303,7 +303,7 @@
   line-height: 1.6;
 }
 
-/* --- Section 3.4: Why Choose CleanNova --- */
+/* --- Section 3.4: Why Choose DabClean --- */
 .care-strengths-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

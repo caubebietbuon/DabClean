@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Đọc dataset ảnh từ thư mục
+// DABCLEAN AI MODULE - Đọc dataset ảnh từ thư mục
 // ============================================================
 // Cấu trúc dataset mong đợi:
 //

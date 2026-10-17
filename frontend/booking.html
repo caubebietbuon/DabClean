@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Đặt Lịch Dịch Vụ Vệ Sinh · Cleanova</title>
+  <title>Đặt Lịch Dịch Vụ Vệ Sinh · DabClean</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
 </head>
+
 <body>
 
   <!-- ============================================================
@@ -15,14 +17,21 @@
        ============================================================ -->
   <header class="header scrolled" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
-        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
-          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
-          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
-          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
         </svg>
-        <span class="logo-text">Cleanova</span>
+        <span class="logo-text">DabClean</span>
       </a>
 
       <nav class="nav">
@@ -52,7 +61,8 @@
       <div class="page-header" style="max-width: 720px;">
         <div class="section-badge">⚡ Đặt lịch trực tuyến 60 giây</div>
         <h1 class="page-title">Đặt lịch dịch vụ vệ sinh</h1>
-        <p class="page-subtitle">Chọn gói dịch vụ, thời gian phù hợp và để đội ngũ chuyên viên Cleanova chăm sóc ngôi nhà thân yêu của bạn.</p>
+        <p class="page-subtitle">Chọn gói dịch vụ, thời gian phù hợp và để đội ngũ chuyên viên DabClean chăm sóc ngôi
+          nhà thân yêu của bạn.</p>
       </div>
 
       <!-- Stepper Chỉ báo tiến trình 3 bước -->
@@ -86,7 +96,7 @@
             <div class="booking-section-card ai-scanner-card" id="section-ai-scan">
               <div class="booking-section-header" style="border-bottom: none; margin-bottom: 4px; padding-bottom: 0;">
                 <div style="flex: 1;">
-                  <span class="ai-header-badge">✨ Cleanova AI Vision · Độc quyền</span>
+                  <span class="ai-header-badge">✨ DabClean AI Vision · Độc quyền</span>
                   <h3 class="booking-section-title" style="font-size: 1.25rem; color: #0f766e;">
                     Đánh giá tình trạng vệ sinh bằng AI
                   </h3>
@@ -116,13 +126,15 @@
               <!-- Inputs ẩn cho file upload & camera (hỗ trợ multiple) -->
               <input type="file" id="ai-file-input" multiple accept="image/*" style="display: none;">
               <input type="file" id="ai-upload" multiple accept="image/*" style="display: none;">
-              <input type="file" id="ai-camera-input" multiple accept="image/*" capture="environment" style="display: none;">
+              <input type="file" id="ai-camera-input" multiple accept="image/*" capture="environment"
+                style="display: none;">
 
               <!-- Multi-Image Preview Card & Grid -->
               <div class="ai-multi-preview-card" id="ai-preview-card">
                 <div class="ai-multi-preview-header">
                   <div style="display: flex; align-items: center; gap: 8px;">
-                    <strong style="font-size: 13.5px; color: var(--color-text-main);">📸 Danh sách ảnh phòng đã chọn</strong>
+                    <strong style="font-size: 13.5px; color: var(--color-text-main);">📸 Danh sách ảnh phòng đã
+                      chọn</strong>
                     <span class="ai-preview-count-badge" id="ai-files-count">0 ảnh</span>
                   </div>
                   <div style="display: flex; gap: 8px;">
@@ -157,7 +169,8 @@
                   <div class="ai-radar-pulse"></div>
                   <div class="ai-radar-icon">🤖</div>
                 </div>
-                <strong id="ai-loading-status" style="display: block; font-size: 14px; color: #0f766e; margin-bottom: 4px;">
+                <strong id="ai-loading-status"
+                  style="display: block; font-size: 14px; color: #0f766e; margin-bottom: 4px;">
                   Đang quét ảnh & phân tích tình trạng vệ sinh...
                 </strong>
                 <span id="ai-loading-substatus" style="font-size: 12px; color: var(--color-text-muted);">
@@ -169,13 +182,15 @@
               </div>
 
               <!-- Error Alert -->
-              <div id="ai-error-box" class="alert alert-error" style="display: none; margin-top: 14px; line-height: 1.5;"></div>
+              <div id="ai-error-box" class="alert alert-error"
+                style="display: none; margin-top: 14px; line-height: 1.5;"></div>
 
               <!-- AI Result Panel (Đánh giá tổng hợp nhiều ảnh) -->
               <div class="ai-result-panel" id="ai-result-panel">
                 <div class="ai-result-top">
                   <div>
-                    <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--color-text-muted); display: block; letter-spacing: 0.5px;">
+                    <span
+                      style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: var(--color-text-muted); display: block; letter-spacing: 0.5px;">
                       KẾT QUẢ ĐÁNH GIÁ TỔNG HỢP TỪ AI VISION
                     </span>
                     <div class="ai-rating-container" style="margin-top: 6px;">
@@ -203,7 +218,8 @@
                 </div>
 
                 <!-- 5 Chỉ số phân tích trực quan tổng hợp -->
-                <div style="font-size: 12px; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                <div
+                  style="font-size: 12px; font-weight: 800; color: #0f766e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
                   📊 ĐỘ TIN CẬY CỦA MÔ HÌNH AI (MobileNet):
                 </div>
                 <div class="ai-signals-list" id="ai-signals-list">
@@ -213,18 +229,23 @@
                 <!-- AI Recommendation Box -->
                 <div class="ai-rec-box">
                   <h4 id="ai-rec-title">
-                    <span>💡 Gợi ý dịch vụ phù hợp nhất:</span> <strong id="ai-rec-service-name">Tổng vệ sinh Deep Cleaning</strong>
+                    <span>💡 Gợi ý dịch vụ phù hợp nhất:</span> <strong id="ai-rec-service-name">Tổng vệ sinh Deep
+                      Cleaning</strong>
                   </h4>
                   <p id="ai-rec-desc">
-                    AI phát hiện mức độ bụi và vết ố cần thiết bị chuyên sâu. Gói Deep Cleaning sẽ giúp xử lý triệt để các góc khuất.
+                    AI phát hiện mức độ bụi và vết ố cần thiết bị chuyên sâu. Gói Deep Cleaning sẽ giúp xử lý triệt để
+                    các góc khuất.
                   </p>
                   <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 12.5px; margin-bottom: 12px;">
                     <div>
-                      <strong>Thời gian dự kiến:</strong> <span id="ai-rec-hours" style="color: #0d9488; font-weight: 800;">~3 - 4 giờ</span>
+                      <strong>Thời gian dự kiến:</strong> <span id="ai-rec-hours"
+                        style="color: #0d9488; font-weight: 800;">~3 - 4 giờ</span>
                     </div>
                     <div>
-                      <strong>Ước tính từ AI:</strong> <span id="ai-rec-price" style="color: #0d9488; font-weight: 800;">--</span>
-                      <span id="ai-rec-multiplier" style="color: var(--color-text-muted); font-size: 11px; margin-left: 4px;"></span>
+                      <strong>Ước tính từ AI:</strong> <span id="ai-rec-price"
+                        style="color: #0d9488; font-weight: 800;">--</span>
+                      <span id="ai-rec-multiplier"
+                        style="color: var(--color-text-muted); font-size: 11px; margin-left: 4px;"></span>
                     </div>
                   </div>
                   <div class="ai-rec-actions">
@@ -235,7 +256,8 @@
                 </div>
 
                 <div class="ai-disclaimer">
-                  📌 <strong>Lưu ý:</strong> Kết quả AI mang tính chất tham khảo thực tế dựa trên đặc trưng các ảnh bạn đã gửi. Bạn hoàn toàn có thể tự chọn hoặc điều chỉnh bất kỳ gói dịch vụ nào theo nhu cầu.
+                  📌 <strong>Lưu ý:</strong> Kết quả AI mang tính chất tham khảo thực tế dựa trên đặc trưng các ảnh bạn
+                  đã gửi. Bạn hoàn toàn có thể tự chọn hoặc điều chỉnh bất kỳ gói dịch vụ nào theo nhu cầu.
                 </div>
               </div>
 
@@ -247,7 +269,8 @@
                 <span class="section-number-badge">1</span>
                 <div>
                   <h3 class="booking-section-title">Chọn gói dịch vụ vệ sinh</h3>
-                  <span style="font-size: 12px; color: var(--color-text-muted);">Lựa chọn dịch vụ phù hợp với nhu cầu chăm sóc không gian của bạn</span>
+                  <span style="font-size: 12px; color: var(--color-text-muted);">Lựa chọn dịch vụ phù hợp với nhu cầu
+                    chăm sóc không gian của bạn</span>
                 </div>
               </div>
 
@@ -289,7 +312,8 @@
                       <div class="addon-custom-checkbox">✓</div>
                       <div>
                         <div class="addon-name">Khử khuẩn Nano Bạc</div>
-                        <small style="font-size: 11px; color: var(--color-text-muted);">Diệt 99.9% vi khuẩn & nấm mốc</small>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Diệt 99.9% vi khuẩn & nấm
+                          mốc</small>
                       </div>
                     </div>
                     <div class="addon-price">+100.000 đ</div>
@@ -300,7 +324,8 @@
                       <div class="addon-custom-checkbox">✓</div>
                       <div>
                         <div class="addon-name">Giặt đệm / Sofa hơi nóng</div>
-                        <small style="font-size: 11px; color: var(--color-text-muted);">Khử mùi & làm sạch sâu bề mặt vải</small>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Khử mùi & làm sạch sâu bề mặt
+                          vải</small>
                       </div>
                     </div>
                     <div class="addon-price">+200.000 đ</div>
@@ -311,7 +336,8 @@
                       <div class="addon-custom-checkbox">✓</div>
                       <div>
                         <div class="addon-name">Tẩy cặn canxi kính & vách tắm</div>
-                        <small style="font-size: 11px; color: var(--color-text-muted);">Làm trong suốt kính ố vảy cá</small>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Làm trong suốt kính ố vảy
+                          cá</small>
                       </div>
                     </div>
                     <div class="addon-price">+120.000 đ</div>
@@ -322,7 +348,8 @@
                       <div class="addon-custom-checkbox">✓</div>
                       <div>
                         <div class="addon-name">Vệ sinh tủ lạnh / Lò vi sóng</div>
-                        <small style="font-size: 11px; color: var(--color-text-muted);">Khử mùi hôi & lau chùi khay kệ</small>
+                        <small style="font-size: 11px; color: var(--color-text-muted);">Khử mùi hôi & lau chùi khay
+                          kệ</small>
                       </div>
                     </div>
                     <div class="addon-price">+80.000 đ</div>
@@ -356,25 +383,29 @@
                 <span class="section-number-badge">2</span>
                 <div>
                   <h3 class="booking-section-title">Lịch hẹn & Địa điểm thực hiện</h3>
-                  <span style="font-size: 12px; color: var(--color-text-muted);">Chọn ngày giờ thuận tiện nhất cho gia đình bạn</span>
+                  <span style="font-size: 12px; color: var(--color-text-muted);">Chọn ngày giờ thuận tiện nhất cho gia
+                    đình bạn</span>
                 </div>
               </div>
 
               <!-- Ngày & Giờ -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
+              <div
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-bottom: var(--space-md);">
                 <div class="form-group" style="margin-bottom: 0;">
                   <label class="form-label" for="booking-date">Ngày thực hiện <span class="required">*</span></label>
                   <input type="date" id="booking-date" class="form-control" required>
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label" for="booking-time">Giờ bắt đầu làm việc <span class="required">*</span></label>
+                  <label class="form-label" for="booking-time">Giờ bắt đầu làm việc <span
+                      class="required">*</span></label>
                   <input type="time" id="booking-time" class="form-control" value="08:30" required>
                 </div>
               </div>
 
               <!-- Khung giờ gợi ý nhanh -->
               <div class="form-group">
-                <label class="form-label" style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Khung giờ gợi ý:</label>
+                <label class="form-label"
+                  style="font-size: var(--font-size-xs); color: var(--color-text-secondary);">Khung giờ gợi ý:</label>
                 <div class="time-slots-grid" id="quick-time-slots">
                   <button type="button" class="time-slot-btn active" data-time="08:30">08:30 Sáng</button>
                   <button type="button" class="time-slot-btn" data-time="10:00">10:00 Sáng</button>
@@ -387,21 +418,25 @@
               <!-- Chọn nhanh từ Sổ địa chỉ -->
               <div class="form-group" id="saved-address-group" style="display: none;">
                 <label class="form-label">Chọn nhanh từ Sổ địa chỉ đã lưu</label>
-                <select id="select-saved-address" class="form-control" style="background: var(--color-primary-ultra-light); border-color: var(--color-primary-light);">
+                <select id="select-saved-address" class="form-control"
+                  style="background: var(--color-primary-ultra-light); border-color: var(--color-primary-light);">
                   <option value="">-- Chọn địa chỉ đã lưu --</option>
                 </select>
               </div>
 
               <!-- Địa chỉ chi tiết -->
               <div class="form-group">
-                <label class="form-label" for="booking-address">Địa chỉ nhà / Văn phòng thực hiện <span class="required">*</span></label>
-                <input type="text" id="booking-address" class="form-control" placeholder="Số nhà, tên tòa nhà, tên đường, phường/xã, quận/huyện..." required>
+                <label class="form-label" for="booking-address">Địa chỉ nhà / Văn phòng thực hiện <span
+                    class="required">*</span></label>
+                <input type="text" id="booking-address" class="form-control"
+                  placeholder="Số nhà, tên tòa nhà, tên đường, phường/xã, quận/huyện..." required>
                 <span class="form-hint">Vui lòng ghi rõ số phòng / tầng nếu là tòa chung cư hoặc văn phòng.</span>
               </div>
 
               <!-- Số điện thoại -->
               <div class="form-group" style="margin-bottom: 0;">
-                <label class="form-label" for="booking-phone">Số điện thoại liên hệ <span class="required">*</span></label>
+                <label class="form-label" for="booking-phone">Số điện thoại liên hệ <span
+                    class="required">*</span></label>
                 <input type="tel" id="booking-phone" class="form-control" placeholder="0987654321" required>
               </div>
             </div>
@@ -412,7 +447,8 @@
                 <span class="section-number-badge">3</span>
                 <div>
                   <h3 class="booking-section-title">Phương thức thanh toán & Ghi chú</h3>
-                  <span style="font-size: 12px; color: var(--color-text-muted);">Hoàn tất các ghi chú riêng và lựa chọn hình thức chi trả tiện lợi</span>
+                  <span style="font-size: 12px; color: var(--color-text-muted);">Hoàn tất các ghi chú riêng và lựa chọn
+                    hình thức chi trả tiện lợi</span>
                 </div>
               </div>
 
@@ -451,18 +487,21 @@
                   <div class="payment-card" data-val="wallet" id="payment-card-wallet">
                     <span class="payment-icon">👛</span>
                     <div class="payment-info">
-                      <strong>Ví CleanNova</strong>
+                      <strong>Ví DabClean</strong>
                       <small id="wallet-balance-hint">Khuyên dùng · Hoàn tiền tức thì</small>
                     </div>
                   </div>
                 </div>
-                <div id="wallet-balance-banner" style="display: none; margin-top: 14px; padding: 12px 16px; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 12px; font-size: 0.88rem; color: #0f766e;">
+                <div id="wallet-balance-banner"
+                  style="display: none; margin-top: 14px; padding: 12px 16px; background: #f0fdfa; border: 1px solid #99f6e4; border-radius: 12px; font-size: 0.88rem; color: #0f766e;">
                   <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: gap: 8px;">
                     <div>
                       <span>Số dư ví hiện tại: <strong id="wallet-current-balance-text">0 đ</strong></span>
-                      <div id="wallet-status-msg" style="font-size: 0.8rem; margin-top: 2px; color: #0d9488;">Đủ số dư để thanh toán đơn hàng này.</div>
+                      <div id="wallet-status-msg" style="font-size: 0.8rem; margin-top: 2px; color: #0d9488;">Đủ số dư
+                        để thanh toán đơn hàng này.</div>
                     </div>
-                    <a href="wallet.html" target="_blank" class="btn btn-sm btn-outline" style="border-color: #0d9488; color: #0f766e; text-decoration: none; padding: 6px 12px; font-size: 0.82rem; font-weight: 700; border-radius: 8px;">
+                    <a href="wallet.html" target="_blank" class="btn btn-sm btn-outline"
+                      style="border-color: #0d9488; color: #0f766e; text-decoration: none; padding: 6px 12px; font-size: 0.82rem; font-weight: 700; border-radius: 8px;">
                       Nạp thêm ↗
                     </a>
                   </div>
@@ -473,19 +512,23 @@
               <!-- Ghi chú thêm -->
               <div class="form-group">
                 <label class="form-label" for="booking-notes">Ghi chú cho chuyên viên vệ sinh</label>
-                <textarea id="booking-notes" class="form-control" rows="3" placeholder="Ví dụ: Nhà có trẻ sơ sinh và mèo cưng, vui lòng lau kỹ vết ố canxi trong phòng tắm, chìa khóa gửi bảo vệ sảnh..."></textarea>
+                <textarea id="booking-notes" class="form-control" rows="3"
+                  placeholder="Ví dụ: Nhà có trẻ sơ sinh và mèo cưng, vui lòng lau kỹ vết ố canxi trong phòng tắm, chìa khóa gửi bảo vệ sảnh..."></textarea>
               </div>
 
               <!-- Nhập mã giảm giá -->
               <div class="form-group" style="margin-bottom: 0;">
                 <label class="form-label" for="booking-promo">Mã ưu đãi / Voucher giảm giá</label>
                 <div class="coupon-input-group">
-                  <input type="text" id="booking-promo" class="form-control" placeholder="Nhập CLEANOVA20" style="text-transform: uppercase;">
-                  <button type="button" class="btn btn-secondary" id="btn-apply-promo" style="flex-shrink: 0; padding: 0 20px;">Áp dụng</button>
+                  <input type="text" id="booking-promo" class="form-control" placeholder="Nhập DABCLEAN20"
+                    style="text-transform: uppercase;">
+                  <button type="button" class="btn btn-secondary" id="btn-apply-promo"
+                    style="flex-shrink: 0; padding: 0 20px;">Áp dụng</button>
                 </div>
                 <div id="promo-applied-box" class="coupon-applied-badge" style="display: none;">
-                  <span>🏷️ Đã áp dụng mã <strong id="promo-applied-code">CLEANOVA20</strong> (Giảm 20%)</span>
-                  <button type="button" id="btn-remove-promo" style="color: #be123c; background: none; border: none; cursor: pointer; font-size: 14px;">✕</button>
+                  <span>🏷️ Đã áp dụng mã <strong id="promo-applied-code">DABCLEAN20</strong> (Giảm 20%)</span>
+                  <button type="button" id="btn-remove-promo"
+                    style="color: #be123c; background: none; border: none; cursor: pointer; font-size: 14px;">✕</button>
                 </div>
                 <small id="promo-message" style="display: block; margin-top: 6px; font-weight: 600;"></small>
               </div>
@@ -496,8 +539,9 @@
               <button type="submit" class="btn btn-primary btn-lg btn-block" id="btn-submit-booking">
                 Xác nhận đặt lịch ngay →
               </button>
-              <div style="text-align: center; margin-top: 10px; font-size: var(--font-size-xs); color: var(--color-text-muted);">
-                Bằng cách bấm đặt lịch, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của Cleanova.
+              <div
+                style="text-align: center; margin-top: 10px; font-size: var(--font-size-xs); color: var(--color-text-muted);">
+                Bằng cách bấm đặt lịch, bạn đồng ý với Điều khoản dịch vụ và Chính sách bảo mật của DabClean.
               </div>
             </div>
 
@@ -516,7 +560,9 @@
             <div class="summary-service-preview">
               <div class="summary-service-icon" id="summary-icon">🧹</div>
               <div style="flex: 1; overflow: hidden;">
-                <strong style="display: block; font-size: var(--font-size-sm); color: var(--color-text-main); text-overflow: ellipsis; white-space: nowrap; overflow: hidden;" id="summary-service-name">
+                <strong
+                  style="display: block; font-size: var(--font-size-sm); color: var(--color-text-main); text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"
+                  id="summary-service-name">
                   Đang tải...
                 </strong>
                 <span style="font-size: var(--font-size-xs); color: var(--color-text-muted);" id="summary-duration">
@@ -571,7 +617,7 @@
             <div class="summary-guarantee">
               <span style="font-size: 20px;">🛡️</span>
               <div>
-                <strong>Bảo đảm Cleanova Care:</strong>
+                <strong>Bảo đảm DabClean Care:</strong>
                 <div>Đổi lịch miễn phí trước 24h. Bảo hành làm lại miễn phí nếu chưa hài lòng 100%.</div>
               </div>
             </div>
@@ -593,20 +639,24 @@
 
         <!-- Cột 1: Thương hiệu -->
         <div class="footer-brand reveal reveal-up">
-          <a href="trangchu.html" class="logo" aria-label="Cleanova">
+          <a href="trangchu.html" class="logo" aria-label="DabClean">
             <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3"/>
-              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none" stroke-linejoin="round"/>
-              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981"/>
-              <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+              <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#10B981" opacity="0.3" />
+              <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#10B981" stroke-width="2" fill="none"
+                stroke-linejoin="round" />
+              <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#10B981" />
+              <path d="M14 24C14 24 17 19 22 14" stroke="#059669" stroke-width="1.2" fill="none"
+                stroke-linecap="round" />
             </svg>
-            <span class="logo-text">Cleanova</span>
+            <span class="logo-text">DabClean</span>
           </a>
           <p>Không gian sạch hơn, cuộc sống tốt hơn. Dịch vụ dọn vệ sinh thông minh & tin cậy hàng đầu.</p>
           <div class="footer-contact">
             <a href="tel:19008888" aria-label="Gọi điện">📞 <span>1900-8888 (8:00 - 20:00)</span></a>
-            <a href="mailto:contact@cleanova.vn" aria-label="Gửi email">📧 <span>contact@cleanova.vn</span></a>
-            <span style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">📍 123 Đường Cầu Giấy, Hà Nội</span>
+            <a href="mailto:contact@dabclean.vn" aria-label="Gửi email">📧 <span>contact@dabclean.vn</span></a>
+            <span
+              style="font-size: 13px; color: var(--color-text-secondary); display: flex; align-items: center; gap: 6px;">📍
+              123 Đường Cầu Giấy, Hà Nội</span>
           </div>
         </div>
 
@@ -627,10 +677,10 @@
         <div class="footer-column reveal reveal-up stagger-3">
           <h4>Khám phá</h4>
           <div class="footer-links">
-            <a href="khampha.html">Giới thiệu CleanNova</a>
+            <a href="khampha.html">Giới thiệu DabClean</a>
             <a href="khampha.html#workflow">Quy trình dọn dẹp 6 bước</a>
             <a href="khampha.html#ai-technology">Công nghệ AI Quét độ bẩn</a>
-            <a href="trangchu.html#why-cleanova">Vì sao chọn CleanNova?</a>
+            <a href="trangchu.html#why-dabclean">Vì sao chọn DabClean?</a>
             <a href="partner-register.html">Trở thành đối tác</a>
             <a href="khampha.html#faq">Câu hỏi thường gặp (FAQ)</a>
           </div>
@@ -644,7 +694,7 @@
             <a href="my-bookings.html">Theo dõi đơn hàng của tôi</a>
             <a href="profile.html">Sổ địa chỉ & Tài khoản</a>
             <a href="login.html">Đăng nhập / Đăng ký</a>
-            <a href="khampha.html#standards">Cam kết Cleanova Care</a>
+            <a href="khampha.html#standards">Cam kết DabClean Care</a>
           </div>
         </div>
 
@@ -652,7 +702,7 @@
 
       <!-- Footer Bottom -->
       <div class="footer-bottom">
-        <p>© 2026 Cleanova Inc. Bảo lưu mọi quyền.</p>
+        <p>© 2026 DabClean Inc. Bảo lưu mọi quyền.</p>
         <div class="footer-bottom-links">
           <a href="khampha.html#standards">Chính sách bảo mật</a>
           <a href="khampha.html#standards">Điều khoản dịch vụ</a>
@@ -671,12 +721,17 @@
         Đặt lịch thành công!
       </h2>
       <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: 20px;">
-        Đơn đặt dịch vụ của bạn đã được ghi nhận. Đội ngũ Cleanova sẽ liên hệ xác nhận trong ít phút.
+        Đơn đặt dịch vụ của bạn đã được ghi nhận. Đội ngũ DabClean sẽ liên hệ xác nhận trong ít phút.
       </p>
 
-      <div style="background: var(--color-bg-alt); border: 1.5px dashed var(--color-primary-light); border-radius: var(--radius-xl); padding: 16px; margin-bottom: 24px;">
-        <div style="font-size: 11px; color: var(--color-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">MÃ ĐƠN HÀNG CỦA BẠN</div>
-        <div style="font-family: var(--font-family-mono); font-size: 1.8rem; font-weight: 800; color: var(--color-primary); letter-spacing: 1px; margin-top: 4px;" id="modal-booking-code">
+      <div
+        style="background: var(--color-bg-alt); border: 1.5px dashed var(--color-primary-light); border-radius: var(--radius-xl); padding: 16px; margin-bottom: 24px;">
+        <div
+          style="font-size: 11px; color: var(--color-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+          MÃ ĐƠN HÀNG CỦA BẠN</div>
+        <div
+          style="font-family: var(--font-family-mono); font-size: 1.8rem; font-weight: 800; color: var(--color-primary); letter-spacing: 1px; margin-top: 4px;"
+          id="modal-booking-code">
           CNV-2026-XXXX
         </div>
       </div>
@@ -696,16 +751,16 @@
     'use strict';
     document.addEventListener('DOMContentLoaded', async function () {
       // 1. Kiểm tra đăng nhập (Bảo vệ luồng đặt dịch vụ - Yêu cầu tài khoản khách hàng)
-      if (!window.CleanovaAPI.auth.isLoggedIn()) {
+      if (!window.DabCleanAPI.auth.isLoggedIn()) {
         const currentSearch = window.location.search || '';
         const currentHash = window.location.hash || '';
         const returnUrl = encodeURIComponent('booking.html' + currentSearch + currentHash);
-        const msg = encodeURIComponent('Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ CleanNova');
+        const msg = encodeURIComponent('Vui lòng đăng nhập để tiếp tục sử dụng dịch vụ DabClean');
         window.location.replace(`login.html?redirect=${returnUrl}&message=${msg}`);
         return;
       }
 
-      const user = window.CleanovaAPI.auth.getUser() || {};
+      const user = window.DabCleanAPI.auth.getUser() || {};
       const navUserEmail = document.getElementById('nav-user-email');
       if (navUserEmail) navUserEmail.textContent = user.name || user.email || 'Khách hàng';
 
@@ -713,7 +768,7 @@
       if (user.address) document.getElementById('booking-address').value = user.address;
 
       // 2. Nạp Sổ địa chỉ đã lưu (nếu có)
-      const savedAddresses = window.CleanovaAPI.addresses ? window.CleanovaAPI.addresses.getAll() : [];
+      const savedAddresses = window.DabCleanAPI.addresses ? window.DabCleanAPI.addresses.getAll() : [];
       const savedAddressGroup = document.getElementById('saved-address-group');
       const selectSavedAddress = document.getElementById('select-saved-address');
 
@@ -908,7 +963,7 @@
           }
 
           if (file.size > maxSizeBytes) {
-            showAiError(`File "${file.name}" vượt quá 10MB (${(file.size / (1024*1024)).toFixed(1)}MB). Vui lòng chọn ảnh nhỏ hơn.`);
+            showAiError(`File "${file.name}" vượt quá 10MB (${(file.size / (1024 * 1024)).toFixed(1)}MB). Vui lòng chọn ảnh nhỏ hơn.`);
             continue;
           }
 
@@ -1065,7 +1120,7 @@
         }
 
         try {
-          const res = await window.CleanovaAPI.ai.estimate(formData);
+          const res = await window.DabCleanAPI.ai.estimate(formData);
           clearInterval(progressTimer);
           if (aiProgressBar) aiProgressBar.style.width = '100%';
 
@@ -1077,7 +1132,7 @@
           showToast('success', `AI đã hoàn tất đánh giá tổng hợp ${selectedFiles.length} không gian!`);
         } catch (err) {
           clearInterval(progressTimer);
-          console.error('[Cleanova AI Error]:', err);
+          console.error('[DabClean AI Error]:', err);
 
           let errorMsg = err.message || 'Không thể kết nối đến máy chủ AI.';
           if (errorMsg.includes('Failed to fetch') || errorMsg.includes('NetworkError') || err.name === 'TypeError') {
@@ -1264,7 +1319,7 @@
           if (targetService) {
             selectServiceById(targetService.id);
             showToast('success', `Đã áp dụng gói "${targetService.name}" theo gợi ý từ AI.`);
-            
+
             // Cuộn xuống mục dịch vụ
             const serviceSection = document.getElementById('section-service-scale');
             if (serviceSection) {
@@ -1281,7 +1336,7 @@
         const select = document.getElementById('booking-service');
         const grid = document.getElementById('service-cards-grid');
         try {
-          const res = await window.CleanovaAPI.services.getAll();
+          const res = await window.DabCleanAPI.services.getAll();
           servicesList = res.data || [];
           select.innerHTML = '';
           grid.innerHTML = '';
@@ -1296,7 +1351,7 @@
             const opt = document.createElement('option');
             opt.value = srv.id;
             opt.textContent = `${srv.icon || '🧹'} ${srv.name} (Từ ${Number(srv.base_price).toLocaleString('vi-VN')} đ/${srv.price_unit || 'lần'})`;
-            
+
             const isMatch = preselect ? (preselect == srv.id || preselect === srv.slug) : index === 0;
             if (isMatch) {
               opt.selected = true;
@@ -1326,7 +1381,7 @@
 
           selectServiceById(initialSelectedId);
         } catch (err) {
-          console.error('[Cleanova] Load services error:', err);
+          console.error('[DabClean] Load services error:', err);
           select.innerHTML = '<option value="1">🧹 Dọn dẹp nhà cửa theo giờ</option>';
           updateSummary();
         }
@@ -1351,7 +1406,7 @@
       // ============================================================
       // C. XỬ LÝ QUY MÔ, PHỤ PHÍ ADD-ONS, TẦN SUẤT & THANH TOÁN
       // ============================================================
-      
+
       // Xử lý Radio Cards: Quy mô
       document.querySelectorAll('#area-group .radio-card').forEach(card => {
         card.addEventListener('click', () => {
@@ -1395,9 +1450,9 @@
       // Xử lý Thẻ Phương thức thanh toán
       let customerWalletBalance = 0;
       async function checkCustomerWallet() {
-        if (!window.CleanovaAPI.auth.isLoggedIn()) return;
+        if (!window.DabCleanAPI.auth.isLoggedIn()) return;
         try {
-          const res = await window.CleanovaAPI.wallet.getMyWallet();
+          const res = await window.DabCleanAPI.wallet.getMyWallet();
           if (res.success && res.data) {
             customerWalletBalance = res.data.balance || 0;
             const hint = document.getElementById('wallet-balance-hint');
@@ -1410,7 +1465,7 @@
             }
           }
         } catch (err) {
-          console.warn('[Cleanova Wallet] Không thể tải số dư ví:', err.message);
+          console.warn('[DabClean Wallet] Không thể tải số dư ví:', err.message);
         }
       }
       checkCustomerWallet();
@@ -1440,7 +1495,7 @@
         const msgEl = document.getElementById('wallet-status-msg');
         if (!msgEl) return;
         if (customerWalletBalance >= totalNum) {
-          msgEl.textContent = '✅ Đủ số dư Ví CleanNova để thanh toán tức thì.';
+          msgEl.textContent = '✅ Đủ số dư Ví DabClean để thanh toán tức thì.';
           msgEl.style.color = '#0d9488';
         } else {
           const missing = totalNum - customerWalletBalance;
@@ -1476,7 +1531,7 @@
             const currentSubtotal = parseInt((document.getElementById('summary-subtotal')?.textContent || '0').replace(/[^\d]/g, ''), 10) || 0;
             const currentServiceId = document.getElementById('booking-service')?.value || 1;
 
-            const res = await window.CleanovaAPI.vouchers.check(code, currentServiceId, currentSubtotal, selectedFrequency);
+            const res = await window.DabCleanAPI.vouchers.check(code, currentServiceId, currentSubtotal, selectedFrequency);
             if (res.success && res.data) {
               promoApplied = true;
               promoCode = res.data.code;
@@ -1653,7 +1708,7 @@
 
         // Nếu thanh toán bằng ví, kiểm tra số dư tại frontend trước
         if (paymentMethodChosen === 'wallet' && customerWalletBalance < totalNum) {
-          alert(`Số dư Ví CleanNova của bạn (${Math.round(customerWalletBalance).toLocaleString('vi-VN')} đ) không đủ để thanh toán ${Math.round(totalNum).toLocaleString('vi-VN')} đ. Vui lòng bấm "Nạp thêm" hoặc chọn phương thức thanh toán khác.`);
+          alert(`Số dư Ví DabClean của bạn (${Math.round(customerWalletBalance).toLocaleString('vi-VN')} đ) không đủ để thanh toán ${Math.round(totalNum).toLocaleString('vi-VN')} đ. Vui lòng bấm "Nạp thêm" hoặc chọn phương thức thanh toán khác.`);
           btn.classList.remove('btn-loading');
           btn.disabled = false;
           return;
@@ -1669,7 +1724,7 @@
           phone,
           notes: finalNotes,
           addons: activeAddonKeys,
-          discount_code: promoCode || (promoApplied ? 'CLEANOVA20' : null),
+          discount_code: promoCode || (promoApplied ? 'DABCLEAN20' : null),
           payment_method: paymentMethodChosen,
           ai_analysis: currentAiData ? {
             score: currentAiData.score,
@@ -1683,7 +1738,7 @@
         };
 
         try {
-          const res = await window.CleanovaAPI.bookings.create(bookingData);
+          const res = await window.DabCleanAPI.bookings.create(bookingData);
           document.getElementById('modal-booking-code').textContent = res.data.booking_code;
           document.getElementById('success-modal').classList.add('active');
         } catch (err) {
@@ -1708,4 +1763,5 @@
     });
   </script>
 </body>
+
 </html>

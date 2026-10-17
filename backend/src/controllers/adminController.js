@@ -59,14 +59,12 @@ const adminController = {
         return res.status(404).json({ success: false, message: 'Không tìm thấy đơn đặt lịch này.' });
       }
 
-      // Bảo vệ Bug 7: Không cho phép đổi trạng thái của đơn đã hoàn thành hoặc đã hủy
+      // Bảo vệ: Không cho phép đổi trạng thái của đơn đã hoàn thành hoặc đã hủy
       if (booking.status === 'completed' || booking.status === 'cancelled') {
-        if (status !== booking.status) {
-          return res.status(409).json({
-            success: false,
-            message: `Thao tác bị từ chối: Đơn đặt lịch đã ở trạng thái kết thúc (${booking.status === 'completed' ? 'Hoàn thành' : 'Đã hủy'}) và không thể đổi về trạng thái khác.`
-          });
-        }
+        return res.status(409).json({
+          success: false,
+          message: `Thao tác bị từ chối: Đơn đặt lịch đã ở trạng thái kết thúc (${booking.status === 'completed' ? 'Hoàn thành' : 'Đã hủy'}) và không thể thay đổi.`
+        });
       }
 
       if (status === 'cancelled' && (reason.length < 5 || reason.length > 500)) {
@@ -87,15 +85,40 @@ const adminController = {
       }
       // Bảo vệ Bug 7: Cập nhật có kiểm tra status hiện tại để chống race condition
       const sanitizedReason = reason ? sanitizeInput(reason) : '';
-      const changed = await BookingModel.updateStatus(id, status, status === 'cancelled' ? sanitizedReason : '', booking.status);
-      if (!changed && status !== booking.status) {
-        return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi bởi người khác. Vui lòng tải lại.' });
+      let refundResult = null;
+
+      if (status === 'cancelled') {
+        // Bug 1: Nếu đơn đã thanh toán bằng ví DabClean, tự động hoàn tiền vào ví khách hàng
+        if (booking.payment_method === 'wallet' && booking.payment_status === 'paid') {
+          try {
+            refundResult = await WalletModel.refundBooking({
+              bookingId: id,
+              reason: sanitizedReason ? `Quản trị viên hủy đơn: ${sanitizedReason}` : 'Quản trị viên hủy đơn đặt dịch vụ',
+              adminId: req.user.id
+            });
+          } catch (refundErr) {
+            return res.status(refundErr.statusCode || 400).json({
+              success: false,
+              message: `Hủy đơn và hoàn tiền vào ví thất bại: ${refundErr.message}`
+            });
+          }
+        } else {
+          const changed = await BookingModel.updateStatus(id, status, sanitizedReason, booking.status);
+          if (!changed && status !== booking.status) {
+            return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi bởi người khác. Vui lòng tải lại.' });
+          }
+        }
+      } else {
+        const changed = await BookingModel.updateStatus(id, status, '', booking.status);
+        if (!changed && status !== booking.status) {
+          return res.status(409).json({ success: false, message: 'Trạng thái đơn hàng vừa bị thay đổi bởi người khác. Vui lòng tải lại.' });
+        }
       }
 
       // Ghi nhật ký thao tác
       await UserModel.logAudit(req.user.id, 'UPDATE_BOOKING_STATUS', id, 'booking', `Cập nhật trạng thái đơn #${booking.booking_code} thành ${status}`);
 
-      // Quyết toán thù lao và chiết khấu hai ví khi đơn hoàn thành
+      // Bug 2: Quyết toán thù lao và chiết khấu hai ví khi đơn hoàn thành - Không nuốt lỗi
       let settlementResult = null;
       if (status === 'completed' && booking.status !== 'completed') {
         try {
@@ -105,14 +128,32 @@ const adminController = {
             note: 'Quyết toán tự động khi Quản trị viên cập nhật trạng thái đơn thành hoàn thành'
           });
         } catch (settleErr) {
-          console.error(`[AdminController] Settlement error for booking #${id}:`, settleErr.message || settleErr);
+          // Khôi phục lại trạng thái cũ của booking nếu quyết toán thất bại
+          await BookingModel.updateStatus(id, booking.status, '', 'completed');
+          return res.status(settleErr.statusCode || 400).json({
+            success: false,
+            message: `Quyết toán thù lao nhân viên thất bại: ${settleErr.message || 'Lỗi hệ thống ví'}. Trạng thái đơn chưa được cập nhật.`
+          });
+        }
+
+        if (!settlementResult || !settlementResult.success) {
+          await BookingModel.updateStatus(id, booking.status, '', 'completed');
+          return res.status(400).json({
+            success: false,
+            message: 'Quyết toán thù lao không thành công. Trạng thái đơn chưa được cập nhật.'
+          });
         }
       }
 
+      const responseMessage = refundResult
+        ? `Đã hủy đơn ${booking.booking_code} và hoàn trả ${Math.round(refundResult.refund_amount).toLocaleString('vi-VN')} đ vào Ví DabClean của khách hàng.`
+        : `Đã cập nhật trạng thái đơn ${booking.booking_code} thành "${status}".`;
+
       res.json({
         success: true,
-        message: `Đã cập nhật trạng thái đơn ${booking.booking_code} thành "${status}".`,
-        settlement: settlementResult
+        message: responseMessage,
+        settlement: settlementResult,
+        refund: refundResult
       });
     } catch (err) {
       next(err);
@@ -129,6 +170,13 @@ const adminController = {
         adminId: req.user.id,
         note
       });
+
+      if (!result || !result.success) {
+        return res.status(400).json({
+          success: false,
+          message: result?.message || 'Quyết toán thù lao thất bại.'
+        });
+      }
 
       if (result.alreadySettled || result.isIdempotent) {
         return res.status(409).json({

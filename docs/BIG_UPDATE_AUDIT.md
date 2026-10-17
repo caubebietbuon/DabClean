@@ -1,7 +1,7 @@
-# CLEANOVA BIG UPDATE — BÁO CÁO AUDIT TOÀN DIỆN HỆ THỐNG
+# DABCLEAN BIG UPDATE — BÁO CÁO AUDIT TOÀN DIỆN HỆ THỐNG
 **Phiên bản:** 1.0.0  
 **Thời điểm thực hiện:** 2026-10-17  
-**Phạm vi:** Toàn bộ repository CleanNova (Frontend, Backend, Database, Security, Pricing, Booking, Staff, Admin, AI)
+**Phạm vi:** Toàn bộ repository DabClean (Frontend, Backend, Database, Security, Pricing, Booking, Staff, Admin, AI)
 
 ---
 
@@ -18,7 +18,7 @@
 
 | Mã ID | Tên vấn đề / Lỗ hổng | Mức độ | File & Hàm liên quan | Trạng thái |
 | :--- | :--- | :---: | :--- | :---: |
-| **AUD-01** | Chưa có phân hệ Ví CleanNova (Wallets, Ledger, Sandbox, Thanh toán ví, Hoàn tiền) | **CRITICAL** | Database, Backend API, Frontend (Chưa tồn tại) | Cần phát triển mới |
+| **AUD-01** | Chưa có phân hệ Ví DabClean (Wallets, Ledger, Sandbox, Thanh toán ví, Hoàn tiền) | **CRITICAL** | Database, Backend API, Frontend (Chưa tồn tại) | Cần phát triển mới |
 | **AUD-02** | Lệch tên cột trong bảng `staff_payout_logs` gây lỗi crash SQL khi Admin quyết toán | **HIGH** | `backend/src/controllers/adminController.js`: `payoutStaffWage` | Cần sửa |
 | **AUD-03** | Khuyến mãi / Voucher hardcode trong code, thiếu bảng vouchers & kiểm soát concurrency | **HIGH** | `backend/src/services/pricingService.js`, `bookingController.js` | Cần chuẩn hóa |
 | **AUD-04** | Dịch vụ bổ sung (Add-ons) trên `booking.html` chưa được backend tính toán & lưu trữ | **MEDIUM** | `frontend/booking.html` vs `backend/src/services/pricingService.js` | Cần đồng bộ |
@@ -34,11 +34,11 @@
 
 ### 3.1. AUD-01 (CRITICAL) — XÂY DỰNG PHÂN HỆ VÍ CLEANNOVA (PHASE 4)
 - **Vị trí:** Cơ sở dữ liệu, API Backend, Giao diện Khách hàng & Quản trị.
-- **Mô tả:** Hệ thống hiện tại hoàn toàn chưa có chức năng Ví điện tử CleanNova:
+- **Mô tả:** Hệ thống hiện tại hoàn toàn chưa có chức năng Ví điện tử DabClean:
   - Chưa có bảng `wallets`, `wallet_transactions`, `wallet_ledger_entries`.
   - Chưa có API nạp tiền sandbox, thanh toán đơn hàng bằng số dư ví, hoàn tiền về ví khi hủy đơn.
   - Chưa có cơ chế bảo vệ giao dịch bất biến (double-entry ledger / idempotency key) chống trừ tiền 2 lần hoặc race condition.
-  - Chưa có trang giao diện Ví CleanNova cho khách hàng và tab quản lý ví cho Quản trị viên.
+  - Chưa có trang giao diện Ví DabClean cho khách hàng và tab quản lý ví cho Quản trị viên.
 - **Phương án sửa:**
   1. Thiết kế bảng `wallets` (id, user_id, balance, status, currency, created_at, updated_at).
   2. Thiết kế bảng `wallet_transactions` (id, wallet_id, transaction_code, type [topup, payment, refund, adjustment], amount, status, description, reference_type, reference_id, idempotency_key, created_at, completed_at).
@@ -67,7 +67,7 @@
 
 ### 3.3. AUD-03 (HIGH) — CHUẨN HÓA VOUCHER VÀ KHUYẾN MÃI
 - **Vị trí:** `backend/src/services/pricingService.js`, `backend/src/controllers/bookingController.js`.
-- **Nguyên nhân gốc:** Mã `CLEANOVA20` hiện được hardcode trực tiếp trong mã nguồn. Chưa có bảng dữ liệu quản lý các mã khuyến mãi động, hạn sử dụng, điều kiện giá trị đơn tối thiểu, mức giảm tối đa và số lần sử dụng tối đa.
+- **Nguyên nhân gốc:** Mã `DABCLEAN20` hiện được hardcode trực tiếp trong mã nguồn. Chưa có bảng dữ liệu quản lý các mã khuyến mãi động, hạn sử dụng, điều kiện giá trị đơn tối thiểu, mức giảm tối đa và số lần sử dụng tối đa.
 - **Phương án sửa:**
   1. Tạo bảng `vouchers` (id, code, description, discount_type [percent, fixed], discount_value, max_discount, min_order_value, usage_limit, used_count, user_limit, start_date, end_date, is_active, created_at).
   2. Tạo bảng `voucher_usages` để theo dõi khách hàng nào đã dùng mã nào cho đơn nào.
@@ -122,11 +122,11 @@
 3. **Phase 3: Chuẩn hóa Pricing, Add-ons & Voucher Engine:**
    - Xây dựng bảng Voucher và Voucher Service.
    - Hỗ trợ Add-ons trong Pricing Engine và tính toán đồng nhất.
-4. **Phase 4: Xây dựng Hệ thống Ví CleanNova (Trọng tâm):**
+4. **Phase 4: Xây dựng Hệ thống Ví DabClean (Trọng tâm):**
    - Backend Wallet Service với Sổ cái bất biến & Idempotency.
    - API Khách hàng: Xem số dư, lịch sử giao dịch, nạp tiền sandbox, thanh toán đơn booking bằng ví, hoàn tiền.
    - API Quản trị: Tra cứu ví, lịch sử giao dịch, kiểm toán tài chính.
-   - Giao diện Ví khách hàng và tích hợp phương thức thanh toán "Ví CleanNova" vào `booking.html`.
+   - Giao diện Ví khách hàng và tích hợp phương thức thanh toán "Ví DabClean" vào `booking.html`.
 5. **Phase 5: Booking State Machine & Phân công nhân viên:**
    - Hoàn thiện State Machine, kiểm tra phân công nhân viên, chống xung đột lịch.
 6. **Phase 6: Báo cáo tài chính & Đối soát Dashboard:**

@@ -1,5 +1,5 @@
 {
-  "name": "cleanova-ai-module",
+  "name": "dabclean-ai-module",
   "version": "2.0.0",
   "private": true,
   "description": "Module AI: quét ảnh độ bẩn bằng MobileNet transfer learning (TensorFlow.js) + gợi ý giá dịch vụ",
@@ -13,7 +13,7 @@
     "check-formats": "node test/check-formats.js"
   },
   "keywords": [
-    "cleanova",
+    "dabclean",
     "ai",
     "tensorflow",
     "mobilenet",
@@ -21,7 +21,7 @@
     "image-classification",
     "express"
   ],
-  "author": "Cleanova Team",
+  "author": "DabClean Team",
   "license": "ISC",
   "dependencies": {
     "@tensorflow-models/mobilenet": "^2.1.1",

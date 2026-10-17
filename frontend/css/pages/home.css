@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA - PAGE: HOME (trangchu.html)
+   DABCLEAN - PAGE: HOME (trangchu.html)
    Hero, Service Cards, Calculator, 4-Step Process, Why Choose, Testimonials, Promo
    ============================================================ */
 
@@ -522,7 +522,7 @@
 }
 
 /* ------------------------------------------------------------
-   5. WHY CHOOSE US (Lý do chọn Cleanova)
+   5. WHY CHOOSE US (Lý do chọn DabClean)
    ------------------------------------------------------------ */
 .why-choose {
   background: var(--color-surface);
@@ -817,7 +817,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
   .why-grid,
-  .why-cleanova-grid {
+  .why-dabclean-grid {
     grid-template-columns: 1fr;
   }
   .testimonials-grid {

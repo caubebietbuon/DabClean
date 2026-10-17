@@ -1,0 +1,6 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- House shape -->
+  <path d="M12 24 L24 12 L36 24 V36 H12 V24 Z" fill="#0D9488"/>
+  <!-- Water droplet -->
+  <path d="M24 30 C22 28, 20 26, 20 24 C20 22, 22 20, 24 20 C26 20, 28 22, 28 24 C28 26, 26 28, 24 30 Z" fill="#67E8F9"/>
+</svg>

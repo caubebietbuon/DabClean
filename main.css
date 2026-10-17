@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA - style.css
+   DABCLEAN - style.css
    Hệ thống thiết kế (Design System) cho trang Landing Page
    Phong cách: Light / Minimal / Modern SaaS
    ============================================================ */
@@ -1128,7 +1128,7 @@ h6 {
 }
 
 /* ---------------------------------------------------------------
-   10. WHY CHOOSE US (Tại sao chọn Cleanova)
+   10. WHY CHOOSE US (Tại sao chọn DabClean)
    --------------------------------------------------------------- */
 .why-choose {
     background: var(--color-bg-alt);

@@ -210,9 +210,14 @@ const BookingModel = {
   },
 
   // Nhân viên cập nhật trạng thái công việc được giao (Kèm điều kiện status hiện tại để chống race condition)
-  async updateStaffTaskStatus(bookingId, staffId, status, staff_notes = '', cancel_reason = '', expectedCurrentStatus = null) {
+  // Bug 9: Bảo toàn cancel_reason khi đổi sang trạng thái không phải cancelled
+  async updateStaffTaskStatus(bookingId, staffId, status, staff_notes = '', cancel_reason = null, expectedCurrentStatus = null) {
     let sql = `UPDATE bookings
-       SET status = ?, staff_notes = ?, cancel_reason = ?,
+       SET status = ?, staff_notes = ?,
+           cancel_reason = CASE 
+             WHEN ? = 'cancelled' THEN COALESCE(?, cancel_reason)
+             ELSE cancel_reason
+           END,
            arrived_at = IF(? = 'arrived', COALESCE(arrived_at, NOW()), arrived_at),
            wage_status = CASE 
              WHEN ? = 'completed' AND wage_status = 'pending' THEN 'approved'
@@ -220,12 +225,19 @@ const BookingModel = {
              ELSE wage_status
            END
        WHERE id = ? AND staff_id = ?`;
-    const params = [status, staff_notes, cancel_reason || null, status, status, status, bookingId, staffId];
+    const cleanCancelReason = (typeof cancel_reason === 'string' && cancel_reason.trim()) ? cancel_reason.trim() : null;
+    const params = [status, staff_notes, status, cleanCancelReason, status, status, status, bookingId, staffId];
     if (expectedCurrentStatus) {
       sql += ' AND status = ?';
       params.push(expectedCurrentStatus);
     }
     const result = await db.query(sql, params);
+    return result.affectedRows > 0;
+  },
+
+  // Xóa đơn đặt lịch (dùng cho rollback khi thanh toán ví hoặc tạo đơn thất bại - Bug 10)
+  async deleteById(id) {
+    const result = await db.query('DELETE FROM bookings WHERE id = ?', [id]);
     return result.affectedRows > 0;
   },
 
@@ -347,34 +359,54 @@ const BookingModel = {
   },
 
   // Lấy thống kê tổng quan và tài chính chi tiết với bộ lọc ngày tháng (Dashboard Admin)
+  // Bug 13: Chuẩn hóa múi giờ Asia/Ho_Chi_Minh (UTC+7) cho các bộ lọc today, 7days, month
   async getStats(filters = {}) {
     const { period, from_date, to_date } = filters;
     let dateCondition = '1=1';
     const dateParams = [];
 
     const now = new Date();
+    // Hàm tính mốc ngày chuẩn theo múi giờ Việt Nam Asia/Ho_Chi_Minh (UTC+7)
+    const getVietnamBounds = (d = new Date()) => {
+      const vnDateStr = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Ho_Chi_Minh',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(d); // 'YYYY-MM-DD'
+      const startOfDay = new Date(`${vnDateStr}T00:00:00+07:00`);
+      const endOfDay = new Date(`${vnDateStr}T23:59:59.999+07:00`);
+      return { vnDateStr, startOfDay, endOfDay };
+    };
+
     if (period === 'today') {
-      const todayStr = now.toISOString().slice(0, 10);
-      dateCondition = 'DATE(b.created_at) = ?';
-      dateParams.push(todayStr);
+      const { startOfDay, endOfDay } = getVietnamBounds(now);
+      dateCondition = 'b.created_at >= ? AND b.created_at <= ?';
+      dateParams.push(startOfDay, endOfDay);
     } else if (period === '7days') {
-      const d7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      const d7Str = d7.toISOString().slice(0, 10);
-      dateCondition = 'DATE(b.created_at) >= ?';
-      dateParams.push(d7Str);
+      const { startOfDay, endOfDay } = getVietnamBounds(now);
+      const start7Days = new Date(startOfDay.getTime() - 6 * 24 * 60 * 60 * 1000);
+      dateCondition = 'b.created_at >= ? AND b.created_at <= ?';
+      dateParams.push(start7Days, endOfDay);
     } else if (period === 'month' || period === 'this_month') {
-      const firstDayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`;
-      dateCondition = 'DATE(b.created_at) >= ?';
-      dateParams.push(firstDayStr);
+      const { vnDateStr, endOfDay } = getVietnamBounds(now);
+      const [yearStr, monthStr] = vnDateStr.split('-');
+      const startOfMonth = new Date(`${yearStr}-${monthStr}-01T00:00:00+07:00`);
+      dateCondition = 'b.created_at >= ? AND b.created_at <= ?';
+      dateParams.push(startOfMonth, endOfDay);
     } else if (from_date && to_date) {
-      dateCondition = 'DATE(b.created_at) >= ? AND DATE(b.created_at) <= ?';
-      dateParams.push(from_date, to_date);
+      const fromStart = new Date(`${from_date}T00:00:00+07:00`);
+      const toEnd = new Date(`${to_date}T23:59:59.999+07:00`);
+      dateCondition = 'b.created_at >= ? AND b.created_at <= ?';
+      dateParams.push(fromStart, toEnd);
     } else if (from_date) {
-      dateCondition = 'DATE(b.created_at) >= ?';
-      dateParams.push(from_date);
+      const fromStart = new Date(`${from_date}T00:00:00+07:00`);
+      dateCondition = 'b.created_at >= ?';
+      dateParams.push(fromStart);
     } else if (to_date) {
-      dateCondition = 'DATE(b.created_at) <= ?';
-      dateParams.push(to_date);
+      const toEnd = new Date(`${to_date}T23:59:59.999+07:00`);
+      dateCondition = 'b.created_at <= ?';
+      dateParams.push(toEnd);
     }
 
     // 1. Thống kê số lượng người dùng, đối tác, số dư ví hệ thống

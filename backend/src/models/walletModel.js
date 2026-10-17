@@ -4,6 +4,9 @@
 const crypto = require('crypto');
 const db = require('../config/db');
 
+// Bug 11: Chuẩn hóa ngưỡng tối thiểu để nhân viên đủ điều kiện nhận việc (100.000 VNĐ)
+const STAFF_MIN_CREDIT_THRESHOLD = 100000;
+
 const WalletModel = {
   // Lấy hoặc tạo ví cho người dùng (Hỗ trợ customer, credit, earnings)
   async getOrCreateWallet(userId, externalConn = null, walletType = null) {
@@ -99,99 +102,91 @@ const WalletModel = {
     }
 
     const pool = db.getPool();
-    if (pool && db.isMySQLConnected()) {
-      const connection = await pool.getConnection();
-      try {
-        await connection.beginTransaction();
-
-        // 1. Kiểm tra Idempotency key nếu có
-        if (idempotencyKey) {
-          const [existingTx] = await connection.query(
-            'SELECT * FROM wallet_transactions WHERE idempotency_key = ? LIMIT 1',
-            [idempotencyKey]
-          );
-          if (existingTx && existingTx.length > 0) {
-            await connection.commit();
-            return {
-              success: true,
-              isIdempotent: true,
-              transaction: existingTx[0]
-            };
-          }
-        }
-
-        // 2. Khóa dòng bản ghi ví người dùng (Row-level lock chống Race Condition)
-        await this.getOrCreateWallet(userId, connection);
-        const [wallets] = await connection.query(
-          'SELECT * FROM wallets WHERE user_id = ? FOR UPDATE',
-          [userId]
-        );
-        const wallet = wallets[0];
-        if (wallet.status !== 'active') {
-          throw new Error('Ví của bạn đang bị khóa hoặc tạm dừng giao dịch.');
-        }
-
-        const balanceBefore = parseFloat(wallet.balance) || 0;
-        const balanceAfter = balanceBefore + parsedAmount;
-
-        // 3. Sinh mã giao dịch duy nhất
-        const now = new Date();
-        const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
-        const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
-        const txnCode = `WTX-TOPUP-${dateStr}-${randomHex}`;
-
-        // 4. Cập nhật số dư ví
-        await connection.query(
-          'UPDATE wallets SET balance = ? WHERE id = ?',
-          [balanceAfter, wallet.id]
-        );
-
-        // 5. Ghi log giao dịch ví
-        const [txResult] = await connection.query(
-          `INSERT INTO wallet_transactions 
-           (transaction_code, wallet_id, user_id, type, amount, balance_before, balance_after, status, description, reference_type, reference_id, idempotency_key)
-           VALUES (?, ?, ?, 'topup', ?, ?, ?, 'completed', ?, ?, ?, ?)`,
-          [txnCode, wallet.id, userId, parsedAmount, balanceBefore, balanceAfter, description, referenceType, referenceId, idempotencyKey]
-        );
-        const transactionId = txResult.insertId;
-
-        // 6. Ghi bút toán sổ cái bất biến (Ledger Entry - Credit)
-        await connection.query(
-          `INSERT INTO wallet_ledger_entries 
-           (transaction_id, wallet_id, entry_type, amount, running_balance, notes)
-           VALUES (?, ?, 'credit', ?, ?, ?)`,
-          [transactionId, wallet.id, parsedAmount, balanceAfter, `Nạp tiền: ${description}`]
-        );
-
-        await connection.commit();
-
-        return {
-          success: true,
-          transaction_code: txnCode,
-          amount: parsedAmount,
-          balance_before: balanceBefore,
-          balance_after: balanceAfter,
-          wallet_id: wallet.id
-        };
-      } catch (err) {
-        await connection.rollback();
-        throw err;
-      } finally {
-        connection.release();
-      }
+    if (!pool || !db.isMySQLConnected()) {
+      const error = new Error('Hệ thống cơ sở dữ liệu hiện không khả dụng để xử lý giao dịch nạp tiền ví. Chức năng nạp tiền yêu cầu cơ sở dữ liệu MySQL hoạt động.');
+      error.statusCode = 503;
+      throw error;
     }
 
-    // Fallback nếu chạy test in-memory
-    const wallet = await this.getOrCreateWallet(userId);
-    const balanceBefore = parseFloat(wallet.balance) || 0;
-    const balanceAfter = balanceBefore + parsedAmount;
-    wallet.balance = balanceAfter;
-    return {
-      success: true,
-      amount: parsedAmount,
-      balance_before: balanceBefore,
-      balance_after: balanceAfter
-    };
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      // 1. Kiểm tra Idempotency key nếu có
+      if (idempotencyKey) {
+        const [existingTx] = await connection.query(
+          'SELECT * FROM wallet_transactions WHERE idempotency_key = ? LIMIT 1',
+          [idempotencyKey]
+        );
+        if (existingTx && existingTx.length > 0) {
+          await connection.commit();
+          return {
+            success: true,
+            isIdempotent: true,
+            transaction: existingTx[0]
+          };
+        }
+      }
+
+      // 2. Khóa dòng bản ghi ví người dùng (Row-level lock chống Race Condition)
+      await this.getOrCreateWallet(userId, connection);
+      const [wallets] = await connection.query(
+        'SELECT * FROM wallets WHERE user_id = ? FOR UPDATE',
+        [userId]
+      );
+      const wallet = wallets[0];
+      if (wallet.status !== 'active') {
+        throw new Error('Ví của bạn đang bị khóa hoặc tạm dừng giao dịch.');
+      }
+
+      const balanceBefore = parseFloat(wallet.balance) || 0;
+      const balanceAfter = balanceBefore + parsedAmount;
+
+      // 3. Sinh mã giao dịch duy nhất
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+      const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
+      const txnCode = `WTX-TOPUP-${dateStr}-${randomHex}`;
+
+      // 4. Cập nhật số dư ví
+      await connection.query(
+        'UPDATE wallets SET balance = ? WHERE id = ?',
+        [balanceAfter, wallet.id]
+      );
+
+      // 5. Ghi log giao dịch ví
+      const [txResult] = await connection.query(
+        `INSERT INTO wallet_transactions 
+         (transaction_code, wallet_id, user_id, type, amount, balance_before, balance_after, status, description, reference_type, reference_id, idempotency_key)
+         VALUES (?, ?, ?, 'topup', ?, ?, ?, 'completed', ?, ?, ?, ?)`,
+        [txnCode, wallet.id, userId, parsedAmount, balanceBefore, balanceAfter, description, referenceType, referenceId, idempotencyKey]
+      );
+      const transactionId = txResult.insertId;
+
+      // 6. Ghi bút toán sổ cái bất biến (Ledger Entry - Credit)
+      await connection.query(
+        `INSERT INTO wallet_ledger_entries 
+         (transaction_id, wallet_id, entry_type, amount, running_balance, notes)
+         VALUES (?, ?, 'credit', ?, ?, ?)`,
+        [transactionId, wallet.id, parsedAmount, balanceAfter, `Nạp tiền: ${description}`]
+      );
+
+      await connection.commit();
+
+      return {
+        success: true,
+        transaction_code: txnCode,
+        amount: parsedAmount,
+        balance_before: balanceBefore,
+        balance_after: balanceAfter,
+        wallet_id: wallet.id
+      };
+    } catch (err) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
   },
 
   /**
@@ -336,10 +331,14 @@ const WalletModel = {
       const booking = bookings[0];
 
       if (booking.payment_status === 'refunded') {
-        throw new Error('Đơn đặt lịch này đã được hoàn tiền trước đó.');
+        const error = new Error('Đơn đặt lịch này đã được hoàn tiền trước đó.');
+        error.statusCode = 409;
+        throw error;
       }
       if (booking.payment_status !== 'paid') {
-        throw new Error('Chỉ có thể hoàn tiền cho đơn đã thanh toán thành công.');
+        const error = new Error('Chỉ có thể hoàn tiền cho đơn đã thanh toán thành công.');
+        error.statusCode = 400;
+        throw error;
       }
 
       const refundAmount = parseFloat(booking.total_price) || 0;
@@ -501,7 +500,7 @@ const WalletModel = {
   async checkStaffBookingEligibility(staffId) {
     const { creditWallet } = await this.getOrCreateStaffWallets(staffId);
     const creditBalance = parseFloat(creditWallet.balance) || 0;
-    const minThreshold = 100000;
+    const minThreshold = STAFF_MIN_CREDIT_THRESHOLD;
     const isEligible = creditBalance >= minThreshold;
     const amountNeeded = isEligible ? 0 : Math.max(0, minThreshold - creditBalance);
 
@@ -526,8 +525,8 @@ const WalletModel = {
     const { creditWallet, earningsWallet } = await this.getOrCreateStaffWallets(staffId);
     const creditBal = parseFloat(creditWallet.balance) || 0;
     const earningsBal = parseFloat(earningsWallet.balance) || 0;
-    const isEligible = creditBal >= 100000;
-    const amountNeeded = isEligible ? 0 : Math.max(0, 100000 - creditBal);
+    const isEligible = creditBal >= STAFF_MIN_CREDIT_THRESHOLD;
+    const amountNeeded = isEligible ? 0 : Math.max(0, STAFF_MIN_CREDIT_THRESHOLD - creditBal);
 
     // Thống kê ví tín dụng: Tổng tiền đã nạp & Tổng chiết khấu đã trừ
     const cStats = await db.query(
@@ -638,7 +637,7 @@ const WalletModel = {
             isIdempotent: true,
             transaction: existingTx[0],
             credit_balance: creditBal,
-            is_eligible: creditBal > 100000
+            is_eligible: creditBal >= STAFF_MIN_CREDIT_THRESHOLD
           };
         }
       }
@@ -689,7 +688,7 @@ const WalletModel = {
 
       await connection.commit();
 
-      const isEligible = balanceAfter > 100000;
+      const isEligible = balanceAfter >= STAFF_MIN_CREDIT_THRESHOLD;
       return {
         success: true,
         transaction_code: txnCode,
@@ -698,7 +697,7 @@ const WalletModel = {
         balance_after: balanceAfter,
         wallet_id: wallet.id,
         is_eligible: isEligible,
-        amount_needed: isEligible ? 0 : Math.max(1, 100000 - balanceAfter + 1)
+        amount_needed: isEligible ? 0 : Math.max(0, STAFF_MIN_CREDIT_THRESHOLD - balanceAfter)
       };
     } catch (err) {
       await connection.rollback();
@@ -826,7 +825,7 @@ const WalletModel = {
 
       await connection.commit();
 
-      const isEligible = creditAfter >= 100000;
+      const isEligible = creditAfter >= STAFF_MIN_CREDIT_THRESHOLD;
       return {
         success: true,
         transaction_code: xferCode,
@@ -834,7 +833,7 @@ const WalletModel = {
         earnings_balance: earningsAfter,
         credit_balance: creditAfter,
         is_eligible: isEligible,
-        amount_needed: isEligible ? 0 : Math.max(0, 100000 - creditAfter)
+        amount_needed: isEligible ? 0 : Math.max(0, STAFF_MIN_CREDIT_THRESHOLD - creditAfter)
       };
     } catch (err) {
       await connection.rollback();
@@ -1068,7 +1067,7 @@ const WalletModel = {
         credit_balance_after: creditAfter,
         earnings_balance_before: earningsBefore,
         earnings_balance_after: earningsAfter,
-        is_eligible_for_booking: creditAfter > 100000
+        is_eligible_for_booking: creditAfter >= STAFF_MIN_CREDIT_THRESHOLD
       };
     } catch (err) {
       await connection.rollback();
@@ -1285,5 +1284,7 @@ const WalletModel = {
     `);
   }
 };
+
+WalletModel.STAFF_MIN_CREDIT_THRESHOLD = STAFF_MIN_CREDIT_THRESHOLD;
 
 module.exports = WalletModel;

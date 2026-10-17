@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hồ Sơ Cá Nhân & Sổ Địa Chỉ · Cleanova</title>
+  <title>Hồ Sơ Cá Nhân & Sổ Địa Chỉ · DabClean</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
   <script src="api.js"></script>
@@ -15,14 +15,21 @@
        ============================================================ -->
   <header class="header scrolled" role="banner">
     <div class="container">
-      <a href="trangchu.html" class="logo" aria-label="Cleanova - Trang chủ">
-        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 4L4 16H8V30H28V16H32L18 4Z" fill="#2563eb" opacity="0.18"/>
-          <path d="M18 6L6 16H10V28H26V16H30L18 6Z" stroke="#2563eb" stroke-width="2" fill="none" stroke-linejoin="round"/>
-          <path d="M14 24C14 24 15 17 22 14C22 14 21 21 14 24Z" fill="#0d9488"/>
-          <path d="M14 24C14 24 17 19 22 14" stroke="#0f766e" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <a href="trangchu.html" class="logo" aria-label="DabClean - Trang chủ">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="dabCleanGradHeader" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#10B981"/>
+              <stop offset="1" stop-color="#06B6D4"/>
+            </linearGradient>
+          </defs>
+          <path d="M18 4L4 15H8V30C8 31.1 8.9 32 10 32H26C27.1 32 28 31.1 28 30V15H32L18 4Z" fill="url(#dabCleanGradHeader)" opacity="0.16"/>
+          <path d="M18 5.5L6 15H9.5V29.5C9.5 30.3 10.2 31 11 31H25C25.8 31 26.5 30.3 26.5 29.5V15H30L18 5.5Z" stroke="#10B981" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M18 13C18 13 13 19 13 22.5C13 25.26 15.24 27.5 18 27.5C20.76 27.5 23 25.26 23 22.5C23 19 18 13 18 13Z" fill="url(#dabCleanGradHeader)"/>
+          <path d="M29 7L30 9.5L32.5 10.5L30 11.5L29 14L28 11.5L25.5 10.5L28 9.5L29 7Z" fill="#F59E0B"/>
+          <circle cx="16.5" cy="21" r="1.5" fill="#FFFFFF" opacity="0.8"/>
         </svg>
-        <span class="logo-text">Cleanova</span>
+        <span class="logo-text">DabClean</span>
       </a>
 
       <nav class="nav">
@@ -105,7 +112,7 @@
               Thông tin tài khoản
             </h2>
             <p style="color: var(--color-text-secondary); font-size: var(--font-size-sm); margin-bottom: var(--space-xl);">
-              Cập nhật thông tin chính xác giúp chuyên viên Cleanova liên hệ và phục vụ bạn chu đáo nhất.
+              Cập nhật thông tin chính xác giúp chuyên viên DabClean liên hệ và phục vụ bạn chu đáo nhất.
             </p>
 
             <form id="form-update-profile">
@@ -124,7 +131,7 @@
                 <div class="form-group">
                   <label class="form-label" for="profile-phone">Số điện thoại liên hệ <span class="required">*</span></label>
                   <input type="tel" id="profile-phone" class="form-control" placeholder="0912345678" pattern="[0-9]{9,11}">
-                  <span class="form-hint">Dùng để chuyên viên Cleanova gọi xác nhận trước khi đến nhà.</span>
+                  <span class="form-hint">Dùng để chuyên viên DabClean gọi xác nhận trước khi đến nhà.</span>
                 </div>
 
                 <div class="form-group">
@@ -271,8 +278,8 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container" style="text-align: center; font-size: var(--font-size-xs); color: #64748b;">
-      <p style="margin-bottom: 6px;"><strong>Cleanova Việt Nam</strong> · Không gian sạch hơn, cuộc sống tốt hơn.</p>
-      <p>© 2026 Cleanova. Nền tảng đặt dịch vụ vệ sinh chuyên nghiệp.</p>
+      <p style="margin-bottom: 6px;"><strong>DabClean Việt Nam</strong> · Không gian sạch hơn, cuộc sống tốt hơn.</p>
+      <p>© 2026 DabClean. Nền tảng đặt dịch vụ vệ sinh chuyên nghiệp.</p>
     </div>
   </footer>
 
@@ -280,12 +287,12 @@
     'use strict';
     document.addEventListener('DOMContentLoaded', async function () {
       // 1. Kiểm tra đăng nhập
-      if (!CleanovaAPI.auth.isLoggedIn()) {
+      if (!DabCleanAPI.auth.isLoggedIn()) {
         window.location.replace('login.html?redirect=profile.html');
         return;
       }
 
-      document.getElementById('btn-logout').addEventListener('click', () => CleanovaAPI.auth.logout());
+      document.getElementById('btn-logout').addEventListener('click', () => DabCleanAPI.auth.logout());
 
       // 2. Chuyển đổi Tabs
       const navItems = document.querySelectorAll('.profile-nav-item[data-tab]');
@@ -316,10 +323,10 @@
       // 3. Nạp thông tin người dùng từ Backend
       let currentUser = null;
       try {
-        const res = await CleanovaAPI.auth.getMe();
+        const res = await DabCleanAPI.auth.getMe();
         currentUser = (res.data && res.data.user) ? res.data.user : res.data;
       } catch {
-        currentUser = CleanovaAPI.auth.getUser() || {};
+        currentUser = DabCleanAPI.auth.getUser() || {};
       }
 
       const displayName = currentUser.name || currentUser.email || 'Khách hàng';
@@ -332,7 +339,7 @@
         roleBadge.textContent = 'Quản trị viên (Admin)';
         roleBadge.className = 'status-badge status-pending';
       } else if (currentUser.role === 'staff') {
-        roleBadge.textContent = 'Chuyên viên Cleanova';
+        roleBadge.textContent = 'Chuyên viên DabClean';
         roleBadge.className = 'status-badge status-confirmed';
       } else {
         roleBadge.textContent = 'Khách hàng thân thiết';
@@ -347,7 +354,7 @@
 
       // Tải thống kê đơn hàng cho sidebar
       try {
-        const bookingsRes = await CleanovaAPI.bookings.getMyBookings();
+        const bookingsRes = await DabCleanAPI.bookings.getMyBookings();
         const bookings = bookingsRes.data || [];
         document.getElementById('stat-total-orders').textContent = bookings.length;
         document.getElementById('stat-completed-orders').textContent = bookings.filter(b => b.status === 'completed').length;
@@ -365,7 +372,7 @@
         btn.disabled = true;
 
         try {
-          await CleanovaAPI.auth.updateProfile({ name, phone, address });
+          await DabCleanAPI.auth.updateProfile({ name, phone, address });
           document.getElementById('sidebar-name').textContent = name;
           document.getElementById('profile-avatar').querySelector('span').textContent = name.charAt(0).toUpperCase();
           showToast('success', 'Cập nhật thông tin cá nhân thành công!');
@@ -380,7 +387,7 @@
       // 5. Quản lý Sổ địa chỉ (Address Book)
       function renderAddressCards() {
         const container = document.getElementById('address-cards-container');
-        const addresses = CleanovaAPI.addresses.getAll();
+        const addresses = DabCleanAPI.addresses.getAll();
 
         if (addresses.length === 0) {
           container.innerHTML = `
@@ -425,7 +432,7 @@
         // Gắn sự kiện nút Đặt làm mặc định
         document.querySelectorAll('.btn-set-default').forEach(btn => {
           btn.addEventListener('click', function () {
-            CleanovaAPI.addresses.setDefault(this.dataset.id);
+            DabCleanAPI.addresses.setDefault(this.dataset.id);
             renderAddressCards();
             showToast('success', 'Đã thay đổi địa chỉ mặc định.');
           });
@@ -435,7 +442,7 @@
         document.querySelectorAll('.btn-delete-address').forEach(btn => {
           btn.addEventListener('click', function () {
             if (confirm('Bạn có chắc chắn muốn xóa địa chỉ này?')) {
-              CleanovaAPI.addresses.remove(this.dataset.id);
+              DabCleanAPI.addresses.remove(this.dataset.id);
               renderAddressCards();
               showToast('info', 'Đã xóa địa chỉ khỏi sổ.');
             }
@@ -461,7 +468,7 @@
         const phone = document.getElementById('new-address-phone').value.trim();
         const is_default = document.getElementById('new-address-default').checked;
 
-        CleanovaAPI.addresses.add({ label, address, phone, is_default });
+        DabCleanAPI.addresses.add({ label, address, phone, is_default });
         closeAddressModal();
         this.reset();
         renderAddressCards();
@@ -533,7 +540,7 @@
         btn.disabled = true;
 
         try {
-          await CleanovaAPI.auth.changePassword({ currentPassword, newPassword });
+          await DabCleanAPI.auth.changePassword({ currentPassword, newPassword });
           this.reset();
           meterFill.style.width = '0%';
           meterLabel.textContent = 'Độ mạnh: Chưa nhập';

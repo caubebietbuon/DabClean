@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Express App
+// DABCLEAN AI MODULE - Express App
 // ============================================================
 const express = require('express');
 const cors = require('cors');
@@ -9,7 +9,7 @@ const aiRoutes = require('./routes/aiRoutes');
 
 const app = express();
 
-// Cho phép gọi từ mọi origin trong môi trường dev (frontend Cleanova ở cổng 5000,
+// Cho phép gọi từ mọi origin trong môi trường dev (frontend DabClean ở cổng 5000,
 // Live Server 5500, hoặc mở trực tiếp từ module này ở cổng 5100).
 app.use(cors({
   origin: '*',
@@ -32,7 +32,7 @@ app.use('/demo', express.static(publicPath));
 // Thông tin module dạng JSON (trước đây ở "/", nay chuyển sang "/info")
 app.get('/info', (req, res) => {
   res.json({
-    service: 'Cleanova AI Module',
+    service: 'DabClean AI Module',
     version: '2.0.0',
     engine: 'tensorflow.js - MobileNet transfer learning',
     endpoints: {

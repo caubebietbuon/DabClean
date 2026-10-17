@@ -1,5 +1,5 @@
 /* ============================================================
-   CLEANOVA DESIGN SYSTEM - VARIABLES & TOKENS
+   DABCLEAN DESIGN SYSTEM - VARIABLES & TOKENS
    Modern SaaS Dashboard & Premium Service Platform
    ============================================================ */
 
@@ -62,7 +62,7 @@
 
   --color-star: #f59e0b;                /* Vàng sao đánh giá */
 
-  /* --- Status Badges (Đơn hàng Cleanova) --- */
+  /* --- Status Badges (Đơn hàng DabClean) --- */
   --status-pending-bg: #fffbeb;
   --status-pending-text: #b45309;
   --status-pending-border: #fde68a;

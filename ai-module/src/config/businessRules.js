@@ -1,5 +1,5 @@
 // ============================================================
-// CLEANOVA AI MODULE - Cấu hình nghiệp vụ (giá, độ bẩn, dịch vụ)
+// DABCLEAN AI MODULE - Cấu hình nghiệp vụ (giá, độ bẩn, dịch vụ)
 // ============================================================
 // Tất cả con số điều chỉnh giá tập trung ở đây để nhóm dễ tinh chỉnh
 // mà không phải sửa logic trong analyzer/priceCalculator.
