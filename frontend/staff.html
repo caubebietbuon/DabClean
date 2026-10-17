@@ -368,6 +368,11 @@
       overflow-y: auto;
       box-shadow: var(--shadow-xl);
       border: 1px solid var(--color-border);
+      /* Gốc định vị cho nút X (absolute) => X nằm đúng góc khung, không trôi */
+      position: relative;
+      box-sizing: border-box;
+      /* Trên màn nhỏ: không vượt quá chiều cao viewport (đã trừ padding backdrop) */
+      max-height: calc(100vh - 2 * var(--space-md));
     }
     .modal-header {
       padding: var(--space-lg) var(--space-xl);
@@ -375,26 +380,114 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      /* Header DÍNH trên đầu khung khi nội dung cuộn.
+         Nhờ vậy nút X luôn nằm ở góc phải trên và KHÔNG bị cuộn ra ngoài.
+         (Lỗi đã gặp: modal Rút tiền trên màn hình thấp, nút X trôi lên
+          top: -12px vì neo vào .modal-box đang cuộn.) */
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--color-white);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+      flex-shrink: 0;
     }
     .modal-title {
       font-size: var(--font-size-xl);
       font-weight: 800;
       color: var(--color-text);
       margin: 0;
+      /* Chừa chỗ cho nút X để tiêu đề dài không đè lên */
+      padding-right: 36px;
+      min-width: 0;
+      word-break: break-word;
     }
     .modal-close {
+      /* Nút X nằm cạnh tiêu đề trong header (không dùng absolute).
+         Header sticky => X luôn ở góc phải trên, không bao giờ trôi ra ngoài. */
+      position: relative;
+      z-index: 3;
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: none;
       border: none;
       font-size: 24px;
+      line-height: 1;
       color: var(--color-text-tertiary);
       cursor: pointer;
-      line-height: 1;
-      padding: 4px;
+      padding: 0;
       border-radius: var(--radius-sm);
-      transition: color var(--transition-fast);
+      transition: color var(--transition-fast), background var(--transition-fast);
     }
     .modal-close:hover {
       color: var(--color-text);
+      background: #F1F5F9;
+    }
+
+    /* Responsive: modal mini gọn trên màn hình nhỏ */
+    @media (max-width: 560px) {
+      .modal-backdrop {
+        padding: 10px;
+      }
+      .modal-box {
+        max-height: calc(100vh - 20px);
+        border-radius: var(--radius-xl);
+      }
+      .modal-header {
+        padding: 16px;
+      }
+      .modal-title {
+        font-size: var(--font-size-lg);
+        padding-right: 32px;
+      }
+      .modal-close {
+        top: 10px;
+        right: 10px;
+      }
+    }
+
+    /* Nội dung 2 modal Ví (chuyển tiền / rút tiền) — responsive, không tràn */
+    .wallet-modal-body {
+      padding: var(--space-xl);
+      /* Không để nội dung rộng hơn khung (bảng/ô input dài) */
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+    @media (max-width: 560px) {
+      .wallet-modal-body {
+        padding: 16px;
+      }
+    }
+    /* Lưới 2 thẻ ví: 2 cột -> 1 cột trên màn hẹp */
+    .wallet-pair-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: var(--space-lg);
+      min-width: 0;
+    }
+    @media (max-width: 460px) {
+      .wallet-pair-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    /* Hàng nút cuối: tự xuống dòng khi hẹp, không tràn */
+    .wallet-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+    @media (max-width: 460px) {
+      .wallet-modal-actions {
+        flex-direction: column-reverse;
+      }
+      .wallet-modal-actions > .btn {
+        width: 100%;
+      }
     }
 
     /* Timeline component */
@@ -1015,21 +1108,21 @@
   <!-- ============================================================
        MODAL 2: CHUYỂN TIỀN TỪ VÍ THU NHẬP SANG VÍ TÍN DỤNG
        ============================================================ -->
-  <div class="modal-backdrop" id="modal-staff-transfer" style="display: none;">
+  <div class="modal-backdrop" id="modal-staff-transfer" style="display: none;" data-backdrop-close="1">
     <div class="modal-box" style="max-width: 500px;">
       <div class="modal-header">
         <h3 class="modal-title">🔄 Chuyển Tiền Sang Ví Tín Dụng</h3>
-        <button class="modal-close" data-close="modal-staff-transfer">&times;</button>
+        <button class="modal-close" data-close="modal-staff-transfer" aria-label="Đóng">&times;</button>
       </div>
-      <div style="padding: var(--space-xl);">
+      <div class="wallet-modal-body">
         <form id="form-staff-transfer">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: var(--space-lg);">
-            <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: var(--radius-lg); padding: 10px 14px;">
+          <div class="wallet-pair-grid">
+            <div style="background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: var(--radius-lg); padding: 10px 14px; min-width: 0;">
               <div style="font-size: 11px; color: #065F46; text-transform: uppercase; font-weight: 700;">Ví Thu Nhập (Nguồn):</div>
               <div style="font-size: 18px; font-weight: 800; color: #059669;" id="transfer-modal-earnings-balance">0 đ</div>
               <div style="font-size: 10px; color: #065F46; margin-top: 2px;">Khả dụng để chuyển</div>
             </div>
-            <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 10px 14px;">
+            <div style="background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: var(--radius-lg); padding: 10px 14px; min-width: 0;">
               <div style="font-size: 11px; color: #1E40AF; text-transform: uppercase; font-weight: 700;">Ví Tín Dụng (Đích):</div>
               <div style="font-size: 18px; font-weight: 800;" id="transfer-modal-credit-balance">0 đ</div>
               <div style="font-size: 10px; color: #1E40AF; margin-top: 2px;">Yêu cầu: ≥ 100.000 đ</div>
@@ -1052,7 +1145,7 @@
             <input type="text" id="transfer-note-input" class="form-control" placeholder="VD: Bù âm ví tín dụng để nhận đơn">
           </div>
 
-          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);" class="wallet-modal-actions">
             <button type="button" class="btn btn-ghost" data-close="modal-staff-transfer">Hủy bỏ</button>
             <button type="submit" class="btn btn-primary" id="btn-submit-transfer">
               🔁 Thực Hiện Chuyển Tiền
@@ -1066,13 +1159,13 @@
   <!-- ============================================================
        MODAL 3: YÊU CẦU RÚT TIỀN VỀ TÀI KHOẢN NGÂN HÀNG
        ============================================================ -->
-  <div class="modal-backdrop" id="modal-staff-withdraw" style="display: none;">
+  <div class="modal-backdrop" id="modal-staff-withdraw" style="display: none;" data-backdrop-close="1">
     <div class="modal-box" style="max-width: 500px;">
       <div class="modal-header">
         <h3 class="modal-title">💸 Yêu Cầu Rút Tiền Về Ngân Hàng</h3>
-        <button class="modal-close" data-close="modal-staff-withdraw">&times;</button>
+        <button class="modal-close" data-close="modal-staff-withdraw" aria-label="Đóng">&times;</button>
       </div>
-      <div style="padding: var(--space-xl);">
+      <div class="wallet-modal-body">
         <form id="form-staff-withdraw">
           <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: 12px 16px; margin-bottom: var(--space-lg);">
             <div style="font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; font-weight: 700;">Số dư khả dụng Ví Thu Nhập:</div>
@@ -1111,7 +1204,7 @@
             <input type="text" id="withdraw-account-name" class="form-control" required placeholder="VD: NGUYEN VAN A" style="text-transform: uppercase;">
           </div>
 
-          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);">
+          <div style="display: flex; justify-content: flex-end; gap: var(--space-sm);" class="wallet-modal-actions">
             <button type="button" class="btn btn-ghost" data-close="modal-staff-withdraw">Hủy bỏ</button>
             <button type="submit" class="btn btn-primary" id="btn-submit-withdraw">
               🚀 Xác Nhận Rút Tiền
@@ -1263,6 +1356,44 @@
         btn.addEventListener('click', function () {
           const m = document.getElementById(this.dataset.close);
           if (m) m.style.display = 'none';
+        });
+      });
+
+      // ------------------------------------------------------------
+      // Đóng modal khi click BACKDROP (chỉ modal có data-backdrop-close="1")
+      // ------------------------------------------------------------
+      // Hiện áp dụng cho 2 modal: Chuyển tiền (modal-staff-transfer) và
+      // Rút tiền (modal-staff-withdraw).
+      //
+      // Nguyên tắc:
+      //   - Click đúng vào overlay (nền tối) -> đóng
+      //   - Click vào khung .modal-box hoặc bất kỳ con nào bên trong
+      //     -> stopPropagation để KHÔNG đóng
+      //
+      // ⚠️ Phải stopPropagation ở .modal-box, nếu không: click vào khoảng
+      // trống bên trong khung vẫn "nổi bọt" lên overlay và đóng modal oan.
+      document.querySelectorAll('.modal-backdrop[data-backdrop-close="1"]').forEach(backdrop => {
+        const box = backdrop.querySelector('.modal-box');
+
+        if (box) {
+          box.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        backdrop.addEventListener('click', (e) => {
+          // Chỉ đóng khi target là chính overlay, không phải phần tử con
+          if (e.target === backdrop) {
+            backdrop.style.display = 'none';
+          }
+        });
+      });
+
+      // Đóng bằng phím Escape (2 modal có data-backdrop-close="1")
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        document.querySelectorAll('.modal-backdrop[data-backdrop-close="1"]').forEach(backdrop => {
+          if (getComputedStyle(backdrop).display !== 'none') {
+            backdrop.style.display = 'none';
+          }
         });
       });
 
