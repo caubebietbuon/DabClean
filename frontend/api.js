@@ -5,16 +5,32 @@
 (function () {
   'use strict';
 
-  const host = (typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== '') 
-    ? window.location.hostname 
-    : 'localhost';
-  const protocol = (typeof window !== 'undefined' && window.location.protocol && window.location.protocol.startsWith('http')) 
-    ? window.location.protocol 
-    : 'http:';
+  function getApiBaseUrl() {
+    if (typeof window === 'undefined') return 'http://localhost:5000/api';
+    
+    // Nếu mở bằng file:/// trực tiếp từ ổ cứng
+    if (window.location.protocol === 'file:') {
+      return 'http://localhost:5000/api';
+    }
 
-  const API_BASE_URL = (typeof window !== 'undefined' && (window.location.port === '5000' || window.location.port === '')) 
-    ? `${window.location.origin}/api` 
-    : `${protocol}//${host}:5000/api`;
+    // Nếu chạy qua cổng chính của backend (5000)
+    if (window.location.port === '5000') {
+      return `${window.location.origin}/api`;
+    }
+
+    // Nếu chạy trên domain production (không có port hoặc 80/443 và không phải localhost/127.0.0.1)
+    const host = window.location.hostname || 'localhost';
+    const isLocal = host === 'localhost' || host === '127.0.0.1';
+    if (!isLocal && (window.location.port === '' || window.location.port === '80' || window.location.port === '443')) {
+      return `${window.location.origin}/api`;
+    }
+
+    // Môi trường Dev (Live Server 5500, 3000, 8080, v.v.): Gọi sang port 5000 của backend
+    const protocol = window.location.protocol.startsWith('http') ? window.location.protocol : 'http:';
+    return `${protocol}//${host}:5000/api`;
+  }
+
+  const API_BASE_URL = getApiBaseUrl();
 
   async function request(endpoint, options = {}) {
     const url = `${API_BASE_URL}${endpoint}`;
@@ -79,6 +95,13 @@
       return data;
     } catch (err) {
       console.error(`[DabCleanAPI] Lỗi gọi ${endpoint}:`, err.message);
+      if (err.name === 'TypeError' && (err.message.includes('fetch') || err.message.includes('NetworkError') || err.message.includes('Failed to fetch'))) {
+        if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+          throw new Error('Bạn đang mở file trực tiếp (file:///), trình duyệt chặn kết nối API. Vui lòng mở trình duyệt và truy cập: http://localhost:5000/login.html');
+        } else {
+          throw new Error(`Không thể kết nối tới máy chủ DabClean (${API_BASE_URL}). Vui lòng đảm bảo backend đang chạy ("node server.js") và truy cập qua http://localhost:5000!`);
+        }
+      }
       throw err;
     }
   }

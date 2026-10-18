@@ -428,11 +428,17 @@ if (urlParams.get("logout") === "true") {
     }
   }
 
-  // Chuyển tiếp tham số redirect qua liên kết Đăng ký
-  const linkToRegister = document.querySelector('a[href^="register.html"]');
-  if (linkToRegister && (urlParams.get("redirect") || urlParams.get("returnUrl"))) {
-    const ret = urlParams.get("redirect") || urlParams.get("returnUrl");
-    linkToRegister.href = `register.html?redirect=${encodeURIComponent(ret)}`;
+  // Cảnh báo nếu mở bằng file:/// trực tiếp
+  if (window.location.protocol === 'file:') {
+    const banner = document.getElementById("login-friendly-banner");
+    const bannerText = document.getElementById("login-friendly-banner-text");
+    if (banner && bannerText) {
+      banner.style.display = "flex";
+      banner.style.background = "#fef2f2";
+      banner.style.borderColor = "#fca5a5";
+      banner.style.color = "#991b1b";
+      bannerText.innerHTML = '⚠️ <strong>Bạn đang mở file trực tiếp (file:///)!</strong> Trình duyệt sẽ chặn kết nối API. Hãy gõ vào thanh địa chỉ: <a href="http://localhost:5000/login.html" style="color:#2563eb;text-decoration:underline;font-weight:700;">http://localhost:5000/login.html</a> để đăng nhập.';
+    }
   }
 }
 
