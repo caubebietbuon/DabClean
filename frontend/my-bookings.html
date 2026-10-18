@@ -6,6 +6,7 @@
   <title>Bảng Điều Khiển & Đơn Đặt Của Tôi · DabClean</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="css/realtime-notification.css">
   <script src="api.js"></script>
 </head>
 <body>
@@ -1085,9 +1086,20 @@
 
       // Khởi tạo tải đơn ban đầu
       await Promise.all([loadBookings(), loadNotifications()]);
-      window.setInterval(loadNotifications, 20000);
+      window.setInterval(loadNotifications, 60000); // Polling phụ phòng sự cố
       window.addEventListener('focus', loadNotifications);
+
+      // Đăng ký hook thời gian thực (Real-time Socket)
+      if (window.DabCleanRealtime) {
+        window.DabCleanRealtime.on('notification', async (payload) => {
+          await Promise.all([loadBookings(), loadNotifications()]);
+        });
+        window.DabCleanRealtime.on('booking_status_updated', async () => {
+          await Promise.all([loadBookings(), loadNotifications()]);
+        });
+      }
     });
   </script>
+  <script src="js/realtime-notification.js"></script>
 </body>
 </html>

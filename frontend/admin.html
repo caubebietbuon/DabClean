@@ -7,6 +7,7 @@
   <title>Bảng Quản Trị Hệ Thống · DabClean Admin</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="css/realtime-notification.css">
   <script src="api.js"></script>
   <style>
     .admin-navbar {
@@ -3690,8 +3691,22 @@
 
       await loadVouchers();
       await loadCommissionPayments();
+
+      // Đăng ký hook thông báo thời gian thực Admin (Real-time Socket)
+      if (window.DabCleanRealtime) {
+        window.DabCleanRealtime.on('notification', async (payload) => {
+          if (typeof loadStats === 'function') loadStats();
+          if (typeof loadBookings === 'function') loadBookings();
+          if (payload.type === 'withdrawal_request' && typeof loadWallets === 'function') loadWallets();
+        });
+        window.DabCleanRealtime.on('booking_status_updated', async () => {
+          if (typeof loadStats === 'function') loadStats();
+          if (typeof loadBookings === 'function') loadBookings();
+        });
+      }
     });
   </script>
+  <script src="js/realtime-notification.js"></script>
 </body>
 
 </html>

@@ -78,6 +78,17 @@ const walletController = {
         referenceType: 'sandbox_user'
       });
 
+      try {
+        const socketService = require('../services/socketService');
+        socketService.notifyUser(req.user.id, {
+          type: 'wallet_topup',
+          title: '💰 Nạp tiền thành công!',
+          message: `Đã nạp ${Math.round(parsedAmount).toLocaleString('vi-VN')} đ vào Ví DabClean của bạn.`,
+          data: result,
+          sound: 'coin'
+        });
+      } catch (socketErr) {}
+
       res.status(200).json({
         success: true,
         message: `Nạp thành công ${Math.round(parsedAmount).toLocaleString('vi-VN')} đ vào Ví DabClean!`,
@@ -202,6 +213,24 @@ const walletController = {
         accountName: accountName ? sanitizeInput(accountName) : '',
         note: note ? sanitizeInput(note) : null
       });
+      try {
+        const socketService = require('../services/socketService');
+        socketService.notifyRole('admin', {
+          type: 'withdrawal_request',
+          title: '💸 Yêu cầu rút tiền mới',
+          message: `${req.user.name || 'Người dùng'} yêu cầu rút ${Math.round(result.amount).toLocaleString('vi-VN')} đ về ${result.bank_name} (${result.account_number})`,
+          data: result,
+          sound: 'alert'
+        });
+        socketService.notifyUser(req.user.id, {
+          type: 'withdrawal_created',
+          title: '⏳ Đã tiếp nhận yêu cầu rút tiền',
+          message: `Lệnh rút ${Math.round(result.amount).toLocaleString('vi-VN')} đ đang được xử lý trong 24h.`,
+          data: result,
+          sound: 'chime'
+        });
+      } catch (socketErr) {}
+
       res.status(200).json({
         success: true,
         message: `Đã tạo lệnh rút tiền thành công ${Math.round(result.amount).toLocaleString('vi-VN')} đ về tài khoản ${result.bank_name} (${result.account_number})!`,

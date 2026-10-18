@@ -1,0 +1,362 @@
+/* ============================================================
+   DABCLEAN - Real-time Notification System Styles
+   Glassmorphism UI, Animated Toasts, Sound Control & Dropdown
+   ============================================================ */
+
+/* Container chứa các Toast thông báo nổi ở góc phải màn hình */
+#dabclean-toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  width: calc(100vw - 32px);
+  pointer-events: none;
+}
+
+/* Từng card Toast thông báo */
+.dabclean-toast {
+  pointer-events: auto;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px -12px rgba(15, 23, 42, 0.18),
+              0 4px 12px -2px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  cursor: pointer;
+  transform: translateX(120%);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s ease;
+}
+
+.dabclean-toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.dabclean-toast.hide {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.dabclean-toast:hover {
+  box-shadow: 0 24px 48px -12px rgba(37, 99, 235, 0.22),
+              0 6px 16px -2px rgba(15, 23, 42, 0.1);
+}
+
+/* Icon tròn */
+.dabclean-toast-icon {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #dbeafe;
+}
+
+.dabclean-toast[data-type="new_booking"] .dabclean-toast-icon {
+  background: #ecfdf5;
+  color: #059669;
+  border-color: #a7f3d0;
+  animation: pulse-ring 2s infinite;
+}
+
+.dabclean-toast[data-type="wallet_topup"] .dabclean-toast-icon,
+.dabclean-toast[data-type="wage_payout"] .dabclean-toast-icon {
+  background: #fefce8;
+  color: #ca8a04;
+  border-color: #fef08a;
+}
+
+.dabclean-toast[data-type="booking_cancelled"] .dabclean-toast-icon,
+.dabclean-toast[data-type="alert"] .dabclean-toast-icon {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.dabclean-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.dabclean-toast-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dabclean-toast-message {
+  font-size: 13px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.dabclean-toast-time {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 6px;
+  display: block;
+}
+
+.dabclean-toast-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+
+.dabclean-toast-close:hover {
+  color: #0f172a;
+}
+
+/* Thanh tiến trình tự động đóng */
+.dabclean-toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: #2563eb;
+  opacity: 0.8;
+  transform-origin: left center;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================================
+   Floating Bell & Notification Drawer
+   ============================================================ */
+
+/* Nút chuông nổi ở góc phải dưới hoặc tích hợp navbar */
+#dabclean-realtime-bell-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#dabclean-realtime-bell-btn:hover {
+  background: #f8fafc;
+  color: #2563eb;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+/* Badge số thông báo chưa đọc */
+.dabclean-bell-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.dabclean-bell-badge.bump {
+  animation: badge-bump 0.4s ease;
+}
+
+@keyframes badge-bump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
+/* Modal / Dropdown danh sách thông báo */
+#dabclean-notif-dropdown {
+  position: fixed;
+  top: 76px;
+  right: 24px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  max-height: 520px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.18);
+  z-index: 999998;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.98);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#dabclean-notif-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.dabclean-notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.dabclean-notif-header h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.dabclean-notif-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dabclean-notif-clear-btn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+.dabclean-notif-clear-btn:hover {
+  background: #eff6ff;
+}
+
+.dabclean-sound-toggle-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: #64748b;
+}
+
+.dabclean-sound-toggle-btn:hover {
+  background: #e2e8f0;
+}
+
+.dabclean-notif-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.dabclean-notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid #f8fafc;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dabclean-notif-item:hover {
+  background: #f8fafc;
+}
+
+.dabclean-notif-item.unread {
+  background: #f0f7ff;
+}
+
+.dabclean-notif-item.unread:hover {
+  background: #e0f2fe;
+}
+
+.dabclean-notif-item-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dabclean-notif-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dabclean-notif-item-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 2px 0;
+}
+
+.dabclean-notif-item-msg {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.dabclean-notif-item-time {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.dabclean-notif-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}

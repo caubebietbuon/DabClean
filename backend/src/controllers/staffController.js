@@ -557,6 +557,45 @@ const staffController = {
             staffPhone: updated.staff_phone
           }
         });
+
+        // Báo cho toàn bộ thợ khác gỡ đơn khỏi sàn và báo cho Admin
+        try {
+          const socketService = require('../services/socketService');
+          socketService.notifyRole('staff', {
+            type: 'booking_claimed',
+            title: `Đơn #${updated.booking_code} đã có người nhận`,
+            data: { bookingId: taskId }
+          });
+          socketService.notifyRole('admin', {
+            type: 'staff_accepted',
+            title: `Đơn #${updated.booking_code} đã có người nhận`,
+            message: `${updated.staff_name || 'Nhân viên'} đã nhận đơn #${updated.booking_code}`,
+            data: updated
+          });
+          socketService.notifyBooking(taskId, 'booking_status_updated', {
+            bookingId: taskId,
+            status: 'confirmed',
+            staff: { name: updated.staff_name, phone: updated.staff_phone }
+          });
+        } catch (socketErr) {}
+      }
+
+      if (status === 'in_progress') {
+        try {
+          await BookingModel.createBookingNotification({
+            user_id: updated.user_id,
+            booking_id: updated.id,
+            notification_type: 'staff_started_work',
+            title: `Thợ đang dọn dẹp đơn #${updated.booking_code}`,
+            message: `${updated.staff_name || 'Nhân viên'} đã đến và đang tiến hành công việc tại nhà bạn.`,
+            data: { bookingId: updated.id, status: 'in_progress' }
+          });
+          const socketService = require('../services/socketService');
+          socketService.notifyBooking(taskId, 'booking_status_updated', {
+            bookingId: taskId,
+            status: 'in_progress'
+          });
+        } catch (socketErr) {}
       }
 
       let settlementResult = null;
@@ -587,6 +626,29 @@ const staffController = {
             message: 'Quyết toán thù lao không thành công. Trạng thái công việc chưa được cập nhật.'
           });
         }
+
+        // Bắn thông báo hoàn thành đơn hàng cho Khách hàng và Admin
+        try {
+          await BookingModel.createBookingNotification({
+            user_id: updated.user_id,
+            booking_id: updated.id,
+            notification_type: 'staff_completed_work',
+            title: `Đơn hàng #${updated.booking_code} đã hoàn tất! 🎉`,
+            message: `${updated.staff_name || 'Nhân viên'} đã hoàn thành công việc dọn dẹp. Vui lòng kiểm tra và đánh giá dịch vụ.`,
+            data: { bookingId: updated.id, status: 'completed' }
+          });
+          const socketService = require('../services/socketService');
+          socketService.notifyRole('admin', {
+            type: 'booking_completed',
+            title: `Đơn #${updated.booking_code} đã hoàn thành`,
+            message: `Nhân viên ${updated.staff_name} đã hoàn tất công việc.`,
+            data: updated
+          });
+          socketService.notifyBooking(taskId, 'booking_status_updated', {
+            bookingId: taskId,
+            status: 'completed'
+          });
+        } catch (socketErr) {}
       }
 
       res.json({

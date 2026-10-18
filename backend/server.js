@@ -33,13 +33,20 @@ function getLanIP() {
 const lanIP = getLanIP();
 const HOST = process.env.HOST || '0.0.0.0';
 
-app.listen(PORT, HOST, () => {
+const http = require('http');
+const server = http.createServer(app);
+const { initSocket } = require('./src/services/socketService');
+
+// Khởi tạo Socket.IO engine cho thông báo thời gian thực
+initSocket(server);
+
+server.listen(PORT, HOST, () => {
   console.log('====================================================');
   console.log(`  DABCLEAN BACKEND SERVER IS RUNNING`);
   console.log(`  - Local URL:    http://localhost:${PORT}`);
   console.log(`  - LAN Network:  http://${lanIP}:${PORT}`);
   console.log(`  - API Health:   http://${lanIP}:${PORT}/api/health`);
-  console.log(`  - Services API: http://${lanIP}:${PORT}/api/services`);
+  console.log(`  - Realtime WS:  http://${lanIP}:${PORT}/socket.io/`);
   console.log('----------------------------------------------------');
   console.log('  Tài khoản Demo có sẵn:');
   console.log('  1. Khách hàng: demo@nova.app / NovaDemo2026!');

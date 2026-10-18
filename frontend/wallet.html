@@ -6,6 +6,7 @@
   <title>Ví Điện Tử DabClean · Thanh Toán Tiện Lợi & Hoàn Tiền Tức Thì</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="css/realtime-notification.css">
   <style>
     /* Styling chuyên biệt cho Trang Ví DabClean */
     .wallet-hero-grid {
@@ -940,7 +941,18 @@
       // Khởi động trang
       loadWalletBalance();
       loadTransactions();
+
+      // Đăng ký hook thông báo thời gian thực Ví (Real-time Socket)
+      if (window.DabCleanRealtime) {
+        window.DabCleanRealtime.on('notification', async (payload) => {
+          if (payload.type === 'wallet_topup' || payload.type === 'wage_payout' || payload.type === 'withdrawal_created') {
+            loadWalletBalance();
+            loadTransactions();
+          }
+        });
+      }
     })();
   </script>
+  <script src="js/realtime-notification.js"></script>
 </body>
 </html>

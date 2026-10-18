@@ -127,12 +127,26 @@ const BookingModel = {
   },
 
   async createBookingNotification({ user_id, booking_id, notification_type, title, message, data }) {
-    return await db.query(
+    const result = await db.query(
       `INSERT IGNORE INTO booking_notifications
        (user_id, booking_id, notification_type, title, message, data)
        VALUES (?, ?, ?, ?, ?, ?)`,
       [user_id, booking_id, notification_type, title, message, JSON.stringify(data)]
     );
+    try {
+      const socketService = require('../services/socketService');
+      socketService.notifyUser(user_id, {
+        id: result && result.insertId ? result.insertId : undefined,
+        type: notification_type,
+        title,
+        message,
+        data,
+        bookingId: booking_id
+      });
+    } catch (socketErr) {
+      // Bỏ qua nếu socket chưa sẵn sàng hoặc môi trường test
+    }
+    return result;
   },
 
   async getNotificationsByUserId(userId) {

@@ -6,6 +6,7 @@
   <title>Cổng Thông Tin Nhân Viên · DabClean Staff Portal</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="css/realtime-notification.css">
   <script src="api.js"></script>
   <style>
     /* Staff Workspace Layout */
@@ -547,6 +548,9 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: var(--space-md);">
+          <button type="button" id="dabclean-realtime-bell-btn" title="Thông báo hệ thống DabClean" aria-label="Thông báo trực tiếp">
+            🔔<span class="dabclean-bell-badge" style="display:none;">0</span>
+          </button>
           <div style="display: flex; align-items: center; gap: 8px;">
             <div style="width: 32px; height: 32px; border-radius: 50%; background: #EFF6FF; border: 1.5px solid #BFDBFE; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #1D4ED8;" id="staff-avatar-initials">
               NV
@@ -3006,7 +3010,22 @@
       await loadStaffTasks();
       await loadStaffProfile();
       await loadStaffWallet();
+
+      // Đăng ký hook thời gian thực (Real-time Socket)
+      if (window.DabCleanRealtime) {
+        window.DabCleanRealtime.on('notification', async (payload) => {
+          if (payload.type === 'new_booking' || payload.type === 'booking_claimed') {
+            await loadStaffTasks();
+          } else if (payload.type === 'wage_payout' || payload.type === 'wallet_topup') {
+            await loadStaffWallet();
+          }
+        });
+        window.DabCleanRealtime.on('booking_status_updated', async () => {
+          await loadStaffTasks();
+        });
+      }
     });
   </script>
+  <script src="js/realtime-notification.js"></script>
 </body>
 </html>
