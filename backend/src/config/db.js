@@ -1384,7 +1384,7 @@ function queryInMemory(sql, params = []) {
     return { affectedRows: 1 };
   }
 
-  if (normalizedSql.includes('from booking_job_photos')) {
+  if (normalizedSql.includes('from booking_job_photos') && !normalizedSql.includes('from bookings')) {
     if (normalizedSql.includes('where image_url = ?')) {
       const photo = inMemoryData.jobPhotos.find(item => item.image_url === params[0]);
       return photo ? [{ ...photo }] : [];
@@ -1422,7 +1422,16 @@ function queryInMemory(sql, params = []) {
   }
 
   // 0. Thống kê & Đếm (COUNT)
-  if (normalizedSql.includes('count(')) {
+  if (
+    !normalizedSql.includes('from bookings b') &&
+    (
+      normalizedSql.startsWith('select count(') ||
+      normalizedSql.startsWith('select count (*)') ||
+      normalizedSql.startsWith('select count(1)') ||
+      normalizedSql.includes('as total_users') ||
+      normalizedSql.includes('as total_bookings')
+    )
+  ) {
     // Đếm số admin đang hoạt động (để ngăn xóa admin cuối cùng)
     if (normalizedSql.includes("role = 'admin'") && normalizedSql.includes("status = 'active'")) {
       const activeAdminCount = inMemoryData.users.filter(u => u.role === 'admin' && u.status === 'active').length;
@@ -1430,7 +1439,7 @@ function queryInMemory(sql, params = []) {
     }
 
     // Đếm số đơn đặt của một người dùng (kiểm tra trước khi xóa tài khoản)
-    if (normalizedSql.includes('from bookings') && (normalizedSql.includes('user_id =') || normalizedSql.includes('b.user_id ='))) {
+    if (normalizedSql.includes('from bookings') && (normalizedSql.includes('user_id = ?') || normalizedSql.includes('b.user_id = ?') || (normalizedSql.includes('user_id =') && !normalizedSql.includes('user_id = u.id')))) {
       const userId = parseInt(params[0], 10);
       const bookingCount = inMemoryData.bookings.filter(b => b.user_id === userId).length;
       return [{ count: bookingCount, total: bookingCount }];
@@ -1717,12 +1726,13 @@ function queryInMemory(sql, params = []) {
     const [
       booking_code, user_id, service_id, booking_date, booking_time, area_size,
       frequency, address, phone, notes, total_price, discount_code, payment_method,
-      duration_hours, staff_wage, wage_status, package_type, shift_choice,
+      duration_hours, staff_wage, commission_rate, platform_commission, staff_net_wage,
+      wage_status, package_type, shift_choice,
       recipient_name, recipient_age, recipient_gender, care_scope_notes,
       pricing_type, building_type, area_m2, floors, construction_status,
       dirt_severity, glass_cleaning, stubborn_stains, furniture_status,
       worker_count, work_days, quote_status, quote_min_price, quote_max_price,
-      quote_notes, construction_notes
+      quote_notes, construction_notes, addons, addon_amount
     ] = params;
     const newId = inMemoryData.bookings.length > 0 ? Math.max(...inMemoryData.bookings.map(b => b.id)) + 1 : 1;
     const srv = inMemoryData.services.find(s => s.id === parseInt(service_id, 10));
@@ -1751,6 +1761,9 @@ function queryInMemory(sql, params = []) {
       assigned_at: null,
       duration_hours: duration_hours || null,
       staff_wage: staff_wage || 0,
+      commission_rate: commission_rate !== undefined ? parseFloat(commission_rate) : 0.2,
+      platform_commission: platform_commission !== undefined ? parseFloat(platform_commission) : 0,
+      staff_net_wage: staff_net_wage !== undefined ? parseFloat(staff_net_wage) : 0,
       wage_status: wage_status || 'pending',
       package_type: package_type || 'hourly',
       shift_choice: shift_choice || null,
@@ -1774,6 +1787,8 @@ function queryInMemory(sql, params = []) {
       quote_max_price: quote_max_price !== null && quote_max_price !== undefined ? parseFloat(quote_max_price) : null,
       quote_notes: quote_notes || null,
       construction_notes: construction_notes || null,
+      addons: addons ? (typeof addons === 'string' ? JSON.parse(addons) : addons) : [],
+      addon_amount: addon_amount ? parseFloat(addon_amount) : 0,
       created_at: new Date()
     };
     inMemoryData.bookings.unshift(newBooking);

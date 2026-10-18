@@ -7,6 +7,7 @@
   <title>Đặt Lịch Dịch Vụ Vệ Sinh · DabClean</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="css/realtime-notification.css">
   <script src="api.js"></script>
 </head>
 
@@ -1739,7 +1740,8 @@
 
         try {
           const res = await window.DabCleanAPI.bookings.create(bookingData);
-          document.getElementById('modal-booking-code').textContent = res.data.booking_code;
+          const bookingCode = res?.data?.booking_code || res?.data?.bookingCode || (res?.booking_code) || 'Đã ghi nhận';
+          document.getElementById('modal-booking-code').textContent = bookingCode;
           document.getElementById('success-modal').classList.add('active');
         } catch (err) {
           alert(err.message || 'Có lỗi xảy ra khi tạo đơn đặt. Vui lòng thử lại.');
@@ -1762,6 +1764,7 @@
       await loadServices();
     });
   </script>
+  <script src="js/realtime-notification.js"></script>
 </body>
 
 </html>

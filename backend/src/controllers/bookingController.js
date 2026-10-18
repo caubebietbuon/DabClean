@@ -385,7 +385,46 @@ const bookingController = {
         });
       }
 
-      const newBooking = await BookingModel.getById(bookingId);
+      const newBooking = (await BookingModel.getById(bookingId)) || {
+        id: bookingId,
+        booking_code: bookingCode,
+        service_id,
+        user_id: req.user ? req.user.id : null,
+        address,
+        total_price: calculation.totalPrice
+      };
+
+      // Phát thông báo thời gian thực cho Thợ, Admin và Khách hàng
+      try {
+        const socketService = require('../services/socketService');
+        // Báo cho thợ có việc mới
+        socketService.notifyRole('staff', {
+          type: 'new_booking',
+          title: '🔔 Có đơn dịch vụ mới trên sàn!',
+          message: `${newBooking.service_name || 'Dịch vụ'} tại ${newBooking.address}. Tiền công dự kiến: ${Number(newBooking.staff_net_wage || newBooking.staff_wage || 0).toLocaleString('vi-VN')} đ`,
+          data: newBooking,
+          sound: 'new_order'
+        });
+        // Báo cho Admin
+        socketService.notifyRole('admin', {
+          type: 'new_booking',
+          title: '📋 Đơn hàng mới phát sinh',
+          message: `Khách ${newBooking.customer_name || 'Khách hàng'} vừa đặt đơn #${newBooking.booking_code} (${Number(newBooking.total_price).toLocaleString('vi-VN')} đ)`,
+          data: newBooking
+        });
+        // Báo cho chính khách hàng
+        if (req.user && req.user.id) {
+          socketService.notifyUser(req.user.id, {
+            type: 'booking_created',
+            title: '✅ Đặt lịch thành công',
+            message: `Đơn hàng #${newBooking.booking_code} đã được tạo và gửi tới đội ngũ nhân viên DabClean.`,
+            data: newBooking,
+            sound: 'chime'
+          });
+        }
+      } catch (socketErr) {
+        // Non-blocking
+      }
 
       const successMsg = isPostConstruction && calculation.quoteStatus === 'pending_survey'
         ? 'Gửi yêu cầu khảo sát & báo giá dịch vụ vệ sinh sau xây dựng thành công! DabClean sẽ liên hệ khảo sát thực tế miễn phí và gửi báo giá chính thức.'
@@ -651,6 +690,33 @@ const bookingController = {
         } catch (commErr) {
           console.error('Lỗi hoàn chiết khấu cho thợ khi khách hủy đơn:', commErr.message);
         }
+      }
+
+      // Bắn thông báo thời gian thực về việc hủy đơn
+      try {
+        const socketService = require('../services/socketService');
+        if (booking.staff_id) {
+          socketService.notifyUser(booking.staff_id, {
+            type: 'booking_cancelled',
+            title: `⚠️ Đơn #${booking.booking_code} đã bị hủy`,
+            message: `Khách hàng đã hủy đơn. Lý do: ${sanitizedReason}`,
+            data: { bookingId: id },
+            sound: 'alert'
+          });
+        }
+        socketService.notifyRole('admin', {
+          type: 'booking_cancelled',
+          title: `Đơn #${booking.booking_code} đã bị hủy`,
+          message: `Lý do: ${sanitizedReason}`,
+          data: { bookingId: id }
+        });
+        socketService.notifyBooking(id, 'booking_status_updated', {
+          bookingId: id,
+          status: 'cancelled',
+          cancelReason: sanitizedReason
+        });
+      } catch (socketErr) {
+        // Non-blocking
       }
 
       res.json({
