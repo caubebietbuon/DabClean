@@ -1481,17 +1481,29 @@ function initScrollReveal() {
    11. SMOOTH SCROLL cho Navigation Links
    --------------------------------------------------------------- */
 function initSmoothScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      const targetId = link.getAttribute('href');
-      if (targetId === '#') return;
+  document.querySelectorAll('a[href*="#"]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href === '#') return;
 
-      const targetEl = document.querySelector(targetId);
-      if (targetEl) {
-        e.preventDefault();
-        targetEl.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
+    const hashIndex = href.indexOf('#');
+    const hash = href.substring(hashIndex);
+    const page = href.substring(0, hashIndex);
+    const currentPath = (window.location.pathname.split('/').pop() || 'trangchu.html').toLowerCase();
+    const isCurrentPage = !page || page === currentPath ||
+      ((currentPath === '' || currentPath === 'index.html' || currentPath === 'trangchu' || currentPath === 'home') && (page === 'trangchu.html' || page === ''));
+
+    if (isCurrentPage) {
+      link.addEventListener('click', (e) => {
+        const targetEl = document.querySelector(hash);
+        if (targetEl) {
+          e.preventDefault();
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+          if (history.pushState) {
+            history.pushState(null, null, hash);
+          }
+        }
+      });
+    }
   });
 }
 

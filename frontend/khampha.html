@@ -40,22 +40,36 @@
 
       <!-- Menu Điều hướng Desktop -->
       <nav class="nav" id="main-nav" role="navigation" aria-label="Menu chính">
-        <a href="trangchu.html" class="nav-link">Trang chủ</a>
-        <a href="services.html" class="nav-link">Dịch vụ</a>
-        <a href="khampha.html" class="nav-link active">Khám phá</a>
-        <a href="booking.html" class="nav-link" data-action="book">Đặt lịch</a>
-        <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" style="display: none;">Đơn của tôi</a>
+        <a href="trangchu.html" class="nav-link" data-i18n="nav_home">Trang chủ</a>
+        <a href="services.html" class="nav-link" data-i18n="nav_services">Dịch vụ</a>
+        <a href="trangchu.html#why-dabclean" class="nav-link" data-i18n="nav_why">Vì sao chọn?</a>
+        <a href="trangchu.html#booking-workflow" class="nav-link" data-i18n="nav_workflow">Quy trình</a>
+        <a href="trangchu.html#pricing-table" class="nav-link" data-i18n="nav_pricing">Bảng giá</a>
+        <a href="trangchu.html#commitments" class="nav-link" data-i18n="nav_commitments">Cam kết</a>
+        <a href="trangchu.html#faq" class="nav-link" data-i18n="nav_faq">FAQ</a>
+        <a href="khampha.html" class="nav-link active" data-i18n="nav_explore">Khám phá</a>
+        <a href="booking.html" class="nav-link" data-action="book" data-i18n="nav_book_now">Đặt lịch</a>
+        <a href="my-bookings.html" class="nav-link" id="nav-link-my-bookings" data-i18n="nav_my_bookings" style="display: none;">Đơn của tôi</a>
+        <a href="wallet.html" class="nav-link" id="nav-link-wallet" data-i18n="nav_wallet" style="display: none; color: #0f766e; font-weight: 700;">Ví DabClean</a>
+        <a href="admin.html" class="nav-link" id="nav-link-admin" data-i18n="nav_admin" style="display: none; color: #B45309; font-weight: 700;">Quản trị</a>
+        <a href="staff.html" class="nav-link" id="nav-link-staff" data-i18n="nav_staff" style="display: none; color: #1D4ED8; font-weight: 700;">Nhân viên</a>
       </nav>
 
       <!-- Hành động bên phải -->
       <div class="header-actions">
-        <a href="partner-register.html" class="btn-partner-header">
-          <span aria-hidden="true">🤝</span>
-          <span>Trở thành đối tác</span>
-        </a>
+        <!-- Thông báo (Chỉ hiện khi đã đăng nhập) -->
+        <a href="my-bookings.html#notifications" class="btn-icon btn-ghost" id="btn-notifications-header" title="Thông báo" style="display: none; font-size: 16px;">🔔</a>
 
-        <!-- Slot người dùng hoặc nút đăng nhập -->
         <div id="auth-header-slot" style="display: flex; align-items: center; gap: 8px;">
+          <a href="partner-register.html" class="btn-partner-header">
+            <span aria-hidden="true">🤝</span>
+            <span>Trở thành đối tác</span>
+          </a>
+          <a href="profile.html" class="user-profile-badge" id="user-profile-header" style="display: none; text-decoration: none;" title="Xem hồ sơ cá nhân">
+            <span class="user-avatar-mini" aria-hidden="true">👤</span>
+            <span class="user-email-text" id="user-email-header">Tài khoản</span>
+          </a>
+          <button class="btn btn-ghost btn-sm btn-logout" id="btn-logout" data-i18n="btn_logout" title="Đăng xuất khỏi hệ thống" style="display: none;">Đăng xuất</button>
           <a href="login.html" class="btn btn-ghost btn-sm" id="btn-login-header">Đăng nhập</a>
           <a href="register.html" class="btn btn-primary btn-sm" id="btn-register-header">Đăng ký</a>
         </div>
@@ -593,30 +607,9 @@
         });
       });
 
-      // Kiểm tra trạng thái đăng nhập trên Header
-      if (window.DabCleanAPI && window.DabCleanAPI.auth) {
-        const isLogged = window.DabCleanAPI.auth.isLoggedIn();
-        const user = window.DabCleanAPI.auth.getUser();
-        const slot = document.getElementById('auth-header-slot');
-        const navMyBookings = document.getElementById('nav-link-my-bookings');
-        if (navMyBookings) {
-          navMyBookings.style.display = isLogged ? '' : 'none';
-        }
-        if (slot && isLogged && user) {
-          slot.innerHTML = `
-            <a href="profile.html" class="user-profile-badge" style="text-decoration: none;" title="Xem hồ sơ cá nhân">
-              <span class="user-avatar-mini" aria-hidden="true">👤</span>
-              <span class="user-email-text">${user.name || user.email || 'Tài khoản'}</span>
-            </a>
-            <button class="btn btn-ghost btn-sm" id="btn-logout" title="Đăng xuất">Đăng xuất</button>
-          `;
-          const btnLogout = document.getElementById('btn-logout');
-          if (btnLogout) {
-            btnLogout.addEventListener('click', () => {
-              window.DabCleanAPI.auth.logout();
-            });
-          }
-        }
+      // Đồng bộ trạng thái đăng nhập và thanh điều hướng
+      if (window.DabCleanAPI_syncHeader) {
+        window.DabCleanAPI_syncHeader();
       }
     });
   </script>

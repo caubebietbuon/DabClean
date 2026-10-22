@@ -1098,6 +1098,160 @@
       }
     }
   }, true);
+
+  // ============================================================
+  // ĐỒNG BỘ THANH ĐIỀU HƯỚNG & TRẠNG THÁI TÀI KHOẢN TOÀN HỆ THỐNG
+  // Đảm bảo không trang nào bị mất mục khi điều hướng giữa các trang
+  // ============================================================
+  function syncGlobalHeader() {
+    const api = window.DabCleanAPI || window.CleanovaAPI;
+    if (!api || !api.auth) return;
+
+    const user = api.auth.getUser();
+    const isLoggedIn = api.auth.isLoggedIn();
+    const isAdmin = api.auth.isAdmin();
+    const isStaff = api.auth.isStaff();
+    const displayName = user ? (user.name || user.email) : 'Tài khoản';
+
+    // 1. Nhận diện trang hiện tại và cập nhật trạng thái "active"
+    const currentPath = (window.location.pathname.split('/').pop() || 'trangchu.html').toLowerCase();
+    document.querySelectorAll('.nav .nav-link').forEach(link => {
+      const href = link.getAttribute('href') || '';
+      if (href.startsWith('#')) return;
+
+      const linkPage = href.split('#')[0].split('/').pop().toLowerCase();
+
+      if (linkPage === currentPath) {
+        link.classList.add('active');
+      } else if (
+        (currentPath === '' || currentPath === 'index.html' || currentPath === 'trangchu' || currentPath === 'home') &&
+        linkPage === 'trangchu.html'
+      ) {
+        link.classList.add('active');
+      } else if (linkPage && linkPage !== currentPath) {
+        link.classList.remove('active');
+      }
+    });
+
+    // 2. Hiển thị / Ẩn các mục phụ thuộc trạng thái phiên
+    const navMyBookings = document.getElementById('nav-link-my-bookings');
+    const navWallet = document.getElementById('nav-link-wallet');
+    const navAdmin = document.getElementById('nav-link-admin');
+    const navStaff = document.getElementById('nav-link-staff');
+
+    const mobileMyBookings = document.getElementById('mobile-link-my-bookings');
+    const mobileWallet = document.getElementById('mobile-link-wallet');
+    const mobileAdmin = document.getElementById('mobile-link-admin');
+    const mobileStaff = document.getElementById('mobile-link-staff');
+    const mobileProfile = document.getElementById('mobile-link-profile');
+
+    if (navMyBookings) navMyBookings.style.display = isLoggedIn ? 'inline-block' : 'none';
+    if (navWallet) navWallet.style.display = isLoggedIn ? 'inline-block' : 'none';
+    if (navAdmin) navAdmin.style.display = isAdmin ? 'inline-block' : 'none';
+    if (navStaff) navStaff.style.display = isStaff ? 'inline-block' : 'none';
+
+    if (mobileMyBookings) mobileMyBookings.style.display = isLoggedIn ? 'block' : 'none';
+    if (mobileWallet) mobileWallet.style.display = isLoggedIn ? 'block' : 'none';
+    if (mobileAdmin) mobileAdmin.style.display = isAdmin ? 'block' : 'none';
+    if (mobileStaff) mobileStaff.style.display = isStaff ? 'block' : 'none';
+    if (mobileProfile) mobileProfile.style.display = isLoggedIn ? 'block' : 'none';
+
+    // 3. Cập nhật thông tin người dùng trên Header
+    const userProfileHeader = document.getElementById('user-profile-header');
+    const userEmailHeader = document.getElementById('user-email-header');
+    const navUserBadge = document.getElementById('nav-user-badge');
+    const navUserEmail = document.getElementById('nav-user-email');
+    const navUserName = document.getElementById('nav-user-name');
+    const userProfileMobile = document.getElementById('user-profile-mobile');
+    const userEmailMobile = document.getElementById('user-email-mobile');
+
+    if (isLoggedIn) {
+      if (userProfileHeader) userProfileHeader.style.display = 'inline-flex';
+      if (userEmailHeader) userEmailHeader.textContent = displayName;
+      if (navUserBadge) navUserBadge.style.display = 'inline-flex';
+      if (navUserEmail) navUserEmail.textContent = displayName;
+      if (navUserName) navUserName.textContent = displayName;
+      if (userProfileMobile) userProfileMobile.style.display = 'flex';
+      if (userEmailMobile) userEmailMobile.textContent = displayName;
+    } else {
+      if (userProfileHeader) userProfileHeader.style.display = 'none';
+      if (navUserBadge) navUserBadge.style.display = 'none';
+      if (userProfileMobile) userProfileMobile.style.display = 'none';
+    }
+
+    // 4. Nút Đăng nhập / Đăng ký vs Đăng xuất
+    const btnLogoutHeader = document.getElementById('btn-logout');
+    const btnLoginHeader = document.getElementById('btn-login-header');
+    const btnRegisterHeader = document.getElementById('btn-register-header');
+    const btnLogoutMobile = document.getElementById('btn-logout-mobile');
+    const btnLoginMobile = document.getElementById('btn-login-mobile');
+    const btnRegisterMobile = document.getElementById('btn-register-mobile');
+    const notifWrapper = document.getElementById('notification-wrapper');
+    const notifHeader = document.getElementById('btn-notifications-header');
+
+    if (isLoggedIn) {
+      if (btnLogoutHeader) btnLogoutHeader.style.display = 'inline-flex';
+      if (btnLoginHeader) btnLoginHeader.style.display = 'none';
+      if (btnRegisterHeader) btnRegisterHeader.style.display = 'none';
+      if (btnLogoutMobile) btnLogoutMobile.style.display = 'block';
+      if (btnLoginMobile) btnLoginMobile.style.display = 'none';
+      if (btnRegisterMobile) btnRegisterMobile.style.display = 'none';
+      if (notifWrapper) notifWrapper.style.display = 'inline-block';
+      if (notifHeader) notifHeader.style.display = 'inline-flex';
+    } else {
+      if (btnLogoutHeader) btnLogoutHeader.style.display = 'none';
+      if (btnLoginHeader) btnLoginHeader.style.display = 'inline-flex';
+      if (btnRegisterHeader) btnRegisterHeader.style.display = 'inline-flex';
+      if (btnLogoutMobile) btnLogoutMobile.style.display = 'none';
+      if (btnLoginMobile) btnLoginMobile.style.display = 'block';
+      if (btnRegisterMobile) btnRegisterMobile.style.display = 'block';
+      if (notifWrapper) notifWrapper.style.display = 'none';
+      if (notifHeader) notifHeader.style.display = 'none';
+    }
+
+    // Gắn sự kiện đăng xuất cho mọi nút logout
+    function onLogout(e) {
+      e.preventDefault();
+      api.auth.logout();
+    }
+    document.querySelectorAll('#btn-logout, #btn-logout-mobile, .btn-logout').forEach(b => {
+      b.removeEventListener('click', onLogout);
+      b.addEventListener('click', onLogout);
+    });
+
+    // 5. Xử lý điều hướng mượt khi bấm các mục anchor trang chủ
+    document.querySelectorAll('a[href*="#"]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      const hashIndex = href.indexOf('#');
+      const hash = href.substring(hashIndex);
+      const page = href.substring(0, hashIndex);
+      const isTargetOnCurrentPage = !page || page === currentPath ||
+        ((currentPath === '' || currentPath === 'index.html' || currentPath === 'trangchu' || currentPath === 'home') && (page === 'trangchu.html' || page === ''));
+
+      if (isTargetOnCurrentPage) {
+        link.addEventListener('click', (e) => {
+          const targetEl = document.querySelector(hash);
+          if (targetEl) {
+            e.preventDefault();
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+            if (history.pushState) {
+              history.pushState(null, null, hash);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  // Tự động đồng bộ ngay khi DOM sẵn sàng
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncGlobalHeader);
+  } else {
+    syncGlobalHeader();
+  }
+
+  window.DabCleanAPI_syncHeader = syncGlobalHeader;
 })();
 
 
