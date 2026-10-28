@@ -60,6 +60,7 @@ function parseArgs(argv) {
     const key = argv[i];
     const val = argv[i + 1];
     switch (key) {
+      case '--groups': args.groups = path.resolve(val); i += 1; break;
       case '--dataset': args.dataset = path.resolve(val); i += 1; break;
       case '--out': args.out = path.resolve(val); i += 1; break;
       case '--epochs': args.epochs = parseInt(val, 10); i += 1; break;
@@ -90,85 +91,8 @@ function line(char = '=') {
 //
 // Đầu vào cần: nhãn từng mẫu + id nhóm từng mẫu.
 //
-// Ngoài ra vẫn PHÂN TẦNG theo lớp: mỗi lớp đóng góp đúng ~20% nhóm vào val,
-// để validation có đủ cả 3 lớp (nếu chia ngẫu nhiên thuần, có thể thiếu lớp).
-function groupStratifiedSplit(allLabels, groupIds, splitRatio, seed) {
-  const rng = makeRng(seed);
-
-  // Gom nhóm theo (lớp, groupId)
-  const groupsByClass = {};
-  for (let i = 0; i < allLabels.length; i += 1) {
-    const cls = allLabels[i];
-    const gid = groupIds[i];
-    if (!groupsByClass[cls]) groupsByClass[cls] = new Map();
-    const m = groupsByClass[cls];
-    if (!m.has(gid)) m.set(gid, []);
-    m.get(gid).push(i);
-  }
-
-  const trainIdx = [];
-  const valIdx = [];
-
-  for (const cls of Object.keys(groupsByClass)) {
-    const entries = Array.from(groupsByClass[cls].values()); // mảng các nhóm
-
-    // Fisher-Yates với seed cố định
-    for (let i = entries.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(rng() * (i + 1));
-      [entries[i], entries[j]] = [entries[j], entries[i]];
-    }
-
-    const nValGroups = Math.max(1, Math.round(entries.length * splitRatio));
-    entries.forEach((idxs, k) => {
-      if (k < nValGroups) valIdx.push(...idxs);
-      else trainIdx.push(...idxs);
-    });
-  }
-
-  return { trainIdx, valIdx };
-}
-
-/**
- * Xây danh sách id nhóm cho từng mẫu.
- *
- * Thứ tự trong `xs` là: [tất cả ảnh gốc của items...] rồi
- * [biến thể của item 0..., biến thể của item 1...].
- * Nên: mẫu thứ i < nItems thuộc nhóm i.
- * Mẫu augmentation thứ k thuộc nhóm floor(k / augmentPerImage).
- *
- * @param {Array} items - danh sách ảnh gốc
- * @param {number} augmentPerImage
- * @param {number} totalSamples - xs.shape[0]
- * @returns {number[]} groupIds (song song với xs)
- */
-function buildGroupIds(items, augmentPerImage, totalSamples) {
-  const groupIds = [];
-  const nItems = items.length;
-
-  // Phần 1: ảnh gốc — mỗi ảnh một nhóm
-  for (let i = 0; i < nItems && groupIds.length < totalSamples; i += 1) {
-    groupIds.push(i);
-  }
-
-  // Phần 2: biến thể augmentation — cùng nhóm với ảnh gốc
-  if (augmentPerImage > 0) {
-    let itemIdx = 0;
-    let countInGroup = 0;
-    while (groupIds.length < totalSamples) {
-      groupIds.push(itemIdx);
-      countInGroup += 1;
-      if (countInGroup >= augmentPerImage) {
-        itemIdx += 1;
-        countInGroup = 0;
-      }
-      // Nếu số biến thể thực tế ít hơn kế hoạch (ảnh lỗi bị bỏ), vòng lặp
-      // vẫn an toàn: itemIdx không vượt nItems vì tổng mẫu đã bị chặn.
-      if (itemIdx >= nItems) itemIdx = nItems - 1;
-    }
-  }
-
-  return groupIds;
-}
+// Ưu tiên nhóm phòng không giao nhau; từ chối split thiếu lớp thay vì công bố validation sai lệch.
+const { groupSplit: groupStratifiedSplit } = require('./src/ml/groupSplit');
 
 // Bộ sinh số ngẫu nhiên có seed (dùng chung thuật toán với augment.js)
 function makeRng(seed) {
@@ -244,6 +168,16 @@ async function main() {
   }
 
   const { items, counts, total } = scanDataset(args.dataset);
+  if (fs.existsSync(path.join(args.out, 'model.json'))) {
+    throw new Error('Output already contains a model. Use --out ./model-candidate-<version>; validate before deployment.');
+  }
+  if (!args.groups) throw new Error('Missing --groups <room-groups.json>. Provide a room/source ID for every original image; run duplicate audit before training.');
+  const roomGroups = JSON.parse(fs.readFileSync(args.groups, 'utf8'));
+  for (const item of items) {
+    const key = path.relative(args.dataset, item.file).split(path.sep).join('/');
+    if (typeof roomGroups[key] !== 'string' || !roomGroups[key].trim()) throw new Error('Missing room group: ' + key);
+    item.roomId = roomGroups[key];
+  }
   console.log('  Số ảnh mỗi lớp:');
   LABELS.forEach(l => console.log(`   - ${l.padEnd(9)} : ${counts[l]} ảnh`));
   console.log(`  Tổng cộng: ${total} ảnh`);
@@ -260,7 +194,7 @@ async function main() {
   // --- Bước 2: trích đặc trưng (+ augmentation) ---
   console.log('⏳ Đang trích đặc trưng 1024 chiều...');
   const t0 = Date.now();
-  const { xs, ys, augmentInfo } = await buildEmbeddingDataset(items, {
+  const { xs, ys, augmentInfo, groupIds } = await buildEmbeddingDataset(items, {
     batchSize: args.batch,
     augmentPerImage: args.augment,
     onStage: (s) => console.log(`   » ${s}`),
@@ -281,16 +215,7 @@ async function main() {
   const ysArr = await ys.array();
   const allLabels = ysArr.map(row => LABELS[row.indexOf(Math.max(...row))]);
 
-  // ⚠️ RÒ RỈ DỮ LIỆU (data leakage) — vấn đề nghiêm trọng cần tránh:
-  // Mỗi ảnh gốc sinh ra N biến thể augmentation. Nếu ta chia ngẫu nhiên THEO
-  // TỪNG MẪU, biến thể của cùng một ảnh có thể rơi vào cả train LẪN validation.
-  // Khi đó model "đã thấy" ảnh đó lúc train -> val_acc cao GIẢ TẠO, không phản
-  // ánh đúng hiệu năng thật.
-  //
-  // Nên ta chia theo NHÓM: tất cả biến thể của cùng 1 ảnh gốc phải nằm CÙNG
-  // một phía (train hoặc validation). Mỗi ảnh gốc = 1 nhóm.
-  const groupIds = buildGroupIds(items, args.augment, allLabels.length);
-
+  // Use IDs emitted alongside ACTUAL successful augmentations, including room identity.
   const { trainIdx, valIdx } = groupStratifiedSplit(
     allLabels, groupIds, args.validationSplit, args.seed
   );
@@ -422,7 +347,7 @@ async function main() {
   });
   line();
   console.log('👉 Chạy thử:');
-  console.log('   node predict.js duong-dan-anh.jpg        (chấm theo patch 3x3)');
+  console.log('   node predict.js duong-dan-anh.jpg        (whole-image baseline)');
   console.log('   node predict.js --whole anh.jpg          (chấm cả ảnh)');
   line();
 
@@ -434,7 +359,7 @@ async function main() {
   model.dispose();
 }
 
-main().catch(err => {
+if (require.main === module) main().catch(err => {
   console.error('\n❌ LỖI KHI HUẤN LUYỆN:', err.message);
   console.error(err.stack);
   process.exit(1);

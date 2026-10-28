@@ -25,6 +25,9 @@ const {
 const { LABEL_DISPLAY, LABEL_COLOR } = require('../ml/labels');
 
 const router = express.Router();
+// Versioned endpoint: preserves the legacy /scan and /estimate contracts.
+router.use('/v3', require('../v3/routes').createRouter());
+router.use('/v3.1', require('../v31/routes').createV31Router());
 
 // ------------------------------------------------------------
 // Cấu hình multer: giữ ảnh trong RAM

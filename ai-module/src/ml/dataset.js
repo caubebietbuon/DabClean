@@ -118,6 +118,7 @@ async function buildEmbeddingDataset(items, opts = {}) {
   const embeddingChunks = [];
   const labelChunks = [];
   const augmentInfo = { original: 0, augmented: 0, byLabel: {} };
+  const groupIds = [];
 
   // --- Giai đoạn 1: ảnh GỐC ---
   onStage('Trích đặc trưng ảnh GỐC');
@@ -137,6 +138,7 @@ async function buildEmbeddingDataset(items, opts = {}) {
       [slice.length, LABELS.length]
     ));
     augmentInfo.original += slice.length;
+    groupIds.push(...slice.map(it => it.roomId || it.file));
 
     onProgress(Math.min(start + batchSize, items.length), items.length);
   }
@@ -179,6 +181,8 @@ async function buildEmbeddingDataset(items, opts = {}) {
         ));
 
         augmentInfo.augmented += valid.length;
+        // Track actual successful samples, not the planned number of augmentations.
+        groupIds.push(...valid.map(() => it.roomId || it.file));
         augmentInfo.byLabel[it.label] = (augmentInfo.byLabel[it.label] || 0) + valid.length;
       }
 
@@ -193,7 +197,7 @@ async function buildEmbeddingDataset(items, opts = {}) {
   embeddingChunks.forEach(t => t.dispose());
   labelChunks.forEach(t => t.dispose());
 
-  return { xs, ys, augmentInfo };
+  return { xs, ys, augmentInfo, groupIds };
 }
 
 /**

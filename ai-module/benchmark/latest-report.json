@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-10-28T18:26:39.418Z",
+  "validation": {
+    "ok": false,
+    "errors": [
+      "MISSING_REAL_LABELLED_DATASET"
+    ],
+    "warnings": [],
+    "fingerprints": []
+  },
+  "benchmarkStatus": "blocked_missing_or_invalid_data",
+  "before": null,
+  "after": null,
+  "improvementClaim": null
+}

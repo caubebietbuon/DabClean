@@ -1,0 +1,9 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DabClean · Gán nhãn tham chiếu V3.1</title><link rel="stylesheet" href="/v3-view.css">
+<style>body{font:16px system-ui;background:#f3f7f4;color:#183e32}main{max-width:900px;margin:auto;padding:20px}label{display:grid;gap:6px;margin:12px 0}input,select,textarea,button{font:inherit;padding:10px}fieldset{border:1px solid #ccdcd3;border-radius:10px;margin:12px 0}#preview{width:100%;max-height:400px;object-fit:contain}button{cursor:pointer}</style></head>
+<body><main><h1>Gán nhãn tham chiếu V3.1</h1><p>Đây là nhãn do người đánh giá nhập, không phải kết quả AI. Ảnh chỉ mở trong trình duyệt, không gửi lên server. Hai người đánh giá phải làm độc lập rồi đối chiếu. Không có nhãn hoặc phần trăm được điền sẵn.</p>
+<form id="label-form"><label>Mã người đánh giá <input id="reviewer" required></label><label>Ảnh thật <input id="photo" type="file" accept="image/jpeg,image/png,image/webp" required></label><img id="preview" alt="Ảnh đang gán nhãn" hidden>
+<label>Mã phòng/nguồn (các góc cùng phòng phải cùng mã) <input id="room" required></label>
+<div id="criteria"></div><label>Nhãn tổng thể tham chiếu <select id="overall"><option value="">Chưa xác định</option><option value="sach">SẠCH</option><option value="hoi-ban">HƠI BẨN</option><option value="rat-ban">RẤT BẨN</option></select></label>
+<button type="submit">Thêm nhãn ảnh vào bản nháp</button></form><p id="status" role="status"></p><button id="export" disabled>Xuất nhãn độc lập (JSON)</button>
+<p>Nhãn nháp chưa phải manifest đã duyệt và chưa có consensus. Giữ file riêng tư; đọc hướng dẫn benchmark để ghép bản đánh giá độc lập, phân nhóm phòng và chuẩn hóa thang mức độ.</p></main><script src="/label-v31.js"></script></body></html>

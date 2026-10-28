@@ -329,3 +329,31 @@ const { data } = await res.json();
 - **Git:** `model-do-ban2/` (257 KB) ĐƯỢC commit để ai clone cũng chạy được ngay.
   `dataset/` KHÔNG commit vì nặng (~174 MB) — cần tự chuẩn bị ảnh rồi train.
   (Kiểm tra bằng `git check-ignore -v <đường-dẫn>` nếu không chắc.)
+# AI V3: implementation status
+
+V3.1 now adds six always-visible tracks, a backend weighted scoring policy and a local Ollama observation/calibration path. See [V3.1 report](../docs/AI_V31_REPORT.md). Run `npm run ollama:local` and `npm start` in separate terminals. The demo defaults to `/api/ai/v3.1/analyze`; select V3 to compare/roll back. No real calibration artifact is bundled, so six numeric scores are not forced. `npm run benchmark:v31` is blocked until independent human reference labels exist. Use `/label-v31.html` to collect individual human reviews; it never auto-creates consensus.
+
+V3 is an **experimental local pipeline**, not a validated six-criterion cleanliness model. Read [the implementation report](../docs/AI_V3_REPORT.md) and [dataset/benchmark protocol](benchmark/README.md) before deploying. Node.js 22+ is required for V3 (Node 24 tested).
+
+```powershell
+# Working directory: ai-module/
+npm ci
+npm run prepare:v3
+npm test
+npm start
+# Open http://localhost:5100/v3.html
+```
+
+`POST /api/ai/v3/analyze` accepts only multipart `image`/`images`, at most four static JPEG/PNG/WebP images, 6 MB each and 16 million pixels per image. It returns independent per-image observations, six criterion slots, visibility/quality limitations and `null` scores/confidences until validated supervision exists. CLIP supplies only an experimental whole-scene clutter candidate; the other five criteria abstain. Local Ollama can supply unverified visual observations for all criteria, but does not make calibrated scores.
+
+Prepare model weights before serving requests. Set `AI_V3_OFFLINE=true` for cache-only operation. Set `AI_V3_PROVIDER=ollama` only after installing and testing a vision model locally; use `AI_V3_OLLAMA_URL=http://127.0.0.1:11434` and a pinned `AI_V3_OLLAMA_MODEL`. No cloud inference provider is supported. For the integrated backend, configure these keys in `backend/.env`. No key is needed for the CLIP path. Disable the new endpoint with `AI_V3_ENABLED=false`; legacy `/scan` and `/estimate` remain available. V3 never silently falls back to those endpoints or changes a booking price.
+
+```powershell
+# Actual data location discovered during audit; do not upload private images to Git.
+node scripts/audit-dataset-v3.js "D:\folder anh\dataset"
+npm run benchmark:v3
+# Without reviewed independent annotations, benchmark exits non-zero with a blocked report.
+node scripts/smoke-v3.js "path-to-real-image.jpg"
+```
+
+Legacy training now requires `--groups room-groups.json` and an unused output directory, e.g. `node train.js --dataset "D:\folder anh\dataset" --groups ./benchmark/private/room-groups.json --out ./model-candidate-v1`. Group mapping format: `{ "sach/photo.jpg": "room-001", "hoi-ban/another-angle.jpg": "room-001" }`. Audit exact/near duplicates and resolve room provenance before training. The old model is preserved; no V3 supervised model has been trained. The V2 documentation below describes the legacy pipeline and includes historical measurements that have not been revalidated for V3.

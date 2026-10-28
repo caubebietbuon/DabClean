@@ -28,6 +28,9 @@ app.use('/api/ai', aiRoutes);
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath));
 app.use('/demo', express.static(publicPath));
+// Shared V3 viewer assets; only these two files are exposed, not the frontend directory.
+app.get('/v3-view.js', (req, res) => res.sendFile(path.join(__dirname, '../../frontend/js/ai-v3.js')));
+app.get('/v3-view.css', (req, res) => res.sendFile(path.join(__dirname, '../../frontend/css/ai-v3.css')));
 
 // Thông tin module dạng JSON (trước đây ở "/", nay chuyển sang "/info")
 app.get('/info', (req, res) => {

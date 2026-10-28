@@ -10,7 +10,15 @@
     "train": "node train.js",
     "predict": "node predict.js",
     "evaluate": "node test/evaluate.js",
-    "check-formats": "node test/check-formats.js"
+    "check-formats": "node test/check-formats.js",
+    "test": "node --test test/v3/*.test.js",
+    "prepare:v3": "node scripts/prepare-v3.js",
+    "benchmark:v3": "node scripts/benchmark-v3.js",
+    "benchmark:v31": "node scripts/benchmark-v31.js",
+    "smoke:v31": "node scripts/smoke-v31.js",
+    "capture:v31": "node scripts/capture-v31.js",
+    "calibrate:v31": "node scripts/calibrate-v31.js",
+    "ollama:local": "node scripts/serve-ollama-local.js"
   },
   "keywords": [
     "dabclean",
@@ -24,6 +32,7 @@
   "author": "DabClean Team",
   "license": "ISC",
   "dependencies": {
+    "@huggingface/transformers": "4.3.2",
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.22.0",
     "cors": "^2.8.5",
@@ -33,5 +42,11 @@
     "multer": "^2.4.0",
     "pngjs": "^7.0.0",
     "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.14"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

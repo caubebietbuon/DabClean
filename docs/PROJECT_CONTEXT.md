@@ -2,6 +2,19 @@
 
 Cập nhật: 2026-10-29. Nguồn: khảo sát mã nguồn tại `D:/Documents/DabClean` theo yêu cầu chủ dự án. Đây là bản đồ dự án phục vụ các lần làm việc tiếp theo, không phải báo cáo nghiệm thu hay audit bảo mật đầy đủ. Đọc lại code và git diff trước khi sửa vì thông tin có thể thay đổi.
 
+## Bổ sung sau triển khai AI V3 thử nghiệm (2026-10-29)
+
+- V3.1 tiếp theo: xem `docs/AI_V31_REPORT.md`. Có sáu thanh luôn hiển thị (unknown riêng), `/api/ai/v3.1/analyze`, trọng số 20/20/15/20/15/10 và ngưỡng thử nghiệm 30/60. Thiếu tiêu chí hoặc vùng bẩn nặng bị trung bình che khuất thì không kết luận sạch tự động.
+- Portable Ollama 0.40.12 và qwen3-vl:2b-instruct đã được tải vào ai-module/.cache, chạy CPU do GPU/driver lỗi PTX. Đã suy luận thật một ảnh phòng (~39,7s), một lượt thử ảnh khác timeout; chưa chứng minh accuracy. `npm run ollama:local` + `npm start` để mở demo. Runtime local/weights không commit.
+- V3.1 chỉ mở score khi mapping từ nhãn người đánh giá có validation đúng model digest/prompt; hiện chưa có artifact thật. Các số trong unit test không phải ground truth ảnh. Công cụ nhập nhãn độc lập tại /label-v31.html; benchmark:v31 cần nhãn tổng thể và sáu tiêu chí, hiện bị chặn. Không tự push.
+
+- Xem `docs/AI_V3_REPORT.md` để biết phạm vi thực sự, các file thay đổi, test pass/fail và giới hạn. Chưa có model sáu tiêu chí được huấn luyện/kiểm định; không tuyên bố V3 đã cải thiện độ chính xác.
+- Thêm `/api/ai/v3/analyze`, CLIP local (Transformers.js/ONNX), adapter VLM Ollama loopback, worker timeout/giới hạn upload, UI tại `ai-module/public/v3.html` và scanner đặt lịch. Chưa hiệu chuẩn: điểm/confidence để null; CLIP chỉ có ứng viên bừa bộn thử nghiệm, năm tiêu chí còn lại từ chối đánh giá. V3 không đổi giá và không trung bình góc chụp. V2/model cũ giữ lại.
+- Dataset thật tìm thấy ở `D:/folder anh/dataset`: 597 ảnh (200/198/199). Audit không có cặp trùng byte, có năm cặp dHash gần giống cần người duyệt; ba ảnh vượt 16 triệu pixel. Chưa có room/source provenance hoặc nhãn sáu tiêu chí độc lập.
+- Node 22+ cho V3; `npm ci` riêng từng package. Trong ai-module có `npm run prepare:v3`, `npm test` (21 test), `npm run benchmark:v3`. Benchmark accuracy bị chặn vì chưa có dataset được gán nhãn/phân nhóm phù hợp. Không dùng smoke test thay benchmark.
+- Sửa căn nhóm augmentation thất bại, yêu cầu `--groups` khi train và output directory mới. Không ghi đè model cũ. Các suite hồi quy nghiệp vụ vẫn có lỗi giống baseline; cần đọc báo cáo trước khi khẳng định pass toàn hệ thống.
+- Cache/ảnh/log riêng tư ở `ai-module/.cache/` và `benchmark/private/` bị gitignore. Cấu hình V3 standalone thuộc ai-module/.env, tích hợp thuộc backend/.env. Không thêm secret thực vào ghi chú.
+
 ## Quy tắc làm việc
 
 - Đọc và tuân thủ `AGENTS.md` ở gốc và `.agents/skills/cleannova-engineer/SKILL.md`.

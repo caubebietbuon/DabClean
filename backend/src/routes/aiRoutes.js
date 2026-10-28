@@ -15,7 +15,7 @@ try {
       success: false,
       code: 'AI_MODULE_UNAVAILABLE',
       message: 'Module AI phân tích ảnh hiện chưa khả dụng. Vui lòng cài đặt thư viện phụ thuộc bằng lệnh: cd ai-module && npm install',
-      error: err.message
+      error: 'AI dependency initialization failed'
     });
   });
   aiRoutes = fallbackRouter;

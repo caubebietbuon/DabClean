@@ -1,5 +1,27 @@
 # 🌿 DabClean - Nền Tảng Dịch Vụ Dọn Vệ Sinh Chuyên Nghiệp (Full-Stack)
 
+> **AI V3 (thử nghiệm, 29/10/2026):** Xem [báo cáo triển khai và giới hạn](docs/AI_V3_REPORT.md) và [hướng dẫn dữ liệu/benchmark](ai-module/benchmark/README.md). V3 chạy suy luận local; chưa có benchmark đa tiêu chí độc lập, nên không công bố độ chính xác hoặc phần trăm độ bẩn. Phần tài liệu V2 bên dưới không phải bằng chứng nghiệm thu V3.
+
+> **AI V3.1:** Đã có sáu thanh có trạng thái Chưa xác định, scoring engine ba mức, VLM Ollama chạy thật local, công cụ gán nhãn và hiệu chuẩn. Đọc [báo cáo V3.1](docs/AI_V31_REPORT.md) để xem điều kiện mở điểm, test và giới hạn. Chưa có artifact hiệu chuẩn thật hoặc benchmark accuracy đủ nhãn; không ép ra sáu số. Demo: `http://127.0.0.1:5100/v3.html`; gán nhãn: `/label-v31.html`. Trong `ai-module/`, chạy `npm run ollama:local` ở một terminal và `npm start` ở terminal khác (runtime/weights local đã chuẩn bị trên máy này, không đưa vào Git).
+
+### Chạy AI V3
+
+Dùng Node.js 22 trở lên (đã kiểm thử với Node 24). Chạy từng lệnh trong đúng thư mục:
+
+```powershell
+cd D:\Documents\DabClean\backend
+npm ci
+cd ..\ai-module
+npm ci
+npm run prepare:v3
+npm test
+npm start
+```
+
+Mở `http://localhost:5100/v3.html`. Để dùng scanner V3 trên trang đặt lịch, chạy thêm `npm start` trong `backend/` và mở ứng dụng ở cổng 5000. Cache trọng số được lưu local và không commit. Khi triển khai offline, chuẩn bị cache rồi đặt `AI_V3_OFFLINE=true`; thiếu model trả lỗi rõ ràng. Dừng server trước khi chạy lại `npm ci` trên Windows để tránh khóa DLL của Sharp/ONNX.
+
+V3 thêm dependency trong `ai-module/` và cập nhật bản vá dependency; không cần migration database, không đổi bảng giá. Cấu hình provider tích hợp thuộc `backend/.env`; provider standalone thuộc `ai-module/.env`. Không sao chép secret mẫu để dùng production.
+
 > **Slogan:**  
 > 🇬🇧 *A Cleaner Space, A Better Life.*  
 > 🇻🇳 *Không gian sạch hơn, cuộc sống tốt hơn.*

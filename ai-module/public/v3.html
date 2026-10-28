@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DabClean AI V3.1 · Sáu tiêu chí</title><link rel="stylesheet" href="/v3-view.css">
+<style>body{font:16px system-ui;background:#f3f7f4;color:#183e32;margin:0}main{max-width:980px;margin:auto;padding:28px}form{display:grid;gap:16px;background:white;padding:24px;border-radius:16px}button{padding:13px;border:0;border-radius:10px;background:#0f766e;color:white;font:inherit;cursor:pointer}button:disabled{opacity:.5}#status{line-height:1.6}</style>
+</head><body><main><h1>DabClean AI V3.1</h1><p>Sáu tiêu chí · Phân tích local · Trọng số và ngưỡng đang thử nghiệm</p>
+<form id="scan"><label>Ảnh của cùng một phòng, tối đa 4 ảnh, mỗi ảnh 6 MB
+<input id="images" type="file" accept="image/jpeg,image/png,image/webp" multiple required></label>
+<label>Phiên bản <select id="version"><option value="3.1">V3.1 · Sáu thanh và kết luận</option><option value="3">V3 · Đối chiếu / rollback</option></select></label>
+<p>Ảnh được giữ trong RAM để phân tích, không lưu vào thư viện và không gửi đến API AI bên ngoài. Từng góc chụp được hiển thị riêng.</p>
+<button id="submit">Phân tích ảnh</button></form><p id="status" role="status" aria-live="polite"></p><div id="result"></div>
+<p><a href="/label-v31.html">Gán nhãn tham chiếu bằng người đánh giá</a> · <a href="/index.html">Xem công cụ V2 để đối chiếu</a></p></main><script src="/v3-view.js"></script><script src="/v3-demo.js"></script></body></html>

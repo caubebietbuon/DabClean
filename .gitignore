@@ -47,3 +47,8 @@ ehthumbs.db
 # Build output
 dist/
 build/
+
+# Local AI weights/cache and private benchmark images
+ai-module/.cache/
+ai-module/benchmark/images/
+ai-module/benchmark/private/

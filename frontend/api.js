@@ -812,6 +812,25 @@
 
     // Module AI Vision: Quét đa ảnh phòng & Báo giá tự động
     ai: {
+      async analyzeV31(formData) {
+        return this.analyzeV3(formData, '3.1');
+      },
+      async analyzeV3(formData, version = '3') {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 180000);
+        try {
+          // Same origin only. Private room photos are never retried against unrelated servers.
+          const response = await fetch(`${API_BASE_URL}/ai/v${version === '3.1' ? '3.1' : '3'}/analyze`, {
+            method: 'POST', body: formData, signal: controller.signal
+          });
+          const json = await response.json();
+          if (!response.ok || !json.success) throw new Error(json.message || 'AI V3 không khả dụng.');
+          return json;
+        } catch (err) {
+          if (err.name === 'AbortError') throw new Error('Phân tích quá thời gian chờ; thử ít ảnh hơn.');
+          throw err;
+        } finally { clearTimeout(timeout); }
+      },
       async estimate(formData) {
         // Danh sách các endpoints thông minh (ưu tiên Backend 5000, sau đó AI module 5100)
         const endpoints = [
