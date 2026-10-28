@@ -207,8 +207,8 @@ node backend/test-return-url.js
 
 ### 4. Tài khoản Demo kiểm thử:
 1. **Khách hàng:** `demo@nova.app` / `NovaDemo2026!` (Đã có sẵn ví số dư kiểm thử).
-2. **Quản trị viên:** `admin@cleanova.vn` / `Admin@DabClean2026!`.
-3. **Nhân viên:** `staff@cleanova.vn` / `Staff@DabClean2026!` (Đầy đủ Ví Tín Dụng & Ví Thu Nhập).
+2. **Quản trị viên:** `admin@cleanova.vn` / `Admin@Cleanova2026!`.
+3. **Nhân viên:** `staff@cleanova.vn` / `Staff@Cleanova2026!` (Đầy đủ Ví Tín Dụng & Ví Thu Nhập).
 
 ---
 

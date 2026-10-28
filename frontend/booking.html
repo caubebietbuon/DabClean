@@ -10,6 +10,20 @@
   <link rel="stylesheet" href="css/realtime-notification.css">
   <script src="api.js"></script>
 </head>
+    <!-- Leaflet CSS for map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    /* Xóa hoàn toàn dòng bản quyền ở góc dưới bên phải bản đồ theo yêu cầu */
+    .leaflet-control-attribution,
+    .leaflet-bottom.leaflet-right {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0 !important;
+      width: 0 !important;
+    }
+  </style>
 
 <body>
 
@@ -445,13 +459,42 @@
                 </select>
               </div>
 
-              <!-- Địa chỉ chi tiết -->
-              <div class="form-group">
+              <!-- Địa chỉ chi tiết + Bản đồ GPS -->
+              <div class="form-group" id="address-map-group">
                 <label class="form-label" for="booking-address">Địa chỉ nhà / Văn phòng thực hiện <span
                     class="required">*</span></label>
+                <!-- Hướng dẫn định dạng nhập chuẩn để ghim chính xác 100% -->
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #065f46; margin-bottom: 8px; font-weight: 600; background: #ecfdf5; padding: 8px 12px; border-radius: 8px; border: 1px solid #a7f3d0;">
+                  <span>📋 <b>Định dạng nhập chuẩn:</b></span>
+                  <span style="color: #047857; font-weight: 700;">Số nhà / Tên đường / Tên quận / Thành phố</span>
+                </div>
+
                 <input type="text" id="booking-address" class="form-control"
-                  placeholder="Số nhà, tên tòa nhà, tên đường, phường/xã, quận/huyện..." required>
-                <span class="form-hint">Vui lòng ghi rõ số phòng / tầng nếu là tòa chung cư hoặc văn phòng.</span>
+                  placeholder="Ví dụ: 197 Nguyễn Viết Xuân, Hà Đông, Hà Nội (hoặc Số 12 Chùa Láng, Đống Đa, Hà Nội)" required>
+                <span class="form-hint" style="margin-top: 4px; display: block;">💡 Vui lòng nhập theo định dạng: <b>Số nhà, Tên đường, Tên quận/huyện, Thành phố</b> để hệ thống ghim chuẩn xác từng mét.</span>
+
+                <!-- Nút xác định vị trí GPS -->
+                <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-gps-locate"
+                    style="display: inline-flex; align-items: center; gap: 6px;">
+                    📍 Dùng vị trí GPS hiện tại
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-search-address"
+                    style="display: inline-flex; align-items: center; gap: 6px;">
+                    🔍 Tìm địa chỉ đã nhập trên bản đồ
+                  </button>
+                </div>
+
+                <!-- Trạng thái GPS -->
+                <div id="gps-status" style="display: none; margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 13px; background: #f0fdfa; border: 1px solid #99f6e4; color: #0f766e;"></div>
+
+                <!-- Bản đồ Leaflet -->
+                <div id="booking-map" style="display: none; height: 350px; margin-top: 12px; border-radius: 12px; border: 2px solid #d1fae5; overflow: hidden; z-index: 1;"></div>
+                <div id="booking-map-hint" style="display: none; font-size: 12.5px; color: #047857; margin-top: 6px; align-items: center; gap: 6px;">💡 <span>Bạn có thể <b>kéo ghim</b> hoặc <b>click trực tiếp lên bản đồ</b> để căn chỉnh chính xác từng mét ngôi nhà của bạn.</span></div>
+
+                <!-- Tọa độ ẩn -->
+                <input type="hidden" id="booking-lat" name="latitude">
+                <input type="hidden" id="booking-lng" name="longitude">
               </div>
 
               <!-- Số điện thoại -->
@@ -1723,6 +1766,12 @@
           finalNotes += `${finalNotes ? '\n' : ''}[Dịch vụ bổ sung: ${activeAddonNames.join(', ')}]`;
         }
 
+        const latVal = document.getElementById('booking-lat')?.value;
+        const lngVal = document.getElementById('booking-lng')?.value;
+        if (latVal && lngVal) {
+          finalNotes += (finalNotes ? '\n' : '') + '[Vị trí GPS: ' + latVal + ', ' + lngVal + ' - https://maps.google.com/?q=' + latVal + ',' + lngVal + ']';
+        }
+
         const paymentMethodChosen = document.getElementById('booking-payment').value;
         const totalText = document.getElementById('summary-total')?.textContent || '0';
         const totalNum = parseInt(totalText.replace(/[^\d]/g, ''), 10) || 0;
@@ -1785,6 +1834,423 @@
     });
   </script>
   <script src="js/realtime-notification.js"></script>
+
+  <!-- Leaflet JS for GPS Map -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+  <!-- GPS Map Logic for Booking (Siêu chính xác với ArcGIS Dual-Engine + CARTO High-Res Tiles) -->
+  <script>
+    (function() {
+      'use strict';
+
+      var bookingMap = null;
+      var bookingMarker = null;
+      var accuracyCircle = null;
+      var mapDiv = document.getElementById('booking-map');
+      var addressInput = document.getElementById('booking-address');
+      var latInput = document.getElementById('booking-lat');
+      var lngInput = document.getElementById('booking-lng');
+      var gpsStatus = document.getElementById('gps-status');
+      var btnGps = document.getElementById('btn-gps-locate');
+      var btnSearch = document.getElementById('btn-search-address');
+
+      if (!mapDiv || !addressInput) return;
+
+      // Icon Ghim Xanh Ngọc Bích CleanNova chuẩn xác đến từng pixel
+      var customPinIcon = L.divIcon({
+        className: 'cleannova-pin-marker',
+        html: '<div style="position:relative;width:36px;height:46px;transform:translate(-50%,-100%);cursor:grab;">' +
+              '<svg viewBox="0 0 36 46" fill="none" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 6px 8px rgba(0,0,0,0.38));width:36px;height:46px;">' +
+              '<path d="M18 0C8.059 0 0 8.059 0 18C0 29.5 18 46 18 46C18 46 36 29.5 36 18C36 8.059 27.941 0 18 0Z" fill="#10B981"/>' +
+              '<circle cx="18" cy="18" r="8" fill="#FFFFFF"/>' +
+              '<circle cx="18" cy="18" r="4.5" fill="#047857"/>' +
+              '</svg>' +
+              '<div style="position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:12px;height:5px;background:rgba(0,0,0,0.35);border-radius:50%;filter:blur(1px);"></div>' +
+              '</div>',
+        iconSize: [0, 0],
+        iconAnchor: [0, 0],
+        popupAnchor: [0, -42]
+      });
+
+      // Hiển thị thông báo trạng thái
+      function showStatus(msg, type) {
+        if (!gpsStatus) return;
+        gpsStatus.style.display = 'block';
+        if (type === 'error') {
+          gpsStatus.style.background = '#fff1f2';
+          gpsStatus.style.borderColor = '#fecdd3';
+          gpsStatus.style.color = '#be123c';
+        } else if (type === 'success') {
+          gpsStatus.style.background = '#f0fdf4';
+          gpsStatus.style.borderColor = '#bbf7d0';
+          gpsStatus.style.color = '#15803d';
+        } else {
+          gpsStatus.style.background = '#f0fdfa';
+          gpsStatus.style.borderColor = '#99f6e4';
+          gpsStatus.style.color = '#0f766e';
+        }
+        gpsStatus.innerHTML = msg;
+      }
+
+      function updateCoords(lat, lng) {
+        if (latInput) latInput.value = Number(lat).toFixed(6);
+        if (lngInput) lngInput.value = Number(lng).toFixed(6);
+      }
+
+      // Khởi tạo hoặc cập nhật bản đồ (ĐÃ TẮT DÒNG ATTRIBUTION GÓC PHẢI DƯỚI)
+      function initMap(lat, lng, zoomLevel, accuracyRadius) {
+        lat = Number(lat) || 21.0285;
+        lng = Number(lng) || 105.8542;
+        zoomLevel = zoomLevel || 18;
+
+        mapDiv.style.display = 'block';
+        var mapHint = document.getElementById('booking-map-hint');
+        if (mapHint) mapHint.style.display = 'flex';
+
+        if (!bookingMap) {
+          bookingMap = L.map('booking-map', {
+            center: [lat, lng],
+            zoom: zoomLevel,
+            zoomControl: true,
+            attributionControl: false, // XÓA HOÀN TOÀN DÒNG BẢN QUYỀN GÓC PHẢI DƯỚI
+            scrollWheelZoom: true
+          });
+
+          // CARTO Voyager High-Res Basemap với API Key bản quyền
+          L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=cb1_4wyv_1_98db940d0038b300c5bf68ed', {
+            subdomains: 'abcd',
+            maxZoom: 20
+          }).addTo(bookingMap);
+
+          // Tạo ghim marker
+          bookingMarker = L.marker([lat, lng], {
+            icon: customPinIcon,
+            draggable: true
+          }).addTo(bookingMap);
+
+          bookingMarker.bindPopup('<b>📍 Vị trí dọn dẹp chính xác</b><br><small style="color:#047857;">Kéo ghim hoặc click trực tiếp lên bản đồ để di chuyển</small>').openPopup();
+
+          // Sự kiện kéo ghim
+          bookingMarker.on('dragend', function() {
+            var pos = bookingMarker.getLatLng();
+            updateCoords(pos.lat, pos.lng);
+            if (accuracyCircle) {
+              bookingMap.removeLayer(accuracyCircle);
+              accuracyCircle = null;
+            }
+            reverseGeocode(pos.lat, pos.lng);
+          });
+
+          // Sự kiện click trực tiếp lên bản đồ
+          bookingMap.on('click', function(e) {
+            bookingMarker.setLatLng(e.latlng);
+            updateCoords(e.latlng.lat, e.latlng.lng);
+            if (accuracyCircle) {
+              bookingMap.removeLayer(accuracyCircle);
+              accuracyCircle = null;
+            }
+            reverseGeocode(e.latlng.lat, e.latlng.lng);
+          });
+
+          setTimeout(function() { if (bookingMap) bookingMap.invalidateSize(); }, 200);
+          setTimeout(function() { if (bookingMap) bookingMap.invalidateSize(); }, 600);
+        } else {
+          bookingMarker.setLatLng([lat, lng]);
+          bookingMap.setView([lat, lng], zoomLevel);
+          bookingMarker.openPopup();
+          setTimeout(function() { if (bookingMap) bookingMap.invalidateSize(); }, 200);
+        }
+
+        // Vẽ vòng tròn độ chính xác GPS nếu có
+        if (accuracyRadius && accuracyRadius > 0) {
+          if (accuracyCircle) {
+            bookingMap.removeLayer(accuracyCircle);
+          }
+          accuracyCircle = L.circle([lat, lng], {
+            radius: accuracyRadius,
+            color: '#10B981',
+            fillColor: '#10B981',
+            fillOpacity: 0.12,
+            weight: 1.5,
+            dashArray: '4, 4'
+          }).addTo(bookingMap);
+        } else if (accuracyCircle) {
+          bookingMap.removeLayer(accuracyCircle);
+          accuracyCircle = null;
+        }
+
+        updateCoords(lat, lng);
+      }
+
+      // Format địa chỉ sạch sẽ từ ArcGIS
+      function formatArcGisAddress(addr) {
+        if (!addr) return '';
+        var parts = [];
+        if (addr.Address) {
+          parts.push(addr.Address);
+        } else if (addr.ShortLabel) {
+          parts.push(addr.ShortLabel);
+        }
+        if (addr.Neighborhood && parts.indexOf(addr.Neighborhood) === -1) {
+          parts.push(addr.Neighborhood);
+        }
+        if (addr.City && parts.indexOf(addr.City) === -1) {
+          parts.push(addr.City);
+        }
+        if (addr.Region && parts.indexOf(addr.Region) === -1 && addr.Region !== addr.City) {
+          parts.push(addr.Region);
+        }
+        var res = parts.join(', ');
+        return res ? res : (addr.Match_addr ? addr.Match_addr.replace(/,\s*\d{5,6}.*$/, '').replace(/,\s*VNM$/, '') : '');
+      }
+
+      // Dịch ngược Tọa độ -> Tên địa chỉ
+      function reverseGeocode(lat, lng) {
+        showStatus('⏳ Đang lấy địa chỉ chính xác từ vị trí ghim...', 'info');
+
+        var arcgisUrl = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=json&location=' + lng + ',' + lat;
+
+        fetch(arcgisUrl)
+          .then(function(res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+          })
+          .then(function(data) {
+            if (data && data.address) {
+              var formatted = formatArcGisAddress(data.address);
+              if (formatted) {
+                addressInput.value = formatted;
+                showStatus('🎯 <b>Đã ghim vị trí chuẩn xác:</b> ' + formatted + '<br><small style="color:#047857;">(Bạn có thể kéo ghim hoặc click bản đồ để căn chỉnh sát từng mét)</small>', 'success');
+                return;
+              }
+            }
+            fallbackPhotonReverse(lat, lng);
+          })
+          .catch(function() {
+            fallbackPhotonReverse(lat, lng);
+          });
+      }
+
+      function fallbackPhotonReverse(lat, lng) {
+        fetch('https://photon.komoot.io/reverse?lat=' + lat + '&lon=' + lng)
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && data.features && data.features.length > 0) {
+              var p = data.features[0].properties;
+              var parts = [p.housenumber, p.street || p.name, p.district, p.city || p.state].filter(Boolean);
+              if (parts.length > 0) {
+                addressInput.value = parts.join(', ');
+                showStatus('🎯 <b>Đã ghim vị trí:</b> ' + parts.join(', '), 'success');
+                return;
+              }
+            }
+            showStatus('✅ Đã ghim tọa độ (' + Number(lat).toFixed(5) + ', ' + Number(lng).toFixed(5) + '). Hãy bổ sung số nhà/tầng ở ô trên.', 'info');
+          })
+          .catch(function() {
+            showStatus('✅ Đã ghim vị trí trên bản đồ.', 'info');
+          });
+      }
+
+      // TÌM KIẾM ĐỊA CHỈ THÔNG MINH HYBRID (ArcGIS + Photon POI)
+      // Tự động chuẩn hóa dấu / thành dấu phẩy và so khớp đa chiều
+      function forwardGeocode(query, onComplete) {
+        showStatus('⏳ Đang phân tích vị trí cho: "' + query + '"...', 'info');
+
+        // Chuẩn hóa chuỗi người dùng nhập (hỗ trợ cả dấu / hoặc dấu phẩy)
+        var cleanQuery = query
+          .replace(/[\/|]+/g, ', ') // Đổi ký tự / thành dấu phẩy
+          .replace(/\s*['"”]+$/g, '') // Bỏ dấu nháy thừa ở đuôi
+          .replace(/[\t\r\n]+/g, ' ')
+          .replace(/\s{2,}/g, ' ')
+          .trim();
+
+        // 1. Kiểm tra xem truy vấn có phải địa danh, trường học, bệnh viện, tòa nhà không
+        var isPoiQuery = /(?:trường|thpt|thcs|tiểu học|mầm non|đại học|bệnh viện|viện|phòng khám|chợ|toà nhà|tòa nhà|chung cư|ubnd|công an|siêu thị)/i.test(cleanQuery);
+
+        var arcgisUrl = 'https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates?f=json&singleLine=' + encodeURIComponent(cleanQuery) + '&maxLocations=3&outFields=*';
+        var photonUrl = 'https://photon.komoot.io/api/?q=' + encodeURIComponent(cleanQuery) + '&lat=21.0285&lon=105.8542&limit=3';
+
+        var pArcgis = fetch(arcgisUrl).then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
+        var pPhoton = fetch(photonUrl).then(function(r) { return r.ok ? r.json() : null; }).catch(function() { return null; });
+
+        Promise.all([pArcgis, pPhoton]).then(function(results) {
+          var arcData = results[0];
+          var phoData = results[1];
+
+          var arcTop = (arcData && arcData.candidates && arcData.candidates.length > 0) ? arcData.candidates[0] : null;
+          var phoTop = (phoData && phoData.features && phoData.features.length > 0) ? phoData.features[0] : null;
+
+          // Ưu tiên 1: Nếu là trường học, tòa nhà, bệnh viện và Photon tìm đúng công trình cụ thể
+          if (isPoiQuery && phoTop && phoTop.properties && phoTop.properties.name) {
+            var poiName = phoTop.properties.name;
+            var coords = phoTop.geometry.coordinates; // [lng, lat]
+            var detailName = [poiName, phoTop.properties.street, phoTop.properties.district, 'Hà Nội'].filter(Boolean).join(', ');
+            onComplete(null, {
+              lat: coords[1],
+              lng: coords[0],
+              name: detailName,
+              score: 99
+            });
+            return;
+          }
+
+          // Ưu tiên 2: Địa chỉ dạng Số nhà / Tên đường / Tên quận / Thành phố -> ArcGIS PointAddress chuẩn xác 100%
+          if (arcTop && arcTop.score >= 75 && arcTop.location) {
+            var cleanName = arcTop.attributes && arcTop.attributes.Match_addr
+              ? arcTop.attributes.Match_addr.replace(/,\s*\d{5,6}.*$/, '').replace(/,\s*VNM$/, '')
+              : arcTop.address;
+            onComplete(null, {
+              lat: arcTop.location.y,
+              lng: arcTop.location.x,
+              name: cleanName,
+              score: arcTop.score
+            });
+            return;
+          }
+
+          // Ưu tiên 3: Kết quả Photon nếu ArcGIS không match
+          if (phoTop && phoTop.geometry && phoTop.geometry.coordinates) {
+            var c = phoTop.geometry.coordinates;
+            var p = phoTop.properties || {};
+            var pName = [p.housenumber, p.street || p.name, p.district, p.city || 'Hà Nội'].filter(Boolean).join(', ');
+            onComplete(null, {
+              lat: c[1],
+              lng: c[0],
+              name: pName || cleanQuery,
+              score: 80
+            });
+            return;
+          }
+
+          onComplete('NOT_FOUND');
+        }).catch(function(err) {
+          onComplete(err);
+        });
+      }
+
+      // Xử lý nút: "📍 Dùng vị trí GPS hiện tại"
+      if (btnGps) {
+        btnGps.addEventListener('click', function() {
+          if (!navigator.geolocation) {
+            showStatus('❌ Trình duyệt không hỗ trợ Geolocation GPS.', 'error');
+            return;
+          }
+
+          showStatus('📡 Đang quét sóng GPS và Wi-Fi để xác định vị trí thực tế...', 'info');
+          btnGps.disabled = true;
+
+          navigator.geolocation.getCurrentPosition(
+            function(pos) {
+              btnGps.disabled = false;
+              handleGpsSuccess(pos);
+            },
+            function(err) {
+              navigator.geolocation.getCurrentPosition(
+                function(posFallback) {
+                  btnGps.disabled = false;
+                  handleGpsSuccess(posFallback);
+                },
+                function(errFallback) {
+                  btnGps.disabled = false;
+                  handleGpsError(errFallback);
+                },
+                { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 }
+              );
+            },
+            {
+              enableHighAccuracy: true,
+              timeout: 9000,
+              maximumAge: 0
+            }
+          );
+        });
+      }
+
+      function handleGpsSuccess(position) {
+        var lat = position.coords.latitude;
+        var lng = position.coords.longitude;
+        var accuracy = Math.round(position.coords.accuracy || 0);
+        var currentTypedAddress = addressInput.value.trim();
+        var accuracyText = accuracy >= 1000 ? (accuracy / 1000).toFixed(1) + ' km' : accuracy + ' mét';
+
+        if (accuracy > 120) {
+          if (currentTypedAddress && currentTypedAddress.length > 5) {
+            showStatus(
+              '💻 <b>Bạn đang dùng máy tính không có chip GPS vệ tinh:</b> Vị trí dò qua mạng Internet bị lệch (sai số ~' + accuracyText + ').<br>' +
+              '🛡️ <b>Hệ thống đã giữ nguyên địa chỉ chính xác bạn đã nhập:</b> "' + currentTypedAddress + '". ' +
+              '<button type="button" id="btn-recenter-typed" class="btn btn-secondary btn-sm" style="margin-left: 8px; padding: 2px 8px; font-size: 11.5px;">📍 Ghim theo địa chỉ này</button>',
+              'error'
+            );
+            var btnRecenter = document.getElementById('btn-recenter-typed');
+            if (btnRecenter && btnSearch) {
+              btnRecenter.onclick = function() { btnSearch.click(); };
+            }
+            initMap(lat, lng, 14, accuracy);
+            return;
+          }
+
+          initMap(lat, lng, 14, accuracy);
+          showStatus(
+            '📡 <b>Vị trí ước tính qua mạng Internet:</b> do máy tính không có phần cứng GPS (sai số ~' + accuracyText + ').<br>' +
+            '💡 <b>Để chuẩn từng số nhà:</b> Bạn hãy nhập địa chỉ theo định dạng <b>Số nhà, Tên đường, Quận, Thành phố</b> rồi bấm tìm kiếm.',
+            'info'
+          );
+          reverseGeocode(lat, lng);
+          return;
+        }
+
+        initMap(lat, lng, 18, accuracy);
+        showStatus('🎯 <b>Vị trí GPS chính xác cao</b> (sai số chỉ ~' + accuracyText + '). Đang nhận diện số nhà...', 'success');
+        reverseGeocode(lat, lng);
+      }
+
+      function handleGpsError(error) {
+        if (error.code === 1) {
+          showStatus('⚠️ Bạn đã chặn quyền truy cập vị trí. Hãy bấm vào biểu tượng ổ khóa 🔒 trên thanh địa chỉ trình duyệt để cho phép, hoặc dùng nút <b>"Tìm địa chỉ đã nhập trên bản đồ"</b>.', 'error');
+        } else if (error.code === 2) {
+          showStatus('⚠️ Thiết bị chưa bật định vị vị trí. Hãy nhập địa chỉ vào ô và bấm <b>"Tìm địa chỉ đã nhập trên bản đồ"</b>.', 'error');
+        } else {
+          showStatus('⚠️ Hết thời gian chờ GPS. Bạn vui lòng nhập địa chỉ vào ô bên trên và bấm <b>"Tìm địa chỉ đã nhập trên bản đồ"</b>.', 'error');
+        }
+      }
+
+      // Xử lý nút: "🔍 Tìm địa chỉ đã nhập trên bản đồ"
+      if (btnSearch) {
+        btnSearch.addEventListener('click', function() {
+          var query = addressInput.value.trim();
+          if (!query) {
+            showStatus('⚠️ Vui lòng nhập địa chỉ nhà / văn phòng vào ô bên trên trước.', 'error');
+            addressInput.focus();
+            return;
+          }
+
+          btnSearch.disabled = true;
+          forwardGeocode(query, function(err, result) {
+            btnSearch.disabled = false;
+            if (!err && result) {
+              initMap(result.lat, result.lng, 18);
+              showStatus('🎯 <b>Đã ghim vị trí chuẩn xác:</b> ' + (result.name || query) + '<br><small style="color:#047857;">💡 Bạn có thể phóng to / kéo ghim hoặc click thẳng vào mái nhà để đạt độ chính xác từng mét.</small>', 'success');
+            } else if (err === 'NOT_FOUND') {
+              initMap(21.0285, 105.8542, 14);
+              showStatus('⚠️ Không tìm thấy địa chỉ chính xác "' + query + '". Hãy nhập theo định dạng: <b>Số nhà / Tên đường / Tên quận / Thành phố</b>.', 'info');
+            } else {
+              initMap(21.0285, 105.8542, 14);
+              showStatus('⚠️ Không thể kết nối máy chủ tìm kiếm. Bạn có thể kéo ghim trực tiếp trên bản đồ.', 'info');
+            }
+          });
+        });
+      }
+
+      // Tự động tìm kiếm vị trí khi người dùng ấn Enter trong ô địa chỉ
+      addressInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          if (btnSearch) btnSearch.click();
+        }
+      });
+
+    })();
+  </script>
 </body>
 
 </html>

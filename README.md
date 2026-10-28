@@ -80,9 +80,9 @@ Hệ thống đã chuẩn bị sẵn tài khoản kiểm thử cho cả 3 vai tr
 
 | Vai trò | Email đăng nhập | Mật khẩu | Trang tự động chuyển đến | Quyền hạn & Tác vụ |
 | :--- | :--- | :--- | :--- | :--- |
-| **Nhân viên (Staff 1)** | `staff@cleanova.vn` | `Staff@DabClean2026!` | [`staff.html`](http://localhost:5000/staff.html) | Xem việc được giao, timeline lịch trình, cập nhật tiến độ, báo cáo ca trực & đổi mật khẩu |
-| **Nhân viên (Staff 2)** | `staff2@cleanova.vn` | `Staff@DabClean2026!` | [`staff.html`](http://localhost:5000/staff.html) | Tài khoản nhân viên thứ hai để kiểm tra bảo mật phân quyền công việc riêng biệt |
-| **Quản trị viên (Admin)** | `admin@cleanova.vn` | `Admin@DabClean2026!` | [`admin.html`](http://localhost:5000/admin.html) | Toàn quyền xem Dashboard, quản lý tài khoản, phân công việc cho nhân viên, quản lý dịch vụ |
+| **Nhân viên (Staff 1)** | `staff@cleanova.vn` | `Staff@Cleanova2026!` | [`staff.html`](http://localhost:5000/staff.html) | Xem việc được giao, timeline lịch trình, cập nhật tiến độ, báo cáo ca trực & đổi mật khẩu |
+| **Nhân viên (Staff 2)** | `staff2@cleanova.vn` | `Staff@Cleanova2026!` | [`staff.html`](http://localhost:5000/staff.html) | Tài khoản nhân viên thứ hai để kiểm tra bảo mật phân quyền công việc riêng biệt |
+| **Quản trị viên (Admin)** | `admin@cleanova.vn` | `Admin@Cleanova2026!` | [`admin.html`](http://localhost:5000/admin.html) | Toàn quyền xem Dashboard, quản lý tài khoản, phân công việc cho nhân viên, quản lý dịch vụ |
 | **Khách hàng (Customer)** | `demo@nova.app` | `NovaDemo2026!` | [`trangchu.html`](http://localhost:5000/trangchu.html) | Xem bảng giá, đặt lịch, quản lý đơn của mình, hủy đơn và quản lý hồ sơ cá nhân |
 | **Tài khoản bị khóa (Test)** | `locked@cleanova.vn` | `NovaDemo2026!` | — | Tài khoản bị vô hiệu hóa bởi Admin (bị chặn đăng nhập 403 `ACCOUNT_DEACTIVATED`) |
 
@@ -259,8 +259,8 @@ Tất cả các API đều có tiền tố `/api` và trả về kết quả dư
 
 1. Để chấm bài nhanh nhất, chỉ cần mở terminal tại thư mục `backend` và gõ `node server.js`.
 2. Mở trình duyệt tại **`http://localhost:5000`**.
-3. Đăng nhập bằng tài khoản `admin@cleanova.vn` / `Admin@DabClean2026!` để kiểm tra toàn bộ quyền Admin Dashboard & Quản trị Hệ thống Hai Ví Nhân Viên DabClean.
-4. Mở thêm cửa sổ ẩn danh và đăng nhập bằng tài khoản `staff@cleanova.vn` / `Staff@DabClean2026!` để trải nghiệm Cổng Nhân Viên: Quản lý Hai Ví (Ví Tín Dụng & Ví Thu Nhập), nạp ví tín dụng, chuyển tiền giữa 2 ví, kiểm tra điều kiện nhận đơn (`creditBalance >= 100.000 VNĐ`).
+3. Đăng nhập bằng tài khoản `admin@cleanova.vn` / `Admin@Cleanova2026!` để kiểm tra toàn bộ quyền Admin Dashboard & Quản trị Hệ thống Hai Ví Nhân Viên DabClean.
+4. Mở thêm cửa sổ ẩn danh và đăng nhập bằng tài khoản `staff@cleanova.vn` / `Staff@Cleanova2026!` để trải nghiệm Cổng Nhân Viên: Quản lý Hai Ví (Ví Tín Dụng & Ví Thu Nhập), nạp ví tín dụng, chuyển tiền giữa 2 ví, kiểm tra điều kiện nhận đơn (`creditBalance >= 100.000 VNĐ`).
 5. Chạy bộ kiểm thử tự động toàn diện cho hệ thống Hai Ví Nhân Viên DabClean:
    ```bash
    node backend/test-two-staff-wallets.js
